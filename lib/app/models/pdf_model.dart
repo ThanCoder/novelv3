@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_config_model.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -59,6 +60,22 @@ class PdfModel {
     }
     if (configFile.existsSync()) {
       configFile.deleteSync();
+    }
+  }
+  Future<void> moveTo(String newPath)async{
+    if(File(newPath).existsSync()){
+      throw ErrorDescription('new path already!');
+    }
+    final oriPath = File(path);
+    if(!oriPath.existsSync()){
+      throw ErrorDescription('pdf path not exists');
+    }
+    await oriPath.rename(newPath);
+  }
+  Future<void> copyCover(String newPath)async{
+    final coverFile = File(coverPath);
+    if(coverFile.existsSync()){
+      coverFile.copySync(newPath);
     }
   }
 
