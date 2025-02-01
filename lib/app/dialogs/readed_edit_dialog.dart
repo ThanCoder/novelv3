@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:novel_v3/app/components/app_components.dart';
+import 'package:novel_v3/app/notifiers/novel_notifier.dart';
+import 'package:novel_v3/app/services/novel_services.dart';
+import 'package:novel_v3/app/widgets/t_text_field.dart';
+
+class ReadedEditDialog extends StatefulWidget {
+  BuildContext dialogContext;
+  int readed;
+  ReadedEditDialog({
+    super.key,
+    required this.dialogContext,
+    required this.readed,
+  });
+
+  @override
+  State<ReadedEditDialog> createState() => _ReadedEditDialogState();
+}
+
+class _ReadedEditDialogState extends State<ReadedEditDialog> {
+  TextEditingController readedTextController = TextEditingController();
+  @override
+  void initState() {
+    readedTextController.text = widget.readed.toString();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit Readed'),
+      content: SizedBox(
+        height: 100,
+        child: Column(
+          children: [
+            TTextField(
+              controller: readedTextController,
+              label: const Text('Readed'),
+              textInputType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            try {
+              final novel = currentNovelNotifier.value;
+              int? num = int.tryParse(readedTextController.text);
+              //check
+              if (novel == null) {
+                showMessage(context, 'novel is null!');
+                return;
+              }
+              if (num == null) {
+                showMessage(context, 'readed number ထည့်သွင်းပေးပါ!');
+                return;
+              }
+              //no error
+              novel.readed = num;
+
+              //change data
+              updateNovelReaded(novel: novel);
+              //change ui
+              currentNovelNotifier.value = null;
+              currentNovelNotifier.value = novel;
+
+              Navigator.pop(context);
+            } catch (e) {
+              showMessage(context, e.toString());
+            }
+          },
+          child: const Text('Update'),
+        ),
+      ],
+    );
+  }
+}
