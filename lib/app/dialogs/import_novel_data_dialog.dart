@@ -91,8 +91,9 @@ class _ImportNovelDataDialogState extends State<ImportNovelDataDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$progress/$max'),
                 Expanded(child: Text(isLoading ? 'Loading...' : title)),
+                const Spacer(),
+                Text('$progress/$max'),
               ],
             ),
           ],

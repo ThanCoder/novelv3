@@ -32,6 +32,7 @@ migrate_working_dir/
 .novel_v3
 .dart_tool
 .idea
+.env
 /build/
 /linux
 /web

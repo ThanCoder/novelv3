@@ -10,6 +10,7 @@ import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pages/home_page.dart';
 import 'package:novel_v3/app/pages/novel_lib_page.dart';
+import 'package:novel_v3/app/pages/novel_online_page.dart';
 import 'package:novel_v3/app/pages/pdf_scanner_page.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/screens/novel_data_scanner_screen.dart';
@@ -130,11 +131,12 @@ class _Tab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         body: TabBarView(
           children: [
             HomePage(),
+            NovelOnlinePage(),
             NovelLibPage(),
             _PdfPage(),
             NovelDataScannerScreen(),
@@ -145,6 +147,10 @@ class _Tab extends StatelessWidget {
             Tab(
               text: 'Home',
               icon: Icon(Icons.home),
+            ),
+            Tab(
+              text: 'Online',
+              icon: Icon(Icons.cloud_download_outlined),
             ),
             Tab(
               text: 'Libary',

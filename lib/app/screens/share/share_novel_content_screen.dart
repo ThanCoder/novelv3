@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/share_data_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/dialogs/download_progress_dialog.dart';
 import 'package:novel_v3/app/dialogs/share_data_open_dialog.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/share_data_model.dart';
+import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader_online.dart';
+import 'package:novel_v3/app/services/novel_isolate_services.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
@@ -123,6 +126,11 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
     _checkFiles();
   }
 
+  void _refreshNovelList() async {
+    final novelList = await getNovelListFromPathIsolate();
+    novelListNotifier.value = novelList;
+  }
+
   void _download(ShareDataModel shareData) async {
     try {
       //
@@ -130,11 +138,6 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
       final savePath =
           '${createDir('${getSourcePath()}/${widget.novel.title}')}/${shareData.name}';
 
-      // print(urlPath);
-      // final res = await dio.head(urlPath);
-      // print(res.headers);
-
-      // if (true) return;
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -153,10 +156,11 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
       );
       if (mounted) {
         Navigator.pop(context);
-        showMessage(context, 'Download');
+        // showMessage(context, 'Download');
       }
       //novel data ရှိမရှိ စစ်ဆေးခြင်း
       _checkFiles();
+      _refreshNovelList();
     } catch (e) {
       // if (mounted) {
       //   Navigator.pop(context);
@@ -164,6 +168,35 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
 
       debugPrint(e.toString());
     }
+  }
+
+  void _allDownload() async {
+    final saveDirPath = createDir('${getSourcePath()}/${widget.novel.title}');
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DownloadProgressDialog(
+        pathUrlList: allDataList.map((data) => data.path).toList(),
+        saveDirPath: saveDirPath,
+        dialogContext: context,
+        onSuccess: () {
+          showMessage(context, 'Download လုပ်ပြီးပါပြီ');
+          //novel data ရှိမရှိ စစ်ဆေးခြင်း
+          _checkFiles();
+          _refreshNovelList();
+        },
+        onCancaled: () {
+          showMessage(context, 'Cancel လိုက်ပါပြီ');
+          //novel data ရှိမရှိ စစ်ဆေးခြင်း
+          _checkFiles();
+          _refreshNovelList();
+        },
+        onError: (msg) {
+          showDialogMessage(context, msg);
+        },
+      ),
+    );
   }
 
   void _openFileDialog(ShareDataModel shareData) {
@@ -191,10 +224,6 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
         onSubmit: () {},
       ),
     );
-  }
-
-  void _allDownload() {
-    showDialogMessage(context, 'မလုပ်ရသေးပါ');
   }
 
   @override

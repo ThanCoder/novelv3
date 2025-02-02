@@ -26,7 +26,8 @@ dependencies:
   permission_handler: ^11.3.1
   shared_preferences: ^2.3.5
   url_launcher: ^6.3.1
-  window_manager: ^0.4.3
+  window_manager: ^0.4.3  
+  supabase_flutter: ^2.8.3
 
   # offline plugin
   than_pkg:

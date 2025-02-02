@@ -52,7 +52,7 @@ class _PdfrxReaderState extends State<PdfrxReader> {
   }
 
   //pdf loaded
-  void onPdfLoaded() {
+  void onPdfLoaded() async {
     try {
       if (widget.pdfConfig == null) return;
       pdfConfig = widget.pdfConfig!;
@@ -67,6 +67,9 @@ class _PdfrxReaderState extends State<PdfrxReader> {
           pdfConfig.offsetDx != 0 &&
           pdfConfig.offsetDy != 0) {
         pdfController.setZoom(newOffset, pdfConfig.zoom);
+        //delay
+        await Future.delayed(const Duration(milliseconds: 600));
+        goPage(pdfConfig.page);
       } else {
         goPage(pdfConfig.page);
       }

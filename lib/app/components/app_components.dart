@@ -12,7 +12,7 @@ void showDialogMessage(BuildContext context, String msg) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      content: Text(msg),
+      content: SingleChildScrollView(child: Text(msg)),
     ),
   );
 }
