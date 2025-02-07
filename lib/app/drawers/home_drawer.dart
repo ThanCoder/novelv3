@@ -104,7 +104,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           //bottom
           ListTile(
             leading: const Icon(Icons.info),
-            title: Text('Version: $appVersion (Offline-final)'),
+            title: Text('Version: $appVersion ($appVersionName)'),
           ),
         ],
       ),

@@ -30,7 +30,10 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
     super.initState();
   }
 
-  final dio = Dio();
+  final dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 5),
+    receiveTimeout: const Duration(seconds: 5),
+  ));
   TextEditingController hostAddressController = TextEditingController();
   TextEditingController portController = TextEditingController();
   bool isError = false;
@@ -72,6 +75,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       setState(() {
         isLoading = true;
       });
+      print(hostAddressController.text);
       final res =
           await dio.get('${hostAddressController.text}:${portController.text}');
 

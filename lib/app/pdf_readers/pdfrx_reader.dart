@@ -182,6 +182,7 @@ class _PdfrxReaderState extends State<PdfrxReader> {
         scaleEnabled: !isPanLocked,
         enableTextSelection: false,
         pageDropShadow: null,
+        useAlternativeFitScaleAsMinScale: false,
         panAxis: isPanLocked ? PanAxis.vertical : PanAxis.free,
         //loading
         loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
