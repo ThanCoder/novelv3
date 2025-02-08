@@ -40,14 +40,17 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
   bool isLoading = false;
   bool isChanged = false;
   List<NovelModel> novelList = [];
+  List<String> wifiList = [];
 
   Future<String> _getPlatformWifiAddress() async {
     var address = await getWifiAddress();
     //android address
     if (Platform.isAndroid) {
       final res = await ThanPkg.platform.getLocalIpAddress();
+      final list = await ThanPkg.platform.getWifiAddressList();
       if (res != null) {
         address = res;
+        wifiList = (list ?? []).cast<String>();
       }
     }
     return address;
@@ -55,7 +58,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
 
   void init() async {
     try {
-      final url = 'http://${await _getPlatformWifiAddress()}';
+      final url = await _getPlatformWifiAddress();
       hostAddressController.text = url;
       portController.text = serverPort.toString();
 
@@ -75,9 +78,8 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       setState(() {
         isLoading = true;
       });
-      print(hostAddressController.text);
-      final res =
-          await dio.get('${hostAddressController.text}:${portController.text}');
+      final res = await dio
+          .get('http://${hostAddressController.text}:${portController.text}');
 
       if (res.statusCode == 200) {
         //success
@@ -86,7 +88,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
           novelList = list.map((map) {
             final novel = NovelModel.fromMap(map);
             novel.coverUrl =
-                '${hostAddressController.text}:${portController.text}/download?path=${novel.coverPath}';
+                'http://${hostAddressController.text}:${portController.text}/download?path=${novel.coverPath}';
             return novel;
           }).toList();
           //state
@@ -123,6 +125,26 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
     );
   }
 
+  Widget _getWifiListWidget() {
+    if (wifiList.isEmpty) {
+      return Container();
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const ScrollPhysics(),
+      itemCount: wifiList.length,
+      itemBuilder: (context, index) => Center(
+        child: Text(
+          wifiList[index],
+          style: TextStyle(
+            color: Colors.teal[900],
+          ),
+        ),
+      ),
+      separatorBuilder: (context, index) => const Divider(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
@@ -152,6 +174,14 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      wifiList.isNotEmpty
+                          ? const Text('Active Wifi List')
+                          : Container(),
+                      wifiList.isNotEmpty ? const Divider() : Container(),
+                      //wifi list
+                      _getWifiListWidget(),
+                      const Divider(),
+
                       TTextField(
                         controller: portController,
                         label: const Text('PORT'),
@@ -201,7 +231,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
             });
           } else {
             if (isError) {
-              final url = 'http://${await _getPlatformWifiAddress()}';
+              final url = await _getPlatformWifiAddress();
               hostAddressController.text = url;
               portController.text = serverPort.toString();
             }

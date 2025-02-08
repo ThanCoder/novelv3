@@ -5,11 +5,13 @@ import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/novel_status_badge.dart';
 import 'package:novel_v3/app/dialogs/novel_page_link_dialog.dart';
 import 'package:novel_v3/app/dialogs/readed_edit_dialog.dart';
+import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/screens/chapter_text_reader_screen.dart';
+import 'package:novel_v3/app/screens/novel_lib_screen.dart';
 import 'package:novel_v3/app/screens/pdf_reader_screen.dart';
 import 'package:novel_v3/app/services/app_services.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';
@@ -179,6 +181,17 @@ class NovelContentPageState extends State<NovelContentPage> {
     super.dispose();
   }
 
+  void _goNovelLibPage(BookMarkSortName bmsn) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NovelLibScreen(
+          bookMarkSortName: bmsn,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -249,12 +262,24 @@ class NovelContentPageState extends State<NovelContentPage> {
                         children: [
                           novel.isAdult
                               ? NovelStatusBadge(
+                                  onClick: (text) {
+                                    _goNovelLibPage(
+                                        BookMarkSortName.novleAdult);
+                                  },
                                   text: 'Adult Novel',
                                   bgColor: Colors.red,
                                 )
                               : Container(),
                           const SizedBox(width: 10),
                           NovelStatusBadge(
+                            onClick: (text) {
+                              if (text == 'Completed') {
+                                _goNovelLibPage(
+                                    BookMarkSortName.novelIsCompleted);
+                              } else if (text == 'OnGoing') {
+                                _goNovelLibPage(BookMarkSortName.novelOnGoing);
+                              }
+                            },
                             text: novel.isCompleted ? 'Completed' : 'OnGoing',
                             bgColor: novel.isCompleted
                                 ? Colors.blue[900]
@@ -289,7 +314,16 @@ class NovelContentPageState extends State<NovelContentPage> {
               //content cover
               getContentWidget(novel),
               //text
-              SelectableText(novel.content),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SelectableText(
+                  novel.content,
+                  style: Platform.isLinux
+                      ? Theme.of(context).textTheme.bodyLarge
+                      : Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(height: 50),
             ],
           );
         }

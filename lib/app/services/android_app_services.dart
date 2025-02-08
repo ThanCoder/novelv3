@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 void showConfirmStoragePermissionDialog(BuildContext context) {
   showDialog(
@@ -36,26 +36,12 @@ void showConfirmStoragePermissionDialog(BuildContext context) {
 //permission
 Future<bool> checkStoragePermission() async {
   if (Platform.isLinux) return true;
-  bool isGranted = false;
-  if (await getAndroidVersion() >= 11) {
-    //andrid 11 အထက်
-    isGranted = await Permission.manageExternalStorage.isGranted;
-  } else {
-    //andrid 11 အောက်
-    isGranted = await Permission.storage.isGranted;
-  }
-  return isGranted;
+  return await ThanPkg.platform.isStoragePermissionGranted();
 }
 
 Future<void> requestStoragePermission() async {
   if (Platform.isLinux) return;
-  if (await getAndroidVersion() >= 11) {
-    //andrid 11 အထက်
-    await Permission.manageExternalStorage.request();
-  } else {
-    //andrid 11 အောက်
-    await Permission.storage.request();
-  }
+  await ThanPkg.platform.requestStoragePermission();
 }
 
 //full screen

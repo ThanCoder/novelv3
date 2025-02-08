@@ -67,6 +67,17 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
                     },
                   ),
                 ),
+                ListTileWithDesc(
+                  title: 'Keep Screen',
+                  widget: Switch(
+                    value: readerConfig.isKeepScreen,
+                    onChanged: (value) {
+                      setState(() {
+                        readerConfig.isKeepScreen = value;
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ),

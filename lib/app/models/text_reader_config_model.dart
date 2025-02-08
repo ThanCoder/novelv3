@@ -7,11 +7,13 @@ class TextReaderConfigModel {
   String fontColor;
   String bgColor;
   bool usedCustomTheme;
+  bool isKeepScreen;
   TextReaderConfigModel({
     this.fontSize = 21,
     this.fontColor = '',
     this.bgColor = '',
     this.usedCustomTheme = false,
+    this.isKeepScreen = false,
   });
 
   factory TextReaderConfigModel.fromPath(String path) {
@@ -24,6 +26,7 @@ class TextReaderConfigModel {
       fontColor: map['font_color'] ?? '',
       bgColor: map['bg_color'] ?? '',
       usedCustomTheme: map['used_custom_theme'] ?? false,
+      isKeepScreen: map['is_keep_screen'] ?? false,
     );
   }
 
@@ -32,6 +35,7 @@ class TextReaderConfigModel {
         'font_color': fontColor,
         'bg_color': bgColor,
         'used_custom_theme': usedCustomTheme,
+        'is_keep_screen': isKeepScreen,
       };
 
   @override

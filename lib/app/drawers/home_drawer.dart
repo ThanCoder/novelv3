@@ -39,7 +39,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText:
             'သင်က လက်ခံမှာလား?။ (Receive)\nဒါမဟုတ် မျှဝေပေးမှာလား?။ (Share)',
         submitText: 'လက်ခံမယ်(Receive)',

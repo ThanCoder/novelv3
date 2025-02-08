@@ -159,7 +159,6 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',

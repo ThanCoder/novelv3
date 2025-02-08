@@ -46,7 +46,6 @@ class _PdfBookMarkListDrawerState extends State<PdfBookMarkListDrawer> {
       context: context,
       barrierDismissible: false,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',
@@ -63,7 +62,6 @@ class _PdfBookMarkListDrawerState extends State<PdfBookMarkListDrawer> {
     showDialog(
       context: context,
       builder: (context) => RenameDialog(
-        dialogContext: context,
         renameText: 'Untitled',
         renameLabelText: const Text('Book Mark Title'),
         onCancel: () {},
@@ -81,64 +79,76 @@ class _PdfBookMarkListDrawerState extends State<PdfBookMarkListDrawer> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return SizedBox(
-      width: screenWidth < 400 ? screenWidth * 0.85 : screenWidth * 0.7,
-      child: Drawer(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('PDF BookMark'),
-            ),
-            const Divider(),
-            //form
-            Wrap(
-              children: [
-                //quit add
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    addPdfBookmarkList(
-                      bookmarkPath: widget.pdfFile.bookMarkPath,
-                      pageIndex: widget.currentPage,
-                    );
-                    init();
-                  },
-                  child: const Column(
-                    children: [Icon(Icons.bookmark_add), Text('Quit Add')],
-                  ),
-                ),
-                //quit add
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _addBookMark();
-                  },
-                  child: const Column(
-                    children: [Icon(Icons.bookmark_add), Text('Add')],
-                  ),
-                ),
-              ],
-            ),
-
-            const Divider(),
-            //list
-            Expanded(
-              child: PdfBookMarkListView(
-                pdfBookList: bookList,
-                onClick: (pdfBookmark) {
-                  if (widget.onClick != null) {
-                    widget.onClick!(pdfBookmark.pageIndex);
-                    Navigator.pop(context);
-                  }
-                },
-                onLongClick: (pdfBookmark) {
-                  Navigator.pop(context);
-                  _showRemoveDialog(pdfBookmark.pageIndex);
-                },
+    return SafeArea(
+      child: SizedBox(
+        width: screenWidth < 400 ? screenWidth * 0.6 : screenWidth * 0.7,
+        child: Drawer(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text('PDF BookMark'),
               ),
-            )
-          ],
+              const Divider(),
+              //form
+              Wrap(
+                children: [
+                  //quit add
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      addPdfBookmarkList(
+                        bookmarkPath: widget.pdfFile.bookMarkPath,
+                        pageIndex: widget.currentPage,
+                      );
+                      init();
+                    },
+                    child: const Column(
+                      children: [
+                        Icon(Icons.bookmark_add),
+                        Text('Quit Add'),
+                      ],
+                    ),
+                  ),
+                  //quit add
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _addBookMark();
+                    },
+                    child: const Column(
+                      children: [
+                        Icon(Icons.bookmark_add),
+                        Text('Add'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const Divider(),
+              //list
+              Expanded(
+                child: PdfBookMarkListView(
+                  pdfBookList: bookList,
+                  onClick: (pdfBookmark) {
+                    if (widget.onClick != null) {
+                      widget.onClick!(pdfBookmark.pageIndex);
+                      Navigator.pop(context);
+                    }
+                  },
+                  onLongClick: (pdfBookmark) {
+                    Navigator.pop(context);
+                    _showRemoveDialog(pdfBookmark.pageIndex);
+                  },
+                  onDeleted: (pdfBookmark) {
+                    Navigator.pop(context);
+                    _showRemoveDialog(pdfBookmark.pageIndex);
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

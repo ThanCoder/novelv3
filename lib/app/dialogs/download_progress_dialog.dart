@@ -54,7 +54,7 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
         isLoading = true;
       });
 
-      final api = '${getRecentDB<String>('server_address')}:$serverPort';
+      final api = 'http://${getRecentDB<String>('server_address')}:$serverPort';
       //progress
       setState(() {
         isLoading = false;

@@ -38,3 +38,9 @@ void toggleFullScreenPlatform(bool isFullScreen) async {
     await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
   }
 }
+
+//keep screen
+void toggleAndroidKeepScreen(bool isKeep) async {
+  if (!Platform.isAndroid) return;
+  await ThanPkg.platform.toggleKeepScreen(isKeep: isKeep);
+}

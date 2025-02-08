@@ -10,6 +10,7 @@ class TTextField extends StatelessWidget {
   TextInputType? textInputType;
   List<TextInputFormatter>? inputFormatters;
   void Function(String value)? onChanged;
+  void Function()? onTap;
   TTextField({
     super.key,
     this.controller,
@@ -18,8 +19,9 @@ class TTextField extends StatelessWidget {
     this.maxLines = 1,
     this.textInputType,
     this.inputFormatters,
-    this.onChanged,
     this.errorText,
+    this.onChanged,
+    this.onTap,
   });
 
   @override
@@ -36,6 +38,7 @@ class TTextField extends StatelessWidget {
         errorText: errorText,
       ),
       onChanged: onChanged,
+      onTap: onTap,
     );
   }
 }

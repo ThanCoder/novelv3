@@ -51,7 +51,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
         isLoading = true;
       });
 
-      final listUrl = '${widget.apiUrl}/list?dir=${widget.novel.path}';
+      final listUrl = 'http://${widget.apiUrl}/list?dir=${widget.novel.path}';
       final res = await dio.get(listUrl);
       if (res.statusCode == 200) {
         List<dynamic> list = res.data;
@@ -66,6 +66,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
           isLoading = false;
         });
         _checkFiles();
+        _filterChange(filterOptionGroupValue);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -134,7 +135,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
   void _download(ShareDataModel shareData) async {
     try {
       //
-      final urlPath = '${widget.apiUrl}/download?path=${shareData.path}';
+      final urlPath = 'http://${widget.apiUrl}/download?path=${shareData.path}';
       final savePath =
           '${createDir('${getSourcePath()}/${widget.novel.title}')}/${shareData.name}';
 

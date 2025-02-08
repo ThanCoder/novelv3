@@ -17,26 +17,25 @@ class ListTileWithDesc extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title),
-                  desc != null ? const SizedBox(height: 5) : Container(),
-                  desc != null
-                      ? Text(
-                          desc ?? '',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title),
+                desc != null ? const SizedBox(height: 5) : Container(),
+                desc != null
+                    ? Text(
+                        desc ?? '',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      )
+                    : Container(),
+              ],
             ),
+            const Spacer(),
             widget,
           ],
         ),

@@ -10,6 +10,9 @@ class PdfConfigModel {
   double offsetDx;
   double offsetDy;
   double zoom;
+  bool isKeepScreen;
+  bool isTextSelection;
+  double scrollByMouseWheel;
   PdfConfigModel({
     this.page = 1,
     this.isDarkMode = false,
@@ -18,6 +21,9 @@ class PdfConfigModel {
     this.offsetDx = 0,
     this.offsetDy = 0,
     this.zoom = 0,
+    this.isKeepScreen = false,
+    this.isTextSelection = false,
+    this.scrollByMouseWheel = 1.2,
   });
 
   factory PdfConfigModel.fromPath(String configPath) {
@@ -32,6 +38,9 @@ class PdfConfigModel {
         isDarkMode: map['dark_mode'] ?? false,
         isPanLocked: map['pan_locked'] ?? false,
         isShowScrollThumb: map['show_scroll_thumb'] ?? false,
+        isKeepScreen: map['is_keep_screen'] ?? false,
+        isTextSelection: map['is_text_selection'] ?? false,
+        scrollByMouseWheel: map['scroll_by_mouse_wheel'] ?? 1.2,
       );
     } else {
       return PdfConfigModel(
@@ -51,6 +60,9 @@ class PdfConfigModel {
         'offset_dx': offsetDx,
         'offset_dy': offsetDy,
         'zoom': zoom,
+        'is_keep_screen': isKeepScreen,
+        'is_text_selection': isTextSelection,
+        'scroll_by_mouse_wheel': scrollByMouseWheel,
       };
 
   @override

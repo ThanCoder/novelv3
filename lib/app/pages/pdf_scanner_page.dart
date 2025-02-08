@@ -60,51 +60,53 @@ class _PdfScannerPageState extends State<PdfScannerPage> {
         child: TLoader(),
       );
     } else {
-      return ValueListenableBuilder(
-        valueListenable: pdfScannerListNotifier,
-        builder: (context, value, child) {
-          if (value.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text('Pdf List မရှိပါ...'),
-                  IconButton(
-                    onPressed: () {
-                      init();
-                    },
-                    icon: const Icon(
-                      Icons.refresh,
-                      size: 30,
-                      color: Colors.blue,
+      return SafeArea(
+        child: ValueListenableBuilder(
+          valueListenable: pdfScannerListNotifier,
+          builder: (context, value, child) {
+            if (value.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Pdf List မရှိပါ...'),
+                    IconButton(
+                      onPressed: () {
+                        init();
+                      },
+                      icon: const Icon(
+                        Icons.refresh,
+                        size: 30,
+                        color: Colors.blue,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return RefreshIndicator(
-              onRefresh: () async {
-                await Future.delayed(const Duration(milliseconds: 500));
-                init();
-              },
-              child: PdfListView(
-                pdfList: value,
-                onClick: (pdfFile) {
-                  if (widget.onClick != null) {
-                    widget.onClick!(pdfFile);
-                  }
+                  ],
+                ),
+              );
+            } else {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await Future.delayed(const Duration(milliseconds: 500));
+                  init();
                 },
-                onLongClick: (pdfFile) {
-                  if (widget.onLongClick != null) {
-                    widget.onLongClick!(pdfFile);
-                  }
-                },
-              ),
-            );
-          }
-        },
+                child: PdfListView(
+                  pdfList: value,
+                  onClick: (pdfFile) {
+                    if (widget.onClick != null) {
+                      widget.onClick!(pdfFile);
+                    }
+                  },
+                  onLongClick: (pdfFile) {
+                    if (widget.onLongClick != null) {
+                      widget.onLongClick!(pdfFile);
+                    }
+                  },
+                ),
+              );
+            }
+          },
+        ),
       );
     }
   }

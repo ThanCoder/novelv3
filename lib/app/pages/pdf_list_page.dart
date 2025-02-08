@@ -131,7 +131,6 @@ class PdfListPageState extends State<PdfListPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => RenameDialog(
-        dialogContext: context,
         renameLabelText: const Text('Rename PDF Title'),
         renameText: pdfFile.title.replaceAll('.pdf', ''),
         onCancel: () {},
@@ -186,7 +185,6 @@ class PdfListPageState extends State<PdfListPage> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',
@@ -223,42 +221,44 @@ class PdfListPageState extends State<PdfListPage> {
         child: TLoader(),
       );
     } else {
-      return ValueListenableBuilder(
-        valueListenable: pdfListNotifier,
-        builder: (context, value, child) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              await Future.delayed(const Duration(milliseconds: 800));
-              init();
-            },
-            child: PdfListView(
-              controller: _scrollController,
-              pdfList: value,
-              activeColor: Colors.teal[700],
-              activeTitle: getRecentDB<String>(
-                      'pdf_list_page_${currentNovelNotifier.value!.title}') ??
-                  '',
-              onClick: (pdfFile) {
-                //set recent
-                setRecentDB(
-                    'pdf_list_page_${currentNovelNotifier.value!.title}',
-                    pdfFile.title);
-                setState(() {});
-                //go reader
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PdfReaderScreen(pdfFile: pdfFile),
-                  ),
-                );
+      return SafeArea(
+        child: ValueListenableBuilder(
+          valueListenable: pdfListNotifier,
+          builder: (context, value, child) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                await Future.delayed(const Duration(milliseconds: 800));
+                init();
               },
-              onLongClick: (_pdfFile) {
-                pdfFile = _pdfFile;
-                showMenu();
-              },
-            ),
-          );
-        },
+              child: PdfListView(
+                controller: _scrollController,
+                pdfList: value,
+                activeColor: Colors.teal[700],
+                activeTitle: getRecentDB<String>(
+                        'pdf_list_page_${currentNovelNotifier.value!.title}') ??
+                    '',
+                onClick: (pdfFile) {
+                  //set recent
+                  setRecentDB(
+                      'pdf_list_page_${currentNovelNotifier.value!.title}',
+                      pdfFile.title);
+                  setState(() {});
+                  //go reader
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PdfReaderScreen(pdfFile: pdfFile),
+                    ),
+                  );
+                },
+                onLongClick: (_pdfFile) {
+                  pdfFile = _pdfFile;
+                  showMenu();
+                },
+              ),
+            );
+          },
+        ),
       );
     }
   }

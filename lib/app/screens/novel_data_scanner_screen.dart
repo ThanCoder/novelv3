@@ -85,7 +85,6 @@ class _NovelDataScannerScreenState extends State<NovelDataScannerScreen> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText:
             'Data ရှိနေပြီးသားဖြစ်နေပါတယ်။ထည့်သွင်းချင်ပါသလား?။\nသွင်းလိုက်မယ်ဆိုရင် data အဟောင်းတွေကို override လုပ်သွားပါမယ်။',
         cancelText: 'မလုပ်ဘူး',
@@ -119,7 +118,6 @@ class _NovelDataScannerScreenState extends State<NovelDataScannerScreen> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',

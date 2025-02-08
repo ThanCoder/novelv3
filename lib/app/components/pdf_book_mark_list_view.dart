@@ -3,13 +3,15 @@ import 'package:novel_v3/app/models/pdf_bookmark_model.dart';
 
 class PdfBookMarkListView extends StatelessWidget {
   List<PdfBookmarkModel> pdfBookList;
-  void Function(PdfBookmarkModel pdfBookmark)? onClick;
+  void Function(PdfBookmarkModel pdfBookmark) onClick;
   void Function(PdfBookmarkModel pdfBookmark)? onLongClick;
+  void Function(PdfBookmarkModel pdfBookmark)? onDeleted;
   PdfBookMarkListView({
     super.key,
     required this.pdfBookList,
-    this.onClick,
+    required this.onClick,
     this.onLongClick,
+    this.onDeleted,
   });
 
   @override
@@ -18,13 +20,16 @@ class PdfBookMarkListView extends StatelessWidget {
       itemBuilder: (context, index) => _ListItem(
         pdfBookmark: pdfBookList[index],
         onClick: (pdfBookmark) {
-          if (onClick != null) {
-            onClick!(pdfBookmark);
-          }
+          onClick(pdfBookmark);
         },
         onLongClick: (pdfBookmark) {
           if (onLongClick != null) {
             onLongClick!(pdfBookmark);
+          }
+        },
+        onDeleted: (PdfBookmarkModel pdfBookmark) {
+          if (onDeleted != null) {
+            onDeleted!(pdfBookmark);
           }
         },
       ),
@@ -38,11 +43,13 @@ class _ListItem extends StatelessWidget {
   PdfBookmarkModel pdfBookmark;
   void Function(PdfBookmarkModel pdfBookmark) onClick;
   void Function(PdfBookmarkModel pdfBookmark) onLongClick;
+  void Function(PdfBookmarkModel pdfBookmark) onDeleted;
   _ListItem({
     super.key,
     required this.pdfBookmark,
     required this.onClick,
     required this.onLongClick,
+    required this.onDeleted,
   });
 
   @override
@@ -53,6 +60,7 @@ class _ListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
+          spacing: 10,
           children: [
             //chapter
             Text(
@@ -61,7 +69,6 @@ class _ListItem extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            const SizedBox(width: 10),
             //title
             Expanded(
               child: Text(
@@ -70,6 +77,11 @@ class _ListItem extends StatelessWidget {
                 maxLines: 1,
                 style: const TextStyle(fontSize: 12),
               ),
+            ),
+            IconButton(
+              color: Colors.red,
+              onPressed: () => onDeleted(pdfBookmark),
+              icon: const Icon(Icons.delete_forever),
             ),
           ],
         ),

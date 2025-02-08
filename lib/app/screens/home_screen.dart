@@ -20,22 +20,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
- 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 5,
       child: Scaffold(
         body: TabBarView(
           children: [
-            HomePage(),
-            NovelOnlinePage(),
+            const HomePage(),
+            const NovelOnlinePage(),
             NovelLibPage(),
-            _PdfPage(),
-            NovelDataScannerScreen(),
+            const _PdfPage(),
+            const NovelDataScannerScreen(),
           ],
         ),
-        bottomNavigationBar: TabBar(
+        bottomNavigationBar: const TabBar(
           tabs: [
             Tab(
               text: 'Home',
@@ -63,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
 
 class _PdfPage extends StatefulWidget {
   const _PdfPage({super.key});
@@ -120,7 +118,6 @@ class _PdfPageState extends State<_PdfPage> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',
