@@ -170,6 +170,24 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     );
   }
 
+  void _toggleBookMark() {
+    final title = currentNovelNotifier.value!.title;
+    final path = currentNovelNotifier.value!.path;
+    toggleNovelBookmarkList(
+      bookmark: NovelBookmarkModel(title: title, path: path),
+    );
+    //remove ui
+    if (isExistsBookmark) {
+      final resList = novelBookMarkListNotifier.value
+          .where((nv) => nv.title != title)
+          .toList();
+      novelBookMarkListNotifier.value = resList;
+    }
+    setState(() {
+      isExistsBookmark = !isExistsBookmark;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
@@ -177,23 +195,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         title: const Text('Novel Content'),
         actions: [
           IconButton(
-            onPressed: () {
-              final title = currentNovelNotifier.value!.title;
-              final path = currentNovelNotifier.value!.path;
-              toggleNovelBookmarkList(
-                bookmark: NovelBookmarkModel(title: title, path: path),
-              );
-              //remove ui
-              if (isExistsBookmark) {
-                final resList = novelBookMarkListNotifier.value
-                    .where((nv) => nv.title != title)
-                    .toList();
-                novelBookMarkListNotifier.value = resList;
-              }
-              setState(() {
-                isExistsBookmark = !isExistsBookmark;
-              });
-            },
+            onPressed: _toggleBookMark,
             icon: Icon(
                 color: isExistsBookmark ? dangerColor : activeColor,
                 isExistsBookmark ? Icons.bookmark_remove : Icons.bookmark_add),

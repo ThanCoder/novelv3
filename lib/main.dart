@@ -9,13 +9,13 @@ import 'package:window_manager/window_manager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //url
-  const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
-  const supabaseKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+  // const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  // const supabaseKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
-  await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey: supabaseKey,
-  );
+  // await Supabase.initialize(
+  //   url: supabaseUrl,
+  //   anonKey: supabaseKey,
+  // );
 
   if (Platform.isLinux) {
     await WindowManager.instance.ensureInitialized();

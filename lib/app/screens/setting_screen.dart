@@ -91,7 +91,6 @@ class _SettingScreenState extends State<SettingScreen> {
     return await showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'setting ကိုသိမ်းဆည်းထားချင်ပါသလား?',
         cancelText: 'မသိမ်းဘူး',
         submitText: 'သိမ်းမယ်',

@@ -39,13 +39,16 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
   @override
   void initState() {
     scrollController.addListener(_scroll);
-    init();
     super.initState();
+    init();
   }
 
   void init() {
     try {
       readerConfig = getTextReaderConfig();
+
+      //keep screen
+      _androidKeepScreen(readerConfig.isKeepScreen);
 
       getFirstChapterListFromPath(
         novelSourcePath: currentNovelNotifier.value!.path,
@@ -66,6 +69,10 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
     } catch (e) {
       debugPrint('init: ${e.toString()}');
     }
+  }
+
+  void _androidKeepScreen(bool isKeep) async {
+    toggleAndroidKeepScreen(isKeep);
   }
 
   void _scroll() {
@@ -161,6 +168,8 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
           });
           //save config
           setTextReaderConfig(readerConfig);
+          //android keep screen
+          _androidKeepScreen(_readerConfig.isKeepScreen);
         },
       ),
     );

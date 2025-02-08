@@ -1,11 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/custom_class/novel_search_delegate.dart';
-import 'package:novel_v3/app/dialogs/add_new_novel_dialog.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
-import 'package:novel_v3/app/drawers/home_drawer.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pages/home_page.dart';
@@ -15,7 +11,6 @@ import 'package:novel_v3/app/pages/pdf_scanner_page.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/screens/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/services/app_services.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,124 +20,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //menu
-  void showBottomMenu() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => BottomSheet(
-        onClosing: () {},
-        builder: (context) => SizedBox(
-          height: 250,
-          child: ListView(
-            children: [
-              //add new novel
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) =>
-                        AddNewNovelDialog(dialogContext: context),
-                  );
-                },
-                leading: const Icon(Icons.add),
-                title: const Text('Add New Novel'),
-              ),
-              //add new novel from data
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NovelDataScannerScreen(),
-                    ),
-                  );
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (context) => ImportNovelDataDialog(
-                  //     dialogContext: context,
-                  //     dataFilePath:
-                  //         '/home/thancoder/Downloads/ငါ့မှာအပတ်တိုင်းအလုပ်သစ်ရှိတယ်.npz',
-                  //   ),
-                  // );
-                },
-                leading: const Icon(Icons.add),
-                title: const Text('Add Novel Data File'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showSearchBar() {
-    showSearch(
-      context: context,
-      delegate: NovelSearchDelegate(novelList: novelListNotifier.value),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      appBar: AppBar(
-        title: const Text(appTitle),
-        actions: [
-          //search
-          IconButton(
-            onPressed: () {
-              _showSearchBar();
-            },
-            icon: const Icon(Icons.search),
-          ),
-          //more
-          IconButton(
-            onPressed: () {
-              showBottomMenu();
-            },
-            icon: const Icon(Icons.more_vert),
-          ),
-        ],
-      ),
-      drawer: const HomeDrawer(),
-      body: const _Tab(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     try {
-      //       // final res =
-      //       //     await
-      //       // print(res);
-      //     } catch (e) {
-      //       debugPrint(e.toString());
-      //     }
-      //   },
-      //   child: const Icon(Icons.add),
-      // ),
-    );
-  }
-}
-
-class _Tab extends StatelessWidget {
-  const _Tab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 5,
       child: Scaffold(
         body: TabBarView(
           children: [
-            HomePage(),
-            NovelOnlinePage(),
+            const HomePage(),
+            const NovelOnlinePage(),
             NovelLibPage(),
-            _PdfPage(),
-            NovelDataScannerScreen(),
+            const _PdfPage(),
+            const NovelDataScannerScreen(),
           ],
         ),
-        bottomNavigationBar: TabBar(
+        bottomNavigationBar: const TabBar(
           tabs: [
             Tab(
               text: 'Home',
@@ -226,7 +118,6 @@ class _PdfPageState extends State<_PdfPage> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',

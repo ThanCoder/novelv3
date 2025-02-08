@@ -7,7 +7,7 @@ import 'package:novel_v3/app/services/t_server.dart';
 import 'package:novel_v3/app/services/wifi_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:than_pkg/than_pkg_method_channel.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ShareNovelDataScreen extends StatefulWidget {
   const ShareNovelDataScreen({super.key});
@@ -20,6 +20,7 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
   bool isServerRunning = false;
   String hostAddress = 'localhost';
   HttpServer? _httpServer;
+  List<String> wifiList = [];
 
   @override
   void initState() {
@@ -31,6 +32,17 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
     try {
       final server = await TServer.instance.startServer();
       _httpServer = server.httpServer;
+      //get wifi
+      if (Platform.isAndroid) {
+        try {
+          final res = await ThanPkg.platform.getWifiAddressList();
+          setState(() {
+            wifiList = (res ?? []).cast<String>();
+          });
+        } catch (e) {
+          debugPrint('getWifilist: ${e.toString()}');
+        }
+      }
       //send all novel list
       server.get('/', (req) async {
         try {
@@ -63,17 +75,6 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
             return;
           }
 
-          // file ရှိတယ်
-          // ✅ Content-Length Header ထည့်ပေးမယ်
-          // int fileSize = file.lengthSync();
-          // req.response.headers
-          //   ..contentLength = fileSize
-          //   ..contentType = ContentType.binary; // ✅ Download အနေနဲ့ ဖွင့်စေ
-
-          // print("Downloading: $path ($fileSize bytes)");
-
-          // send client
-          // ✅ Client သို့ File Stream ပို့ပေးမယ်
           try {
             await file.openRead().pipe(req.response);
           } catch (e) {
@@ -129,7 +130,7 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
       hostAddress = await getWifiAddress();
       //android address
       if (Platform.isAndroid) {
-        final address = await ThanPkgMethodChannel.instance.getLocalIpAddress();
+        final address = await ThanPkg.platform.getLocalIpAddress();
         hostAddress = address!;
         debugPrint('ShareNovelDataScreen: $address');
       }
@@ -158,6 +159,26 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
     super.dispose();
   }
 
+  Widget _getWifiListWidget() {
+    if (wifiList.isEmpty) {
+      return Container();
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const ScrollPhysics(),
+      itemCount: wifiList.length,
+      itemBuilder: (context, index) => Center(
+        child: Text(
+          wifiList[index],
+          style: TextStyle(
+            color: Colors.teal[900],
+          ),
+        ),
+      ),
+      separatorBuilder: (context, index) => const Divider(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
@@ -166,8 +187,15 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
       ),
       body: Center(
         child: Column(
+          spacing: 5,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            wifiList.isNotEmpty ? const Text('Active Wifi List') : Container(),
+            wifiList.isNotEmpty ? const Divider() : Container(),
+            //wifi list
+            _getWifiListWidget(),
+            const Divider(),
+            //status
             isServerRunning
                 ? SelectableText(
                     'Server Running on http://$hostAddress:$serverPort')

@@ -81,7 +81,6 @@ class _PdfrxReaderOnlineState extends State<PdfrxReaderOnline> {
     showDialog(
       context: context,
       builder: (context) => RenameDialog(
-        dialogContext: context,
         renameText: currentPage.toString(),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         textInputType: TextInputType.number,

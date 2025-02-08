@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  BuildContext dialogContext;
   String title;
   String contentText;
   String cancelText;
@@ -10,7 +9,6 @@ class ConfirmDialog extends StatelessWidget {
   void Function() onSubmit;
   ConfirmDialog({
     super.key,
-    required this.dialogContext,
     this.title = 'အတည်ပြုခြင်း',
     this.contentText = '',
     this.cancelText = 'Cancel',
@@ -27,14 +25,14 @@ class ConfirmDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.pop(dialogContext);
+            Navigator.of(context).pop(true);
             onCancel();
           },
           child: Text(cancelText),
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(dialogContext);
+            Navigator.of(context).pop(true);
             onSubmit();
           },
           child: Text(submitText),

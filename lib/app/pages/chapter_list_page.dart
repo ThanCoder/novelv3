@@ -85,7 +85,6 @@ class ChapterListPageState extends State<ChapterListPage> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        dialogContext: context,
         contentText:
             'Chapter ${selectedChapter!.title} ကိုဖျက်ချင်တာ သေချာပြီလား?',
         cancelText: 'No',
