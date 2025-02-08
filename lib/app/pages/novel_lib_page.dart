@@ -97,106 +97,109 @@ class _NovelLibPageState extends State<NovelLibPage> {
     if (isLoading) {
       return Center(child: TLoader());
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //sort list
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.start,
-          alignment: WrapAlignment.start,
-          spacing: 10,
-          runSpacing: 10,
-          children: [
-            _TChip(
-              title: 'BookMark',
-              avatar: _bookMarkSortName == _BookMarkSortName.novelBookMark
-                  ? const Icon(Icons.check)
-                  : null,
-              onClick: () {
-                sortNovel(_BookMarkSortName.novelBookMark);
-                setState(() {
-                  _bookMarkSortName = _BookMarkSortName.novelBookMark;
-                });
-              },
-            ),
-            _TChip(
-              title: 'Adult',
-              avatar: _bookMarkSortName == _BookMarkSortName.novleAdult
-                  ? const Icon(Icons.check)
-                  : null,
-              onClick: () {
-                sortNovel(_BookMarkSortName.novleAdult);
-                setState(() {
-                  _bookMarkSortName = _BookMarkSortName.novleAdult;
-                });
-              },
-            ),
-            _TChip(
-              title: 'OnGoing',
-              avatar: _bookMarkSortName == _BookMarkSortName.novelOnGoing
-                  ? const Icon(Icons.check)
-                  : null,
-              onClick: () {
-                sortNovel(_BookMarkSortName.novelOnGoing);
-                setState(() {
-                  _bookMarkSortName = _BookMarkSortName.novelOnGoing;
-                });
-              },
-            ),
-            _TChip(
-              title: 'Completed',
-              avatar: _bookMarkSortName == _BookMarkSortName.novelIsCompleted
-                  ? const Icon(Icons.check)
-                  : null,
-              onClick: () {
-                sortNovel(_BookMarkSortName.novelIsCompleted);
-                setState(() {
-                  _bookMarkSortName = _BookMarkSortName.novelIsCompleted;
-                });
-              },
-            ),
-          ],
-        ),
-        const Divider(),
-        Expanded(
-          child: ValueListenableBuilder(
-            valueListenable: novelBookMarkListNotifier,
-            builder: (context, value, child) {
-              if (value.isEmpty) {
-                return Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Novel List မရှိပါ'),
-                    IconButton(
-                      color: Colors.teal,
-                      onPressed: () {
-                        setState(() {
-                          _bookMarkSortName = _BookMarkSortName.novelBookMark;
-                        });
-                        init();
-                      },
-                      icon: const Icon(Icons.refresh),
-                    ),
-                  ],
-                ));
-              }
-              return NovelListView(
-                novelList: value,
-                onClick: (novel) {
-                  currentNovelNotifier.value = novel;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NovelContentScreen(novel: novel),
-                    ),
-                  );
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //sort list
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.start,
+            alignment: WrapAlignment.start,
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _TChip(
+                title: 'BookMark',
+                avatar: _bookMarkSortName == _BookMarkSortName.novelBookMark
+                    ? const Icon(Icons.check)
+                    : null,
+                onClick: () {
+                  sortNovel(_BookMarkSortName.novelBookMark);
+                  setState(() {
+                    _bookMarkSortName = _BookMarkSortName.novelBookMark;
+                  });
                 },
-              );
-            },
+              ),
+              _TChip(
+                title: 'Adult',
+                avatar: _bookMarkSortName == _BookMarkSortName.novleAdult
+                    ? const Icon(Icons.check)
+                    : null,
+                onClick: () {
+                  sortNovel(_BookMarkSortName.novleAdult);
+                  setState(() {
+                    _bookMarkSortName = _BookMarkSortName.novleAdult;
+                  });
+                },
+              ),
+              _TChip(
+                title: 'OnGoing',
+                avatar: _bookMarkSortName == _BookMarkSortName.novelOnGoing
+                    ? const Icon(Icons.check)
+                    : null,
+                onClick: () {
+                  sortNovel(_BookMarkSortName.novelOnGoing);
+                  setState(() {
+                    _bookMarkSortName = _BookMarkSortName.novelOnGoing;
+                  });
+                },
+              ),
+              _TChip(
+                title: 'Completed',
+                avatar: _bookMarkSortName == _BookMarkSortName.novelIsCompleted
+                    ? const Icon(Icons.check)
+                    : null,
+                onClick: () {
+                  sortNovel(_BookMarkSortName.novelIsCompleted);
+                  setState(() {
+                    _bookMarkSortName = _BookMarkSortName.novelIsCompleted;
+                  });
+                },
+              ),
+            ],
           ),
-        ),
-      ],
+          const Divider(),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: novelBookMarkListNotifier,
+              builder: (context, value, child) {
+                if (value.isEmpty) {
+                  return Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Novel List မရှိပါ'),
+                      IconButton(
+                        color: Colors.teal,
+                        onPressed: () {
+                          setState(() {
+                            _bookMarkSortName = _BookMarkSortName.novelBookMark;
+                          });
+                          init();
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
+                    ],
+                  ));
+                }
+                return NovelListView(
+                  novelList: value,
+                  onClick: (novel) {
+                    currentNovelNotifier.value = novel;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NovelContentScreen(novel: novel),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

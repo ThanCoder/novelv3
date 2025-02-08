@@ -15,7 +15,7 @@ import 'package:novel_v3/app/services/app_services.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
 import 'package:novel_v3/app/widgets/my_image_file.dart';
-import 'package:than_pkg/than_pkg_method_channel.dart';
+import 'package:than_pkg/than_pkg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NovelContentPage extends StatefulWidget {
@@ -67,7 +67,7 @@ class NovelContentPageState extends State<NovelContentPage> {
   void _openPageUrl(String url) async {
     try {
       if (Platform.isAndroid) {
-        await ThanPkgMethodChannel.instance.openUrl(url: url);
+        await ThanPkg.platform.openUrl(url: url);
       } else {
         if (await canLaunchUrl(Uri.parse(url))) {
           await launchUrl(Uri.parse(url));

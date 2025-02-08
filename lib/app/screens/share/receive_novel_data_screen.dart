@@ -14,7 +14,7 @@ import 'package:novel_v3/app/services/wifi_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
-import 'package:than_pkg/than_pkg_method_channel.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ReceiveNovelDataScreen extends StatefulWidget {
   const ReceiveNovelDataScreen({super.key});
@@ -45,7 +45,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
     var address = await getWifiAddress();
     //android address
     if (Platform.isAndroid) {
-      final res = await ThanPkgMethodChannel.instance.getLocalIpAddress();
+      final res = await ThanPkg.platform.getLocalIpAddress();
       if (res != null) {
         address = res;
       }

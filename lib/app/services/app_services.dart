@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:than_pkg/than_pkg_method_channel.dart';
+import 'package:than_pkg/than_pkg.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> clearAndRefreshImage() async {
@@ -35,8 +35,6 @@ void toggleFullScreenPlatform(bool isFullScreen) async {
   }
   //is android
   if (Platform.isAndroid) {
-    // toggleAndroidFullScreen(isFullScreen);
-    await ThanPkgMethodChannel.instance
-        .toggleFullScreen(isFullScreen: isFullScreen);
+    await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
   }
 }

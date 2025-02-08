@@ -7,7 +7,7 @@ import 'package:novel_v3/app/services/t_server.dart';
 import 'package:novel_v3/app/services/wifi_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:than_pkg/than_pkg_method_channel.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ShareNovelDataScreen extends StatefulWidget {
   const ShareNovelDataScreen({super.key});
@@ -129,7 +129,7 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
       hostAddress = await getWifiAddress();
       //android address
       if (Platform.isAndroid) {
-        final address = await ThanPkgMethodChannel.instance.getLocalIpAddress();
+        final address = await ThanPkg.platform.getLocalIpAddress();
         hostAddress = address!;
         debugPrint('ShareNovelDataScreen: $address');
       }
