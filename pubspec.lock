@@ -800,10 +800,11 @@ packages:
   than_pkg:
     dependency: "direct main"
     description:
-      path: "/home/thancoder/projects/flutter_plugins/than_pkg"
-      relative: false
-    source: path
-    version: "0.0.1"
+      name: than_pkg
+      sha256: "36de8fb7eeae2947142c250a427064ed06ad46b412fb384e6a99ccacdca13579"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   typed_data:
     dependency: transitive
     description:
