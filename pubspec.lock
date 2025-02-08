@@ -867,7 +867,7 @@ packages:
       path: "/home/thancoder/projects/flutter_plugins/than_pkg"
       relative: false
     source: path
-    version: "0.0.1"
+    version: "0.0.3"
   typed_data:
     dependency: transitive
     description:
