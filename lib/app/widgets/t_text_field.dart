@@ -10,6 +10,7 @@ class TTextField extends StatelessWidget {
   TextInputType? textInputType;
   List<TextInputFormatter>? inputFormatters;
   void Function(String value)? onChanged;
+  void Function(String value)? onSubmitted;
   void Function()? onTap;
   TTextField({
     super.key,
@@ -22,6 +23,7 @@ class TTextField extends StatelessWidget {
     this.errorText,
     this.onChanged,
     this.onTap,
+    this.onSubmitted,
   });
 
   @override
@@ -39,6 +41,7 @@ class TTextField extends StatelessWidget {
       ),
       onChanged: onChanged,
       onTap: onTap,
+      onSubmitted: onSubmitted,
     );
   }
 }

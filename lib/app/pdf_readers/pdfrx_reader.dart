@@ -1,19 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/pdf_reader_config_action_component.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/rename_dialog.dart';
 import 'package:novel_v3/app/drawers/pdf_book_mark_list_drawer.dart';
 import 'package:novel_v3/app/models/pdf_config_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
-import 'package:novel_v3/app/services/android_app_services.dart';
 import 'package:novel_v3/app/services/app_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:pdfrx/pdfrx.dart';
-import 'package:window_manager/window_manager.dart';
 
 class PdfrxReader extends StatefulWidget {
   PdfFileModel pdfFile;
@@ -41,14 +38,20 @@ class _PdfrxReaderState extends State<PdfrxReader> {
   int pageCount = 0;
   bool initCalled = false;
   bool isFullScreen = false;
-  double currentZoom = 0;
-  double currentOffsetDx = 0;
-  double currentOffsetDy = 0;
-  late PdfConfigModel pdfConfig;
+  double zoom = 0;
+  double offsetDx = 0;
+  double offsetDy = 0;
+  double scrollByMouseWheel = 1.2;
+  bool isDarkMode = false;
+  bool isKeepScreen = false;
+  bool isPanLocked = false;
+  bool isShowScrollThumb = true;
+  bool isTextSelection = false;
+  late PdfConfigModel config;
 
   @override
   void initState() {
-    pdfConfig = PdfConfigModel();
+    config = PdfConfigModel();
     super.initState();
   }
 
@@ -56,26 +59,35 @@ class _PdfrxReaderState extends State<PdfrxReader> {
   void onPdfLoaded() async {
     try {
       if (widget.pdfConfig == null) return;
-      pdfConfig = widget.pdfConfig!;
-      _initConfig();
+      config = widget.pdfConfig!;
+
+      isDarkMode = widget.pdfConfig!.isDarkMode;
+      isKeepScreen = widget.pdfConfig!.isKeepScreen;
+      isPanLocked = widget.pdfConfig!.isPanLocked;
+      isShowScrollThumb = widget.pdfConfig!.isShowScrollThumb;
+      isTextSelection = widget.pdfConfig!.isTextSelection;
+      offsetDx = widget.pdfConfig!.offsetDx;
+      offsetDy = widget.pdfConfig!.offsetDy;
+      currentPage = widget.pdfConfig!.page;
+      scrollByMouseWheel = widget.pdfConfig!.scrollByMouseWheel;
+      zoom = widget.pdfConfig!.zoom;
 
       //set offset
-      final newOffset = Offset(pdfConfig.offsetDx, pdfConfig.offsetDy);
-      if (pdfConfig.zoom != 0 &&
-          pdfConfig.offsetDx != 0 &&
-          pdfConfig.offsetDy != 0) {
-        pdfController.setZoom(newOffset, pdfConfig.zoom);
+      final newOffset = Offset(offsetDx, offsetDy);
+      if (zoom != 0 && offsetDx != 0 && offsetDy != 0) {
+        pdfController.setZoom(newOffset, zoom);
         //delay
         await Future.delayed(const Duration(milliseconds: 600));
-        goPage(pdfConfig.page);
+        goPage(currentPage);
       } else {
-        goPage(pdfConfig.page);
+        goPage(currentPage);
       }
 
       // pdfController.
       setState(() {
         isLoading = false;
       });
+      _initConfig();
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -86,22 +98,27 @@ class _PdfrxReaderState extends State<PdfrxReader> {
 
   void _initConfig() {
     //keep screen
-    toggleAndroidKeepScreen(pdfConfig.isKeepScreen);
+    toggleAndroidKeepScreen(isKeepScreen);
   }
 
   //save config
   void _saveConfig() {
     try {
-      pdfConfig.page = currentPage;
-      //zoom
-      pdfConfig.zoom = currentZoom;
-      //offset
+      if (widget.pdfConfig == null) return;
 
-      pdfConfig.offsetDx = currentOffsetDx;
-      pdfConfig.offsetDy = currentOffsetDy;
+      config.offsetDx = offsetDx;
+      config.offsetDy = offsetDy;
+      config.page = currentPage;
+      config.zoom = zoom;
+      config.isDarkMode = isDarkMode;
+      config.isKeepScreen = isKeepScreen;
+      config.isPanLocked = isPanLocked;
+      config.isShowScrollThumb = isShowScrollThumb;
+      config.isTextSelection = isTextSelection;
+      config.scrollByMouseWheel = scrollByMouseWheel;
 
       if (widget.saveConfig != null) {
-        widget.saveConfig!(pdfConfig);
+        widget.saveConfig!(config);
       }
     } catch (e) {
       debugPrint('saveConfig: ${e.toString()}');
@@ -172,23 +189,26 @@ class _PdfrxReaderState extends State<PdfrxReader> {
     setState(() {
       isFullScreen = isFull;
     });
+    if (isFull) {
+      showMessage(context, 'Double Tap Is Exist FullScreen!');
+    }
     toggleFullScreenPlatform(isFullScreen);
   }
 
   PdfViewerParams getParams() => PdfViewerParams(
         margin: 0,
-        scrollByMouseWheel: pdfConfig.scrollByMouseWheel,
-        scaleEnabled: !pdfConfig.isPanLocked,
-        enableTextSelection: pdfConfig.isTextSelection,
+        scrollByMouseWheel: scrollByMouseWheel,
+        scaleEnabled: isPanLocked == false,
+        panAxis: isPanLocked ? PanAxis.vertical : PanAxis.free,
+        enableTextSelection: isTextSelection,
         pageDropShadow: null,
         useAlternativeFitScaleAsMinScale: false,
-        panAxis: pdfConfig.isPanLocked ? PanAxis.vertical : PanAxis.free,
         //loading
         loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
           return Center(
             child: TLoader(
               isCustomTheme: true,
-              isDarkMode: pdfConfig.isDarkMode,
+              isDarkMode: isDarkMode,
             ),
           );
         },
@@ -199,9 +219,9 @@ class _PdfrxReaderState extends State<PdfrxReader> {
             setState(() {
               currentPage = pageNumber ?? 1;
               pageCount = pdfController.pageCount;
-              currentZoom = pdfController.currentZoom;
-              currentOffsetDx = offset.dx;
-              currentOffsetDy = offset.dy;
+              zoom = pdfController.currentZoom;
+              offsetDx = offset.dx;
+              offsetDy = offset.dy;
             });
           } catch (e) {
             debugPrint('onPageChanged: ${e.toString()}');
@@ -211,7 +231,7 @@ class _PdfrxReaderState extends State<PdfrxReader> {
         onViewerReady: (document, controller) {
           onPdfLoaded();
         },
-        viewerOverlayBuilder: pdfConfig.isShowScrollThumb
+        viewerOverlayBuilder: isShowScrollThumb
             ? (context, size, handleLinkTap) => [
                   // Add vertical scroll thumb on viewer's right side
                   PdfViewerScrollThumb(
@@ -254,21 +274,20 @@ class _PdfrxReaderState extends State<PdfrxReader> {
           IconButton(
             onPressed: () {
               setState(() {
-                pdfConfig.isDarkMode = !pdfConfig.isDarkMode;
+                isDarkMode = !isDarkMode;
               });
             },
-            icon:
-                Icon(pdfConfig.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
           ),
           //pan axis lock
           IconButton(
             onPressed: () {
               setState(() {
-                pdfConfig.isPanLocked = !pdfConfig.isPanLocked;
+                isPanLocked = !isPanLocked;
               });
             },
             icon: Icon(
-              pdfConfig.isPanLocked ? Icons.lock : Icons.lock_open,
+              isPanLocked ? Icons.lock : Icons.lock_open,
             ),
           ),
           //zoom
@@ -293,26 +312,45 @@ class _PdfrxReaderState extends State<PdfrxReader> {
           ),
           //setting
           PdfReaderConfigActionComponent(
-            pdfConfig: pdfConfig,
+            pdfConfig: config,
             onApply: (_pdfConfig) {
               setState(() {
-                pdfConfig = _pdfConfig;
+                isKeepScreen = _pdfConfig.isKeepScreen;
+                isTextSelection = _pdfConfig.isTextSelection;
+                isShowScrollThumb = _pdfConfig.isShowScrollThumb;
+                scrollByMouseWheel = _pdfConfig.scrollByMouseWheel;
               });
               _saveConfig();
             },
           ),
           //show scroll navigation thumbnail
           IconButton(
-            color: pdfConfig.isShowScrollThumb ? activeColor : null,
+            color: isShowScrollThumb ? activeColor : null,
             onPressed: () {
+              config.isShowScrollThumb = !isShowScrollThumb;
               setState(() {
-                pdfConfig.isShowScrollThumb = !pdfConfig.isShowScrollThumb;
+                isShowScrollThumb = !isShowScrollThumb;
               });
             },
             icon: const Icon(Icons.navigation_rounded),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _getCurrentPdfReader() {
+    if (widget.isOffline) {
+      return PdfViewer.file(
+        widget.pdfFile.path,
+        controller: pdfController,
+        params: getParams(),
+      );
+    }
+    return PdfViewer.uri(
+      Uri.parse(widget.onlineUrl),
+      controller: pdfController,
+      params: getParams(),
     );
   }
 
@@ -341,8 +379,7 @@ class _PdfrxReaderState extends State<PdfrxReader> {
         focusNode: FocusNode(),
         onKey: _onKeyboradPressed,
         child: GestureDetector(
-          onTap: () => _toggleFullScreen(false),
-          onLongPress: () => _toggleFullScreen(false),
+          // onTap: () => _toggleFullScreen(false),
           onDoubleTap: () => _toggleFullScreen(false),
           child: Column(
             children: [
@@ -353,19 +390,9 @@ class _PdfrxReaderState extends State<PdfrxReader> {
                 child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                     Colors.white,
-                    pdfConfig.isDarkMode ? BlendMode.difference : BlendMode.dst,
+                    isDarkMode ? BlendMode.difference : BlendMode.dst,
                   ),
-                  child: widget.isOffline
-                      ? PdfViewer.file(
-                          widget.pdfFile.path,
-                          controller: pdfController,
-                          params: getParams(),
-                        )
-                      : PdfViewer.uri(
-                          Uri.parse(widget.onlineUrl),
-                          controller: pdfController,
-                          params: getParams(),
-                        ),
+                  child: _getCurrentPdfReader(),
                 ),
               ),
             ],
@@ -377,12 +404,7 @@ class _PdfrxReaderState extends State<PdfrxReader> {
 
   void close() async {
     _saveConfig();
-    if (Platform.isAndroid) {
-      toggleAndroidFullScreen(false);
-    }
-    if (Platform.isLinux) {
-      await windowManager.setFullScreen(isFullScreen);
-    }
+    toggleFullScreenPlatform(false);
   }
 
   @override

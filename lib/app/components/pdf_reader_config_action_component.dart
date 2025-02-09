@@ -44,7 +44,7 @@ class _PdfReaderConfigActionComponentState
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  //test selection
+                  //text selection
                   ListTileWithDesc(
                     title: 'Text Selection',
                     desc: 'PDF Text ကို ကူးယူနိုင်ခြင်း',

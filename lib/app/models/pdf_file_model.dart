@@ -29,12 +29,19 @@ class PdfFileModel {
 
   factory PdfFileModel.fromPath(String path) {
     final file = File(path);
-    final pdfFile = PdfFileModel(
-      title: getBasename(path),
-      path: path,
-      size: file.lengthSync(),
-      date: file.statSync().modified.millisecondsSinceEpoch,
-    );
+    PdfFileModel pdfFile;
+
+    if (file.existsSync()) {
+      pdfFile = PdfFileModel(
+        title: getBasename(path),
+        path: path,
+        size: file.lengthSync(),
+        date: file.statSync().modified.millisecondsSinceEpoch,
+      );
+    } else {
+      pdfFile = PdfFileModel(title: '', path: '', size: 0, date: 0);
+    }
+
     return pdfFile;
   }
   void setFullPath(String newPath) {

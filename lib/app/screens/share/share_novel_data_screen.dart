@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/services/t_server.dart';
-import 'package:novel_v3/app/services/wifi_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -33,15 +32,13 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
       final server = await TServer.instance.startServer();
       _httpServer = server.httpServer;
       //get wifi
-      if (Platform.isAndroid) {
-        try {
-          final res = await ThanPkg.platform.getWifiAddressList();
-          setState(() {
-            wifiList = (res ?? []).cast<String>();
-          });
-        } catch (e) {
-          debugPrint('getWifilist: ${e.toString()}');
-        }
+      try {
+        final res = await ThanPkg.platform.getWifiAddressList();
+        setState(() {
+          wifiList = res;
+        });
+      } catch (e) {
+        debugPrint('getWifilist: ${e.toString()}');
       }
       //send all novel list
       server.get('/', (req) async {
@@ -127,12 +124,9 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
         isServerRunning = true;
       });
 
-      hostAddress = await getWifiAddress();
       //android address
-      if (Platform.isAndroid) {
-        final address = await ThanPkg.platform.getLocalIpAddress();
-        hostAddress = address!;
-        debugPrint('ShareNovelDataScreen: $address');
+      if (wifiList.isNotEmpty) {
+        hostAddress = wifiList.first;
       }
     } catch (e) {
       debugPrint(e.toString());

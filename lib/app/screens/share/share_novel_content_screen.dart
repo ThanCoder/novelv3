@@ -8,9 +8,10 @@ import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/download_progress_dialog.dart';
 import 'package:novel_v3/app/dialogs/share_data_open_dialog.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/models/share_data_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/pdf_readers/pdfrx_reader_online.dart';
+import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/services/novel_isolate_services.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
@@ -204,13 +205,19 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
     //pdf
     if (shareData.name.endsWith('.pdf')) {
       final host = getRecentDB<String>('server_address');
-      final url = '$host:$serverPort/download?path=${shareData.path}';
+      final url = 'http://$host:$serverPort/download?path=${shareData.path}';
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfrxReaderOnline(
-              url: url,
-              title: shareData.name,
+            builder: (context) => PdfrxReader(
+              isOffline: false,
+              onlineUrl: url,
+              pdfFile: PdfFileModel(
+                title: shareData.name,
+                path: '',
+                size: 0,
+                date: 0,
+              ),
             ),
           ));
       return;

@@ -37,7 +37,7 @@ class PdfConfigModel {
         zoom: map['zoom'] ?? 0,
         isDarkMode: map['dark_mode'] ?? false,
         isPanLocked: map['pan_locked'] ?? false,
-        isShowScrollThumb: map['show_scroll_thumb'] ?? false,
+        isShowScrollThumb: map['show_scroll_thumb'] ?? true,
         isKeepScreen: map['is_keep_screen'] ?? false,
         isTextSelection: map['is_text_selection'] ?? false,
         scrollByMouseWheel: map['scroll_by_mouse_wheel'] ?? 1.2,

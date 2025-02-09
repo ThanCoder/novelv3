@@ -26,7 +26,7 @@ class ShareDataOpenDialog extends StatelessWidget {
 
   Widget getCurrentWidget(ShareDataModel shareData) {
     final host = getRecentDB<String>('server_address');
-    final url = '$host:$serverPort/download?path=${shareData.path}';
+    final url = 'http://$host:$serverPort/download?path=${shareData.path}';
     //png
     if (shareData.name.endsWith('.png')) {
       return MyImageUrl(url: url);

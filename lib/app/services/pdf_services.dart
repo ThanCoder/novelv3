@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/services/app_path_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/utils/poppler_util.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 Future<List<PdfFileModel>> pdfScannerIsolate() async {
@@ -101,24 +100,17 @@ Future<List<PdfFileModel>> genPdfCover(
   try {
     //change pdf cover path
     pdfList = pdfList.map((pdf) {
-      pdf.coverPath = '${getCachePath()}/${pdf.title}.png';
+      pdf.coverPath = '${getCachePath()}/${pdf.title.split('.').first}.png';
       return pdf;
     }).toList();
 
-    if (Platform.isLinux) {
-      for (final pdf in pdfList) {
-        await genPdfCoverLinuxPlatform(
-            pdfPath: pdf.path, outImagePath: pdf.coverPath);
-      }
-    }
-    if (Platform.isAndroid) {
-      final pathList = pdfList.map((pdf) => pdf.path).toList();
+    final pathList = pdfList.map((pdf) => pdf.path).toList();
 
-      await ThanPkg.platform.genPdfCover(
-        outDirPath: getCachePath(),
-        pdfPathList: pathList,
-      );
-    }
+    await ThanPkg.platform.genPdfCover(
+      outDirPath: getCachePath(),
+      pdfPathList: pathList,
+    );
+
     completer.complete(pdfList);
   } catch (e) {
     debugPrint('genPdfCover: ${e.toString()}');

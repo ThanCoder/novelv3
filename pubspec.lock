@@ -801,10 +801,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: "36de8fb7eeae2947142c250a427064ed06ad46b412fb384e6a99ccacdca13579"
+      sha256: "63145fef7487eeb2d37578d7e1f682229e044be0ab30ad0842180139fc3a7ea7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "1.0.0"
   typed_data:
     dependency: transitive
     description:

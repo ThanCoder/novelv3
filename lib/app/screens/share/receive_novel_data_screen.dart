@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +8,6 @@ import 'package:novel_v3/app/custom_class/novel_search_delegate.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/screens/share/share_novel_content_screen.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';
-import 'package:novel_v3/app/services/wifi_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
@@ -43,17 +40,9 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
   List<String> wifiList = [];
 
   Future<String> _getPlatformWifiAddress() async {
-    var address = await getWifiAddress();
-    //android address
-    if (Platform.isAndroid) {
-      final res = await ThanPkg.platform.getLocalIpAddress();
-      final list = await ThanPkg.platform.getWifiAddressList();
-      if (res != null) {
-        address = res;
-        wifiList = (list ?? []).cast<String>();
-      }
-    }
-    return address;
+    final address = await ThanPkg.platform.getWifiAddressList();
+    if (address.isEmpty) return '192.168.';
+    return address.first;
   }
 
   void init() async {
@@ -61,6 +50,12 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       final url = await _getPlatformWifiAddress();
       hostAddressController.text = url;
       portController.text = serverPort.toString();
+
+      //list
+      final list = await ThanPkg.platform.getWifiAddressList();
+      setState(() {
+        wifiList = list;
+      });
 
       //recent
       final recentUrl = getRecentDB<String>('server_address');
@@ -76,6 +71,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
   Future<void> fetch() async {
     try {
       setState(() {
+        isChanged = false;
         isLoading = true;
       });
       final res = await dio
@@ -134,10 +130,18 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       physics: const ScrollPhysics(),
       itemCount: wifiList.length,
       itemBuilder: (context, index) => Center(
-        child: Text(
-          wifiList[index],
-          style: TextStyle(
-            color: Colors.teal[900],
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () {
+              hostAddressController.text = wifiList[index].toString();
+            },
+            child: Text(
+              wifiList[index],
+              style: TextStyle(
+                color: Colors.teal[900],
+              ),
+            ),
           ),
         ),
       ),
@@ -181,7 +185,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
                       //wifi list
                       _getWifiListWidget(),
                       const Divider(),
-
+                      //host
                       TTextField(
                         controller: portController,
                         label: const Text('PORT'),
@@ -197,8 +201,16 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
                           }
                         },
                       ),
+                      //address
                       TTextField(
                         controller: hostAddressController,
+                        textInputType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^[0-9.]+$'),
+                          ),
+                        ],
                         label: const Text('Host Address'),
                         onChanged: (value) {
                           if (!isChanged) {
@@ -206,6 +218,9 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
                               isChanged = true;
                             });
                           }
+                        },
+                        onSubmitted: (value) {
+                          fetch();
                         },
                       ),
                     ],
@@ -226,9 +241,6 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
         onPressed: () async {
           if (isChanged) {
             fetch();
-            setState(() {
-              isChanged = false;
-            });
           } else {
             if (isError) {
               final url = await _getPlatformWifiAddress();

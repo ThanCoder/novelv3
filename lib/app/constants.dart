@@ -7,7 +7,7 @@ const isDebugPrint = false;
 //assets
 const defaultIconAssetsPath = 'assets/online.webp';
 //version name
-const appVersionName = 'online-test-1';
+const appVersionName = 'online-test-2';
 const appName = 'novel_v3';
 const appTitle = 'Novel V3';
 const novelDataExtName = 'npz';
