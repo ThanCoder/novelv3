@@ -556,10 +556,10 @@ packages:
     dependency: "direct main"
     description:
       name: pdfrx
-      sha256: f062ce3b5c8e51fcea5a393f050aab35e977b9f5256439afab722a19c69d791f
+      sha256: "472bb03646980879a348bc1f7a28de710534ec861bca1a35cbd461c43643425a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.101"
+    version: "1.0.103"
   petitparser:
     dependency: transitive
     description:
@@ -676,18 +676,18 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences
-      sha256: "688ee90fbfb6989c980254a56cb26ebe9bb30a3a2dff439a78894211f73de67a"
+      sha256: "846849e3e9b68f3ef4b60c60cf4b3e02e9321bc7f4d8c4692cf87ffa82fc8a3a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.2"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "650584dcc0a39856f369782874e562efd002a9c94aec032412c9eb81419cce1f"
+      sha256: ea86be7b7114f9e94fddfbb52649e59a03d6627ccd2387ebddcd6624719e9f16
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.5"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -817,10 +817,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: "63145fef7487eeb2d37578d7e1f682229e044be0ab30ad0842180139fc3a7ea7"
+      sha256: dd7c041762f5b1135b5bb5162e65785dc63ff5f892981c5bb3fb2ce01436572b
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   typed_data:
     dependency: transitive
     description:

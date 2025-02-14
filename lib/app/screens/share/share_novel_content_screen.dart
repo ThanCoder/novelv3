@@ -7,9 +7,7 @@ import 'package:novel_v3/app/components/share_data_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/download_progress_dialog.dart';
 import 'package:novel_v3/app/dialogs/share_data_open_dialog.dart';
-import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/models/pdf_file_model.dart';
-import 'package:novel_v3/app/models/share_data_model.dart';
+import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/services/novel_isolate_services.dart';
@@ -218,6 +216,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
                 size: 0,
                 date: 0,
               ),
+              pdfConfig: PdfConfigModel(),
             ),
           ));
       return;

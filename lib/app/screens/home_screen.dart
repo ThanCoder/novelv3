@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
+import 'package:novel_v3/app/models/pdf_config_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pages/home_page.dart';
@@ -149,7 +150,10 @@ class _PdfPageState extends State<_PdfPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PdfrxReader(pdfFile: pdfFile),
+            builder: (context) => PdfrxReader(
+              pdfFile: pdfFile,
+              pdfConfig: PdfConfigModel(),
+            ),
           ),
         );
       },

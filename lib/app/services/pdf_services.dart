@@ -100,7 +100,7 @@ Future<List<PdfFileModel>> genPdfCover(
   try {
     //change pdf cover path
     pdfList = pdfList.map((pdf) {
-      pdf.coverPath = '${getCachePath()}/${pdf.title}.png';
+      pdf.coverPath = '${getCachePath()}/${pdf.title.split('.').first}.png';
       return pdf;
     }).toList();
 

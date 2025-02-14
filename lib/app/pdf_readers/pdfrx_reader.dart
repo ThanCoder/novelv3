@@ -11,17 +11,18 @@ import 'package:novel_v3/app/services/app_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:pdfrx/pdfrx.dart';
+import 'package:window_manager/window_manager.dart';
 
 class PdfrxReader extends StatefulWidget {
   PdfFileModel pdfFile;
-  PdfConfigModel? pdfConfig;
+  PdfConfigModel pdfConfig;
   bool isOffline;
   String onlineUrl;
   void Function(PdfConfigModel pdfConfig)? saveConfig;
   PdfrxReader({
     super.key,
     required this.pdfFile,
-    this.pdfConfig,
+    required this.pdfConfig,
     this.saveConfig,
     this.isOffline = true,
     this.onlineUrl = '',
@@ -31,7 +32,7 @@ class PdfrxReader extends StatefulWidget {
   State<PdfrxReader> createState() => _PdfrxReaderState();
 }
 
-class _PdfrxReaderState extends State<PdfrxReader> {
+class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
   PdfViewerController pdfController = PdfViewerController();
   bool isLoading = true;
   int currentPage = 1;
@@ -51,26 +52,24 @@ class _PdfrxReaderState extends State<PdfrxReader> {
 
   @override
   void initState() {
-    config = PdfConfigModel();
+    windowManager.addListener(this);
+    config = widget.pdfConfig;
     super.initState();
   }
 
   //pdf loaded
   void onPdfLoaded() async {
     try {
-      if (widget.pdfConfig == null) return;
-      config = widget.pdfConfig!;
-
-      isDarkMode = widget.pdfConfig!.isDarkMode;
-      isKeepScreen = widget.pdfConfig!.isKeepScreen;
-      isPanLocked = widget.pdfConfig!.isPanLocked;
-      isShowScrollThumb = widget.pdfConfig!.isShowScrollThumb;
-      isTextSelection = widget.pdfConfig!.isTextSelection;
-      offsetDx = widget.pdfConfig!.offsetDx;
-      offsetDy = widget.pdfConfig!.offsetDy;
-      currentPage = widget.pdfConfig!.page;
-      scrollByMouseWheel = widget.pdfConfig!.scrollByMouseWheel;
-      zoom = widget.pdfConfig!.zoom;
+      isDarkMode = config.isDarkMode;
+      isKeepScreen = config.isKeepScreen;
+      isPanLocked = config.isPanLocked;
+      isShowScrollThumb = config.isShowScrollThumb;
+      isTextSelection = config.isTextSelection;
+      offsetDx = config.offsetDx;
+      offsetDy = config.offsetDy;
+      currentPage = config.page;
+      scrollByMouseWheel = config.scrollByMouseWheel;
+      zoom = config.zoom;
 
       //set offset
       final newOffset = Offset(offsetDx, offsetDy);
@@ -104,8 +103,6 @@ class _PdfrxReaderState extends State<PdfrxReader> {
   //save config
   void _saveConfig() {
     try {
-      if (widget.pdfConfig == null) return;
-
       config.offsetDx = offsetDx;
       config.offsetDy = offsetDy;
       config.page = currentPage;
@@ -123,6 +120,12 @@ class _PdfrxReaderState extends State<PdfrxReader> {
     } catch (e) {
       debugPrint('saveConfig: ${e.toString()}');
     }
+  }
+
+  @override
+  void onWindowClose() {
+    _saveConfig();
+    super.onWindowClose();
   }
 
   void _onKeyboradPressed(RawKeyEvent ev) {
@@ -321,6 +324,7 @@ class _PdfrxReaderState extends State<PdfrxReader> {
                 scrollByMouseWheel = _pdfConfig.scrollByMouseWheel;
               });
               _saveConfig();
+              _initConfig();
             },
           ),
           //show scroll navigation thumbnail
@@ -402,14 +406,15 @@ class _PdfrxReaderState extends State<PdfrxReader> {
     );
   }
 
-  void close() async {
+  void _close() async {
     _saveConfig();
     toggleFullScreenPlatform(false);
+    windowManager.removeListener(this);
   }
 
   @override
   void dispose() {
-    close();
+    _close();
     super.dispose();
   }
 }

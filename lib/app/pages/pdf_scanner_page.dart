@@ -39,6 +39,7 @@ class _PdfScannerPageState extends State<PdfScannerPage> {
 
       //gen cover
       pdfList = await genPdfCover(pdfList: pdfList);
+
       //set list
       pdfScannerListNotifier.value = pdfList;
 
