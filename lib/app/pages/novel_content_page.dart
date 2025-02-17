@@ -51,6 +51,7 @@ class NovelContentPageState extends State<NovelContentPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => RenameDialog(
+        title: 'Readed',
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         textInputType: TextInputType.number,
         renameText: readed.toString(),

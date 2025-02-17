@@ -14,6 +14,7 @@ class RenameDialog extends StatefulWidget {
   void Function(String text)? onChanged;
   TextInputType? textInputType;
   List<TextInputFormatter>? inputFormatters;
+  String? Function(String text)? onCheckIsError;
 
   RenameDialog({
     super.key,
@@ -28,6 +29,7 @@ class RenameDialog extends StatefulWidget {
     this.onChanged,
     this.inputFormatters,
     this.textInputType,
+    this.onCheckIsError,
   });
 
   @override
@@ -56,6 +58,12 @@ class _RenameDialogState extends State<RenameDialog> {
     } else {
       setState(() {
         errorText = null;
+      });
+    }
+    if (widget.onCheckIsError != null) {
+      final text = widget.onCheckIsError!(value);
+      setState(() {
+        errorText = text;
       });
     }
     if (widget.renameExistsTextList != null) {

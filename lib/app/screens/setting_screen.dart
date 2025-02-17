@@ -85,6 +85,10 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<bool> _onBackpress() async {
+    if (!isChanged) {
+      return true;
+    }
+
     return await showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
@@ -103,29 +107,14 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (isChanged) {
-          return await _onBackpress();
-        }
-        return true;
+        return await _onBackpress();
       },
       child: MyScaffold(
-        appBar: AppBar(title: const Text('Setting')),
+        appBar: AppBar(
+          title: const Text('Setting'),
+        ),
         body: ListView(
           children: [
-            //theme mode
-            ListTileWithDesc(
-              title: 'Dark Mode',
-              trailing: Checkbox(
-                value: isDarkTheme,
-                onChanged: (value) {
-                  setState(() {
-                    isDarkTheme = value!;
-                    _saveConfig();
-                  });
-                  isDarkThemeNotifier.value = value!;
-                },
-              ),
-            ),
             //custom path
             ListTileWithDesc(
               title: "custom path",

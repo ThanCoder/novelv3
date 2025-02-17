@@ -4,6 +4,9 @@ import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/screens/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
+import 'package:novel_v3/app/screens/setting_screen.dart';
+import 'package:novel_v3/app/screens/share/receive_novel_data_screen.dart';
+import 'package:novel_v3/app/screens/share/share_novel_data_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
@@ -89,6 +92,50 @@ class _HomeMorePageState extends State<HomeMorePage> {
                   ),
                 );
               },
+            ),
+            //novel data share
+            ListTileWithDesc(
+              onClick: () {
+                //မျှဝေမယ်
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ShareNovelDataScreen(),
+                  ),
+                );
+              },
+              leadingIcon: const Icon(Icons.share_outlined),
+              title: 'Share Data',
+              desc: 'Novel အခြားသူတွေကို မျှဝေခြင်း',
+            ),
+            //receive novel data
+            ListTileWithDesc(
+              onClick: () {
+                //လက်ခံမယ်
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ReceiveNovelDataScreen(),
+                  ),
+                );
+              },
+              leadingIcon: const Icon(Icons.cloud_download_rounded),
+              title: 'Share Data',
+              desc: 'Novel အခြားသူတွေကနေ လက်ခံခြင်း',
+            ),
+
+            //settting
+            ListTileWithDesc(
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingScreen(),
+                  ),
+                );
+              },
+              leadingIcon: const Icon(Icons.settings),
+              title: 'Setting',
             ),
             ListTileWithDesc(
               leadingIcon: const Icon(Icons.download_for_offline_outlined),

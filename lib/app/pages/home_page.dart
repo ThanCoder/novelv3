@@ -3,7 +3,6 @@ import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/custom_class/novel_search_delegate.dart';
 import 'package:novel_v3/app/dialogs/add_new_novel_dialog.dart';
-import 'package:novel_v3/app/drawers/home_drawer.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/screens/novel_content_screen.dart';
@@ -155,7 +154,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        drawer: const HomeDrawer(),
         body: isLoading
             ? Center(
                 child: TLoader(),

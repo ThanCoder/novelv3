@@ -2,7 +2,6 @@ import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/pdf_reader_config_action_component.dart';
-import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/rename_dialog.dart';
 import 'package:novel_v3/app/drawers/pdf_book_mark_list_drawer.dart';
 import 'package:novel_v3/app/models/pdf_config_model.dart';
@@ -39,47 +38,35 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
   int pageCount = 0;
   bool initCalled = false;
   bool isFullScreen = false;
-  double zoom = 0;
-  double offsetDx = 0;
-  double offsetDy = 0;
-  double scrollByMouseWheel = 1.2;
-  bool isDarkMode = false;
-  bool isKeepScreen = false;
-  bool isPanLocked = false;
-  bool isShowScrollThumb = true;
-  bool isTextSelection = false;
   late PdfConfigModel config;
+  double oldZoom = 0;
+  double oldOffsetX = 0;
+  double oldOffsetY = 0;
+  int oldPage = 1;
 
   @override
   void initState() {
     windowManager.addListener(this);
     config = widget.pdfConfig;
+    oldPage = config.page;
+    oldZoom = config.zoom;
+    oldOffsetX = config.offsetDx;
+    oldOffsetY = config.offsetDy;
     super.initState();
   }
 
   //pdf loaded
   void onPdfLoaded() async {
     try {
-      isDarkMode = config.isDarkMode;
-      isKeepScreen = config.isKeepScreen;
-      isPanLocked = config.isPanLocked;
-      isShowScrollThumb = config.isShowScrollThumb;
-      isTextSelection = config.isTextSelection;
-      offsetDx = config.offsetDx;
-      offsetDy = config.offsetDy;
-      currentPage = config.page;
-      scrollByMouseWheel = config.scrollByMouseWheel;
-      zoom = config.zoom;
-
       //set offset
-      final newOffset = Offset(offsetDx, offsetDy);
-      if (zoom != 0 && offsetDx != 0 && offsetDy != 0) {
-        pdfController.setZoom(newOffset, zoom);
+      final newOffset = Offset(oldOffsetX, oldOffsetY);
+      if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
+        pdfController.setZoom(newOffset, oldZoom);
         //delay
-        await Future.delayed(const Duration(milliseconds: 600));
-        goPage(currentPage);
+        await Future.delayed(const Duration(milliseconds: 800));
+        goPage(oldPage);
       } else {
-        goPage(currentPage);
+        goPage(oldPage);
       }
 
       // pdfController.
@@ -97,22 +84,17 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
 
   void _initConfig() {
     //keep screen
-    toggleAndroidKeepScreen(isKeepScreen);
+    toggleAndroidKeepScreen(config.isKeepScreen);
   }
 
   //save config
   void _saveConfig() {
     try {
-      config.offsetDx = offsetDx;
-      config.offsetDy = offsetDy;
+      //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
+      if (isLoading) return;
+
       config.page = currentPage;
-      config.zoom = zoom;
-      config.isDarkMode = isDarkMode;
-      config.isKeepScreen = isKeepScreen;
-      config.isPanLocked = isPanLocked;
-      config.isShowScrollThumb = isShowScrollThumb;
-      config.isTextSelection = isTextSelection;
-      config.scrollByMouseWheel = scrollByMouseWheel;
+      print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
 
       if (widget.saveConfig != null) {
         widget.saveConfig!(config);
@@ -150,6 +132,10 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
           goPage(currentPage - 1);
         }
         break;
+      case 'Key F':
+        _toggleFullScreen(!isFullScreen);
+
+        break;
       case 'Arrow Up':
         break;
       case 'Arrow Down':
@@ -174,6 +160,13 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         textInputType: TextInputType.number,
         renameLabelText: Text('Go To Page Range(1-$pageCount)'),
+        onCheckIsError: (text) {
+          int num = int.tryParse(text) ?? 0;
+          if (num > pageCount) {
+            return 'page number ကျော်လွန်နေပါတယ်';
+          }
+          return null;
+        },
         submitText: 'Go',
         onCancel: () {},
         onSubmit: (text) {
@@ -203,10 +196,10 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
 
   PdfViewerParams getParams() => PdfViewerParams(
         margin: 0,
-        scrollByMouseWheel: scrollByMouseWheel,
-        scaleEnabled: isPanLocked == false,
-        panAxis: isPanLocked ? PanAxis.vertical : PanAxis.free,
-        enableTextSelection: isTextSelection,
+        scrollByMouseWheel: config.scrollByMouseWheel,
+        scaleEnabled: config.isPanLocked == false,
+        panAxis: config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+        enableTextSelection: config.isTextSelection,
         pageDropShadow: null,
         useAlternativeFitScaleAsMinScale: false,
         //loading
@@ -214,7 +207,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
           return Center(
             child: TLoader(
               isCustomTheme: true,
-              isDarkMode: isDarkMode,
+              isDarkMode: config.isDarkMode,
             ),
           );
         },
@@ -222,12 +215,13 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
         onPageChanged: (pageNumber) {
           try {
             final offset = pdfController.centerPosition;
+            config.zoom = pdfController.currentZoom;
+            config.offsetDx = offset.dx;
+            config.offsetDy = offset.dy;
+            // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
             setState(() {
               currentPage = pageNumber ?? 1;
               pageCount = pdfController.pageCount;
-              zoom = pdfController.currentZoom;
-              offsetDx = offset.dx;
-              offsetDy = offset.dy;
             });
           } catch (e) {
             debugPrint('onPageChanged: ${e.toString()}');
@@ -237,7 +231,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
         onViewerReady: (document, controller) {
           onPdfLoaded();
         },
-        viewerOverlayBuilder: isShowScrollThumb
+        viewerOverlayBuilder: config.isShowScrollThumb
             ? (context, size, handleLinkTap) => [
                   // Add vertical scroll thumb on viewer's right side
                   PdfViewerScrollThumb(
@@ -286,20 +280,20 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
           IconButton(
             onPressed: () {
               setState(() {
-                isDarkMode = !isDarkMode;
+                config.isDarkMode = !config.isDarkMode;
               });
             },
-            icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(config.isDarkMode ? Icons.light_mode : Icons.dark_mode),
           ),
           //pan axis lock
           IconButton(
             onPressed: () {
               setState(() {
-                isPanLocked = !isPanLocked;
+                config.isPanLocked = !config.isPanLocked;
               });
             },
             icon: Icon(
-              isPanLocked ? Icons.lock : Icons.lock_open,
+              config.isPanLocked ? Icons.lock : Icons.lock_open,
             ),
           ),
           //zoom
@@ -327,25 +321,11 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
             pdfConfig: config,
             onApply: (_pdfConfig) {
               setState(() {
-                isKeepScreen = _pdfConfig.isKeepScreen;
-                isTextSelection = _pdfConfig.isTextSelection;
-                isShowScrollThumb = _pdfConfig.isShowScrollThumb;
-                scrollByMouseWheel = _pdfConfig.scrollByMouseWheel;
+                config = _pdfConfig;
               });
               _saveConfig();
               _initConfig();
             },
-          ),
-          //show scroll navigation thumbnail
-          IconButton(
-            color: isShowScrollThumb ? activeColor : null,
-            onPressed: () {
-              config.isShowScrollThumb = !isShowScrollThumb;
-              setState(() {
-                isShowScrollThumb = !isShowScrollThumb;
-              });
-            },
-            icon: const Icon(Icons.navigation_rounded),
           ),
         ],
       ),
@@ -403,7 +383,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
                 child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                     Colors.white,
-                    isDarkMode ? BlendMode.difference : BlendMode.dst,
+                    config.isDarkMode ? BlendMode.difference : BlendMode.dst,
                   ),
                   child: _getCurrentPdfReader(),
                 ),

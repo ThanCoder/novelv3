@@ -59,7 +59,7 @@ class _PdfReaderConfigActionComponentState
                   ),
                   //scroll thumb
                   ListTileWithDesc(
-                    title: 'Show Scroll Thumbnail',
+                    title: 'Scroll Thumbnail',
                     desc: 'ဘေးဘက်ခြမ်းက Scroll Thumb',
                     trailing: Switch(
                       value: pdfConfig.isShowScrollThumb,
