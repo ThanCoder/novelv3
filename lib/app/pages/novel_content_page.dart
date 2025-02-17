@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/app_components.dart';
+import 'package:novel_v3/app/components/novel_content/index.dart';
 import 'package:novel_v3/app/components/novel_status_badge.dart';
 import 'package:novel_v3/app/dialogs/novel_page_link_dialog.dart';
-import 'package:novel_v3/app/dialogs/readed_edit_dialog.dart';
+import 'package:novel_v3/app/dialogs/rename_dialog.dart';
 import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
@@ -14,6 +16,7 @@ import 'package:novel_v3/app/screens/chapter_text_reader_screen.dart';
 import 'package:novel_v3/app/screens/novel_lib_screen.dart';
 import 'package:novel_v3/app/screens/pdf_reader_screen.dart';
 import 'package:novel_v3/app/services/app_services.dart';
+import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
 import 'package:novel_v3/app/widgets/my_image_file.dart';
@@ -42,13 +45,42 @@ class NovelContentPageState extends State<NovelContentPage> {
         NovelModel.fromPath(currentNovelNotifier.value!.path, isFullInfo: true);
   }
 
+  //dialog
   void editReaded(int readed) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => ReadedEditDialog(
-        dialogContext: context,
-        readed: readed,
+      builder: (context) => RenameDialog(
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        textInputType: TextInputType.number,
+        renameText: readed.toString(),
+        onCancel: () {},
+        onSubmit: (text) {
+          try {
+            if (int.tryParse(text) == null) {
+              showMessage(context, 'readed number ထည့်သွင်းပေးပါ!');
+              return;
+            }
+
+            final novel = currentNovelNotifier.value;
+            int num = int.parse(text);
+            //check
+            if (novel == null) {
+              showMessage(context, 'novel is null!');
+              return;
+            }
+            //no error
+            novel.readed = num;
+
+            //change data
+            updateNovelReaded(novel: novel);
+            //change ui
+            currentNovelNotifier.value = null;
+            currentNovelNotifier.value = novel;
+          } catch (e) {
+            showMessage(context, e.toString());
+          }
+        },
       ),
     );
   }
@@ -117,7 +149,7 @@ class NovelContentPageState extends State<NovelContentPage> {
             ),
           );
         },
-        child: const Text('Recent Text'),
+        child: const Text('မကြာခင်က Text'),
       );
     }
     return Container();
@@ -140,7 +172,7 @@ class NovelContentPageState extends State<NovelContentPage> {
             ),
           );
         },
-        child: const Text('Recent PDF'),
+        child: const Text('မကြာခင်က PDF'),
       );
     }
     return Container();
@@ -240,7 +272,10 @@ class NovelContentPageState extends State<NovelContentPage> {
                         onPressed: () {
                           editReaded(novel.readed);
                         },
-                        child: Text('Readed: ${novel.readed.toString()}'),
+                        child: Text(
+                          'Readed: ${novel.readed.toString()}',
+                          style: const TextStyle(color: Colors.teal),
+                        ),
                       ),
                       //Author
                       TextButton(
@@ -302,6 +337,8 @@ class NovelContentPageState extends State<NovelContentPage> {
                     getPageButton(novel),
                     //start Chapter
                     getStartButton(novel),
+                    //readed
+                    NovelContentReadedBotttom(novel: novel),
                     //recent go page
                     getRecentTextButton(novel),
                     //recent pdf
@@ -318,9 +355,7 @@ class NovelContentPageState extends State<NovelContentPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: SelectableText(
                   novel.content,
-                  style: Platform.isLinux
-                      ? Theme.of(context).textTheme.bodyLarge
-                      : Theme.of(context).textTheme.bodySmall,
+                  style: const TextStyle(fontSize: 17),
                 ),
               ),
               const SizedBox(height: 50),

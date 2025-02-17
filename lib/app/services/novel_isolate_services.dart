@@ -40,12 +40,10 @@ Future<List<NovelModel>> getNovelListFromPathIsolate() async {
 }
 
 //chapter
-Future<void> getChapterListFromPathIsolate({
-  required String novelSourcePath,
-  required void Function(List<ChapterModel> chapterList) onSuccess,
-  required void Function(String err) onError,
-}) async {
+Future<List<ChapterModel>> getChapterListFromPathIsolate(
+    {required String novelSourcePath}) async {
   final receivePort = ReceivePort();
+  final completer = Completer<List<ChapterModel>>();
   //send isolate
   await Isolate.spawn(
       _getChapterListFromPath, [receivePort.sendPort, novelSourcePath]);
@@ -54,15 +52,16 @@ Future<void> getChapterListFromPathIsolate({
       String type = data['type'] ?? '';
       if (type == PortType.error.name) {
         String msg = data['msg'] ?? '';
-        onError(msg);
+        completer.completeError(msg);
         receivePort.close();
       }
       if (type == PortType.success.name) {
-        onSuccess(data['data']);
+        completer.complete(data['data']);
         receivePort.close();
       }
     }
   });
+  return completer.future;
 }
 
 //isolate

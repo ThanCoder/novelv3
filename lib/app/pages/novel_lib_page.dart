@@ -3,10 +3,13 @@ import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
+import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/novel_content_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
+import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_chip.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
+import 'package:provider/provider.dart';
 
 class NovelLibPage extends StatefulWidget {
   BookMarkSortName bookMarkSortName;
@@ -55,6 +58,7 @@ class _NovelLibPageState extends State<NovelLibPage> {
 
   void _sortNovel(BookMarkSortName name) {
     try {
+      final novelList = context.read<NovelProvider>().getList;
       setState(() {
         isLoading = true;
       });
@@ -69,17 +73,17 @@ class _NovelLibPageState extends State<NovelLibPage> {
       //is Adult
       if (name == BookMarkSortName.novleAdult) {
         novelBookMarkListNotifier.value =
-            novelListNotifier.value.where((nv) => nv.isAdult).toList();
+            novelList.where((nv) => nv.isAdult).toList();
       }
       //is ongoing
       if (name == BookMarkSortName.novelOnGoing) {
         novelBookMarkListNotifier.value =
-            novelListNotifier.value.where((nv) => !nv.isCompleted).toList();
+            novelList.where((nv) => !nv.isCompleted).toList();
       }
       //is completed
       if (name == BookMarkSortName.novelIsCompleted) {
         novelBookMarkListNotifier.value =
-            novelListNotifier.value.where((nv) => nv.isCompleted).toList();
+            novelList.where((nv) => nv.isCompleted).toList();
       }
 
       setState(() {
@@ -98,8 +102,11 @@ class _NovelLibPageState extends State<NovelLibPage> {
     if (isLoading) {
       return Center(child: TLoader());
     }
-    return SafeArea(
-      child: Padding(
+    return MyScaffold(
+      appBar: AppBar(
+        title: const Text('Library'),
+      ),
+      body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

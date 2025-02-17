@@ -83,7 +83,8 @@ class _HomePageState extends State<HomePage> {
   void _showSearchBar() {
     showSearch(
       context: context,
-      delegate: NovelSearchDelegate(novelList: novelListNotifier.value),
+      delegate:
+          NovelSearchDelegate(novelList: context.read<NovelProvider>().getList),
     );
   }
 

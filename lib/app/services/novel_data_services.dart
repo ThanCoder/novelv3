@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -245,10 +246,8 @@ void exportNovelData({
 }
 
 //data scanner
-void novelDataScannerIsolate({
-  required void Function(List<NovelDataModel> novelDataList) onSuccess,
-  required void Function(String msg) onError,
-}) async {
+Future<List<NovelDataModel>> novelDataScannerIsolate() async {
+  final completer = Completer<List<NovelDataModel>>();
   final receivePort = ReceivePort();
   final rootPath = Platform.isLinux
       ? '${getAppExternalRootPath()}/Downloads'
@@ -263,15 +262,16 @@ void novelDataScannerIsolate({
     if (data is Map) {
       String type = data['type'];
       if (type == 'err') {
-        onError(data['msg']);
+        completer.completeError(data['msg']);
         receivePort.close();
       }
       if (type == 'succ') {
-        onSuccess(data['list']);
+        completer.complete(data['list']);
         receivePort.close();
       }
     }
   });
+  return completer.future;
 }
 
 void _novelDataScannerIsolate(List<Object> args) {
@@ -338,13 +338,12 @@ void novelDataScanner({
 }
 
 //gen cover
-void genNovelDataCoverIsolate({
+Future<List<NovelDataModel>> genNovelDataCoverIsolate({
   required List<NovelDataModel> novelDataList,
   required String outDir,
-  required void Function(List<NovelDataModel> novelDataList) onSuccess,
-  required void Function(String err) onError,
 }) async {
   final receivePort = ReceivePort();
+  final completer = Completer<List<NovelDataModel>>();
 
   await Isolate.spawn(
       _genNovelDataCoverIsolate, [receivePort.sendPort, novelDataList, outDir]);
@@ -353,15 +352,16 @@ void genNovelDataCoverIsolate({
     if (data is Map) {
       String type = data['type'];
       if (type == 'err') {
-        onError(data['msg']);
+        completer.completeError(data['msg']);
         receivePort.close();
       }
       if (type == 'succ') {
-        onSuccess(data['list']);
+        completer.complete(data['list']);
         receivePort.close();
       }
     }
   });
+  return completer.future;
 }
 
 void _genNovelDataCoverIsolate(List<Object> args) {

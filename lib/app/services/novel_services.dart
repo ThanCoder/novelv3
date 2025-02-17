@@ -69,18 +69,16 @@ int getLastChapterListFromPath(
     {required String novelSourcePath,
     required Function(int number) onSuccess}) {
   int res = 0;
-  getChapterListFromPathIsolate(
-    novelSourcePath: novelSourcePath,
-    onSuccess: (chapterList) {
-      if (chapterList.isNotEmpty) {
-        try {
-          int num = int.parse(chapterList.last.title);
-          onSuccess(num);
-        } catch (e) {}
-      }
-    },
-    onError: (err) {},
-  );
+  getChapterListFromPathIsolate(novelSourcePath: novelSourcePath)
+      .then((chapterList) {
+    if (chapterList.isNotEmpty) {
+      try {
+        int num = int.parse(chapterList.last.title);
+        onSuccess(num);
+      } catch (e) {}
+    }
+  });
+
   return res;
 }
 
@@ -88,18 +86,15 @@ void getFirstChapterListFromPath({
   required String novelSourcePath,
   required Function(int number) onSuccess,
 }) {
-  getChapterListFromPathIsolate(
-    novelSourcePath: novelSourcePath,
-    onSuccess: (chapterList) {
-      if (chapterList.isNotEmpty) {
-        try {
-          int num = int.parse(chapterList.first.title);
-          onSuccess(num);
-        } catch (e) {}
-      }
-    },
-    onError: (err) {},
-  );
+  getChapterListFromPathIsolate(novelSourcePath: novelSourcePath)
+      .then((chapterList) {
+    if (chapterList.isNotEmpty) {
+      try {
+        int num = int.parse(chapterList.first.title);
+        onSuccess(num);
+      } catch (e) {}
+    }
+  });
 }
 
 //delete chapter

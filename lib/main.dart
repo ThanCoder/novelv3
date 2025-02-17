@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/provider/pdf_provider.dart';
 import 'package:novel_v3/app/utils/config_util.dart';
 import 'package:provider/provider.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
@@ -31,6 +32,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => NovelProvider()),
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
+        ChangeNotifierProvider(create: (context) => PdfProvider()),
       ],
       child: const MyApp(),
     ),

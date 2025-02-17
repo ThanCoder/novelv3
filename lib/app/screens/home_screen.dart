@@ -10,7 +10,7 @@ import 'package:novel_v3/app/pages/novel_lib_page.dart';
 import 'package:novel_v3/app/pages/novel_online_page.dart';
 import 'package:novel_v3/app/pages/pdf_scanner_page.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
-import 'package:novel_v3/app/screens/novel_data_scanner_screen.dart';
+import 'package:novel_v3/app/pages/home_more_page.dart';
 import 'package:novel_v3/app/services/app_services.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,15 +24,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 4,
       child: Scaffold(
         body: TabBarView(
           children: [
             const HomePage(),
             const NovelOnlinePage(),
             NovelLibPage(),
-            const _PdfPage(),
-            const NovelDataScannerScreen(),
+            const HomeMorePage(),
           ],
         ),
         bottomNavigationBar: const TabBar(
@@ -46,16 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.cloud_download_outlined),
             ),
             Tab(
-              text: 'Libary',
+              text: 'Library',
               icon: Icon(Icons.local_library_outlined),
             ),
             Tab(
-              text: 'PDF Scanner',
-              icon: Icon(Icons.picture_as_pdf),
-            ),
-            Tab(
-              text: 'Restore Data',
-              icon: Icon(Icons.restore),
+              text: 'More',
+              icon: Icon(Icons.grid_view_rounded),
             ),
           ],
         ),

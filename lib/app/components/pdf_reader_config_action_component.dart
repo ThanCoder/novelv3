@@ -48,7 +48,7 @@ class _PdfReaderConfigActionComponentState
                   ListTileWithDesc(
                     title: 'Text Selection',
                     desc: 'PDF Text ကို ကူးယူနိုင်ခြင်း',
-                    widget: Switch(
+                    trailing: Switch(
                       value: pdfConfig.isTextSelection,
                       onChanged: (value) {
                         setState(() {
@@ -61,7 +61,7 @@ class _PdfReaderConfigActionComponentState
                   ListTileWithDesc(
                     title: 'Show Scroll Thumbnail',
                     desc: 'ဘေးဘက်ခြမ်းက Scroll Thumb',
-                    widget: Switch(
+                    trailing: Switch(
                       value: pdfConfig.isShowScrollThumb,
                       onChanged: (value) {
                         setState(() {
@@ -74,7 +74,7 @@ class _PdfReaderConfigActionComponentState
                   ListTileWithDesc(
                     title: 'Keep Screen',
                     desc: 'Screen ကိုအမြဲတမ်းဖွင့်ထားခြင်း',
-                    widget: Switch(
+                    trailing: Switch(
                       value: pdfConfig.isKeepScreen,
                       onChanged: (value) {
                         setState(() {
@@ -86,7 +86,7 @@ class _PdfReaderConfigActionComponentState
                   //mouse wheel
                   ListTileWithDesc(
                     title: 'Mouse Scroll',
-                    widget: Expanded(
+                    trailing: Expanded(
                       child: TTextField(
                         controller: mouseScrollWheelController,
                         hintText: '1.2',
@@ -99,7 +99,11 @@ class _PdfReaderConfigActionComponentState
                         ],
                         onChanged: (value) {
                           if (value.isEmpty) return;
-                          pdfConfig.scrollByMouseWheel = double.parse(value);
+                          try {
+                            pdfConfig.scrollByMouseWheel = double.parse(value);
+                          } catch (e) {
+                            debugPrint(e.toString());
+                          }
                         },
                       ),
                     ),

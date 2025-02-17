@@ -5,15 +5,14 @@ import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/pdf_list_view.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/rename_dialog.dart';
-import 'package:novel_v3/app/models/pdf_file_model.dart';
+import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
+import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/pdf_reader_screen.dart';
-import 'package:novel_v3/app/services/app_services.dart';
-import 'package:novel_v3/app/services/novel_services.dart';
-import 'package:novel_v3/app/services/pdf_services.dart';
-import 'package:novel_v3/app/services/recent_db_services.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
+import 'package:provider/provider.dart';
 
 class PdfListPage extends StatefulWidget {
   const PdfListPage({super.key});
@@ -27,32 +26,18 @@ class PdfListPageState extends State<PdfListPage> {
 
   @override
   void initState() {
-    init();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      init();
+    });
   }
 
-  bool isLoading = false;
   late PdfFileModel pdfFile;
 
   void init() async {
     try {
       if (currentNovelNotifier.value == null) return;
-      pdfListNotifier.value = [];
-      setState(() {
-        isLoading = true;
-      });
-
-      var pdfList =
-          await getPdfList(sourcePath: currentNovelNotifier.value!.path);
-
-      pdfList = await genPdfCover(pdfList: pdfList);
-
-      //set
-      pdfListNotifier.value = pdfList;
-
-      setState(() {
-        isLoading = false;
-      });
+      context.read<PdfProvider>().initList();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -216,50 +201,58 @@ class PdfListPageState extends State<PdfListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<PdfProvider>();
+    final isLoading = provider.isLoading;
+    final pdfList = provider.getList;
+
     if (isLoading) {
       return Center(
         child: TLoader(),
       );
-    } else {
-      return SafeArea(
-        child: ValueListenableBuilder(
-          valueListenable: pdfListNotifier,
-          builder: (context, value, child) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                await Future.delayed(const Duration(milliseconds: 800));
-                init();
-              },
-              child: PdfListView(
-                controller: _scrollController,
-                pdfList: value,
-                activeColor: Colors.teal[700],
-                activeTitle: getRecentDB<String>(
-                        'pdf_list_page_${currentNovelNotifier.value!.title}') ??
-                    '',
-                onClick: (pdfFile) {
-                  //set recent
-                  setRecentDB(
-                      'pdf_list_page_${currentNovelNotifier.value!.title}',
-                      pdfFile.title);
-                  setState(() {});
-                  //go reader
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PdfReaderScreen(pdfFile: pdfFile),
-                    ),
-                  );
-                },
-                onLongClick: (_pdfFile) {
-                  pdfFile = _pdfFile;
-                  showMenu();
-                },
-              ),
-            );
-          },
-        ),
+    }
+    if (pdfList.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("PDF List မရှိပါ"),
+          IconButton(
+            color: Colors.teal[900],
+            onPressed: init,
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       );
     }
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(const Duration(milliseconds: 800));
+        init();
+      },
+      child: PdfListView(
+        controller: _scrollController,
+        pdfList: pdfList,
+        activeColor: Colors.teal[700],
+        activeTitle: getRecentDB<String>(
+                'pdf_list_page_${currentNovelNotifier.value!.title}') ??
+            '',
+        onClick: (pdfFile) {
+          //set recent
+          setRecentDB('pdf_list_page_${currentNovelNotifier.value!.title}',
+              pdfFile.title);
+          setState(() {});
+          //go reader
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PdfReaderScreen(pdfFile: pdfFile),
+            ),
+          );
+        },
+        onLongClick: (_pdfFile) {
+          pdfFile = _pdfFile;
+          showMenu();
+        },
+      ),
+    );
   }
 }

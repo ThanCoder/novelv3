@@ -31,8 +31,8 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   bool isExistsBookmark = false;
   @override
   void initState() {
-    init();
     super.initState();
+    init();
   }
 
   void init() {
@@ -237,12 +237,12 @@ class _BodyTab extends StatelessWidget {
                   ),
                 )
               : null,
-          child: TabBarView(
+          child: const TabBarView(
             children: [
-              const NovelContentPage(),
+              NovelContentPage(),
               ChapterListPage(),
-              const PdfListPage(),
-              const NovelBookMarkListPage(),
+              PdfListPage(),
+              NovelBookMarkListPage(),
             ],
           ),
         ),

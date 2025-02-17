@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/chapter_list_view.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/services/novel_isolate_services.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/index.dart';
 
 class ChapterListDrawer extends StatefulWidget {
   const ChapterListDrawer({super.key});
@@ -15,8 +16,10 @@ class ChapterListDrawer extends StatefulWidget {
 class _ChapterListDrawerState extends State<ChapterListDrawer> {
   @override
   void initState() {
-    init();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      init();
+    });
   }
 
   bool isLoading = false;
@@ -24,26 +27,7 @@ class _ChapterListDrawerState extends State<ChapterListDrawer> {
   void init() {
     try {
       if (currentNovelNotifier.value == null) return;
-      setState(() {
-        isLoading = true;
-      });
-
-      getChapterListFromPathIsolate(
-        novelSourcePath: currentNovelNotifier.value!.path,
-        onSuccess: (chapterList) {
-          chapterListNotifier.value = chapterList;
-          setState(() {
-            isLoading = false;
-          });
-        },
-        onError: (err) {
-          setState(() {
-            isLoading = false;
-          });
-          showMessage(context, err);
-          debugPrint(err);
-        },
-      );
+      context.read<ChapterProvider>().getList;
     } catch (e) {
       debugPrint(e.toString());
     }

@@ -3,41 +3,73 @@ import 'package:flutter/material.dart';
 class ListTileWithDesc extends StatelessWidget {
   String title;
   String? desc;
-  Widget widget;
+  Widget? trailing;
+  Widget? leadingIcon;
+  double spacing;
+  void Function()? onClick;
   ListTileWithDesc({
     super.key,
     required this.title,
+    this.trailing,
     this.desc,
-    required this.widget,
+    this.leadingIcon,
+    this.spacing = 10,
+    this.onClick,
   });
+
+  Widget _getLeading() {
+    if (leadingIcon == null) {
+      return Container();
+    }
+    return leadingIcon!;
+  }
+
+  Widget _getTrailing() {
+    if (trailing == null) {
+      return Container();
+    }
+    return trailing!;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: () {
+        if (onClick != null) {
+          onClick!();
+        }
+      },
+      child: MouseRegion(
+        cursor: onClick != null ? SystemMouseCursors.click : MouseCursor.defer,
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              spacing: spacing,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title),
-                desc != null ? const SizedBox(height: 5) : Container(),
-                desc != null
-                    ? Text(
-                        desc ?? '',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      )
-                    : Container(),
+                _getLeading(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title),
+                    desc != null ? const SizedBox(height: 5) : Container(),
+                    desc != null
+                        ? Text(
+                            desc ?? '',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
+                const Spacer(),
+                _getTrailing(),
               ],
             ),
-            const Spacer(),
-            widget,
-          ],
+          ),
         ),
       ),
     );

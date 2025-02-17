@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/chapter_list_view.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
-import 'package:novel_v3/app/models/chapter_model.dart';
-import 'package:novel_v3/app/models/pdf_file_model.dart';
+import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
+import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/screens/chapter_text_reader_screen.dart';
-import 'package:novel_v3/app/services/novel_isolate_services.dart';
-import 'package:novel_v3/app/services/novel_services.dart';
-import 'package:novel_v3/app/services/recent_db_services.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
+import 'package:provider/provider.dart';
 
 class ChapterListPage extends StatefulWidget {
-  void Function(PdfFileModel pdfFile)? onClick;
-  void Function(PdfFileModel pdfFile)? onLongClick;
-  ChapterListPage({super.key, this.onClick, this.onLongClick});
+  const ChapterListPage({super.key});
 
   @override
   State<ChapterListPage> createState() => ChapterListPageState();
@@ -24,37 +20,18 @@ class ChapterListPageState extends State<ChapterListPage> {
   final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
-    init();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      init();
+    });
   }
 
   bool isSorted = true;
-  bool isLoading = false;
   ChapterModel? selectedChapter;
 
   void init() {
     if (currentNovelNotifier.value == null) return;
-    setState(() {
-      isLoading = true;
-    });
-    chapterListNotifier.value = [];
-
-    getChapterListFromPathIsolate(
-      novelSourcePath: currentNovelNotifier.value!.path,
-      onSuccess: (chapterList) {
-        chapterListNotifier.value = chapterList;
-        setState(() {
-          isLoading = false;
-        });
-      },
-      onError: (err) {
-        setState(() {
-          isLoading = false;
-        });
-        showMessage(context, err);
-        debugPrint(err);
-      },
-    );
+    context.read<ChapterProvider>().initList();
   }
 
   void openMenu() {
@@ -121,64 +98,72 @@ class ChapterListPageState extends State<ChapterListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<ChapterProvider>();
+    final isLoading = provider.isLoading;
+    final chapterList = provider.getList;
+
     if (isLoading) {
       return Center(
         child: TLoader(),
       );
-    } else {
-      return ValueListenableBuilder(
-        valueListenable: chapterListNotifier,
-        builder: (context, value, child) {
-          return Column(
-            children: [
-              //top bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  value.isNotEmpty
-                      ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isSorted = !isSorted;
-                            });
-                            chapterListNotifier.value =
-                                chapterListNotifier.value.reversed.toList();
-                          },
-                          icon: Icon(
-                            isSorted
-                                ? Icons.arrow_downward
-                                : Icons.arrow_upward,
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-              const Divider(),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await Future.delayed(const Duration(milliseconds: 800));
-                    init();
-                  },
-                  child: ChapterListView(
-                    controller: _scrollController,
-                    chapterList: value,
-                    isSelected: true,
-                    selectedTitle: getRecentDB<String>(
-                            'chapter_list_page_${currentNovelNotifier.value!.title}') ??
-                        '',
-                    onClick: _goChapterReaderScreen,
-                    onLongClick: (chapter) {
-                      selectedChapter = chapter;
-                      openMenu();
-                    },
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+    }
+    if (chapterList.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Chapter List မရှိပါ"),
+          IconButton(
+            color: Colors.teal[900],
+            onPressed: init,
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       );
     }
+    return Column(
+      children: [
+        //top bar
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            chapterList.isNotEmpty
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isSorted = !isSorted;
+                      });
+                      context.read<ChapterProvider>().reversed();
+                    },
+                    icon: Icon(
+                      isSorted ? Icons.arrow_downward : Icons.arrow_upward,
+                    ),
+                  )
+                : Container(),
+          ],
+        ),
+        const Divider(),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(milliseconds: 800));
+              init();
+            },
+            child: ChapterListView(
+              controller: _scrollController,
+              chapterList: chapterList,
+              isSelected: true,
+              selectedTitle: getRecentDB<String>(
+                      'chapter_list_page_${currentNovelNotifier.value!.title}') ??
+                  '',
+              onClick: _goChapterReaderScreen,
+              onLongClick: (chapter) {
+                selectedChapter = chapter;
+                openMenu();
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

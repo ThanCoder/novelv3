@@ -43,13 +43,16 @@ class _PdfScannerPageState extends State<PdfScannerPage> {
       //set list
       pdfScannerListNotifier.value = pdfList;
 
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
+
       debugPrint(e.toString());
     }
   }

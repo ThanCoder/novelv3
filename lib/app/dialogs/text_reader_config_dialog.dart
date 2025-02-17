@@ -58,7 +58,7 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
                 //font size
                 ListTileWithDesc(
                   title: 'Font Size',
-                  widget: FontListWiget(
+                  trailing: FontListWiget(
                     fontSize: readerConfig.fontSize.toInt(),
                     onChange: (fontSize) {
                       setState(() {
@@ -69,7 +69,7 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
                 ),
                 ListTileWithDesc(
                   title: 'Keep Screen',
-                  widget: Switch(
+                  trailing: Switch(
                     value: readerConfig.isKeepScreen,
                     onChanged: (value) {
                       setState(() {

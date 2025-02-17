@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/services/app_services.dart';
-import 'package:novel_v3/app/services/novel_isolate_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/index.dart';
 
 class ChapterAddFromScreen extends StatefulWidget {
   const ChapterAddFromScreen({super.key});
@@ -26,28 +28,15 @@ class _ChapterAddFromScreenState extends State<ChapterAddFromScreen> {
   @override
   void initState() {
     chapterTextController.text = '1';
-    init();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      init();
+    });
   }
 
   void init() {
     try {
-      getChapterListFromPathIsolate(
-        novelSourcePath: currentNovelNotifier.value!.path,
-        onSuccess: (chapterList) {
-          chapterListNotifier.value = chapterList;
-          if (chapterList.isNotEmpty) {
-            final ch = int.tryParse(chapterList.last.title);
-            if (ch != null) {
-              chapterNumber = ch + 1;
-              chapterTextController.text = chapterNumber.toString();
-            }
-          }
-        },
-        onError: (err) {
-          debugPrint(err);
-        },
-      );
+      context.read<ChapterProvider>().getList;
     } catch (e) {
       debugPrint('init: ${e.toString()}');
     }

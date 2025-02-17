@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/app/components/app_components.dart';
-import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
 
 class ReadedEditDialog extends StatefulWidget {
@@ -51,33 +48,7 @@ class _ReadedEditDialogState extends State<ReadedEditDialog> {
           child: const Text('Cancel'),
         ),
         TextButton(
-          onPressed: () {
-            try {
-              final novel = currentNovelNotifier.value;
-              int? num = int.tryParse(readedTextController.text);
-              //check
-              if (novel == null) {
-                showMessage(context, 'novel is null!');
-                return;
-              }
-              if (num == null) {
-                showMessage(context, 'readed number ထည့်သွင်းပေးပါ!');
-                return;
-              }
-              //no error
-              novel.readed = num;
-
-              //change data
-              updateNovelReaded(novel: novel);
-              //change ui
-              currentNovelNotifier.value = null;
-              currentNovelNotifier.value = novel;
-
-              Navigator.pop(context);
-            } catch (e) {
-              showMessage(context, e.toString());
-            }
-          },
+          onPressed: () {},
           child: const Text('Update'),
         ),
       ],

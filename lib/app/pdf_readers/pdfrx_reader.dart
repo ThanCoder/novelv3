@@ -1,6 +1,6 @@
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/pdf_reader_config_action_component.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/rename_dialog.dart';
@@ -193,7 +193,10 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
       isFullScreen = isFull;
     });
     if (isFull) {
-      showMessage(context, 'Double Tap Is Exist FullScreen!');
+      CherryToast.info(
+        inheritThemeColors: true,
+        title: const Text('Double Tap Is Exist FullScreen!'),
+      ).show(context);
     }
     toggleFullScreenPlatform(isFullScreen);
   }
@@ -240,16 +243,22 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
                   PdfViewerScrollThumb(
                     controller: pdfController,
                     orientation: ScrollbarOrientation.right,
-                    thumbSize: const Size(40, 25),
+                    thumbSize: const Size(50, 25),
                     thumbBuilder:
                         (context, thumbSize, pageNumber, controller) =>
                             Container(
-                      color: Colors.black,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                       // Show page number on the thumb
                       child: Center(
                         child: Text(
                           pageNumber.toString(),
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
                         ),
                       ),
                     ),

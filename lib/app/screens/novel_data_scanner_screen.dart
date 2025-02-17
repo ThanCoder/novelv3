@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/novel_data_list_view.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/import_novel_data_dialog.dart';
@@ -23,8 +22,8 @@ class NovelDataScannerScreen extends StatefulWidget {
 class _NovelDataScannerScreenState extends State<NovelDataScannerScreen> {
   @override
   void initState() {
-    init();
     super.initState();
+    init();
   }
 
   bool isLoading = false;
@@ -44,41 +43,26 @@ class _NovelDataScannerScreenState extends State<NovelDataScannerScreen> {
       isLoading = true;
     });
 
-    novelDataScannerIsolate(
-      onSuccess: (novelDataList) {
-        //gen cover
-        genNovelDataCoverIsolate(
-          novelDataList: novelDataList,
-          outDir: getCachePath(),
-          onSuccess: (_novelDataList) {
-            //novel data file က NOVEL APP ထဲမှာ ရှိလားစစ်မယ်
-            _novelDataList = _novelDataList.map((n) {
-              final novelDir = Directory('${getSourcePath()}/${n.title}');
-              n.isAlreadyExists = novelDir.existsSync();
-
-              return n;
-            }).toList();
-            //SUCCESS
-            setState(() {
-              isLoading = false;
-            });
-            novelDataListNotifier.value = _novelDataList;
-          },
-          onError: (err) {
-            setState(() {
-              isLoading = false;
-            });
-            showMessage(context, err);
-          },
-        );
-      },
-      onError: (msg) {
-        setState(() {
-          isLoading = false;
-        });
-        showMessage(context, msg);
-      },
+    final novelDataList = await novelDataScannerIsolate();
+    var _novelDataList = await genNovelDataCoverIsolate(
+      novelDataList: novelDataList,
+      outDir: getCachePath(),
     );
+
+    //novel data file က NOVEL APP ထဲမှာ ရှိလားစစ်မယ်
+    _novelDataList = _novelDataList.map((n) {
+      final novelDir = Directory('${getSourcePath()}/${n.title}');
+      n.isAlreadyExists = novelDir.existsSync();
+
+      return n;
+    }).toList();
+    //SUCCESS
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+    novelDataListNotifier.value = _novelDataList;
   }
 
   void installDataConfirm() {

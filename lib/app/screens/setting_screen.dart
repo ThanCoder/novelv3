@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/notifiers/novel_notifier.dart';
+import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/config_util.dart';
 import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -47,7 +49,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   void _saveConfig() async {
     try {
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid && isUsedCustomPath) {
         if (!await checkStoragePermission()) {
           if (mounted) {
             showConfirmStoragePermissionDialog(context);
@@ -70,15 +72,13 @@ class _SettingScreenState extends State<SettingScreen> {
       //init config
       await initConfig();
       //init
-      final novelList = await getNovelListFromPathIsolate();
-      novelListNotifier.value = novelList;
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Config ကိုသိမ်းဆည်းပြီးပါပြီ')));
+      showMessage(context, 'Config ကိုသိမ်းဆည်းပြီးပါပြီ');
       setState(() {
         isChanged = false;
       });
+      context.read<NovelProvider>().initList();
     } catch (e) {
       debugPrint('saveConfig: ${e.toString()}');
     }
@@ -115,7 +115,7 @@ class _SettingScreenState extends State<SettingScreen> {
             //theme mode
             ListTileWithDesc(
               title: 'Dark Mode',
-              widget: Checkbox(
+              trailing: Checkbox(
                 value: isDarkTheme,
                 onChanged: (value) {
                   setState(() {
@@ -130,7 +130,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ListTileWithDesc(
               title: "custom path",
               desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
-              widget: Checkbox(
+              trailing: Checkbox(
                 value: isUsedCustomPath,
                 onChanged: (value) {
                   setState(() {
@@ -158,7 +158,7 @@ class _SettingScreenState extends State<SettingScreen> {
             //content image cover
             ListTileWithDesc(
               title: 'Novel Content Backgorund Cover',
-              widget: Checkbox(
+              trailing: Checkbox(
                 value: isShowNovelContentCover,
                 onChanged: (value) {
                   setState(() {

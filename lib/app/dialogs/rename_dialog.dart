@@ -93,6 +93,12 @@ class _RenameDialogState extends State<RenameDialog> {
               isSelectAll = true;
             }
           },
+          onSubmitted: (value) {
+            if (errorText == null) {
+              Navigator.pop(context);
+              widget.onSubmit(value);
+            }
+          },
         ),
         actions: [
           TextButton(
