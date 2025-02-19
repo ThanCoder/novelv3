@@ -7,17 +7,23 @@ import '../services/index.dart';
 class ChapterProvider with ChangeNotifier {
   final List<ChapterModel> _list = [];
   bool _isLoading = false;
+  int firstChapter = 1;
+  int lastChapter = 0;
 
   List<ChapterModel> get getList => _list;
   bool get isLoading => _isLoading;
 
-  void initList() async {
+  Future<void> initList() async {
     try {
       _isLoading = true;
       notifyListeners();
 
       final res = await getChapterListFromPathIsolate(
           novelSourcePath: currentNovelNotifier.value!.path);
+      if (res.isNotEmpty) {
+        firstChapter = int.tryParse(res.first.title) ?? 1;
+        lastChapter = int.tryParse(res.last.title) ?? 0;
+      }
 
       _list.clear();
       _list.addAll(res);

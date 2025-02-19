@@ -34,16 +34,22 @@ class _ChapterAddFromScreenState extends State<ChapterAddFromScreen> {
     });
   }
 
-  void init() {
+  void init() async {
     try {
-      context.read<ChapterProvider>().getList;
+      await context.read<ChapterProvider>().initList();
+
+      if (!mounted) return;
+      chapterNumber = context.read<ChapterProvider>().lastChapter + 1;
+      chapterTextController.text = chapterNumber.toString();
     } catch (e) {
       debugPrint('init: ${e.toString()}');
     }
   }
 
   void checkIsExistsChapter() {
-    final res = chapterListNotifier.value
+    final res = context
+        .read<ChapterProvider>()
+        .getList
         .where((c) => c.title == chapterNumber.toString())
         .toList();
     if (res.isEmpty) {
@@ -160,6 +166,7 @@ class _ChapterAddFromScreenState extends State<ChapterAddFromScreen> {
                     if (value.isEmpty) return;
                     try {
                       chapterNumber = int.parse(value);
+                      checkIsExistsChapter();
                     } catch (e) {
                       debugPrint(e.toString());
                     }

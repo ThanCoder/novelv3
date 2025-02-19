@@ -8,7 +8,6 @@ import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/services/novel_isolate_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 //novel readed
@@ -28,73 +27,6 @@ String getChapterContent({required String chapterPath}) {
     res = file.readAsStringSync();
   }
   return res;
-}
-
-//chapter
-void getChapterListFromPath({
-  required String novelSourcePath,
-  required void Function(List<ChapterModel> chapterList) onSuccess,
-  required void Function(String err) onError,
-}) {
-  try {
-    List<ChapterModel> chapterList = [];
-    final dir = Directory(novelSourcePath);
-
-    if (dir.existsSync()) {
-      for (final file in dir.listSync()) {
-        if (file.statSync().type == FileSystemEntityType.file) {
-          if (int.tryParse(getBasename(file.path)) == null) continue;
-          chapterList.add(
-            ChapterModel.fromFile(
-              File(file.path),
-            ),
-          );
-        }
-      }
-    }
-    //sort
-    chapterList.sort((a, b) {
-      int an = int.tryParse(a.title) == null ? 0 : int.parse(a.title);
-      int bn = int.tryParse(b.title) == null ? 0 : int.parse(b.title);
-      return an.compareTo(bn);
-    });
-
-    onSuccess(chapterList);
-  } catch (e) {
-    onError(e.toString());
-  }
-}
-
-int getLastChapterListFromPath(
-    {required String novelSourcePath,
-    required Function(int number) onSuccess}) {
-  int res = 0;
-  getChapterListFromPathIsolate(novelSourcePath: novelSourcePath)
-      .then((chapterList) {
-    if (chapterList.isNotEmpty) {
-      try {
-        int num = int.parse(chapterList.last.title);
-        onSuccess(num);
-      } catch (e) {}
-    }
-  });
-
-  return res;
-}
-
-void getFirstChapterListFromPath({
-  required String novelSourcePath,
-  required Function(int number) onSuccess,
-}) {
-  getChapterListFromPathIsolate(novelSourcePath: novelSourcePath)
-      .then((chapterList) {
-    if (chapterList.isNotEmpty) {
-      try {
-        int num = int.parse(chapterList.first.title);
-        onSuccess(num);
-      } catch (e) {}
-    }
-  });
 }
 
 //delete chapter
@@ -165,11 +97,9 @@ void deleteNovel({
 }
 
 //update novel
-Future<void> updateNovel({
-  required String oldNovelTitle,
-  required NovelModel novel,
-  required void Function() onSuccess,
-}) async {
+Future<void> updateNovel(
+    {required String oldNovelTitle, required NovelModel novel}) async {
+  final completer = Completer();
   try {
     //update content
     final isAdultFile = File('${novel.path}/is-adult');
@@ -233,10 +163,12 @@ Future<void> updateNovel({
     oldList.insert(0, novel);
     novelListNotifier.value = oldList;
 
-    onSuccess();
+    completer.complete();
   } catch (e) {
+    completer.completeError(e);
     debugPrint('updateNovel: ${e.toString()}');
   }
+  return completer.future;
 }
 
 //book mark

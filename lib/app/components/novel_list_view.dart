@@ -9,21 +9,28 @@ class NovelListView extends StatelessWidget {
   List<NovelModel> novelList;
   void Function(NovelModel novel)? onClick;
   bool isOnlineCover;
+  double itemWidth;
+  double itemHeight;
+  double itemSpacing;
   NovelListView({
     super.key,
     required this.novelList,
     this.onClick,
     this.isOnlineCover = false,
+    this.itemHeight = 200,
+    this.itemWidth = 220,
+    this.itemSpacing = 0.5,
   });
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       itemCount: novelList.length,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        mainAxisExtent: 220,
-        crossAxisSpacing: 0.5,
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: itemWidth,
+        mainAxisExtent: itemHeight,
+        crossAxisSpacing: itemSpacing,
+        mainAxisSpacing: itemSpacing,
       ),
       itemBuilder: (context, index) => _ListItem(
         novel: novelList[index],

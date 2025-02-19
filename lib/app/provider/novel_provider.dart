@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/services/novel_isolate_services.dart';
+
+import '../services/index.dart';
 
 class NovelProvider with ChangeNotifier {
   final List<NovelModel> _list = [];
@@ -44,8 +45,16 @@ class NovelProvider with ChangeNotifier {
     }
   }
 
-  void update({required NovelModel novel}) async {
-    try {} catch (e) {
+  Future<void> update(
+      {required NovelModel novel, required String oldTitle}) async {
+    try {
+      await updateNovel(oldNovelTitle: oldTitle, novel: novel);
+      //update ui
+      _currentNovel = novel;
+      currentNovelNotifier.value = novel;
+      notifyListeners();
+      initList();
+    } catch (e) {
       debugPrint('update: ${e.toString()}');
     }
   }

@@ -80,31 +80,38 @@ class _NovelMcSearchScreenState extends State<NovelMcSearchScreen> {
       appBar: AppBar(
         title: const Text('Main Character (MC)'),
       ),
-      body: Column(
+      body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
           //header
-          Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            children: [
-              TChip(
-                title: 'All',
-                avatar: currentMCName == 'all' ? const Icon(Icons.check) : null,
-                onClick: () {
-                  setState(() {
-                    currentMCName = 'all';
-                  });
-                  _filterMC();
-                },
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 130),
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: [
+                  TChip(
+                    title: 'All',
+                    avatar:
+                        currentMCName == 'all' ? const Icon(Icons.check) : null,
+                    onClick: () {
+                      setState(() {
+                        currentMCName = 'all';
+                      });
+                      _filterMC();
+                    },
+                  ),
+                  ..._getHeaderWidgets(),
+                ],
               ),
-              ..._getHeaderWidgets(),
-            ],
+            ),
           ),
-          const Divider(),
           Expanded(
             child: NovelListView(
+              itemWidth: 150,
+              itemHeight: 170,
               novelList: novelList,
               onClick: (novel) {
                 Navigator.push(

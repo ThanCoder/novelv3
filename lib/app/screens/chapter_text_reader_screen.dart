@@ -9,11 +9,10 @@ import 'package:novel_v3/app/dialogs/text_reader_config_dialog.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/text_reader_config_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/services/app_services.dart';
-import 'package:novel_v3/app/services/novel_services.dart';
-import 'package:novel_v3/app/services/recent_db_services.dart';
-import 'package:novel_v3/app/services/text_reader_services.dart';
+import 'package:novel_v3/app/provider/index.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
+import 'package:provider/provider.dart';
 
 class ChapterTextReaderScreen extends StatefulWidget {
   const ChapterTextReaderScreen({super.key});
@@ -24,13 +23,9 @@ class ChapterTextReaderScreen extends StatefulWidget {
 }
 
 class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
-  bool isLoading = false;
-  bool isShowBottomChapterNavBar = false;
   ScrollController scrollController = ScrollController();
   bool isFullScreen = false;
   late TextReaderConfigModel readerConfig;
-  int lastChapterNumber = 0;
-  int firstChapterNumber = 0;
   int currentChapterNumber = 0;
   late ChapterModel currentChapter;
   List<_ListItem> listItems = [];
@@ -43,33 +38,26 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
   @override
   void initState() {
     scrollController.addListener(_scroll);
+    if (currentChapterNotifier.value != null) {
+      currentChapterNumber = int.parse(currentChapterNotifier.value!.title);
+      currentChapter = currentChapterNotifier.value!;
+    }
     super.initState();
     init();
   }
 
-  void init() {
+  void init() async {
     try {
       readerConfig = getTextReaderConfig();
 
       //keep screen
       _androidKeepScreen(readerConfig.isKeepScreen);
 
-      getFirstChapterListFromPath(
-        novelSourcePath: currentNovelNotifier.value!.path,
-        onSuccess: (number) {
-          firstChapterNumber = number;
-        },
-      );
-      getLastChapterListFromPath(
-        novelSourcePath: currentNovelNotifier.value!.path,
-        onSuccess: (number) {
-          lastChapterNumber = number;
-        },
-      );
-      if (currentChapterNotifier.value != null) {
-        currentChapterNumber = int.parse(currentChapterNotifier.value!.title);
-        currentChapter = currentChapterNotifier.value!;
+      final chapterProvider = context.read<ChapterProvider>();
+      if (chapterProvider.getList.isEmpty) {
+        chapterProvider.initList();
       }
+
       loadedChapter();
     } catch (e) {
       debugPrint('init: ${e.toString()}');
@@ -95,7 +83,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
         currentChapterNumber++;
       });
       if (currentChapterNumber == 0 ||
-          currentChapterNumber > lastChapterNumber) {
+          currentChapterNumber > context.read<ChapterProvider>().lastChapter) {
         showMessage(
             context, 'chapter "${currentChapterNumber.toString()}" မရှိပါ');
         currentChapterNumber--;
@@ -115,7 +103,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       });
 
       if (currentChapterNumber == 0 ||
-          currentChapterNumber < firstChapterNumber) {
+          currentChapterNumber < context.read<ChapterProvider>().firstChapter) {
         showMessage(
             context, 'chapter "${currentChapterNumber.toString()}" မရှိပါ');
         currentChapterNumber++;
@@ -123,8 +111,6 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       }
 
       loadedChapter();
-
-      isLoading = false;
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -154,6 +140,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
                   '${currentNovelNotifier.value!.path}/$currentChapterNumber'),
         ),
       );
+      setState(() {});
     } catch (e) {
       debugPrint('loadedChapter: ${e.toString()}');
     }
@@ -331,7 +318,10 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => const Divider(),
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 20,
+                  child: Divider(),
+                ),
                 itemCount: listItems.length,
               ),
             )),

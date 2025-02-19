@@ -6,11 +6,13 @@ import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/services/app_services.dart';
 import 'package:novel_v3/app/services/novel_isolate_services.dart';
-import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/widgets/my_image_file.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/index.dart';
 
 class NovelFromScreen extends StatefulWidget {
   NovelModel novel;
@@ -75,16 +77,14 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
       novel.mc = mcController.text;
       novel.pageLink = pageUrlController.text;
 
-      await updateNovel(
-          oldNovelTitle: widget.novel.title,
-          novel: novel,
-          onSuccess: () {
-            //is success
-            isChanged = false;
-            if (mounted) {
-              Navigator.pop(context);
-            }
-          });
+      await context
+          .read<NovelProvider>()
+          .update(novel: novel, oldTitle: widget.novel.title);
+
+      //is success
+      isChanged = false;
+      if (!mounted) return;
+      Navigator.pop(context);
     } catch (e) {
       debugPrint(e.toString());
     }
