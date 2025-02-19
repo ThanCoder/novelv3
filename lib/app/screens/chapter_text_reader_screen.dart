@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/text_reader_config_dialog.dart';
@@ -31,6 +33,8 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
   int firstChapterNumber = 0;
   int currentChapterNumber = 0;
   late ChapterModel currentChapter;
+  List<_ListItem> listItems = [];
+  double lastScroll = 0;
 
   int getPositionFromList(String title) {
     return chapterListNotifier.value.indexWhere((c) => c.title == title);
@@ -66,6 +70,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
         currentChapterNumber = int.parse(currentChapterNotifier.value!.title);
         currentChapter = currentChapterNotifier.value!;
       }
+      loadedChapter();
     } catch (e) {
       debugPrint('init: ${e.toString()}');
     }
@@ -76,17 +81,11 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
   }
 
   void _scroll() {
-    if (!isShowBottomChapterNavBar &&
-        scrollController.position.maxScrollExtent > 200) {
-      setState(() {
-        isShowBottomChapterNavBar = true;
-      });
-    }
-    if (isShowBottomChapterNavBar &&
-        scrollController.position.maxScrollExtent < 200) {
-      setState(() {
-        isShowBottomChapterNavBar = false;
-      });
+    if (lastScroll != scrollController.position.maxScrollExtent &&
+        scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) {
+      lastScroll = scrollController.position.maxScrollExtent;
+      _nextChapter();
     }
   }
 
@@ -146,8 +145,15 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       setRecentDB('chapter_list_page_${currentNovelNotifier.value!.title}',
           currentChapter.title);
 
-      await Future.delayed(const Duration(milliseconds: 200));
-      scrollController.jumpTo(0);
+      listItems.add(
+        _ListItem(
+          title: currentChapter.title,
+          pos: currentChapterNumber,
+          content: getChapterContent(
+              chapterPath:
+                  '${currentNovelNotifier.value!.path}/$currentChapterNumber'),
+        ),
+      );
     } catch (e) {
       debugPrint('loadedChapter: ${e.toString()}');
     }
@@ -158,7 +164,6 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => TextReaderConfigDialog(
-        dialogContext: context,
         readerConfig: readerConfig,
         submitText: 'Apply',
         onCancel: () {},
@@ -311,73 +316,37 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
                 ],
               ),
         body: GestureDetector(
-          onTap: _toggleFullScreen,
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                //header
-                _Header(
-                  chapter: currentChapter,
-                  prevClick: _prevChapter,
-                  nextClick: _nextChapter,
-                ),
-                const Divider(),
-                Text(
-                  getChapterContent(
-                      chapterPath:
-                          '${currentNovelNotifier.value!.path}/$currentChapterNumber'),
-                  style: TextStyle(
-                    fontSize: readerConfig.fontSize,
-                  ),
-                ),
-
-                //footer
-                isShowBottomChapterNavBar
-                    ? _Header(
-                        chapter: currentChapter,
-                        prevClick: _prevChapter,
-                        nextClick: _nextChapter,
-                      )
-                    : Container(),
-              ],
-            ),
-          ),
-        ),
+            onTap: _toggleFullScreen,
+            child: Padding(
+              padding: EdgeInsets.all(readerConfig.padding),
+              child: ListView.separated(
+                shrinkWrap: true,
+                controller: scrollController,
+                itemBuilder: (context, index) {
+                  final item = listItems[index];
+                  return Text(
+                    item.content,
+                    style: TextStyle(
+                      fontSize: readerConfig.fontSize,
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: listItems.length,
+              ),
+            )),
       ),
     );
   }
 }
 
-class _Header extends StatelessWidget {
-  ChapterModel chapter;
-  void Function() prevClick;
-  void Function() nextClick;
-
-  _Header({
-    required this.chapter,
-    required this.nextClick,
-    required this.prevClick,
+class _ListItem {
+  String title;
+  int pos;
+  String content;
+  _ListItem({
+    required this.title,
+    required this.pos,
+    required this.content,
   });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: prevClick,
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          Text('Chapter ${chapter.title}'),
-          IconButton(
-            onPressed: nextClick,
-            icon: const Icon(Icons.arrow_forward_ios),
-          ),
-        ],
-      ),
-    );
-  }
 }

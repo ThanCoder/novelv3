@@ -12,12 +12,14 @@ import 'package:novel_v3/app/pages/chapter_list_page.dart';
 import 'package:novel_v3/app/pages/novel_book_mark_list_page.dart';
 import 'package:novel_v3/app/pages/novel_content_page.dart';
 import 'package:novel_v3/app/pages/pdf_list_page.dart';
+import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/chapter_add_from_screen.dart';
 import 'package:novel_v3/app/screens/novel_from_screen.dart';
 import 'package:novel_v3/app/screens/pdf_add_form_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
+import 'package:provider/provider.dart';
 
 class NovelContentScreen extends StatefulWidget {
   NovelModel novel;
@@ -28,17 +30,23 @@ class NovelContentScreen extends StatefulWidget {
 }
 
 class _NovelContentScreenState extends State<NovelContentScreen> {
-  bool isExistsBookmark = false;
   @override
   void initState() {
     super.initState();
-    init();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context
+          .read<NovelProvider>()
+          .setCurrentNovel(novelSourcePath: widget.novel.path);
+      init();
+    });
   }
+
+  bool isExistsBookmark = false;
 
   void init() {
     try {
-      final title = currentNovelNotifier.value!.title;
-      final path = currentNovelNotifier.value!.path;
+      final title = widget.novel.title;
+      final path = widget.novel.path;
       isExistsBookmark = isExistsNovelBookmarkList(
           bookmark: NovelBookmarkModel(title: title, path: path));
       setState(() {});
@@ -63,7 +71,8 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
               onTap: () {
                 Navigator.pop(context);
 
-                final novel = currentNovelNotifier.value;
+                final novel = context.read<NovelProvider>().getNovel;
+
                 if (novel != null) {
                   //go edit form
                   Navigator.push(
@@ -218,22 +227,32 @@ class _BodyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final coverFile = File(currentNovelNotifier.value!.coverPath);
+    final novel = context.watch<NovelProvider>().getNovel;
+    final coverFile = File(novel == null ? '' : novel.coverPath);
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         body: AnimatedContainer(
-          duration: const Duration(seconds: 2),
+          duration: const Duration(milliseconds: 1500),
           curve: Curves.easeInOut, // Curve for smoothness
           decoration: appConfigNotifier.value.isShowNovelContentBgImage
               ? BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color.fromARGB(255, 3, 14, 17),
+                      Color.fromARGB(193, 2, 2, 15),
+                      Color.fromARGB(193, 12, 12, 12),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                   image: DecorationImage(
                     image: coverFile.existsSync()
                         ? FileImage(coverFile)
                         : const AssetImage(defaultIconAssetsPath),
                     fit: BoxFit.cover,
-                    opacity: 0.1,
-                    scale: 1.2,
+                    opacity: 0.2,
+                    scale: 0.8,
                   ),
                 )
               : null,

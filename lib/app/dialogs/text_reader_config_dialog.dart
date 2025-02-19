@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:novel_v3/app/models/text_reader_config_model.dart';
 import 'package:novel_v3/app/widgets/font_list_wiget.dart';
 import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
+import 'package:novel_v3/app/widgets/t_text_field.dart';
 
 class TextReaderConfigDialog extends StatefulWidget {
-  BuildContext dialogContext;
   TextReaderConfigModel readerConfig;
   String title;
   String contentText;
@@ -14,7 +15,6 @@ class TextReaderConfigDialog extends StatefulWidget {
   void Function(TextReaderConfigModel readerConfig) onSubmit;
   TextReaderConfigDialog({
     super.key,
-    required this.dialogContext,
     required this.readerConfig,
     required this.onCancel,
     required this.onSubmit,
@@ -31,6 +31,7 @@ class TextReaderConfigDialog extends StatefulWidget {
 class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
   late TextReaderConfigModel readerConfig;
   TextEditingController fontController = TextEditingController();
+  TextEditingController paddingController = TextEditingController();
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
 
   void init() {
     fontController.text = readerConfig.fontSize.toInt().toString();
+    paddingController.text = readerConfig.padding.toInt().toString();
   }
 
   @override
@@ -67,6 +69,7 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
                     },
                   ),
                 ),
+                //Keep Screen
                 ListTileWithDesc(
                   title: 'Keep Screen',
                   trailing: Switch(
@@ -78,6 +81,26 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
                     },
                   ),
                 ),
+                //padding
+                ListTileWithDesc(
+                  title: 'Padding',
+                  trailing: Expanded(
+                    child: TTextField(
+                      controller: paddingController,
+                      hintText: 'Padding',
+                      textInputType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*$'))
+                      ],
+                      onChanged: (value) {
+                        if (value.isEmpty) return;
+                        readerConfig.padding = double.parse(value);
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -85,14 +108,14 @@ class _TextReaderConfigDialogState extends State<TextReaderConfigDialog> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(widget.dialogContext);
+              Navigator.pop(context);
               widget.onCancel();
             },
             child: Text(widget.cancelText),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(widget.dialogContext);
+              Navigator.pop(context);
               widget.onSubmit(readerConfig);
             },
             child: Text(widget.submitText),

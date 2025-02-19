@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/custom_class/novel_search_delegate.dart';
+import 'package:novel_v3/app/customs/novel_search_delegate.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/screens/share/share_novel_content_screen.dart';
 import 'package:novel_v3/app/services/recent_db_services.dart';

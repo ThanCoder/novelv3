@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:novel_v3/app/models/chapter_model.dart';
@@ -15,24 +16,24 @@ enum PortType {
 Future<List<NovelModel>> getNovelListFromPathIsolate() async {
   final completer = Completer<List<NovelModel>>();
   try {
-    final receivePort = ReceivePort();
-
-    await Isolate.spawn(
-        _getNovelListFromPath, [receivePort.sendPort, getSourcePath()]);
-
-    receivePort.listen((data) {
-      if (data is Map) {
-        String type = data['type'] ?? '';
-        if (type == PortType.error.name) {
-          completer.completeError(Exception(data['msg']));
-          receivePort.close();
-        }
-        if (type == PortType.success.name) {
-          completer.complete(data['data']);
-          receivePort.close();
+    String sourcePath = getSourcePath();
+    final list = Isolate.run<List<NovelModel>>(() {
+      List<NovelModel> novelList = [];
+      final dir = Directory(sourcePath);
+      if (dir.existsSync()) {
+        for (final file in dir.listSync()) {
+          if (file.statSync().type == FileSystemEntityType.directory) {
+            novelList.add(NovelModel.fromPath(file.path));
+          }
         }
       }
+      //sort
+      novelList.sort((a, b) {
+        return a.date.compareTo(b.date) == 1 ? -1 : 1;
+      });
+      return novelList;
     });
+    completer.complete(list);
   } catch (e) {
     completer.completeError(e.toString());
   }
@@ -78,17 +79,4 @@ void _getChapterListFromPath(List<Object> args) {
       sendPort.send({'type': PortType.error.name, 'msg': err});
     },
   );
-}
-
-//novel
-void _getNovelListFromPath(List<Object> args) async {
-  final sendPort = args[0] as SendPort;
-  final sourcePath = args[1] as String;
-  try {
-    final novelList = await getNovelListFromPath(sourcePath: sourcePath);
-
-    sendPort.send({'type': PortType.success.name, 'data': novelList});
-  } catch (e) {
-    sendPort.send({'type': PortType.error.name, 'msg': e.toString()});
-  }
 }

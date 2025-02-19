@@ -8,12 +8,14 @@ class TextReaderConfigModel {
   String bgColor;
   bool usedCustomTheme;
   bool isKeepScreen;
+  double padding;
   TextReaderConfigModel({
     this.fontSize = 21,
     this.fontColor = '',
     this.bgColor = '',
     this.usedCustomTheme = false,
     this.isKeepScreen = false,
+    this.padding = 0,
   });
 
   factory TextReaderConfigModel.fromPath(String path) {
@@ -22,12 +24,12 @@ class TextReaderConfigModel {
     //ရှိနေရင်
     Map<String, dynamic> map = jsonDecode(file.readAsStringSync());
     return TextReaderConfigModel(
-      fontSize: map['font_size'] ?? 21,
-      fontColor: map['font_color'] ?? '',
-      bgColor: map['bg_color'] ?? '',
-      usedCustomTheme: map['used_custom_theme'] ?? false,
-      isKeepScreen: map['is_keep_screen'] ?? false,
-    );
+        fontSize: map['font_size'] ?? 21,
+        fontColor: map['font_color'] ?? '',
+        bgColor: map['bg_color'] ?? '',
+        usedCustomTheme: map['used_custom_theme'] ?? false,
+        isKeepScreen: map['is_keep_screen'] ?? false,
+        padding: map['padding'] ?? 0);
   }
 
   Map<String, dynamic> toMap() => {
@@ -36,6 +38,7 @@ class TextReaderConfigModel {
         'bg_color': bgColor,
         'used_custom_theme': usedCustomTheme,
         'is_keep_screen': isKeepScreen,
+        'padding': padding,
       };
 
   @override

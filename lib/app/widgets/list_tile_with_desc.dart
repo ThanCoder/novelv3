@@ -4,7 +4,7 @@ class ListTileWithDesc extends StatelessWidget {
   String title;
   String? desc;
   Widget? trailing;
-  Widget? leadingIcon;
+  Widget? leading;
   double spacing;
   void Function()? onClick;
   ListTileWithDesc({
@@ -12,16 +12,16 @@ class ListTileWithDesc extends StatelessWidget {
     required this.title,
     this.trailing,
     this.desc,
-    this.leadingIcon,
+    this.leading,
     this.spacing = 10,
     this.onClick,
   });
 
   Widget _getLeading() {
-    if (leadingIcon == null) {
+    if (leading == null) {
       return Container();
     }
-    return leadingIcon!;
+    return leading!;
   }
 
   Widget _getTrailing() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/screens/novel_data_scanner_screen.dart';
+import 'package:novel_v3/app/screens/novel_mc_search_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/screens/setting_screen.dart';
 import 'package:novel_v3/app/screens/share/receive_novel_data_screen.dart';
@@ -50,8 +51,9 @@ class _HomeMorePageState extends State<HomeMorePage> {
         child: Column(
           spacing: 10,
           children: [
+            //theme
             ListTileWithDesc(
-              leadingIcon: const Icon(Icons.dark_mode_outlined),
+              leading: const Icon(Icons.dark_mode_outlined),
               title: 'Dark Theme',
               trailing: Checkbox(
                 value: appConfigNotifier.value.isDarkTheme,
@@ -67,8 +69,12 @@ class _HomeMorePageState extends State<HomeMorePage> {
                 },
               ),
             ),
+            const Divider(),
+            const Text('Offline Function'),
+            //PDF Scanner
             ListTileWithDesc(
-              leadingIcon: const Icon(Icons.picture_as_pdf_rounded),
+              leading: const Icon(Icons.picture_as_pdf_rounded),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
               title: 'PDF Scanner',
               desc: 'PDF Files တွေကို ရှာပေးတယ်',
               onClick: () {
@@ -80,8 +86,10 @@ class _HomeMorePageState extends State<HomeMorePage> {
                 );
               },
             ),
+            //Data Scanner
             ListTileWithDesc(
-              leadingIcon: const Icon(Icons.restore),
+              leading: const Icon(Icons.restore),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
               title: 'Data Scanner',
               desc: 'Novel Data သွင်းလို့ရတယ်',
               onClick: () {
@@ -93,6 +101,23 @@ class _HomeMorePageState extends State<HomeMorePage> {
                 );
               },
             ),
+            //Main Character (MC)
+            ListTileWithDesc(
+              leading: const Icon(Icons.person_2),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
+              title: 'Main Character (MC)',
+              desc: 'အထိက ဇော်ကောင်ကို ရှာဖွေခြင်း',
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovelMcSearchScreen(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            const Text('Data Sharing'),
             //novel data share
             ListTileWithDesc(
               onClick: () {
@@ -104,7 +129,8 @@ class _HomeMorePageState extends State<HomeMorePage> {
                   ),
                 );
               },
-              leadingIcon: const Icon(Icons.share_outlined),
+              leading: const Icon(Icons.share_outlined),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
               title: 'Share Data',
               desc: 'Novel အခြားသူတွေကို မျှဝေခြင်း',
             ),
@@ -119,11 +145,12 @@ class _HomeMorePageState extends State<HomeMorePage> {
                   ),
                 );
               },
-              leadingIcon: const Icon(Icons.cloud_download_rounded),
+              leading: const Icon(Icons.cloud_download_rounded),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
               title: 'Share Data',
               desc: 'Novel အခြားသူတွေကနေ လက်ခံခြင်း',
             ),
-
+            const Divider(),
             //settting
             ListTileWithDesc(
               onClick: () {
@@ -134,18 +161,31 @@ class _HomeMorePageState extends State<HomeMorePage> {
                   ),
                 );
               },
-              leadingIcon: const Icon(Icons.settings),
+              leading: const Icon(Icons.settings),
               title: 'Setting',
             ),
             ListTileWithDesc(
-              leadingIcon: const Icon(Icons.download_for_offline_outlined),
+              leading: const Icon(Icons.cloud_upload_rounded),
               title: 'App Version',
-              desc: 'Version: $appVersion ($appVersionName)',
+              desc: 'Current Version: $appVersion ($appVersionName)',
               onClick: () {
                 CherryToast.success(
                   inheritThemeColors: true,
                   title: const Text('မပြုလုပ်ရသေးပါ'),
                 ).show(context);
+              },
+            ),
+            //about
+            ListTileWithDesc(
+              title: 'About',
+              onClick: () {
+                showAboutDialog(
+                    context: context,
+                    applicationName: appName,
+                    applicationVersion: appVersion,
+                    children: const [
+                      Text('Developer: ThanCoder'),
+                    ]);
               },
             ),
           ],

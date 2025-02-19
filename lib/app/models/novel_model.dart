@@ -51,33 +51,34 @@ class NovelModel {
     String author = 'Unknown';
     int readed = 0;
 
+    final readedFile = File('${dir.path}/readed');
+    final mcFile = File('${dir.path}/mc');
+    final authorFile = File('${dir.path}/author');
+
+    if (readedFile.existsSync()) {
+      String res = readedFile.readAsStringSync();
+      if (res.isNotEmpty && int.tryParse(res) != null) {
+        readed = int.parse(res);
+      }
+    }
+    if (mcFile.existsSync()) {
+      mc = mcFile.readAsStringSync();
+    }
+    if (authorFile.existsSync()) {
+      author = authorFile.readAsStringSync();
+    }
+
     //full info
     if (isFullInfo) {
       final contentFile = File('${dir.path}/content');
       final pageLinkFile = File('${dir.path}/link');
-      final readedFile = File('${dir.path}/readed');
-      final mcFile = File('${dir.path}/mc');
-      final authorFile = File('${dir.path}/author');
 
-      if (mcFile.existsSync()) {
-        mc = mcFile.readAsStringSync();
-      }
-      if (authorFile.existsSync()) {
-        author = authorFile.readAsStringSync();
-      }
-
-      if (contentFile.existsSync()) {
-        content = contentFile.readAsStringSync();
-      }
       if (pageLinkFile.existsSync()) {
         pageLink = pageLinkFile.readAsStringSync();
       }
 
-      if (readedFile.existsSync()) {
-        String res = readedFile.readAsStringSync();
-        if (res.isNotEmpty && int.tryParse(res) != null) {
-          readed = int.parse(res);
-        }
+      if (contentFile.existsSync()) {
+        content = contentFile.readAsStringSync();
       }
     }
 
@@ -113,7 +114,6 @@ class NovelModel {
     return novel;
   }
 
-  
   Map<String, dynamic> toMap() => {
         "title": title,
         "path": path,
@@ -127,8 +127,6 @@ class NovelModel {
         'date': date,
         'page_link': pageLink,
       };
-
-  
 
   @override
   String toString() {

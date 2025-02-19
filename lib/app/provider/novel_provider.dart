@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/services/novel_isolate_services.dart';
 
 class NovelProvider with ChangeNotifier {
   final List<NovelModel> _list = [];
   bool _isLoading = false;
+  NovelModel? _currentNovel;
 
   List<NovelModel> get getList => _list;
+  NovelModel? get getNovel => _currentNovel;
   bool get isLoading => _isLoading;
 
   void initList() async {
@@ -23,6 +26,16 @@ class NovelProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('initList: ${e.toString()}');
     }
+  }
+
+  void setCurrentNovel({required String novelSourcePath}) {
+    _isLoading = true;
+    notifyListeners();
+    _currentNovel = NovelModel.fromPath(novelSourcePath, isFullInfo: true);
+    currentNovelNotifier.value = _currentNovel;
+
+    _isLoading = false;
+    notifyListeners();
   }
 
   void add({required NovelModel novel}) async {
