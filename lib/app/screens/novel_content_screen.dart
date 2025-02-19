@@ -237,15 +237,17 @@ class _BodyTab extends StatelessWidget {
           curve: Curves.easeInOut, // Curve for smoothness
           decoration: appConfigNotifier.value.isShowNovelContentBgImage
               ? BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 3, 14, 17),
-                      Color.fromARGB(193, 2, 2, 15),
-                      Color.fromARGB(193, 12, 12, 12),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+                  gradient: isDarkThemeNotifier.value
+                      ? const LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 3, 14, 17),
+                            Color.fromARGB(193, 2, 2, 15),
+                            Color.fromARGB(193, 12, 12, 12),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        )
+                      : null,
                   image: DecorationImage(
                     image: coverFile.existsSync()
                         ? FileImage(coverFile)
