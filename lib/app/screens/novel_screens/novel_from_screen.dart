@@ -12,7 +12,7 @@ import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/index.dart';
+import '../../provider/index.dart';
 
 class NovelFromScreen extends StatefulWidget {
   NovelModel novel;

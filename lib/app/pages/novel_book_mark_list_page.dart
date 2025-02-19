@@ -5,7 +5,7 @@ import 'package:novel_v3/app/components/chapter_book_mark_list_view.dart';
 import 'package:novel_v3/app/models/chapter_book_mark_model.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/screens/chapter_text_reader_screen.dart';
+import 'package:novel_v3/app/screens/index.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:provider/provider.dart';
 

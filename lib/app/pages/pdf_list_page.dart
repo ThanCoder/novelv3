@@ -8,7 +8,7 @@ import 'package:novel_v3/app/dialogs/rename_dialog.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
-import 'package:novel_v3/app/screens/pdf_reader_screen.dart';
+import 'package:novel_v3/app/screens/pdf_screens/pdf_reader_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';

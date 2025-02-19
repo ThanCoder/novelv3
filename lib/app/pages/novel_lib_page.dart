@@ -4,7 +4,7 @@ import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
-import 'package:novel_v3/app/screens/novel_content_screen.dart';
+import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_chip.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/screens/novel_content_screen.dart';
+import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 
 class NovelSearchDelegate extends SearchDelegate<NovelModel> {
   final List<NovelModel> novelList;

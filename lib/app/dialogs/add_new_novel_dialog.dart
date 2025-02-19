@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/screens/novel_from_screen.dart';
+import 'package:novel_v3/app/screens/novel_screens/novel_from_screen.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
 

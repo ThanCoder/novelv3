@@ -8,7 +8,7 @@ import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_text_field.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/index.dart';
+import '../../provider/index.dart';
 
 class ChapterAddFromScreen extends StatefulWidget {
   const ChapterAddFromScreen({super.key});

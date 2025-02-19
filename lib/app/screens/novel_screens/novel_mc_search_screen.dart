@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/provider/index.dart';
-import 'package:novel_v3/app/screens/novel_content_screen.dart';
+import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_chip.dart';
 import 'package:provider/provider.dart';

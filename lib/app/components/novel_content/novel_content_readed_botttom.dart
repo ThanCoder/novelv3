@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/screens/chapter_text_reader_screen.dart';
+import 'package:novel_v3/app/screens/novel_screens/chapter_text_reader_screen.dart';
 
 class NovelContentReadedBotttom extends StatelessWidget {
   NovelModel novel;
