@@ -48,64 +48,61 @@ class PdfListPageState extends State<PdfListPage> {
       context: context,
       builder: (context) => BottomSheet(
         onClosing: () {},
-        builder: (context) => SizedBox(
-          height: 250,
-          child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(child: Text(pdfFile.title)),
-              ),
-              const Divider(),
-              //copy name
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  copyText(pdfFile.title);
-                },
-                leading: const Icon(Icons.copy),
-                title: const Text('copy name'),
-              ),
-              //rename
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  renamePdf();
-                },
-                leading: const Icon(Icons.drive_file_rename_outline),
-                title: const Text('Rename'),
-              ),
-              //copy in novel
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  copyToOutDir();
-                },
-                leading: const Icon(Icons.copy),
-                title: const Text('အပြင်ကို ကူးထုတ်မယ်'),
-              ),
-              //move out pdf
-              ListTile(
-                onTap: () {
-                  Navigator.pop(context);
-                  moveToOutDir();
-                },
-                leading: const Icon(Icons.move_down),
-                title: const Text('အပြင်ကို ရွေ့ထုတ်မယ်(Move)'),
-              ),
-              //delete
-              ListTile(
-                textColor: Colors.red,
-                iconColor: Colors.red,
-                onTap: () {
-                  Navigator.pop(context);
-                  deletePdf();
-                },
-                leading: const Icon(Icons.delete_forever),
-                title: const Text('ဖျက်မယ် (Delete)'),
-              ),
-            ],
-          ),
+        builder: (context) => ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: Text(pdfFile.title)),
+            ),
+            const Divider(),
+            //copy name
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                copyText(pdfFile.title);
+              },
+              leading: const Icon(Icons.copy),
+              title: const Text('copy name'),
+            ),
+            //rename
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                renamePdf();
+              },
+              leading: const Icon(Icons.drive_file_rename_outline),
+              title: const Text('Rename'),
+            ),
+            //copy in novel
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                copyToOutDir();
+              },
+              leading: const Icon(Icons.copy),
+              title: const Text('အပြင်ကို ကူးထုတ်မယ်'),
+            ),
+            //move out pdf
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                moveToOutDir();
+              },
+              leading: const Icon(Icons.move_down),
+              title: const Text('အပြင်ကို ရွေ့ထုတ်မယ်(Move)'),
+            ),
+            //delete
+            ListTile(
+              textColor: Colors.red,
+              iconColor: Colors.red,
+              onTap: () {
+                Navigator.pop(context);
+                deletePdf();
+              },
+              leading: const Icon(Icons.delete_forever),
+              title: const Text('ဖျက်မယ် (Delete)'),
+            ),
+          ],
         ),
       ),
     );
@@ -115,23 +112,12 @@ class PdfListPageState extends State<PdfListPage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => RenameDialog(
+      builder: (ctx) => RenameDialog(
         renameLabelText: const Text('Rename PDF Title'),
         renameText: pdfFile.title.replaceAll('.pdf', ''),
         onCancel: () {},
-        onSubmit: (text) {
-          try {
-            final file = File(pdfFile.path);
-            if (file.existsSync()) {
-              final newPath =
-                  pdfFile.path.replaceAll(getBasename(file.path), '$text.pdf');
-              pdfFile.changeFullPath(newPath);
-              //update ui
-              init();
-            }
-          } catch (e) {
-            debugPrint(e.toString());
-          }
+        onSubmit: (title) {
+          ctx.read<PdfProvider>().rename(pdfFile: pdfFile, renamedTitle: title);
         },
       ),
     );
