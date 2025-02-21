@@ -825,10 +825,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: c6e0c81610f6d60d13c35fc14895ff56a2c5ef052e6a8f1d1db2c2d03ac99baa
+      sha256: "25c30921680742b16c5c4562a2b80657f97ef6eaea6094b999ba4ab5973b4915"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.1"
+    version: "1.5.3"
   typed_data:
     dependency: transitive
     description:

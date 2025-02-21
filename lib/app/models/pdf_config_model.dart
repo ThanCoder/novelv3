@@ -2,6 +2,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:novel_v3/app/constants.dart';
+
 class PdfConfigModel {
   int page;
   bool isDarkMode;
@@ -26,25 +29,44 @@ class PdfConfigModel {
     this.scrollByMouseWheel = 1.2,
   });
 
+  factory PdfConfigModel.fromMap(Map<String, dynamic> map) {
+    return PdfConfigModel(
+      page: map['page'] ?? 1,
+      offsetDx: map['offset_dx'] ?? 0,
+      offsetDy: map['offset_dy'] ?? 0,
+      zoom: map['zoom'] ?? 0,
+      isDarkMode: map['dark_mode'] ?? false,
+      isPanLocked: map['pan_locked'] ?? false,
+      isShowScrollThumb: map['show_scroll_thumb'] ?? true,
+      isKeepScreen: map['is_keep_screen'] ?? false,
+      isTextSelection: map['is_text_selection'] ?? false,
+      scrollByMouseWheel: map['scroll_by_mouse_wheel'] ?? 1.2,
+    );
+  }
+
   factory PdfConfigModel.fromPath(String configPath) {
     final file = File(configPath);
     if (file.existsSync()) {
       final map = jsonDecode(file.readAsStringSync());
-      return PdfConfigModel(
-        page: map['page'] ?? 1,
-        offsetDx: map['offset_dx'] ?? 0,
-        offsetDy: map['offset_dy'] ?? 0,
-        zoom: map['zoom'] ?? 0,
-        isDarkMode: map['dark_mode'] ?? false,
-        isPanLocked: map['pan_locked'] ?? false,
-        isShowScrollThumb: map['show_scroll_thumb'] ?? true,
-        isKeepScreen: map['is_keep_screen'] ?? false,
-        isTextSelection: map['is_text_selection'] ?? false,
-        scrollByMouseWheel: map['scroll_by_mouse_wheel'] ?? 1.2,
-      );
+      return PdfConfigModel.fromMap(map);
     } else {
+      //config မရှိ
+      int pageIndex = 1;
+      //check old config file
+      final oldFile =
+          File(configPath.replaceAll(pdfConfigName, pdfOldConfigName));
+      if (oldFile.existsSync()) {
+        try {
+          final map = jsonDecode(oldFile.readAsStringSync());
+          final index = map['pageIndex'] ?? 1;
+          final indexDou = double.tryParse(index) ?? 1.0;
+          pageIndex = indexDou.toInt();
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+      }
       return PdfConfigModel(
-        page: 1,
+        page: pageIndex,
         isDarkMode: false,
         isPanLocked: false,
         isShowScrollThumb: true,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
@@ -7,8 +5,6 @@ import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/pdf_provider.dart';
 import 'package:novel_v3/app/utils/config_util.dart';
 import 'package:provider/provider.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +17,6 @@ void main() async {
   //   anonKey: supabaseKey,
   // );
 
-  if (Platform.isLinux) {
-    await WindowManager.instance.ensureInitialized();
-  }
   //init config
   await initConfig();
 

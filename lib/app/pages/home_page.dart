@@ -7,7 +7,6 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
 
@@ -87,7 +86,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _goContentPage(NovelModel novel) {
+    currentNovelNotifier.value = novel;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NovelContentScreen(novel: novel),
+      ),
+    );
+  }
+
   Widget _getList(List<NovelModel> novelList) {
+    //is empty
     if (novelList.isEmpty) {
       return Center(
         child: Column(
@@ -115,15 +125,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: NovelListView(
         novelList: novelList,
-        onClick: (novel) {
-          currentNovelNotifier.value = novel;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NovelContentScreen(novel: novel),
-            ),
-          );
-        },
+        onClick: _goContentPage,
       ),
     );
   }
@@ -134,7 +136,52 @@ class _HomePageState extends State<HomePage> {
     final isLoading = provider.isLoading;
     final novelList = provider.getList;
 
-    return MyScaffold(
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          title: const Text(appTitle),
+          floating: true,
+          snap: true,
+          pinned: false,
+          actions: [
+            //search
+            IconButton(
+              onPressed: () {
+                _showSearchBar();
+              },
+              icon: const Icon(Icons.search),
+            ),
+            //more
+            IconButton(
+              onPressed: () {
+                showBottomMenu();
+              },
+              icon: const Icon(Icons.more_vert),
+            ),
+          ],
+        ),
+        if (isLoading)
+          SliverToBoxAdapter(
+            child: TLoader(),
+          )
+        else
+          SliverGrid.builder(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200,
+              mainAxisExtent: 220,
+              crossAxisSpacing: 0.5,
+              mainAxisSpacing: 0.5,
+            ),
+            itemBuilder: (context, index) => NovelListViewItem(
+              novel: novelList[index],
+              onClick: _goContentPage,
+            ),
+            itemCount: novelList.length,
+          ),
+      ],
+    );
+
+    /*return MyScaffold(
         appBar: AppBar(
           title: const Text(appTitle),
           actions: [
@@ -158,6 +205,6 @@ class _HomePageState extends State<HomePage> {
             ? Center(
                 child: TLoader(),
               )
-            : _getList(novelList));
+            : _getList(novelList),);*/
   }
 }

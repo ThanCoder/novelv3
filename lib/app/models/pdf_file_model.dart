@@ -23,7 +23,7 @@ class PdfFileModel {
   }) {
     bookMarkPath = path.replaceAll('.pdf', pdfBookListName);
     configPath = path.replaceAll('.pdf', pdfConfigName);
-    configOldPath = path.replaceAll('.pdf', '-config.json');
+    configOldPath = path.replaceAll('.pdf', pdfOldConfigName);
     coverPath = '$path.png';
   }
 
@@ -44,12 +44,13 @@ class PdfFileModel {
 
     return pdfFile;
   }
+
   void setFullPath(String newPath) {
     path = newPath;
     title = getBasename(path);
     bookMarkPath = path.replaceAll('.pdf', pdfBookListName);
     configPath = path.replaceAll('.pdf', pdfConfigName);
-    configOldPath = path.replaceAll('.pdf', '-config.json');
+    configOldPath = path.replaceAll('.pdf', pdfOldConfigName);
     coverPath = '$path.png';
   }
 
@@ -58,7 +59,6 @@ class PdfFileModel {
     final bookListFile = File(bookMarkPath);
     final configOldFile = File(configOldPath);
     final configV3File = File(configPath);
-    final coverFile = File(coverPath);
     final pdfFile = File(path);
     //set new path
     setFullPath(newPath);
@@ -74,9 +74,6 @@ class PdfFileModel {
     }
     if (configV3File.existsSync()) {
       configV3File.renameSync(configPath);
-    }
-    if (coverFile.existsSync()) {
-      coverFile.renameSync(coverPath);
     }
   }
 

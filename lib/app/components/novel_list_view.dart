@@ -12,9 +12,11 @@ class NovelListView extends StatelessWidget {
   double itemWidth;
   double itemHeight;
   double itemSpacing;
+  ScrollController? controller;
   NovelListView({
     super.key,
     required this.novelList,
+    this.controller,
     this.onClick,
     this.isOnlineCover = false,
     this.itemHeight = 200,
@@ -25,6 +27,7 @@ class NovelListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      controller: controller,
       itemCount: novelList.length,
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: itemWidth,
@@ -32,7 +35,7 @@ class NovelListView extends StatelessWidget {
         crossAxisSpacing: itemSpacing,
         mainAxisSpacing: itemSpacing,
       ),
-      itemBuilder: (context, index) => _ListItem(
+      itemBuilder: (context, index) => NovelListViewItem(
         novel: novelList[index],
         isOnlineCover: isOnlineCover,
         onClick: (novel) {
@@ -45,11 +48,12 @@ class NovelListView extends StatelessWidget {
   }
 }
 
-class _ListItem extends StatelessWidget {
+class NovelListViewItem extends StatelessWidget {
   NovelModel novel;
   void Function(NovelModel novel) onClick;
   bool isOnlineCover;
-  _ListItem({
+  NovelListViewItem({
+    super.key,
     required this.novel,
     required this.onClick,
     this.isOnlineCover = false,

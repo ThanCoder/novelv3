@@ -8,3 +8,7 @@ ValueNotifier<bool> isDarkThemeNotifier = ValueNotifier(false);
 //config
 ValueNotifier<AppConfigModel> appConfigNotifier =
     ValueNotifier(AppConfigModel());
+
+//home bottom bar
+ValueNotifier<bool> isShowHomeBottomBarNotifier = ValueNotifier(true);
+ValueNotifier<bool> isShowContentBottomBarNotifier = ValueNotifier(true);

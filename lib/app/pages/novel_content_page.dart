@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/novel_content/index.dart';
@@ -11,6 +12,7 @@ import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
+import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
@@ -35,6 +37,7 @@ class NovelContentPageState extends State<NovelContentPage> {
 
   @override
   void initState() {
+    _scrollController.addListener(_onListViewScroll);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       init();
@@ -45,6 +48,19 @@ class NovelContentPageState extends State<NovelContentPage> {
     // if (currentNovelNotifier.value == null) return;
     // currentNovelNotifier.value =
     //     NovelModel.fromPath(, isFullInfo: true);
+  }
+
+  void _onListViewScroll() {
+    //down
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      isShowContentBottomBarNotifier.value = false;
+    }
+    //up
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      isShowContentBottomBarNotifier.value = true;
+    }
   }
 
   //dialog
@@ -80,6 +96,9 @@ class NovelContentPageState extends State<NovelContentPage> {
             //change ui
             currentNovelNotifier.value = null;
             currentNovelNotifier.value = novel;
+            context
+                .read<NovelProvider>()
+                .setCurrentNovel(novelSourcePath: novel.path);
           } catch (e) {
             showMessage(context, e.toString());
           }

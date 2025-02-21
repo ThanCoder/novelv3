@@ -94,7 +94,6 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
       if (isLoading) return;
 
       config.page = currentPage;
-      print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
 
       if (widget.saveConfig != null) {
         widget.saveConfig!(config);
@@ -110,13 +109,12 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
     super.onWindowClose();
   }
 
-  void _onKeyboradPressed(RawKeyEvent ev) {
-    if (ev is RawKeyDownEvent) {
+  void _onKeyboradPressed(KeyEvent ev) {
+    if (ev is KeyDownEvent) {
       String? keyName = ev.logicalKey.debugName;
       if (keyName != null && keyName.isNotEmpty) {
         _keySwitch(keyName);
       }
-      // print(ev.logicalKey.debugName);
     }
   }
 
@@ -368,11 +366,10 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
           goPage(pageIndex);
         },
       ),
-      body: RawKeyboardListener(
+      body: KeyboardListener(
         focusNode: FocusNode(),
-        onKey: _onKeyboradPressed,
+        onKeyEvent: _onKeyboradPressed,
         child: GestureDetector(
-          // onTap: () => _toggleFullScreen(false),
           onDoubleTap: () => _toggleFullScreen(false),
           child: Column(
             children: [
@@ -398,6 +395,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
   void _close() async {
     _saveConfig();
     toggleFullScreenPlatform(false);
+    toggleAndroidKeepScreen(false);
     windowManager.removeListener(this);
   }
 

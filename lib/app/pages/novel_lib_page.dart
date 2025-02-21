@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
@@ -26,12 +27,15 @@ class _NovelLibPageState extends State<NovelLibPage> {
   @override
   void initState() {
     bookMarkSortName = widget.bookMarkSortName;
+    listScrollController.addListener(_onListScroll);
     super.initState();
     init();
   }
 
   bool isLoading = false;
   late BookMarkSortName bookMarkSortName;
+  bool isShowWrapWidget = true;
+  final ScrollController listScrollController = ScrollController();
 
   void init() {
     try {
@@ -97,78 +101,107 @@ class _NovelLibPageState extends State<NovelLibPage> {
     }
   }
 
+  void _onListScroll() {
+    ///scroll up
+    if (listScrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      setState(() {
+        isShowWrapWidget = true;
+      });
+    }
+    //scroll down
+    if (listScrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      setState(() {
+        isShowWrapWidget = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return Center(child: TLoader());
     }
+
     return MyScaffold(
-      appBar: AppBar(
-        title: const Text('Library'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      appBar: !isShowWrapWidget
+          ? null
+          : AppBar(
+              title: const Text('Library'),
+            ),
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //sort list
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.start,
-              alignment: WrapAlignment.start,
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                TChip(
-                  title: 'BookMark',
-                  avatar: bookMarkSortName == BookMarkSortName.novelBookMark
-                      ? const Icon(Icons.check)
-                      : null,
-                  onClick: () {
-                    _sortNovel(BookMarkSortName.novelBookMark);
-                    setState(() {
-                      bookMarkSortName = BookMarkSortName.novelBookMark;
-                    });
-                  },
-                ),
-                TChip(
-                  title: 'Adult',
-                  avatar: bookMarkSortName == BookMarkSortName.novleAdult
-                      ? const Icon(Icons.check)
-                      : null,
-                  onClick: () {
-                    _sortNovel(BookMarkSortName.novleAdult);
-                    setState(() {
-                      bookMarkSortName = BookMarkSortName.novleAdult;
-                    });
-                  },
-                ),
-                TChip(
-                  title: 'OnGoing',
-                  avatar: bookMarkSortName == BookMarkSortName.novelOnGoing
-                      ? const Icon(Icons.check)
-                      : null,
-                  onClick: () {
-                    _sortNovel(BookMarkSortName.novelOnGoing);
-                    setState(() {
-                      bookMarkSortName = BookMarkSortName.novelOnGoing;
-                    });
-                  },
-                ),
-                TChip(
-                  title: 'Completed',
-                  avatar: bookMarkSortName == BookMarkSortName.novelIsCompleted
-                      ? const Icon(Icons.check)
-                      : null,
-                  onClick: () {
-                    _sortNovel(BookMarkSortName.novelIsCompleted);
-                    setState(() {
-                      bookMarkSortName = BookMarkSortName.novelIsCompleted;
-                    });
-                  },
-                ),
-              ],
+            AnimatedSize(
+              duration: const Duration(milliseconds: 700),
+              child: !isShowWrapWidget
+                  ? const SizedBox()
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      alignment: WrapAlignment.start,
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        TChip(
+                          title: 'BookMark',
+                          avatar:
+                              bookMarkSortName == BookMarkSortName.novelBookMark
+                                  ? const Icon(Icons.check)
+                                  : null,
+                          onClick: () {
+                            _sortNovel(BookMarkSortName.novelBookMark);
+                            setState(() {
+                              bookMarkSortName = BookMarkSortName.novelBookMark;
+                            });
+                          },
+                        ),
+                        TChip(
+                          title: 'Adult',
+                          avatar:
+                              bookMarkSortName == BookMarkSortName.novleAdult
+                                  ? const Icon(Icons.check)
+                                  : null,
+                          onClick: () {
+                            _sortNovel(BookMarkSortName.novleAdult);
+                            setState(() {
+                              bookMarkSortName = BookMarkSortName.novleAdult;
+                            });
+                          },
+                        ),
+                        TChip(
+                          title: 'OnGoing',
+                          avatar:
+                              bookMarkSortName == BookMarkSortName.novelOnGoing
+                                  ? const Icon(Icons.check)
+                                  : null,
+                          onClick: () {
+                            _sortNovel(BookMarkSortName.novelOnGoing);
+                            setState(() {
+                              bookMarkSortName = BookMarkSortName.novelOnGoing;
+                            });
+                          },
+                        ),
+                        TChip(
+                          title: 'Completed',
+                          avatar: bookMarkSortName ==
+                                  BookMarkSortName.novelIsCompleted
+                              ? const Icon(Icons.check)
+                              : null,
+                          onClick: () {
+                            _sortNovel(BookMarkSortName.novelIsCompleted);
+                            setState(() {
+                              bookMarkSortName =
+                                  BookMarkSortName.novelIsCompleted;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
             ),
-            const Divider(),
+            !isShowWrapWidget ? const SizedBox() : const Divider(),
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: novelBookMarkListNotifier,
@@ -193,6 +226,7 @@ class _NovelLibPageState extends State<NovelLibPage> {
                     ));
                   }
                   return NovelListView(
+                    controller: listScrollController,
                     novelList: value,
                     onClick: (novel) {
                       currentNovelNotifier.value = novel;
@@ -212,5 +246,11 @@ class _NovelLibPageState extends State<NovelLibPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    listScrollController.dispose();
+    super.dispose();
   }
 }

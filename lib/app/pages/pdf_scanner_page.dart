@@ -7,9 +7,9 @@ import 'package:novel_v3/app/services/pdf_services.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 
 class PdfScannerPage extends StatefulWidget {
-  void Function(PdfFileModel pdfFile)? onClick;
+  void Function(PdfFileModel pdfFile) onClick;
   void Function(PdfFileModel pdfFile)? onLongClick;
-  PdfScannerPage({super.key, this.onClick, this.onLongClick});
+  PdfScannerPage({super.key, required this.onClick, this.onLongClick});
 
   @override
   State<PdfScannerPage> createState() => _PdfScannerPageState();
@@ -97,9 +97,7 @@ class _PdfScannerPageState extends State<PdfScannerPage> {
                 child: PdfListView(
                   pdfList: value,
                   onClick: (pdfFile) {
-                    if (widget.onClick != null) {
-                      widget.onClick!(pdfFile);
-                    }
+                    widget.onClick(pdfFile);
                   },
                   onLongClick: (pdfFile) {
                     if (widget.onLongClick != null) {

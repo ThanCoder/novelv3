@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -30,6 +29,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
   late ChapterModel currentChapter;
   List<_ListItem> listItems = [];
   double lastScroll = 0;
+  bool isCanGoBack = false;
 
   int getPositionFromList(String title) {
     return chapterListNotifier.value.indexWhere((c) => c.title == title);
@@ -43,13 +43,12 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       currentChapter = currentChapterNotifier.value!;
     }
     super.initState();
-    init();
+    readerConfig = getTextReaderConfig();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   void init() async {
     try {
-      readerConfig = getTextReaderConfig();
-
       //keep screen
       _androidKeepScreen(readerConfig.isKeepScreen);
 
@@ -121,6 +120,9 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       final path = '${currentNovelNotifier.value!.path}/$currentChapterNumber';
       final file = File(path);
       if (!file.existsSync()) {
+        setState(() {
+          isCanGoBack = true;
+        });
         showMessage(
             context, 'chapter "${currentChapterNumber.toString()}" မရှိပါ');
         return;
@@ -140,9 +142,23 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
                   '${currentNovelNotifier.value!.path}/$currentChapterNumber'),
         ),
       );
-      setState(() {});
+      //check can go back
+      _checkCanGoback();
     } catch (e) {
       debugPrint('loadedChapter: ${e.toString()}');
+    }
+  }
+
+  void _checkCanGoback() {
+    int readed = currentNovelNotifier.value!.readed;
+    if (currentChapterNumber > readed) {
+      setState(() {
+        isCanGoBack = false;
+      });
+    } else {
+      setState(() {
+        isCanGoBack = true;
+      });
     }
   }
 
@@ -254,17 +270,25 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
         false;
   }
 
-  Future<bool> _onBackpress() async {
-    bool res = true;
+  Future<void> _onBackpress() async {
     try {
       int readed = currentNovelNotifier.value!.readed;
       if (currentChapterNumber > readed) {
-        res = await _showConfirmReadedDialog();
+        final res = await _showConfirmReadedDialog();
+        setState(() {
+          isCanGoBack = res;
+        });
+      } else {
+        setState(() {
+          isCanGoBack = true;
+        });
       }
     } catch (e) {
+      setState(() {
+        isCanGoBack = true;
+      });
       debugPrint('_onBackpress: ${e.toString()}');
     }
-    return res;
   }
 
   @override
@@ -273,9 +297,10 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       sourcePath: currentNovelNotifier.value!.path,
       chapter: currentChapter.title,
     );
-    return WillPopScope(
-      onWillPop: () async {
-        return await _onBackpress();
+    return PopScope(
+      canPop: isCanGoBack,
+      onPopInvokedWithResult: (didPop, result) {
+        _onBackpress();
       },
       child: MyScaffold(
         appBar: isFullScreen
@@ -327,6 +352,12 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
             )),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    toggleAndroidKeepScreen(false);
+    super.dispose();
   }
 }
 

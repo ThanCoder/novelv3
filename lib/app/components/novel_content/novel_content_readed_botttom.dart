@@ -14,9 +14,15 @@ class NovelContentReadedBotttom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final file = File('${novel.path}/readed');
-    if (!file.existsSync() || file.readAsStringSync().isEmpty) {
+    if (!file.existsSync()) {
       return Container();
     }
+    final chapterNumber = file.readAsStringSync();
+    final chapterFile = File('${novel.path}/$chapterNumber');
+    if (chapterNumber.isEmpty || !chapterFile.existsSync()) {
+      return Container();
+    }
+    //is chapter exists
     return ElevatedButton(
       onPressed: () {
         try {

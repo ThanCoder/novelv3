@@ -46,64 +46,61 @@ class PdfListPageState extends State<PdfListPage> {
   void showMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => BottomSheet(
-        onClosing: () {},
-        builder: (context) => ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(child: Text(pdfFile.title)),
-            ),
-            const Divider(),
-            //copy name
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                copyText(pdfFile.title);
-              },
-              leading: const Icon(Icons.copy),
-              title: const Text('copy name'),
-            ),
-            //rename
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                renamePdf();
-              },
-              leading: const Icon(Icons.drive_file_rename_outline),
-              title: const Text('Rename'),
-            ),
-            //copy in novel
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                copyToOutDir();
-              },
-              leading: const Icon(Icons.copy),
-              title: const Text('အပြင်ကို ကူးထုတ်မယ်'),
-            ),
-            //move out pdf
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                moveToOutDir();
-              },
-              leading: const Icon(Icons.move_down),
-              title: const Text('အပြင်ကို ရွေ့ထုတ်မယ်(Move)'),
-            ),
-            //delete
-            ListTile(
-              textColor: Colors.red,
-              iconColor: Colors.red,
-              onTap: () {
-                Navigator.pop(context);
-                deletePdf();
-              },
-              leading: const Icon(Icons.delete_forever),
-              title: const Text('ဖျက်မယ် (Delete)'),
-            ),
-          ],
-        ),
+      builder: (context) => ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: Text(pdfFile.title)),
+          ),
+          const Divider(),
+          //copy name
+          ListTile(
+            onTap: () {
+              Navigator.pop(context);
+              copyText(pdfFile.title);
+            },
+            leading: const Icon(Icons.copy),
+            title: const Text('copy name'),
+          ),
+          //rename
+          ListTile(
+            onTap: () {
+              Navigator.pop(context);
+              renamePdf();
+            },
+            leading: const Icon(Icons.drive_file_rename_outline),
+            title: const Text('Rename'),
+          ),
+          //copy in novel
+          ListTile(
+            onTap: () {
+              Navigator.pop(context);
+              copyToOutDir();
+            },
+            leading: const Icon(Icons.copy),
+            title: const Text('အပြင်ကို ကူးထုတ်မယ်'),
+          ),
+          //move out pdf
+          ListTile(
+            onTap: () {
+              Navigator.pop(context);
+              moveToOutDir();
+            },
+            leading: const Icon(Icons.move_down),
+            title: const Text('အပြင်ကို ရွေ့ထုတ်မယ်(Move)'),
+          ),
+          //delete
+          ListTile(
+            textColor: Colors.red,
+            iconColor: Colors.red,
+            onTap: () {
+              Navigator.pop(context);
+              deletePdf();
+            },
+            leading: const Icon(Icons.delete_forever),
+            title: const Text('ဖျက်မယ် (Delete)'),
+          ),
+        ],
       ),
     );
   }
@@ -156,7 +153,8 @@ class PdfListPageState extends State<PdfListPage> {
     showDialog(
       context: context,
       builder: (context) => ConfirmDialog(
-        contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+        contentText:
+            '`${pdfFile.title}` ဖျက်ချင်တာ သေချာပြီလား?\nပြန်ယူလို့ မရဘူးနော်!',
         cancelText: 'မလုပ်ဘူး',
         submitText: 'ဖျက်မယ်',
         onCancel: () {},
@@ -175,6 +173,20 @@ class PdfListPageState extends State<PdfListPage> {
             debugPrint(e.toString());
           }
         },
+      ),
+    );
+  }
+
+  void _onClick(PdfFileModel pdfFile) {
+//set recent
+    setRecentDB(
+        'pdf_list_page_${currentNovelNotifier.value!.title}', pdfFile.title);
+    setState(() {});
+    //go reader
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PdfReaderScreen(pdfFile: pdfFile),
       ),
     );
   }
@@ -221,19 +233,7 @@ class PdfListPageState extends State<PdfListPage> {
         activeTitle: getRecentDB<String>(
                 'pdf_list_page_${currentNovelNotifier.value!.title}') ??
             '',
-        onClick: (pdfFile) {
-          //set recent
-          setRecentDB('pdf_list_page_${currentNovelNotifier.value!.title}',
-              pdfFile.title);
-          setState(() {});
-          //go reader
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PdfReaderScreen(pdfFile: pdfFile),
-            ),
-          );
-        },
+        onClick: _onClick,
         onLongClick: (_pdfFile) {
           pdfFile = _pdfFile;
           showMenu();

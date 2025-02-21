@@ -267,25 +267,35 @@ class _BodyTab extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: const TabBar(
-          tabs: [
-            Tab(
-              text: 'Home',
-              icon: Icon(Icons.home),
-            ),
-            Tab(
-              text: 'Chapter',
-              icon: Icon(Icons.list),
-            ),
-            Tab(
-              text: 'PDF List',
-              icon: Icon(Icons.picture_as_pdf),
-            ),
-            Tab(
-              text: 'Book Mark List',
-              icon: Icon(Icons.bookmark_added),
-            ),
-          ],
+        bottomSheet: ValueListenableBuilder(
+          valueListenable: isShowContentBottomBarNotifier,
+          builder: (context, value, child) {
+            return AnimatedSize(
+              duration: const Duration(milliseconds: 400),
+              child: !value
+                  ? const SizedBox.shrink()
+                  : const TabBar(
+                      tabs: [
+                        Tab(
+                          text: 'Home',
+                          icon: Icon(Icons.home),
+                        ),
+                        Tab(
+                          text: 'Chapter',
+                          icon: Icon(Icons.list),
+                        ),
+                        Tab(
+                          text: 'PDF List',
+                          icon: Icon(Icons.picture_as_pdf),
+                        ),
+                        Tab(
+                          text: 'Book Mark List',
+                          icon: Icon(Icons.bookmark_added),
+                        ),
+                      ],
+                    ),
+            );
+          },
         ),
       ),
     );

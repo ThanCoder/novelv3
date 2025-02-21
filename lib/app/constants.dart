@@ -7,7 +7,7 @@ const isDebugPrint = false;
 //assets
 const defaultIconAssetsPath = 'assets/online.webp';
 //version name
-const appVersionName = 'online-test-2';
+const appVersionName = 'beta-3';
 const appName = 'novel_v3';
 const appTitle = 'Novel V3';
 const novelDataExtName = 'npz';
@@ -16,6 +16,7 @@ const androidRootPath = "/storage/emulated/0";
 const appConfigFileName = 'main.config.json';
 const chapterBookMarkListName = 'fav_list2.json';
 const pdfConfigName = '-v3-config.json';
+const pdfOldConfigName = '-config.json';
 const pdfBookListName = '-book_list.json';
 const novelBookListName = 'novel_book_list.json';
 const textReaderConfigName = 'reader.config.json';

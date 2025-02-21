@@ -1,6 +1,8 @@
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_mc_search_screen.dart';
@@ -9,6 +11,7 @@ import 'package:novel_v3/app/screens/setting_screen.dart';
 import 'package:novel_v3/app/screens/share/receive_novel_data_screen.dart';
 import 'package:novel_v3/app/screens/share/share_novel_data_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
+import 'package:novel_v3/app/utils/app_util.dart';
 import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,6 +31,8 @@ class _HomeMorePageState extends State<HomeMorePage> {
   }
 
   String appVersion = '';
+  int cacheCount = 0;
+  String cacheSize = '0';
 
   void init() async {
     try {
@@ -36,9 +41,17 @@ class _HomeMorePageState extends State<HomeMorePage> {
       setState(() {
         appVersion = packageInfo.version;
       });
+      _checkCache();
     } catch (e) {
       debugPrint('HomeDrawer:init ${e.toString()}');
     }
+  }
+
+  void _checkCache() {
+    setState(() {
+      cacheCount = getCacheCount();
+      cacheSize = getParseFileSize(getCacheSize().toDouble());
+    });
   }
 
   @override
@@ -149,6 +162,32 @@ class _HomeMorePageState extends State<HomeMorePage> {
               trailing: const Icon(Icons.arrow_forward_ios_rounded),
               title: 'Share Data',
               desc: 'Novel အခြားသူတွေကနေ လက်ခံခြင်း',
+            ),
+            //Clean Cache
+            const Divider(),
+            const Text('Cache'),
+            ListTileWithDesc(
+              onClick: () {
+                if (cacheCount == 0) {
+                  showMessage(context, 'Cache မရှိပါ');
+                  return;
+                }
+                showDialog(
+                  context: context,
+                  builder: (context) => ConfirmDialog(
+                    contentText: 'Clean Cache',
+                    submitText: 'Clean',
+                    onCancel: () {},
+                    onSubmit: () async {
+                      await cleanCache();
+                      _checkCache();
+                    },
+                  ),
+                );
+              },
+              leading: const Icon(Icons.delete_forever),
+              title: 'Clean Cache',
+              desc: 'Cache - Count:$cacheCount - Size:$cacheSize ',
             ),
             const Divider(),
             //settting

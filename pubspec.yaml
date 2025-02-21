@@ -3,12 +3,13 @@ description: "WebNovel App"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.7.0+5
+version: 1.8.0+5
 
 environment:
   sdk: ^3.5.4
 dependencies:
   archive: ^4.0.2
+  cherry_toast: ^1.12.0
   crypto: ^3.0.6
   cupertino_icons: ^1.0.8
   dio: ^5.8.0+1
@@ -23,9 +24,8 @@ dependencies:
   pdfrx: ^1.0.101
   provider: ^6.1.2
   supabase_flutter: ^2.8.3
-  than_pkg: ^1.5.1
+  than_pkg: ^1.5.3
   url_launcher: ^6.3.1
-  cherry_toast: ^1.12.0
 
 dev_dependencies:
   change_app_package_name: ^1.4.0

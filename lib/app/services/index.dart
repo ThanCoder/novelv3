@@ -12,3 +12,4 @@ export './recent_db_services.dart';
 export './t_server.dart';
 export './text_reader_services.dart';
 export './wifi_services.dart';
+export './cache_services.dart';

@@ -17,6 +17,7 @@ class PdfReaderScreen extends StatefulWidget {
 class _PdfReaderScreenState extends State<PdfReaderScreen> {
   Widget getCurrentWidget() {
     if (Platform.isAndroid || Platform.isLinux) {
+      //get pdf config
       final pdfConfig = PdfConfigModel.fromPath(widget.pdfFile.configPath);
       return PdfrxReader(
         pdfFile: widget.pdfFile,
