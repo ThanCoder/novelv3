@@ -4,7 +4,7 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
-import 'package:novel_v3/app/services/app_path_services.dart';
+import 'package:novel_v3/app/services/core/app_path_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:than_pkg/than_pkg.dart';
 

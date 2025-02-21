@@ -38,6 +38,8 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
           .read<NovelProvider>()
           .setCurrentNovel(novelSourcePath: widget.novel.path);
       init();
+      //show default
+      isShowContentBottomBarNotifier.value = true;
     });
   }
 
@@ -199,7 +201,40 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
+    return ValueListenableBuilder(
+      valueListenable: isShowContentBottomBarNotifier,
+      builder: (context, isShowAppBar, child) {
+        return AnimatedSize(
+          duration: const Duration(milliseconds: 1500),
+          child: MyScaffold(
+            contentPadding: 0,
+            appBar: !isShowAppBar
+                ? null
+                : AppBar(
+                    title: const Text('Novel Content'),
+                    actions: [
+                      IconButton(
+                        onPressed: _toggleBookMark,
+                        icon: Icon(
+                            color: isExistsBookmark ? dangerColor : activeColor,
+                            isExistsBookmark
+                                ? Icons.bookmark_remove
+                                : Icons.bookmark_add),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showBottomMenu();
+                        },
+                        icon: const Icon(Icons.more_vert),
+                      ),
+                    ],
+                  ),
+            body: const _BodyTab(),
+          ),
+        );
+      },
+    );
+    /*return MyScaffold(
       appBar: AppBar(
         title: const Text('Novel Content'),
         actions: [
@@ -219,6 +254,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
       ),
       body: const _BodyTab(),
     );
+    */
   }
 }
 
@@ -267,7 +303,7 @@ class _BodyTab extends StatelessWidget {
             ],
           ),
         ),
-        bottomSheet: ValueListenableBuilder(
+        bottomNavigationBar: ValueListenableBuilder(
           valueListenable: isShowContentBottomBarNotifier,
           builder: (context, value, child) {
             return AnimatedSize(

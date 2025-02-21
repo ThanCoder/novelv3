@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 
 //debug
 const isDebugPrint = false;
+//github url
+const githubUrl = 'https://github.com/ThanCoder/novelv3';
 
 //assets
 const defaultIconAssetsPath = 'assets/online.webp';

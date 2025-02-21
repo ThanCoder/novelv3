@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/models/share_data_model.dart';
-import 'package:novel_v3/app/services/recent_db_services.dart';
+import 'package:novel_v3/app/services/core/recent_db_services.dart';
 import 'package:novel_v3/app/widgets/my_image_url.dart';
 import 'package:novel_v3/app/widgets/t_loader.dart';
 

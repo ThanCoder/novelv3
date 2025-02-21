@@ -11,6 +11,7 @@ import 'package:novel_v3/app/screens/setting_screen.dart';
 import 'package:novel_v3/app/screens/share/receive_novel_data_screen.dart';
 import 'package:novel_v3/app/screens/share/share_novel_data_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
+import 'package:novel_v3/app/services/release_services.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
 import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';
@@ -203,15 +204,17 @@ class _HomeMorePageState extends State<HomeMorePage> {
               leading: const Icon(Icons.settings),
               title: 'Setting',
             ),
+            //app version
             ListTileWithDesc(
               leading: const Icon(Icons.cloud_upload_rounded),
               title: 'App Version',
               desc: 'Current Version: $appVersion ($appVersionName)',
               onClick: () {
-                CherryToast.success(
-                  inheritThemeColors: true,
-                  title: const Text('မပြုလုပ်ရသေးပါ'),
-                ).show(context);
+                getRelease();
+                // CherryToast.success(
+                //   inheritThemeColors: true,
+                //   title: const Text('မပြုလုပ်ရသေးပါ'),
+                // ).show(context);
               },
             ),
             //about

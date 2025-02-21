@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const HomeMorePage(),
               ],
             ),
-            bottomSheet: !isShowTabBar
+            bottomNavigationBar: !isShowTabBar
                 ? null
                 : const TabBar(
                     tabs: [

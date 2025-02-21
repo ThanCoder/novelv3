@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/services/app_services.dart';
+import 'package:novel_v3/app/services/core/app_services.dart';
 
 class NovelPageLinkDialog extends StatefulWidget {
   BuildContext dialogContext;

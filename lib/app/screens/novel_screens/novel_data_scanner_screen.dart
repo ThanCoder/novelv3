@@ -6,7 +6,7 @@ import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/import_novel_data_dialog.dart';
 import 'package:novel_v3/app/models/novel_data_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/services/android_app_services.dart';
+import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/services/novel_data_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/my_scaffold.dart';

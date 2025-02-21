@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/components/chapter_list_view.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/models/index.dart';
+import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/screens/novel_screens/chapter_text_reader_screen.dart';
@@ -20,9 +22,12 @@ class ChapterListPageState extends State<ChapterListPage> {
   final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
+    _scrollController.addListener(_onListViewScroll);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       init();
+      //show default
+      isShowContentBottomBarNotifier.value = true;
     });
   }
 
@@ -32,6 +37,19 @@ class ChapterListPageState extends State<ChapterListPage> {
   void init() {
     if (currentNovelNotifier.value == null) return;
     context.read<ChapterProvider>().initList();
+  }
+
+  void _onListViewScroll() {
+    //down
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      isShowContentBottomBarNotifier.value = false;
+    }
+    //up
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      isShowContentBottomBarNotifier.value = true;
+    }
   }
 
   void openMenu() {

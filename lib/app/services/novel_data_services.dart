@@ -6,7 +6,7 @@ import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/models/novel_data_model.dart';
-import 'package:novel_v3/app/services/app_path_services.dart';
+import 'package:novel_v3/app/services/core/app_path_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 //isolate

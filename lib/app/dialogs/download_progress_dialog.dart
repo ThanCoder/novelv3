@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/services/recent_db_services.dart';
+import 'package:novel_v3/app/services/core/recent_db_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 class DownloadProgressDialog extends StatefulWidget {
