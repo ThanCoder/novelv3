@@ -1,0 +1,16 @@
+{
+    "title":"Novel V3",
+    "package_name":"novel_v3",
+    "cover_url":"https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/assets/online.webp",
+    "github_url":"https://github.com/ThanCoder/novelv3",
+    "platforms":[
+        {
+            "platform":"linux",
+            "version":"1.8.0",
+            "changelog_url":"https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/CHANGELOG.md",
+            "reademe_url":"https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/README.md",
+            "size":"35.5MB",
+            "date":"0"
+        }
+    ]
+}
