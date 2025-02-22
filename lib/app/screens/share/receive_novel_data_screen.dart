@@ -6,12 +6,12 @@ import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/customs/novel_search_delegate.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/screens/share/share_novel_content_screen.dart';
 import 'package:novel_v3/app/services/core/recent_db_services.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
-import 'package:novel_v3/app/widgets/t_text_field.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+import '../../widgets/index.dart';
 
 class ReceiveNovelDataScreen extends StatefulWidget {
   const ReceiveNovelDataScreen({super.key});
@@ -58,9 +58,10 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       });
 
       //recent
-      final recentUrl = getRecentDB<String>('server_address');
-      if (recentUrl != null && recentUrl.isNotEmpty) {
-        hostAddressController.text = recentUrl;
+      final hostAddress = getRecentDB<String>('server_address');
+      if (hostAddress != null && hostAddress.isNotEmpty) {
+        hostAddressController.text = hostAddress;
+        wififHostAddressNotifier.value = hostAddress;
       }
       fetch();
     } catch (e) {
@@ -95,6 +96,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
         //set recent
         if (hostAddressController.text.isNotEmpty) {
           setRecentDB('server_address', hostAddressController.text);
+          wififHostAddressNotifier.value = hostAddressController.text;
         }
       }
     } catch (e) {

@@ -9,9 +9,9 @@ import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/config_util.dart';
-import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/index.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});

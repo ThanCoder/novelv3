@@ -4,7 +4,8 @@ import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/services/core/pdf_services.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
+
+import '../widgets/index.dart';
 
 class PdfScannerPage extends StatefulWidget {
   void Function(PdfFileModel pdfFile) onClick;

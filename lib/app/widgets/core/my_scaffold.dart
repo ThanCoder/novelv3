@@ -15,7 +15,7 @@ class MyScaffold extends StatelessWidget {
     this.appBar,
     this.drawer,
     this.endDrawer,
-    this.contentPadding = 4,
+    this.contentPadding = 8,
     this.bottomSheet,
   });
 

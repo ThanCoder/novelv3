@@ -3,7 +3,8 @@ import 'package:novel_v3/app/components/novel_status_badge.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/models/novel_data_model.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
-import 'package:novel_v3/app/widgets/my_image_file.dart';
+
+import '../widgets/index.dart';
 
 class NovelDataListView extends StatelessWidget {
   List<NovelDataModel> novelDataList;

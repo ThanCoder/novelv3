@@ -1,24 +1,21 @@
 {
   "title": "Novel V3",
+  "description": "WebNovel App",
   "package_name": "novel_v3",
   "github_url": "https://github.com/ThanCoder/novelv3",
   "cover_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/assets/online.webp",
-  "changelog_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/CHANGELOG.md",
-  "reademe_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/README.md",
-  "platforms": [
+  "changelog_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/README.md",
+  "reademe_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/CHANGELOG.md",
+  "versions": [
     {
       "platform": "linux",
-      "version": "1.8.0",
-      "size": "19.5MB",
-      "downlaod_url": "",
-      "date": "0"
-    },
-    {
-      "platform": "android",
-      "version": "1.8.0",
-      "size": "35.5MB",
-      "downlaod_url": "",
-      "date": "0"
+      "version": "1.8.2",
+      "size": "10.0MB",
+      "download_url": "http://localhost:8080",
+      "direct_download_url": "http://localhost:8080/download?path=/home/thancoder/Documents/novel%20v3.tar.gz",
+      "content_urls": [],
+      "description": "",
+      "date": 1740187359169
     }
   ]
 }

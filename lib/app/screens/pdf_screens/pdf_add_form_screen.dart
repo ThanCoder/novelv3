@@ -11,8 +11,8 @@ import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
+
+import '../../widgets/index.dart';
 
 class PdfAddFormScreen extends StatefulWidget {
   const PdfAddFormScreen({super.key});

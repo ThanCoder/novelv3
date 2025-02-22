@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/models/pdf_config_model.dart';
-import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
-import 'package:novel_v3/app/widgets/t_text_field.dart';
+
+import '../widgets/index.dart';
 
 class PdfReaderConfigActionComponent extends StatefulWidget {
   PdfConfigModel pdfConfig;

@@ -7,10 +7,10 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/novel_provider.dart';
+import '../widgets/index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

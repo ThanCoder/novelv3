@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
@@ -7,7 +9,6 @@ import 'package:novel_v3/app/utils/path_util.dart';
 class DownloadProgressDialog extends StatefulWidget {
   List<String> pathUrlList;
   String saveDirPath;
-  BuildContext dialogContext;
   String title;
   String cancelText;
   String submitText;
@@ -19,7 +20,6 @@ class DownloadProgressDialog extends StatefulWidget {
     super.key,
     required this.pathUrlList,
     required this.saveDirPath,
-    required this.dialogContext,
     this.title = 'Downloader',
     this.cancelText = 'Cancel',
     this.submitText = 'Submit',
@@ -40,9 +40,12 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
   }
 
   final dio = Dio();
+  final CancelToken cancelToken = CancelToken();
   String title = '';
   int max = 0;
   int progress = 0;
+  int downloadIndex = 0;
+  int allFileCount = 0;
   bool isLoading = false;
   bool isCanceled = false;
   bool isError = false;
@@ -58,7 +61,7 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
       //progress
       setState(() {
         isLoading = false;
-        max = widget.pathUrlList.length;
+        allFileCount = widget.pathUrlList.length;
       });
       // List<Future<void>> downloadTasks =
       //     widget.pathUrlList.map((path) async {}).toList();
@@ -69,15 +72,33 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
           final urlPath = '$api/download?path=$path';
           final savePath =
               '${createDir(widget.saveDirPath)}/${getBasename(path)}';
+          final saveFile = File(savePath);
 
-          // print('/url $urlPath \nsavePath $savePath');
-          //download url
-          await dio.download(urlPath, savePath);
+          if (saveFile.existsSync()) {
+            setState(() {
+              progress++;
+              title = 'Downloaded: ${getBasename(path)}';
+            });
+          }
+          //download file
+          await dio.download(
+            urlPath,
+            savePath,
+            onReceiveProgress: (count, total) {
+              setState(() {
+                setState(() {
+                  max = total;
+                  progress = count;
+                });
+              });
+            },
+          );
           //progress
           setState(() {
-            progress++;
-            title = 'downloaded: ${getBasename(path)}';
+            downloadIndex++;
+            title = 'Downloaded: ${getBasename(path)}';
           });
+          // await Future.delayed(const Duration(milliseconds: 100));
           // await Future.delayed(const Duration(milliseconds: 1200));
         } catch (e) {
           // debugPrint(e.toString());
@@ -104,28 +125,29 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
   }
 
   void _closeDialog() {
-    Navigator.pop(widget.dialogContext);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.title),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: 120,
+      content: SingleChildScrollView(
         child: Column(
+          spacing: 10,
           children: [
             LinearProgressIndicator(
-              value: progress / max,
+              value: max == 0 ? null : progress / max,
             ),
-            const SizedBox(height: 10),
             Row(
+              spacing: 10,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: Text(isLoading ? 'Loading...' : title)),
-                const Spacer(),
-                Text('$progress/$max'),
+                Text(
+                  isLoading ? 'Loading...' : title,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text('$downloadIndex/$allFileCount'),
               ],
             ),
           ],

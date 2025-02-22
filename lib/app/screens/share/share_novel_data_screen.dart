@@ -5,8 +5,9 @@ import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/services/core/t_server.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+import '../../widgets/index.dart';
 
 class ShareNovelDataScreen extends StatefulWidget {
   const ShareNovelDataScreen({super.key});
@@ -18,19 +19,20 @@ class ShareNovelDataScreen extends StatefulWidget {
 class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
   bool isServerRunning = false;
   String hostAddress = 'localhost';
-  HttpServer? _httpServer;
   List<String> wifiList = [];
 
   @override
   void initState() {
+    if (Platform.isAndroid) {
+      ThanPkg.platform.toggleKeepScreen(isKeep: true);
+    }
     _startServer();
     super.initState();
   }
 
   void _startServer() async {
     try {
-      final server = await TServer.instance.startServer();
-      _httpServer = server.httpServer;
+      await TServer.instance.startServer();
       //get wifi
       try {
         final res = await ThanPkg.platform.getWifiAddressList();
@@ -41,15 +43,16 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
         debugPrint('getWifilist: ${e.toString()}');
       }
       //send all novel list
-      server.get('/', (req) async {
+      TServer.instance.get('/', (req) async {
         try {
           final novelList =
               await getNovelListFromPath(sourcePath: getSourcePath());
           final ml = novelList.map((nv) => nv.toMap()).toList();
-          req.response
-            ..headers.contentType = ContentType.json
-            ..write(const JsonEncoder.withIndent('  ').convert(ml))
-            ..close();
+          TServer.instance.send(
+            req,
+            body: const JsonEncoder.withIndent('  ').convert(ml),
+            contentType: ContentType.json,
+          );
         } catch (e) {
           req.response
             ..statusCode = HttpStatus.internalServerError
@@ -59,43 +62,20 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
       });
 
       //cover file download
-      server.get('/download', (req) async {
-        try {
-          String path = req.uri.queryParameters['path'] ?? '';
-          final file = File(path);
-
-          if (path.isEmpty || !file.existsSync()) {
-            req.response
-              ..statusCode = HttpStatus.notFound
-              ..write('file not found!')
-              ..close();
-            return;
-          }
-
-          try {
-            await file.openRead().pipe(req.response);
-          } catch (e) {
-            debugPrint("Error sending file: $e");
-            req.response.statusCode = HttpStatus.internalServerError;
-            req.response.write("Error reading file");
-            await req.response.close();
-          }
-        } catch (e) {
-          req.response
-            ..statusCode = HttpStatus.internalServerError
-            ..write("Error sending file")
-            ..close();
-        }
+      TServer.instance.get('/download', (req) async {
+        String path = req.uri.queryParameters['path'] ?? '';
+        TServer.instance.sendFile(req, path);
       });
       //novel dir list
-      server.get('/list', (req) {
+      TServer.instance.get('/list', (req) {
         String path = req.uri.queryParameters['dir'] ?? '';
         final dir = Directory(path);
         if (path.isEmpty || !dir.existsSync()) {
-          req.response
-            ..statusCode = HttpStatus.notFound
-            ..write('dir is empty')
-            ..close();
+          TServer.instance.send(
+            req,
+            body: 'dir is empty',
+            httpStatus: HttpStatus.notFound,
+          );
           return;
         }
         // ရှိနေရင်
@@ -114,10 +94,11 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
                   'date': f.statSync().modified.millisecondsSinceEpoch,
                 })
             .toList();
-        req.response
-          ..headers.contentType = ContentType.json
-          ..write(const JsonEncoder.withIndent('  ').convert(ml))
-          ..close();
+        TServer.instance.send(
+          req,
+          body: const JsonEncoder.withIndent('  ').convert(ml),
+          contentType: ContentType.json,
+        );
       });
 
       setState(() {
@@ -135,9 +116,8 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
 
   void _stopServer({bool force = false}) async {
     try {
-      if (_httpServer == null) return;
       //close server
-      _httpServer!.close(force: force);
+      TServer.instance.stopServer(force: force);
 
       setState(() {
         isServerRunning = false;
@@ -150,6 +130,9 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
   @override
   void dispose() {
     _stopServer(force: true);
+    if (Platform.isAndroid) {
+      ThanPkg.platform.toggleKeepScreen(isKeep: false);
+    }
     super.dispose();
   }
 

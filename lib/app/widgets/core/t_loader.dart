@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:novel_v3/app/notifiers/app_notifier.dart';
+
+import '../../notifiers/app_notifier.dart';
 
 class TLoader extends StatelessWidget {
   double size;

@@ -6,13 +6,10 @@ import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/services/novel_isolate_services.dart';
-import 'package:novel_v3/app/widgets/my_image_file.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
-import 'package:novel_v3/app/widgets/t_text_field.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/index.dart';
+import '../../widgets/index.dart';
 
 class NovelFromScreen extends StatefulWidget {
   NovelModel novel;
@@ -168,6 +165,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
                 _NovelCover(novel: novel),
                 const Divider(),
                 TTextField(
+                  isSelectedAll: true,
                   label: const Text('Novel Title'),
                   controller: titleController,
                   errorText: titleErrorText,
@@ -180,6 +178,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
                 ),
                 const SizedBox(height: 10),
                 TTextField(
+                  isSelectedAll: true,
                   label: const Text('Page Url'),
                   controller: pageUrlController,
                   onChanged: (value) {
@@ -188,6 +187,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
                 ),
                 const SizedBox(height: 10),
                 TTextField(
+                  isSelectedAll: true,
                   label: const Text('MC'),
                   controller: mcController,
                   onChanged: (value) {
@@ -196,6 +196,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
                 ),
                 const SizedBox(height: 10),
                 TTextField(
+                  isSelectedAll: true,
                   label: const Text('Author'),
                   controller: authorController,
                   onChanged: (value) {
@@ -242,6 +243,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
                 //content
                 const SizedBox(height: 10),
                 TTextField(
+                  isSelectedAll: true,
                   label: const Text('Content or Review'),
                   controller: contentController,
                   maxLines: 7,

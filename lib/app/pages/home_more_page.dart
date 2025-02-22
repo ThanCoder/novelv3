@@ -2,6 +2,7 @@ import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/dialogs/app_version_update_dialog.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
@@ -11,11 +12,10 @@ import 'package:novel_v3/app/screens/setting_screen.dart';
 import 'package:novel_v3/app/screens/share/receive_novel_data_screen.dart';
 import 'package:novel_v3/app/screens/share/share_novel_data_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/services/release_services.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
-import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../widgets/index.dart';
 
 class HomeMorePage extends StatefulWidget {
   const HomeMorePage({super.key});
@@ -53,6 +53,13 @@ class _HomeMorePageState extends State<HomeMorePage> {
       cacheCount = getCacheCount();
       cacheSize = getParseFileSize(getCacheSize().toDouble());
     });
+  }
+
+  void _showVersionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => const AppVersionUpdateDialog(),
+    );
   }
 
   @override
@@ -208,13 +215,19 @@ class _HomeMorePageState extends State<HomeMorePage> {
             ListTileWithDesc(
               leading: const Icon(Icons.cloud_upload_rounded),
               title: 'App Version',
-              desc: 'Current Version: $appVersion ($appVersionName)',
-              onClick: () {
-                getRelease();
-                // CherryToast.success(
-                //   inheritThemeColors: true,
-                //   title: const Text('မပြုလုပ်ရသေးပါ'),
-                // ).show(context);
+              desc:
+                  'Current Version: ${ReleaseServices.instance.getVersion()} ($appVersionName)',
+              onClick: () async {
+                final isLatest =
+                    await ReleaseServices.instance.isLatestVersion();
+                if (isLatest) {
+                  CherryToast.success(
+                    inheritThemeColors: true,
+                    title: const Text('နောက်ဆုံးထွက် version'),
+                  ).show(context);
+                } else {
+                  _showVersionDialog();
+                }
               },
             ),
             //about

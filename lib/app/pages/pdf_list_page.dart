@@ -11,8 +11,9 @@ import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/pdf_screens/pdf_reader_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/index.dart';
 
 class PdfListPage extends StatefulWidget {
   const PdfListPage({super.key});

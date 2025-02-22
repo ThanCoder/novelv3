@@ -13,3 +13,4 @@ export 'core/t_server.dart';
 export './text_reader_services.dart';
 export 'core/wifi_services.dart';
 export 'core/cache_services.dart';
+export './release_services.dart';

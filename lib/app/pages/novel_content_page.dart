@@ -17,13 +17,12 @@ import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
-import 'package:novel_v3/app/widgets/my_image_file.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/index.dart';
+import '../widgets/index.dart';
 
 class NovelContentPage extends StatefulWidget {
   const NovelContentPage({super.key});

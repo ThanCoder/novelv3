@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/chapter_list_view.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/index.dart';
+import '../widgets/index.dart';
 
 class ChapterListDrawer extends StatefulWidget {
   const ChapterListDrawer({super.key});

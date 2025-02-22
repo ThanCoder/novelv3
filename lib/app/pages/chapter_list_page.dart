@@ -8,8 +8,9 @@ import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/screens/novel_screens/chapter_text_reader_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/index.dart';
 
 class ChapterListPage extends StatefulWidget {
   const ChapterListPage({super.key});

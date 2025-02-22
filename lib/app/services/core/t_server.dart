@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:novel_v3/app/constants.dart';
-
 class _Listener {
   String url;
   String method;
@@ -14,26 +12,39 @@ class _Listener {
   });
 }
 
+class _SocketListener {
+  String url;
+  void Function(HttpRequest req, WebSocket socket) onListen;
+  _SocketListener({
+    required this.url,
+    required this.onListen,
+  });
+}
+
 class TServer {
   static final TServer instance = TServer._internal();
   TServer._internal();
 
-  late HttpServer httpServer;
+  late HttpServer _httpServer;
   void Function(String msg)? onError;
   final List<_Listener> _listenerList = [];
+  final List<_SocketListener> _webSocktetlistenerList = [];
 
   Future<TServer> startServer({
-    int port = serverPort,
+    int port = 3300,
     bool shared = true,
   }) async {
     try {
+      //all clear
       _listenerList.clear();
-      httpServer = await HttpServer.bind(
+      _webSocktetlistenerList.clear();
+
+      _httpServer = await HttpServer.bind(
         InternetAddress.anyIPv4,
-        serverPort,
+        port,
         shared: shared,
       );
-      httpServer.listen(_onListen);
+      _httpServer.listen(_onListen);
     } catch (e) {
       if (onError != null) {
         onError!(e.toString());
@@ -45,6 +56,12 @@ class TServer {
   void _onListen(HttpRequest req) {
     final method = req.method;
     final url = req.uri.path;
+    //for websocket
+    if (WebSocketTransformer.isUpgradeRequest(req)) {
+      _handleWebSocket(req);
+      return;
+    }
+    //for http
     for (final _listener in _listenerList) {
       if (_listener.method == method && _listener.url == url) {
         _listener.onRequest(req);
@@ -59,11 +76,87 @@ class TServer {
       ..close();
   }
 
+  //set listener
   void get(String url, void Function(HttpRequest req) onReq) {
     _listenerList.add(_Listener(url: url, method: 'GET', onRequest: onReq));
   }
 
-  // void post(String url, void Function(HttpRequest req) onReq) {
-  //   _listenerList.add(_Listener(url: url, method: 'POST', onRequest: onReq));
-  // }
+  void post(String url, void Function(HttpRequest req) onReq) {
+    _listenerList.add(_Listener(url: url, method: 'POST', onRequest: onReq));
+  }
+
+  //websocket set listener
+  void onSocket(
+      String url, void Function(HttpRequest http, WebSocket socket) onListen) {
+    final socketListener = _SocketListener(
+      url: url,
+      onListen: onListen,
+    );
+    _webSocktetlistenerList.add(socketListener);
+  }
+
+  //web socket
+  void _handleWebSocket(HttpRequest req) async {
+    try {
+      final url = req.uri.path;
+      for (final _listener in _webSocktetlistenerList) {
+        if (_listener.url == url) {
+          final socket = await WebSocketTransformer.upgrade(req);
+          _listener.onListen(req, socket);
+          return;
+        }
+      }
+
+      // No matching route, return 404 response
+      req.response
+        ..statusCode = HttpStatus.notFound
+        ..write('404 Not Found')
+        ..close();
+    } catch (e) {
+      if (onError != null) {
+        onError!('websocket: ${e.toString()}');
+      }
+    }
+  }
+
+  //send body
+  void send(
+    HttpRequest req, {
+    String body = 'new route',
+    ContentType? contentType,
+    int httpStatus = 200,
+  }) {
+    contentType ??= ContentType.text;
+    req.response
+      ..statusCode = httpStatus
+      ..write(body)
+      ..close();
+  }
+
+  //send file
+  Future<void> sendFile(HttpRequest req, String filePath) async {
+    final file = File(filePath);
+    if (!await file.exists()) {
+      req.response
+        ..statusCode = HttpStatus.notFound
+        ..write('File Not Found')
+        ..close();
+      return;
+    }
+    //file ရှိရင်
+    req.response.headers
+      ..set(HttpHeaders.contentTypeHeader, 'application/octet-stream')
+      ..set(HttpHeaders.contentLengthHeader, file.lengthSync())
+      ..set(HttpHeaders.contentDisposition,
+          'attachment;filename=${file.path.split('/').last}');
+    //send file
+    await file.openRead().pipe(req.response);
+  }
+
+  //stop server
+  Future<void> stopServer({bool force = false}) async {
+    try {
+      _httpServer.close(force: force);
+    } catch (e) {}
+  }
 }

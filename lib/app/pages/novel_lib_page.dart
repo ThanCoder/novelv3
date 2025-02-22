@@ -7,10 +7,9 @@ import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_chip.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/index.dart';
 
 class NovelLibPage extends StatefulWidget {
   BookMarkSortName bookMarkSortName;

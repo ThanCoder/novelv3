@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/models/text_reader_config_model.dart';
-import 'package:novel_v3/app/widgets/font_list_wiget.dart';
-import 'package:novel_v3/app/widgets/list_tile_with_desc.dart';
-import 'package:novel_v3/app/widgets/t_text_field.dart';
+
+import '../widgets/index.dart';
 
 class TextReaderConfigDialog extends StatefulWidget {
   TextReaderConfigModel readerConfig;

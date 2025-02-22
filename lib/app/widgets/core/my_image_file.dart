@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/constants.dart';
+
+import '../../constants.dart';
 
 class MyImageFile extends StatelessWidget {
   String path;
@@ -9,6 +10,8 @@ class MyImageFile extends StatelessWidget {
   BoxFit fit;
   double? width;
   double? height;
+  double borderRadius;
+
   MyImageFile({
     super.key,
     required this.path,
@@ -16,10 +19,10 @@ class MyImageFile extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.width,
     this.height,
+    this.borderRadius = 0,
   });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _getImageWidget() {
     final file = File(path);
     if (file.existsSync()) {
       // final uniqueKey = file.statSync().modified.millisecondsSinceEpoch;
@@ -36,5 +39,16 @@ class MyImageFile extends StatelessWidget {
         fit: fit,
       );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (borderRadius > 0) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: _getImageWidget(),
+      );
+    }
+    return _getImageWidget();
   }
 }

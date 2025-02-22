@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_status_badge.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/widgets/my_image_file.dart';
-import 'package:novel_v3/app/widgets/my_image_url.dart';
+
+import '../widgets/index.dart';
 
 class NovelListView extends StatelessWidget {
   List<NovelModel> novelList;

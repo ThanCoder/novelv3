@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
-import 'package:novel_v3/app/widgets/my_image_file.dart';
+
+import '../widgets/index.dart';
 
 class PdfListView extends StatelessWidget {
   List<PdfFileModel> pdfList;

@@ -6,7 +6,8 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_from_screen.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/t_text_field.dart';
+
+import '../widgets/index.dart';
 
 class AddNewNovelDialog extends StatefulWidget {
   BuildContext dialogContext;
@@ -92,6 +93,7 @@ class _AddNewNovelDialogState extends State<AddNewNovelDialog> {
     return AlertDialog(
       title: const Text('New Novel'),
       content: TTextField(
+        isSelectedAll: true,
         controller: textController,
         label: const Text('Novel Title'),
         onChanged: onChanged,

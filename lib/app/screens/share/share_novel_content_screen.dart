@@ -13,8 +13,8 @@ import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/services/novel_isolate_services.dart';
 import 'package:novel_v3/app/services/core/recent_db_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
+
+import '../../widgets/index.dart';
 
 class ShareNovelContentScreen extends StatefulWidget {
   String apiUrl;
@@ -158,6 +158,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
         Navigator.pop(context);
         // showMessage(context, 'Download');
       }
+      debugPrint('downloaded');
       //novel data ရှိမရှိ စစ်ဆေးခြင်း
       _checkFiles();
       _refreshNovelList();
@@ -176,18 +177,17 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => DownloadProgressDialog(
+      builder: (ctx) => DownloadProgressDialog(
         pathUrlList: allDataList.map((data) => data.path).toList(),
         saveDirPath: saveDirPath,
-        dialogContext: context,
         onSuccess: () {
-          showMessage(context, 'Download လုပ်ပြီးပါပြီ');
+          showMessage(ctx, 'Download လုပ်ပြီးပါပြီ');
           //novel data ရှိမရှိ စစ်ဆေးခြင်း
           _checkFiles();
           _refreshNovelList();
         },
         onCancaled: () {
-          showMessage(context, 'Cancel လိုက်ပါပြီ');
+          showMessage(ctx, 'Cancel လိုက်ပါပြီ');
           //novel data ရှိမရှိ စစ်ဆေးခြင်း
           _checkFiles();
           _refreshNovelList();

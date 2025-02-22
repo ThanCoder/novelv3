@@ -9,8 +9,8 @@ import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/services/novel_data_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_loader.dart';
+
+import '../../widgets/index.dart';
 
 class NovelDataScannerScreen extends StatefulWidget {
   const NovelDataScannerScreen({super.key});

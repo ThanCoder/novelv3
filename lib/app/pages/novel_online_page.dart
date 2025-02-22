@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
+
+import '../widgets/index.dart';
 
 class NovelOnlinePage extends StatelessWidget {
   const NovelOnlinePage({super.key});

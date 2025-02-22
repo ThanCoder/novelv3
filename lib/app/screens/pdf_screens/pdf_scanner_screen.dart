@@ -6,9 +6,9 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/pages/pdf_scanner_page.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 
 import '../../notifiers/novel_notifier.dart';
+import '../../widgets/index.dart';
 
 class PdfScannerScreen extends StatefulWidget {
   const PdfScannerScreen({super.key});

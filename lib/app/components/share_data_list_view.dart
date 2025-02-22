@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/models/share_data_model.dart';
+import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/utils/app_util.dart';
+
+import '../widgets/index.dart';
 
 class ShareDataListView extends StatelessWidget {
   List<ShareDataModel> shareDataList;
@@ -56,8 +60,41 @@ class _ListItem extends StatelessWidget {
     required this.onDownloadClick,
   });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _getContent() {
+    if (shareData.name.split('.').last == 'png') {
+      String url =
+          'http://${wififHostAddressNotifier.value}:${serverPort}/download?path=${shareData.path}';
+      return Row(
+        spacing: 10,
+        children: [
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: MyImageUrl(
+              url: url,
+              borderRadius: 5,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  shareData.name,
+                  // overflow: TextOverflow.ellipsis,
+                ),
+                Text('size: ${getParseFileSize(shareData.size.toDouble())}'),
+                Text('Date: ${getParseDate(shareData.date)}'),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () => onDownloadClick(shareData),
+            icon: const Icon(Icons.download),
+          ),
+        ],
+      );
+    }
     return ListTile(
       textColor: shareData.isExists ? Colors.red : null,
       onTap: () => onClick(shareData),
@@ -69,5 +106,10 @@ class _ListItem extends StatelessWidget {
         icon: const Icon(Icons.download),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _getContent();
   }
 }

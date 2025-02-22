@@ -18,8 +18,9 @@ import 'package:novel_v3/app/screens/novel_screens/novel_from_screen.dart';
 import 'package:novel_v3/app/screens/pdf_screens/pdf_add_form_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
 import 'package:provider/provider.dart';
+
+import '../../widgets/index.dart';
 
 class NovelContentScreen extends StatefulWidget {
   NovelModel novel;

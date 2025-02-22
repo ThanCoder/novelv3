@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
-import 'package:novel_v3/app/widgets/my_scaffold.dart';
-import 'package:novel_v3/app/widgets/t_text_field.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/index.dart';
+import '../../widgets/index.dart';
 
 class ChapterAddFromScreen extends StatefulWidget {
   const ChapterAddFromScreen({super.key});
@@ -157,6 +156,7 @@ class _ChapterAddFromScreenState extends State<ChapterAddFromScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TTextField(
+                  isSelectedAll: true,
                   controller: chapterTextController,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   textInputType: TextInputType.number,
@@ -241,6 +241,7 @@ class _ChapterAddFromScreenState extends State<ChapterAddFromScreen> {
                 isChapterExists ? const SizedBox(height: 10) : Container(),
                 //body
                 TTextField(
+                  isSelectedAll: true,
                   controller: bodyTextController,
                   label: const Text('Chapter Body'),
                   maxLines: 15,

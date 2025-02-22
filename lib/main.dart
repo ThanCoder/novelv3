@@ -3,6 +3,7 @@ import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/pdf_provider.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/config_util.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,7 @@ void main() async {
 
   //init config
   await initConfig();
+  await ReleaseServices.instance.initReleaseService();
 
   runApp(
     MultiProvider(
