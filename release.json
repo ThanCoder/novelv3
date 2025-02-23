@@ -10,8 +10,18 @@
     {
       "platform": "linux",
       "version": "1.8.5",
-      "size": "10.0MB",
-      "download_url": "",
+      "size": "13.1MB",
+      "download_url": "https://github.com/ThanCoder/novelv3/releases/tag/v1.8.5",
+      "direct_download_url": "",
+      "content_urls": [],
+      "description": "",
+      "date": 1740270800159
+    },
+    {
+      "platform": "linux",
+      "version": "1.8.5",
+      "size": "35.6MB",
+      "download_url": "https://github.com/ThanCoder/novelv3/releases/tag/v1.8.5",
       "direct_download_url": "",
       "content_urls": [],
       "description": "",
