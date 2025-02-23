@@ -9,13 +9,13 @@
   "versions": [
     {
       "platform": "linux",
-      "version": "1.8.2",
+      "version": "1.8.5",
       "size": "10.0MB",
-      "download_url": "http://localhost:8080",
-      "direct_download_url": "http://localhost:8080/download?path=/home/thancoder/Documents/novel%20v3.tar.gz",
+      "download_url": "",
+      "direct_download_url": "",
       "content_urls": [],
       "description": "",
-      "date": 1740187359169
+      "date": 1740270800159
     }
   ]
 }

@@ -11,5 +11,5 @@ export 'pdf_screens/pdf_reader_screen.dart';
 export 'pdf_screens/pdf_scanner_screen.dart';
 export './setting_screen.dart';
 export './share/receive_novel_data_screen.dart';
-export './share/share_novel_content_screen.dart';
+export 'share/receive_novel_content_screen.dart';
 export './share/share_novel_data_screen.dart';

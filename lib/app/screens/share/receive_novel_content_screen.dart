@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/components/share_data_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
+import 'package:novel_v3/app/dialogs/download_dialog.dart';
 import 'package:novel_v3/app/dialogs/download_progress_dialog.dart';
 import 'package:novel_v3/app/dialogs/share_data_open_dialog.dart';
 import 'package:novel_v3/app/models/index.dart';
@@ -16,21 +19,21 @@ import 'package:novel_v3/app/utils/path_util.dart';
 
 import '../../widgets/index.dart';
 
-class ShareNovelContentScreen extends StatefulWidget {
+class ReceiveNovelContentScreen extends StatefulWidget {
   String apiUrl;
   NovelModel novel;
-  ShareNovelContentScreen({
+  ReceiveNovelContentScreen({
     super.key,
     required this.apiUrl,
     required this.novel,
   });
 
   @override
-  State<ShareNovelContentScreen> createState() =>
-      _ShareNovelContentScreenState();
+  State<ReceiveNovelContentScreen> createState() =>
+      _ReceiveNovelContentScreenState();
 }
 
-class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
+class _ReceiveNovelContentScreenState extends State<ReceiveNovelContentScreen> {
   @override
   void initState() {
     init();
@@ -53,9 +56,17 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
       final listUrl = 'http://${widget.apiUrl}/list?dir=${widget.novel.path}';
       final res = await dio.get(listUrl);
       if (res.statusCode == 200) {
-        List<dynamic> list = res.data;
-        allDataList = list.map((map) => ShareDataModel.fromMap(map)).toList();
+        List<dynamic> list = [];
+        try {
+          list = jsonDecode(res.data);
+        } catch (e) {
+          if (!mounted) return;
+          showDialogMessage(context, 'jsonDecode: ${e.toString()}');
+        }
 
+        //all data
+        allDataList = list.map((map) => ShareDataModel.fromMap(map)).toList();
+        //sort
         allDataList.sort((a, b) {
           return a.name.compareTo(b.name);
         });
@@ -64,7 +75,9 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
           dataList = allDataList;
           isLoading = false;
         });
-        _checkFiles();
+
+        //check exits
+        _checkExistsFiles();
         _filterChange(filterOptionGroupValue);
       }
     } catch (e) {
@@ -75,15 +88,19 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
     }
   }
 
-  void _checkFiles() {
+  void _checkExistsFiles() {
     //check exists
     final novelDir = Directory('${getSourcePath()}/${widget.novel.title}');
     if (novelDir.existsSync()) {
-      dataList = dataList.map((data) {
-        data.isExists = File('${novelDir.path}/${data.name}').existsSync();
+      final list = dataList.map((data) {
+        final file = File('${novelDir.path}/${data.name}');
+        data.isExists = file.existsSync();
+        // print('${data.name} - ${data.isExists} - ${file.path}');
         return data;
       }).toList();
-      setState(() {});
+      setState(() {
+        dataList = list;
+      });
     }
   }
 
@@ -95,35 +112,39 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
         });
         break;
       case 'pdf':
+        var list =
+            allDataList.where((data) => data.name.endsWith('.pdf')).toList();
         setState(() {
-          dataList =
-              allDataList.where((data) => data.name.endsWith('.pdf')).toList();
+          dataList = list;
         });
         break;
       case 'chapter':
+        var list = allDataList
+            .where((data) => int.tryParse(data.name) != null)
+            .toList();
         setState(() {
-          dataList = allDataList
-              .where((data) => int.tryParse(data.name) != null)
-              .toList();
+          dataList = list;
         });
         break;
       case 'config':
+        var list = allDataList.where((data) {
+          return !data.name.endsWith('.pdf') &&
+              !data.name.endsWith('.png') &&
+              int.tryParse(data.name) == null;
+        }).toList();
         setState(() {
-          dataList = allDataList.where((data) {
-            return !data.name.endsWith('.pdf') &&
-                !data.name.endsWith('.png') &&
-                int.tryParse(data.name) == null;
-          }).toList();
+          dataList = list;
         });
         break;
       case 'cover':
+        var list =
+            allDataList.where((data) => data.name.endsWith('.png')).toList();
         setState(() {
-          dataList =
-              allDataList.where((data) => data.name.endsWith('.png')).toList();
+          dataList = list;
         });
         break;
     }
-    _checkFiles();
+    _checkExistsFiles();
   }
 
   void _refreshNovelList() async {
@@ -137,36 +158,26 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
       final urlPath = 'http://${widget.apiUrl}/download?path=${shareData.path}';
       final savePath =
           '${createDir('${getSourcePath()}/${widget.novel.title}')}/${shareData.name}';
-
       showDialog(
         context: context,
-        barrierDismissible: false,
-        builder: (context) => TLoader(),
+        builder: (ctx) => DownloadDialog(
+          title: 'Downloader',
+          url: urlPath,
+          saveFullPath: savePath,
+          message: shareData.name,
+          onError: (msg) {
+            debugPrint(msg);
+            showMessage(ctx, msg);
+          },
+          onSuccess: (_) {
+            showMessage(ctx, 'Downloaded');
+            //novel data ရှိမရှိ စစ်ဆေးခြင်း
+            _checkExistsFiles();
+            _refreshNovelList();
+          },
+        ),
       );
-
-      debugPrint('start download');
-      await dio.download(
-        urlPath,
-        savePath,
-        onReceiveProgress: (count, total) {
-          if (total <= 0) return;
-          debugPrint(
-              'percentage: ${(count / total * 100).toStringAsFixed(0)}%');
-        },
-      );
-      if (mounted) {
-        Navigator.pop(context);
-        // showMessage(context, 'Download');
-      }
-      debugPrint('downloaded');
-      //novel data ရှိမရှိ စစ်ဆေးခြင်း
-      _checkFiles();
-      _refreshNovelList();
     } catch (e) {
-      // if (mounted) {
-      //   Navigator.pop(context);
-      // }
-
       debugPrint(e.toString());
     }
   }
@@ -183,13 +194,13 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
         onSuccess: () {
           showMessage(ctx, 'Download လုပ်ပြီးပါပြီ');
           //novel data ရှိမရှိ စစ်ဆေးခြင်း
-          _checkFiles();
+          _checkExistsFiles();
           _refreshNovelList();
         },
         onCancaled: () {
           showMessage(ctx, 'Cancel လိုက်ပါပြီ');
           //novel data ရှိမရှိ စစ်ဆေးခြင်း
-          _checkFiles();
+          _checkExistsFiles();
           _refreshNovelList();
         },
         onError: (msg) {
@@ -229,6 +240,66 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
         shareData: shareData,
         onCancel: () {},
         onSubmit: () {},
+      ),
+    );
+  }
+
+  void _showMenu(ShareDataModel shareData) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 250),
+        child: ListView(
+          children: [
+            ListTile(
+              iconColor: dangerColor,
+              textColor: dangerColor,
+              leading: const Icon(Icons.delete_forever),
+              title: const Text('Delete'),
+              onTap: () {
+                Navigator.pop(context);
+                _delete(shareData);
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _delete(ShareDataModel shareData) {
+    showDialog(
+      context: context,
+      builder: (context) => ConfirmDialog(
+        contentText: '`${shareData.name}` ဖျက်ချင်တာ သေချာပြီလား?',
+        onCancel: () {},
+        onSubmit: () async {
+          try {
+            final url =
+                'http://${widget.apiUrl}/delete?path=${widget.novel.path}/${shareData.name}';
+
+            debugPrint('deleting');
+            setState(() {
+              isLoading = true;
+            });
+            await dio.delete(url);
+
+            debugPrint('deleted');
+
+            //remove ui
+            final res =
+                dataList.where((dt) => dt.name != shareData.name).toList();
+            setState(() {
+              isLoading = false;
+              dataList = res;
+            });
+          } catch (e) {
+            debugPrint(e.toString());
+            setState(() {
+              isLoading = false;
+            });
+          }
+        },
       ),
     );
   }
@@ -335,6 +406,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
                       shareDataList: dataList,
                       onDownloadClick: _download,
                       onClick: _openFileDialog,
+                      onLongClick: _showMenu,
                     ),
                   ),
                 ),

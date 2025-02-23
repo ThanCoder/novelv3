@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 const isDebugPrint = false;
 //github url
 const githubUrl = 'https://github.com/ThanCoder/novelv3';
+const isUsedReleaseServiceFile = false;
 
 //assets
 const defaultIconAssetsPath = 'assets/online.webp';

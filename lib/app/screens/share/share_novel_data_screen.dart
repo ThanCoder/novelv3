@@ -101,6 +101,20 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
         );
       });
 
+      //delete
+      TServer.instance.delete('/delete', (req) {
+        String path = req.uri.queryParameters['path'] ?? '';
+        final file = File(path);
+        if (!file.existsSync()) {
+          TServer.instance.send(req,
+              body: 'file not found', httpStatus: HttpStatus.notFound);
+          return;
+        }
+        file.deleteSync();
+        TServer.instance.send(req, body: 'deleted');
+      });
+
+      // TServer.instance
       setState(() {
         isServerRunning = true;
       });

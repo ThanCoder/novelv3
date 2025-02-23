@@ -1,5 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 
 class _Listener {
   String url;
@@ -81,8 +82,19 @@ class TServer {
     _listenerList.add(_Listener(url: url, method: 'GET', onRequest: onReq));
   }
 
+  //post
   void post(String url, void Function(HttpRequest req) onReq) {
     _listenerList.add(_Listener(url: url, method: 'POST', onRequest: onReq));
+  }
+
+  //delete
+  void delete(String url, void Function(HttpRequest req) onReq) {
+    _listenerList.add(_Listener(url: url, method: 'DELETE', onRequest: onReq));
+  }
+
+  //put
+  void put(String url, void Function(HttpRequest req) onReq) {
+    _listenerList.add(_Listener(url: url, method: 'PUT', onRequest: onReq));
   }
 
   //websocket set listener
@@ -143,14 +155,27 @@ class TServer {
         ..close();
       return;
     }
+    final name = file.path.split('/').last;
+    final encodedFileName = Uri.encodeComponent(name);
     //file ရှိရင်
     req.response.headers
       ..set(HttpHeaders.contentTypeHeader, 'application/octet-stream')
       ..set(HttpHeaders.contentLengthHeader, file.lengthSync())
       ..set(HttpHeaders.contentDisposition,
-          'attachment;filename=${file.path.split('/').last}');
+          'attachment;filename*=UTF-8' '$encodedFileName');
+    req.response.headers.chunkedTransferEncoding = false;
+
     //send file
-    await file.openRead().pipe(req.response);
+    // await file.openRead().pipe(req.response);
+    // Stream buffer ကိုအသုံးပြုပြီး file data ပို့
+    final stream = file.openRead();
+    try {
+      await stream.pipe(req.response);
+    } catch (e) {
+      debugPrint('Error sending file: $e');
+    } finally {
+      await req.response.close();
+    }
   }
 
   //stop server

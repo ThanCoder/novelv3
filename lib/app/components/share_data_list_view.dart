@@ -63,40 +63,45 @@ class _ListItem extends StatelessWidget {
   Widget _getContent() {
     if (shareData.name.split('.').last == 'png') {
       String url =
-          'http://${wififHostAddressNotifier.value}:${serverPort}/download?path=${shareData.path}';
-      return Row(
-        spacing: 10,
-        children: [
-          SizedBox(
-            width: 100,
-            height: 100,
-            child: MyImageUrl(
-              url: url,
-              borderRadius: 5,
+          'http://${wififHostAddressNotifier.value}:$serverPort/download?path=${shareData.path}';
+      return GestureDetector(
+        onTap: () => onClick(shareData),
+        onLongPress: () => onLongClick(shareData),
+        child: Row(
+          spacing: 10,
+          children: [
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: MyImageUrl(
+                url: url,
+                borderRadius: 5,
+              ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  shareData.name,
-                  // overflow: TextOverflow.ellipsis,
-                ),
-                Text('size: ${getParseFileSize(shareData.size.toDouble())}'),
-                Text('Date: ${getParseDate(shareData.date)}'),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    shareData.name,
+                    // overflow: TextOverflow.ellipsis,
+                  ),
+                  Text('size: ${getParseFileSize(shareData.size.toDouble())}'),
+                  Text('Date: ${getParseDate(shareData.date)}'),
+                ],
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: () => onDownloadClick(shareData),
-            icon: const Icon(Icons.download),
-          ),
-        ],
+            IconButton(
+              onPressed: () => onDownloadClick(shareData),
+              icon: const Icon(Icons.download),
+            ),
+          ],
+        ),
       );
     }
+    //list tile
     return ListTile(
-      textColor: shareData.isExists ? Colors.red : null,
+      // textColor: shareData.isExists ? Colors.red : null,
       onTap: () => onClick(shareData),
       onLongPress: () => onLongClick(shareData),
       title: Text(
@@ -110,6 +115,13 @@ class _ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _getContent();
+    return Container(
+      decoration: BoxDecoration(
+        color:
+            shareData.isExists ? const Color.fromARGB(138, 196, 77, 68) : null,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: _getContent(),
+    );
   }
 }

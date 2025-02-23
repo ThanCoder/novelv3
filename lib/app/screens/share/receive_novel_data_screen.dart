@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +9,7 @@ import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/customs/novel_search_delegate.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/screens/share/share_novel_content_screen.dart';
+import 'package:novel_v3/app/screens/share/receive_novel_content_screen.dart';
 import 'package:novel_v3/app/services/core/recent_db_services.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -78,36 +80,47 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       final res = await dio
           .get('http://${hostAddressController.text}:${portController.text}');
 
-      if (res.statusCode == 200) {
-        //success
-        final List<dynamic> list = res.data;
-        setState(() {
-          novelList = list.map((map) {
-            final novel = NovelModel.fromMap(map);
-            novel.coverUrl =
-                'http://${hostAddressController.text}:${portController.text}/download?path=${novel.coverPath}';
-            return novel;
-          }).toList();
-          //state
-          isLoading = false;
-          isError = false;
-          isChanged = false;
-        });
-        //set recent
-        if (hostAddressController.text.isNotEmpty) {
-          setRecentDB('server_address', hostAddressController.text);
-          wififHostAddressNotifier.value = hostAddressController.text;
-        }
+      if (res.statusCode != 200) {
+        if (!mounted) return;
+        showDialogMessage(context, 'statusCode: `${res.statusCode}`');
+        return;
       }
+      //set recent
+      if (hostAddressController.text.isNotEmpty) {
+        setRecentDB('server_address', hostAddressController.text);
+        wififHostAddressNotifier.value = hostAddressController.text;
+      }
+
+      //success
+      List<dynamic> list = [];
+      try {
+        list = jsonDecode(res.data);
+      } catch (e) {
+        if (!mounted) return;
+        showDialogMessage(context, 'jsonDecode: ${e.toString()}');
+      }
+      setState(() {
+        novelList = list.map((map) {
+          final novel = NovelModel.fromMap(map);
+          novel.coverUrl =
+              'http://${hostAddressController.text}:${portController.text}/download?path=${novel.coverPath}';
+          return novel;
+        }).toList();
+        //state
+        isLoading = false;
+        isError = false;
+        isChanged = false;
+      });
     } catch (e) {
-      debugPrint(e.toString());
-      showDialogMessage(context,
-          'error ရှိနေပါတယ်!။\nhost address ကိုစစ်ဆေးပေးပါ!။\n"${hostAddressController.text}" address ကိုလိုအပ်ရင် ပြင်ဆင်ပေးပါ!။');
       setState(() {
         isError = true;
         isLoading = false;
       });
       setRecentDB('server_address', '');
+      debugPrint(e.toString());
+      if (!mounted) return;
+      showDialogMessage(context,
+          'error ရှိနေပါတယ်!။\nhost address ကိုစစ်ဆေးပေးပါ!။\n"${hostAddressController.text}" address ကိုလိုအပ်ရင် ပြင်ဆင်ပေးပါ!။');
     }
   }
 
@@ -115,7 +128,7 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ShareNovelContentScreen(
+        builder: (context) => ReceiveNovelContentScreen(
           apiUrl: '${hostAddressController.text}:${portController.text}',
           novel: novel,
         ),
@@ -157,19 +170,21 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
       appBar: AppBar(
         title: const Text("Novel Data လက်ခံခြင်း"),
         actions: [
-          IconButton(
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: NovelSearchDelegate(
-                  novelList: novelList,
-                  isOnlineCover: true,
-                  onClick: _goContentScreen,
+          novelList.isEmpty
+              ? const SizedBox.shrink()
+              : IconButton(
+                  onPressed: () {
+                    showSearch(
+                      context: context,
+                      delegate: NovelSearchDelegate(
+                        novelList: novelList,
+                        isOnlineCover: true,
+                        onClick: _goContentScreen,
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.search),
                 ),
-              );
-            },
-            icon: const Icon(Icons.search),
-          ),
         ],
       ),
       body: isLoading
@@ -241,15 +256,19 @@ class _ReceiveNovelDataScreenState extends State<ReceiveNovelDataScreen> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          if (isChanged) {
-            fetch();
-          } else {
-            if (isError) {
-              final url = await _getPlatformWifiAddress();
-              hostAddressController.text = url;
-              portController.text = serverPort.toString();
+          try {
+            if (isChanged) {
+              fetch();
+            } else {
+              if (isError) {
+                final url = await _getPlatformWifiAddress();
+                hostAddressController.text = url;
+                portController.text = serverPort.toString();
+              }
+              fetch();
             }
-            fetch();
+          } catch (e) {
+            debugPrint('click: ${e.toString()}');
           }
         },
         child: Icon(isChanged ? Icons.save : Icons.refresh),

@@ -11,7 +11,7 @@ class NovelOnlinePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Online'),
       ),
-      body: Placeholder(),
+      body: const Center(child: Text('Comming Soon...')),
     );
   }
 }

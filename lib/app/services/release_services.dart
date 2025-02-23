@@ -4,13 +4,16 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:yaml/yaml.dart';
 
 class ReleaseServices {
   static ReleaseServices instance = ReleaseServices._();
-  bool isUsedReleaseFile = true;
+  bool isUsedReleaseFile = isUsedReleaseServiceFile;
 
   ReleaseServices._();
+
+  String _version = '';
 
   Future<String> getRelease() async {
     String result = '';
@@ -101,25 +104,29 @@ class ReleaseServices {
   }
 
   String getVersion() {
-    String res = '0.0.0';
-    try {
-      //yamal file load မယ်
-      final yamlFile = File('${Directory.current.path}/pubspec.yaml');
-      //မရှိရင်
-      if (!yamlFile.existsSync()) {
-        debugPrint('not found `pubspec.yaml`');
-        return res;
-      }
-      final yaml = loadYaml(yamlFile.readAsStringSync());
-      res = yaml['version'] ?? res;
-    } catch (e) {
-      debugPrint('getVersion: ${e.toString()}');
-    }
-    return res;
+    return _version;
+    // String res = '0.0.0';
+    // try {
+    //   //yamal file load မယ်
+    //   final yamlFile = File('${Directory.current.path}/pubspec.yaml');
+    //   //မရှိရင်
+    //   if (!yamlFile.existsSync()) {
+    //     debugPrint('not found `pubspec.yaml`');
+    //     return res;
+    //   }
+    //   final yaml = loadYaml(yamlFile.readAsStringSync());
+    //   res = yaml['version'] ?? res;
+    // } catch (e) {
+    //   debugPrint('getVersion: ${e.toString()}');
+    // }
+    // return res;
   }
 
   Future<void> initReleaseService() async {
     try {
+      final package = await PackageInfo.fromPlatform();
+      _version = package.version;
+
       String res = await getRelease();
 
       if (res.isNotEmpty) return;
@@ -152,7 +159,7 @@ class ReleaseServices {
         "versions": [
           {
             "platform": Platform.operatingSystem,
-            "version": yaml['version'],
+            "version": _version,
             "size": "10.0MB",
             "download_url": "",
             "direct_download_url": "",

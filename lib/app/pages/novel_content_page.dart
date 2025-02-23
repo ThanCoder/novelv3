@@ -258,138 +258,146 @@ class NovelContentPageState extends State<NovelContentPage> {
         child: Text('Novel မရှိပါ'),
       );
     } else {
-      return ListView(
-        controller: _scrollController,
-        children: [
-          //novel header
-          Wrap(
-            alignment: WrapAlignment.center,
-            children: [
-              SizedBox(
-                width: 150,
-                height: 180,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: MyImageFile(path: novel.coverPath)),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //title
-                  TextButton(
-                    onPressed: () {
-                      copyText(novel.title);
-                    },
-                    child: Text(
-                      novel.title,
-                      maxLines: 3,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  //readed
-                  TextButton(
-                    onPressed: () {
-                      editReaded(novel.readed);
-                    },
-                    child: Text(
-                      'Readed: ${novel.readed.toString()}',
-                      style: const TextStyle(color: Colors.teal),
-                    ),
-                  ),
-                  //Author
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('Author: ${novel.author}'),
-                  ),
-                  //mc
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              NovelMcSearchScreen(mcName: novel.mc),
-                        ),
-                      );
-                    },
-                    child: Text('MC: ${novel.mc}'),
-                  ),
-
-                  //date
-                  TextButton(
-                      onPressed: () {},
-                      child: Text('Date: ${getParseDate(novel.date)}')),
-                  const SizedBox(height: 20),
-                  Wrap(
-                    children: [
-                      novel.isAdult
-                          ? NovelStatusBadge(
-                              onClick: (text) {
-                                _goNovelLibPage(BookMarkSortName.novleAdult);
-                              },
-                              text: 'Adult Novel',
-                              bgColor: Colors.red,
-                            )
-                          : Container(),
-                      const SizedBox(width: 10),
-                      NovelStatusBadge(
-                        onClick: (text) {
-                          if (text == 'Completed') {
-                            _goNovelLibPage(BookMarkSortName.novelIsCompleted);
-                          } else if (text == 'OnGoing') {
-                            _goNovelLibPage(BookMarkSortName.novelOnGoing);
-                          }
-                        },
-                        text: novel.isCompleted ? 'Completed' : 'OnGoing',
-                        bgColor: novel.isCompleted
-                            ? Colors.blue[900]
-                            : Colors.teal[900],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const Divider(),
-          //go page
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              spacing: 10,
+      return GestureDetector(
+        onTap: () {
+          if (!isShowContentBottomBarNotifier.value) {
+            isShowContentBottomBarNotifier.value = true;
+          }
+        },
+        child: ListView(
+          controller: _scrollController,
+          children: [
+            //novel header
+            Wrap(
+              alignment: WrapAlignment.center,
               children: [
-                //page
-                getPageButton(novel),
-                //start Chapter
-                getStartButton(novel),
-                //readed
-                NovelContentReadedBotttom(novel: novel),
-                //recent go page
-                getRecentTextButton(novel),
-                //recent pdf
-                getRecentPdfButton(novel),
+                SizedBox(
+                  width: 150,
+                  height: 180,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: MyImageFile(path: novel.coverPath)),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //title
+                    TextButton(
+                      onPressed: () {
+                        copyText(novel.title);
+                      },
+                      child: Text(
+                        novel.title,
+                        maxLines: 3,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    //readed
+                    TextButton(
+                      onPressed: () {
+                        editReaded(novel.readed);
+                      },
+                      child: Text(
+                        'Readed: ${novel.readed.toString()}',
+                        style: const TextStyle(color: Colors.teal),
+                      ),
+                    ),
+                    //Author
+                    TextButton(
+                      onPressed: () {},
+                      child: Text('Author: ${novel.author}'),
+                    ),
+                    //mc
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                NovelMcSearchScreen(mcName: novel.mc),
+                          ),
+                        );
+                      },
+                      child: Text('MC: ${novel.mc}'),
+                    ),
+
+                    //date
+                    TextButton(
+                        onPressed: () {},
+                        child: Text('Date: ${getParseDate(novel.date)}')),
+                    const SizedBox(height: 20),
+                    Wrap(
+                      children: [
+                        novel.isAdult
+                            ? NovelStatusBadge(
+                                onClick: (text) {
+                                  _goNovelLibPage(BookMarkSortName.novleAdult);
+                                },
+                                text: 'Adult Novel',
+                                bgColor: Colors.red,
+                              )
+                            : Container(),
+                        const SizedBox(width: 10),
+                        NovelStatusBadge(
+                          onClick: (text) {
+                            if (text == 'Completed') {
+                              _goNovelLibPage(
+                                  BookMarkSortName.novelIsCompleted);
+                            } else if (text == 'OnGoing') {
+                              _goNovelLibPage(BookMarkSortName.novelOnGoing);
+                            }
+                          },
+                          text: novel.isCompleted ? 'Completed' : 'OnGoing',
+                          bgColor: novel.isCompleted
+                              ? Colors.blue[900]
+                              : Colors.teal[900],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
-          ),
-          const SizedBox(height: 10),
-          //des
-          //content cover
-          getContentWidget(novel),
-          //text
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SelectableText(
-              novel.content,
-              style: const TextStyle(fontSize: 17),
+            const Divider(),
+            //go page
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                spacing: 10,
+                children: [
+                  //page
+                  getPageButton(novel),
+                  //start Chapter
+                  getStartButton(novel),
+                  //readed
+                  NovelContentReadedBotttom(novel: novel),
+                  //recent go page
+                  getRecentTextButton(novel),
+                  //recent pdf
+                  getRecentPdfButton(novel),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 50),
-        ],
+            const SizedBox(height: 10),
+            //des
+            //content cover
+            getContentWidget(novel),
+            //text
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SelectableText(
+                novel.content,
+                style: const TextStyle(fontSize: 17),
+              ),
+            ),
+            const SizedBox(height: 50),
+          ],
+        ),
       );
     }
   }

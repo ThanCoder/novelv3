@@ -77,13 +77,14 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
           if (saveFile.existsSync()) {
             setState(() {
               progress++;
-              title = 'Downloaded: ${getBasename(path)}';
+              title = getBasename(path);
             });
           }
           //download file
           await dio.download(
             urlPath,
             savePath,
+            cancelToken: cancelToken,
             onReceiveProgress: (count, total) {
               setState(() {
                 setState(() {
@@ -96,7 +97,7 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
           //progress
           setState(() {
             downloadIndex++;
-            title = 'Downloaded: ${getBasename(path)}';
+            title = getBasename(path);
           });
           // await Future.delayed(const Duration(milliseconds: 100));
           // await Future.delayed(const Duration(milliseconds: 1200));
@@ -143,9 +144,11 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
               spacing: 10,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  isLoading ? 'Loading...' : title,
-                  overflow: TextOverflow.ellipsis,
+                Expanded(
+                  child: Text(
+                    isLoading ? 'Loading...' : title,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Text('$downloadIndex/$allFileCount'),
               ],
@@ -159,6 +162,7 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
             setState(() {
               isCanceled = true;
             });
+            cancelToken.cancel();
           },
           child: const Text('Cancel'),
         ),
