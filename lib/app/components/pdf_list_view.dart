@@ -24,7 +24,7 @@ class PdfListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    return ListView.builder(
       controller: controller,
       itemBuilder: (context, index) => _ListItem(
         activeColor: activeColor,
@@ -41,7 +41,7 @@ class PdfListView extends StatelessWidget {
           }
         },
       ),
-      separatorBuilder: (context, index) => const Divider(),
+      // separatorBuilder: (context, index) => const Divider(),
       itemCount: pdfList.length,
     );
   }

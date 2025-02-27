@@ -10,7 +10,7 @@ import 'package:novel_v3/app/screens/novel_screens/chapter_text_reader_screen.da
 import 'package:novel_v3/app/services/index.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/index.dart';
+import '../../widgets/index.dart';
 
 class ChapterListPage extends StatefulWidget {
   const ChapterListPage({super.key});

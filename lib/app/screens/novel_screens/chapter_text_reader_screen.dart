@@ -249,19 +249,19 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  Navigator.pop(context);
                 },
                 child: const Text('မသိမ်းဘူး'),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(true);
                   final novel = currentNovelNotifier.value!;
                   novel.readed = currentChapterNumber;
                   //update data
                   updateNovelReaded(novel: novel);
                   //update ui
                   currentNovelNotifier.value = novel;
+                  Navigator.pop(context);
                 },
                 child: const Text('သိမ်းမယ်'),
               ),
@@ -275,19 +275,15 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
     try {
       int readed = currentNovelNotifier.value!.readed;
       if (currentChapterNumber > readed) {
-        final res = await _showConfirmReadedDialog();
-        setState(() {
-          isCanGoBack = res;
-        });
-      } else {
-        setState(() {
-          isCanGoBack = true;
-        });
+        await _showConfirmReadedDialog();
       }
+      isCanGoBack = true;
+
+      if (!mounted) return;
+      Navigator.pop(context);
     } catch (e) {
-      setState(() {
-        isCanGoBack = true;
-      });
+      isCanGoBack = true;
+      // Navigator.pop(context);
       debugPrint('_onBackpress: ${e.toString()}');
     }
   }
@@ -301,6 +297,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
     return PopScope(
       canPop: isCanGoBack,
       onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         _onBackpress();
       },
       child: MyScaffold(

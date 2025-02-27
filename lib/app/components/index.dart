@@ -8,3 +8,6 @@ export './pdf_book_mark_list_view.dart';
 export './pdf_list_view.dart';
 export './pdf_reader_config_action_component.dart';
 export './share_data_list_view.dart';
+
+//online
+export './online/index.dart';

@@ -9,7 +9,7 @@ import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/index.dart';
+import '../../widgets/index.dart';
 
 class NovelLibPage extends StatefulWidget {
   BookMarkSortName bookMarkSortName;
@@ -124,6 +124,7 @@ class _NovelLibPageState extends State<NovelLibPage> {
     }
 
     return MyScaffold(
+      contentPadding: 2,
       appBar: !isShowWrapWidget
           ? null
           : AppBar(
@@ -137,12 +138,12 @@ class _NovelLibPageState extends State<NovelLibPage> {
             AnimatedSize(
               duration: const Duration(milliseconds: 700),
               child: !isShowWrapWidget
-                  ? const SizedBox()
+                  ? const SizedBox.shrink()
                   : Wrap(
                       crossAxisAlignment: WrapCrossAlignment.start,
                       alignment: WrapAlignment.start,
-                      spacing: 10,
-                      runSpacing: 10,
+                      spacing: 5,
+                      runSpacing: 5,
                       children: [
                         TChip(
                           title: 'BookMark',

@@ -5,11 +5,10 @@ import 'package:novel_v3/app/customs/novel_search_delegate.dart';
 import 'package:novel_v3/app/dialogs/add_new_novel_dialog.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
+import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
 import 'package:provider/provider.dart';
-
-import '../provider/novel_provider.dart';
 import '../widgets/index.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,11 +36,10 @@ class _HomePageState extends State<HomePage> {
   void showBottomMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => BottomSheet(
-        onClosing: () {},
-        builder: (context) => SizedBox(
-          height: 250,
-          child: ListView(
+      builder: (context) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 150),
+          child: Column(
             children: [
               //add new novel
               ListTile(

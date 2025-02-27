@@ -21,8 +21,8 @@ import 'package:provider/provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../screens/index.dart';
-import '../widgets/index.dart';
+import '../../screens/index.dart';
+import '../../widgets/index.dart';
 
 class NovelContentPage extends StatefulWidget {
   const NovelContentPage({super.key});

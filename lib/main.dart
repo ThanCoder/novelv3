@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:novel_v3/app/my_app.dart';
-import 'package:novel_v3/app/provider/chapter_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:novel_v3/app/provider/pdf_provider.dart';
+import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/config_util.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //url
-  // const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
-  // const supabaseKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
-  // await Supabase.initialize(
-  //   url: supabaseUrl,
-  //   anonKey: supabaseKey,
-  // );
+  await dotenv.load(fileName: '.env');
+
+  final url = dotenv.env['SUPABASE_URL'];
+  final key = dotenv.env['SUPABASE_ANON_KEY'];
+  if (key != null && url != null) {
+    await Supabase.initialize(
+      url: url,
+      anonKey: key,
+    );
+  }
 
   //init config
   await initConfig();
@@ -28,6 +31,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => NovelProvider()),
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
         ChangeNotifierProvider(create: (context) => PdfProvider()),
+        ChangeNotifierProvider(create: (context) => OnlineNovelProvider()),
       ],
       child: const MyApp(),
     ),

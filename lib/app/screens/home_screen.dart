@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/pages/home_page.dart';
-import 'package:novel_v3/app/pages/novel_lib_page.dart';
-import 'package:novel_v3/app/pages/novel_online_page.dart';
+import 'package:novel_v3/app/pages/novle_content/novel_lib_page.dart';
+import 'package:novel_v3/app/pages/online/novel_online_page.dart';
 import 'package:novel_v3/app/pages/home_more_page.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -13,7 +13,7 @@ import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/index.dart';
+import '../../widgets/index.dart';
 
 class PdfListPage extends StatefulWidget {
   const PdfListPage({super.key});
@@ -47,61 +47,63 @@ class PdfListPageState extends State<PdfListPage> {
   void showMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: Text(pdfFile.title)),
-          ),
-          const Divider(),
-          //copy name
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              copyText(pdfFile.title);
-            },
-            leading: const Icon(Icons.copy),
-            title: const Text('copy name'),
-          ),
-          //rename
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              renamePdf();
-            },
-            leading: const Icon(Icons.drive_file_rename_outline),
-            title: const Text('Rename'),
-          ),
-          //copy in novel
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              copyToOutDir();
-            },
-            leading: const Icon(Icons.copy),
-            title: const Text('အပြင်ကို ကူးထုတ်မယ်'),
-          ),
-          //move out pdf
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              moveToOutDir();
-            },
-            leading: const Icon(Icons.move_down),
-            title: const Text('အပြင်ကို ရွေ့ထုတ်မယ်(Move)'),
-          ),
-          //delete
-          ListTile(
-            textColor: Colors.red,
-            iconColor: Colors.red,
-            onTap: () {
-              Navigator.pop(context);
-              deletePdf();
-            },
-            leading: const Icon(Icons.delete_forever),
-            title: const Text('ဖျက်မယ် (Delete)'),
-          ),
-        ],
+      builder: (context) => SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: Text(pdfFile.title)),
+            ),
+            const Divider(),
+            //copy name
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                copyText(pdfFile.title);
+              },
+              leading: const Icon(Icons.copy),
+              title: const Text('Copy Name'),
+            ),
+            //rename
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                renamePdf();
+              },
+              leading: const Icon(Icons.drive_file_rename_outline),
+              title: const Text('Rename'),
+            ),
+            //copy in novel
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                copyToOutDir();
+              },
+              leading: const Icon(Icons.copy),
+              title: const Text('အပြင်ကို ကူးထုတ်မယ်'),
+            ),
+            //move out pdf
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                moveToOutDir();
+              },
+              leading: const Icon(Icons.move_down),
+              title: const Text('အပြင်ကို ရွေ့ထုတ်မယ်(Move)'),
+            ),
+            //delete
+            ListTile(
+              textColor: Colors.red,
+              iconColor: Colors.red,
+              onTap: () {
+                Navigator.pop(context);
+                deletePdf();
+              },
+              leading: const Icon(Icons.delete_forever),
+              title: const Text('ဖျက်မယ် (Delete)'),
+            ),
+          ],
+        ),
       ),
     );
   }

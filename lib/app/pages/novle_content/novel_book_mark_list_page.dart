@@ -7,9 +7,6 @@ import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/screens/index.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
-import 'package:provider/provider.dart';
-
-import '../provider/index.dart';
 
 class NovelBookMarkListPage extends StatefulWidget {
   const NovelBookMarkListPage({super.key});
@@ -48,17 +45,13 @@ class NovelBookMarkListPageState extends State<NovelBookMarkListPage> {
     final file = File('$path/${bookMark.chapter}');
     currentChapterNotifier.value = ChapterModel.fromFile(file);
 
-    if (chapterListNotifier.value.isEmpty) {
-      context.read<ChapterProvider>().getList;
-    } else {
-      //go reader
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ChapterTextReaderScreen(),
-        ),
-      );
-    }
+    //go reader
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ChapterTextReaderScreen(),
+      ),
+    );
   }
 
   void onLongClick(ChapterBookMarkModel bookMark) {
