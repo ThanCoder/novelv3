@@ -10,7 +10,7 @@ const isUsedReleaseServiceFile = false;
 //assets
 const defaultIconAssetsPath = 'assets/online.webp';
 //version name
-const appVersionName = 'beta-3';
+const appVersionName = 'beta-4';
 const appName = 'novel_v3';
 const appTitle = 'Novel V3';
 const novelDataExtName = 'npz';

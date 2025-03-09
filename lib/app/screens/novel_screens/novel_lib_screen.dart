@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/enums/book_mark_sort_name.dart';
-import 'package:novel_v3/app/pages/novle_content/novel_lib_page.dart';
+import 'package:novel_v3/app/pages/home/novel_lib_page.dart';
 
 class NovelLibScreen extends StatelessWidget {
   BookMarkSortName bookMarkSortName;

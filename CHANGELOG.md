@@ -5,6 +5,7 @@
 
 ## Fixed
 - textreader backpress error 
+- fixed error
 
 ## 1.8.5
 

@@ -56,22 +56,24 @@ class ChapterListPageState extends State<ChapterListPage> {
   void openMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => BottomSheet(
-        onClosing: () {},
-        builder: (context) => Column(
-          children: [
-            Text('Chapter ${selectedChapter!.title}'),
-            ListTile(
-              textColor: Colors.red,
-              iconColor: Colors.red,
-              onTap: () {
-                Navigator.pop(context);
-                _deleteChapter();
-              },
-              leading: const Icon(Icons.delete),
-              title: const Text('Delete'),
-            )
-          ],
+      builder: (context) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 150),
+          child: Column(
+            children: [
+              Text('Chapter ${selectedChapter!.title}'),
+              ListTile(
+                textColor: Colors.red,
+                iconColor: Colors.red,
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteChapter();
+                },
+                leading: const Icon(Icons.delete),
+                title: const Text('Delete'),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -145,7 +147,7 @@ class ChapterListPageState extends State<ChapterListPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            chapterList.isNotEmpty
+            chapterList.isNotEmpty && chapterList.length > 1
                 ? IconButton(
                     onPressed: () {
                       setState(() {
@@ -157,10 +159,12 @@ class ChapterListPageState extends State<ChapterListPage> {
                       isSorted ? Icons.arrow_downward : Icons.arrow_upward,
                     ),
                   )
-                : Container(),
+                : const SizedBox.shrink(),
           ],
         ),
-        const Divider(),
+        chapterList.isNotEmpty && chapterList.length > 1
+            ? const Divider()
+            : const SizedBox.shrink(),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async {

@@ -13,6 +13,7 @@ analyzer:
     must_be_immutable: ignore
     no_leading_underscores_for_local_identifiers: ignore
     unused_element: ignore
+    unused_element_parameter: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

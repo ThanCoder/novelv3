@@ -19,7 +19,7 @@ class MyImageFile extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.width,
     this.height,
-    this.borderRadius = 0,
+    this.borderRadius = 5,
   });
 
   Widget _getImageWidget() {

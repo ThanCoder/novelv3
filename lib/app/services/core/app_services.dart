@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:window_manager/window_manager.dart';
 
 Future<void> clearAndRefreshImage() async {
   PaintingBinding.instance.imageCache.clear();
@@ -30,17 +29,11 @@ Future<String> pasteFromClipboard() async {
 
 //toggleFullScreen
 void toggleFullScreenPlatform(bool isFullScreen) async {
-  if (Platform.isLinux) {
-    await windowManager.setFullScreen(isFullScreen);
-  }
-  //is android
-  if (Platform.isAndroid) {
-    await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
-  }
+  await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
 }
 
 //keep screen
 void toggleAndroidKeepScreen(bool isKeep) async {
   if (!Platform.isAndroid) return;
-  await ThanPkg.platform.toggleKeepScreen(isKeep: isKeep);
+  await ThanPkg.android.app.toggleKeepScreenOn(isKeep: isKeep);
 }

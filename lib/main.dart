@@ -32,6 +32,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
         ChangeNotifierProvider(create: (context) => PdfProvider()),
         ChangeNotifierProvider(create: (context) => OnlineNovelProvider()),
+        ChangeNotifierProvider(create: (context) => ChapterBookmarkProvider()),
       ],
       child: const MyApp(),
     ),

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:novel_v3/app/components/app_components.dart';
-import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/components/chapter_bookmark_toggle_button.dart';
 import 'package:novel_v3/app/dialogs/text_reader_config_dialog.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/text_reader_config_model.dart';
@@ -48,6 +48,13 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
+  @override
+  void dispose() {
+    toggleAndroidKeepScreen(false);
+    toggleAndroidFullScreen(false);
+    super.dispose();
+  }
+
   void init() async {
     try {
       //keep screen
@@ -82,31 +89,15 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       setState(() {
         currentChapterNumber++;
       });
-      if (currentChapterNumber == 0 ||
-          currentChapterNumber > context.read<ChapterProvider>().lastChapter) {
+      final lastChapter =
+          await context.read<ChapterProvider>().getLastChapterNumber();
+      if (currentChapterNumber == 0 || currentChapterNumber > lastChapter) {
+        if (!mounted) return;
         showMessage(
             context, 'chapter "${currentChapterNumber.toString()}" မရှိပါ');
-        currentChapterNumber--;
-        return;
-      }
-
-      loadedChapter();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  void _prevChapter() async {
-    try {
-      setState(() {
-        currentChapterNumber--;
-      });
-
-      if (currentChapterNumber == 0 ||
-          currentChapterNumber < context.read<ChapterProvider>().firstChapter) {
-        showMessage(
-            context, 'chapter "${currentChapterNumber.toString()}" မရှိပါ');
-        currentChapterNumber++;
+        setState(() {
+          currentChapterNumber--;
+        });
         return;
       }
 
@@ -123,6 +114,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
       if (!file.existsSync()) {
         setState(() {
           isCanGoBack = true;
+          currentChapterNumber = currentChapterNumber - 1;
         });
         showMessage(
             context, 'chapter "${currentChapterNumber.toString()}" မရှိပါ');
@@ -187,48 +179,24 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
   void showMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => SizedBox(
-        height: 200,
-        child: ListView(
-          children: [
-            //add chapter
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                showSettingDialog();
-              },
-              leading: const Icon(Icons.settings),
-              title: const Text('Setting'),
-            ),
-          ],
+      builder: (context) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 150),
+          child: Column(
+            children: [
+              //add chapter
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  showSettingDialog();
+                },
+                leading: const Icon(Icons.settings),
+                title: const Text('Setting'),
+              ),
+            ],
+          ),
         ),
       ),
-    ).then((val) {
-      print('close');
-    });
-  }
-
-  void _toggleBookMark(ChapterModel chapter) {
-    toggleBookMark(
-      sourcePath: currentNovelNotifier.value!.path,
-      title: 'Untitled',
-      chapter: chapter.title,
-      onSuccess: () {
-        setState(() {});
-        //update
-        getBookMarkList(
-          sourcePath: currentNovelNotifier.value!.path,
-          onSuccess: (chapterBookList) {
-            chapterBookMarkListNotifier.value = chapterBookList;
-          },
-          onError: (err) {
-            debugPrint(err);
-          },
-        );
-      },
-      onError: (err) {
-        debugPrint(err);
-      },
     );
   }
 
@@ -290,10 +258,6 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isExistsBookmark = existsBookMark(
-      sourcePath: currentNovelNotifier.value!.path,
-      chapter: currentChapter.title,
-    );
     return PopScope(
       canPop: isCanGoBack,
       onPopInvokedWithResult: (didPop, result) {
@@ -307,15 +271,7 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
                 title: Text('Ch: $currentChapterNumber'),
                 actions: [
                   //book mark
-                  IconButton(
-                    onPressed: () => _toggleBookMark(currentChapter),
-                    color: isExistsBookmark ? dangerColor : activeColor,
-                    icon: Icon(
-                      isExistsBookmark
-                          ? Icons.bookmark_remove
-                          : Icons.bookmark_add,
-                    ),
-                  ),
+                  ChapterBookmarkToggleButton(currentChapter: currentChapter),
                   //setting
                   IconButton(
                     onPressed: () {
@@ -350,12 +306,6 @@ class _ChapterTextReaderScreenState extends State<ChapterTextReaderScreen> {
             )),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    toggleAndroidKeepScreen(false);
-    super.dispose();
   }
 }
 

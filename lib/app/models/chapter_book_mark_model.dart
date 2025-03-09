@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:novel_v3/app/models/chapter_model.dart';
+
 class ChapterBookMarkModel {
   String title;
   String chapter;
@@ -6,6 +8,10 @@ class ChapterBookMarkModel {
     required this.title,
     required this.chapter,
   });
+
+  factory ChapterBookMarkModel.fromChapter(ChapterModel chapter) {
+    return ChapterBookMarkModel(title: 'Untitled', chapter: chapter.title);
+  }
 
   factory ChapterBookMarkModel.fromJson(Map<String, dynamic> map) {
     String title = map['title'] ?? 'Untitled';

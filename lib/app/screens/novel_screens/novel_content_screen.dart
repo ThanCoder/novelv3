@@ -9,7 +9,7 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pages/novle_content/chapter_list_page.dart';
-import 'package:novel_v3/app/pages/novle_content/novel_book_mark_list_page.dart';
+import 'package:novel_v3/app/pages/novle_content/chapter_bookmark_list_page.dart';
 import 'package:novel_v3/app/pages/novle_content/novel_content_page.dart';
 import 'package:novel_v3/app/pages/novle_content/pdf_list_page.dart';
 import 'package:novel_v3/app/provider/index.dart';
@@ -300,7 +300,7 @@ class _BodyTab extends StatelessWidget {
               NovelContentPage(),
               ChapterListPage(),
               PdfListPage(),
-              NovelBookMarkListPage(),
+              ChapterBookmarkListPage(),
             ],
           ),
         ),

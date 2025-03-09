@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/models/chapter_book_mark_model.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
@@ -171,117 +168,6 @@ Future<void> updateNovel(
   return completer.future;
 }
 
-//book mark
-void getBookMarkList({
-  required String sourcePath,
-  required void Function(List<ChapterBookMarkModel> chapterBookList) onSuccess,
-  required void Function(String err) onError,
-}) {
-  try {
-    final file = File('$sourcePath/$chapterBookMarkListName');
-    if (!file.existsSync()) {
-      onSuccess([]);
-      return;
-    }
-    List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-    List<ChapterBookMarkModel> cList =
-        jlist.map((json) => ChapterBookMarkModel.fromJson(json)).toList();
-
-    //sort
-    cList.sort((a, b) {
-      int ac = int.tryParse(a.chapter) ?? 0;
-      int bc = int.tryParse(b.chapter) ?? 0;
-      return ac.compareTo(bc);
-    });
-
-    onSuccess(cList);
-  } catch (e) {
-    onError(e.toString());
-  }
-}
-
-void toggleBookMark({
-  required String sourcePath,
-  required String title,
-  required String chapter,
-  required void Function() onSuccess,
-  required void Function(String err) onError,
-}) {
-  try {
-    final file = File('$sourcePath/$chapterBookMarkListName');
-    List<ChapterBookMarkModel> cList = [];
-    if (file.existsSync()) {
-      //get
-      List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-      cList = jlist.map((json) => ChapterBookMarkModel.fromJson(json)).toList();
-    }
-
-    if (existsBookMark(sourcePath: sourcePath, chapter: chapter)) {
-      //remove
-      cList = cList.where((bm) => bm.title != title).toList();
-    } else {
-      //add
-      cList.add(ChapterBookMarkModel(title: title, chapter: chapter));
-    }
-
-    //save
-    file.writeAsStringSync(jsonEncode(ChapterBookMarkModel.toMapList(cList)));
-    //callback
-    onSuccess();
-  } catch (e) {
-    onError(e.toString());
-  }
-}
-
-bool existsBookMark({
-  required String sourcePath,
-  required String chapter,
-}) {
-  bool res = false;
-  try {
-    final file = File('$sourcePath/$chapterBookMarkListName');
-    if (!file.existsSync()) {
-      return false;
-    }
-    //get
-    List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-    List<ChapterBookMarkModel> cList =
-        jlist.map((json) => ChapterBookMarkModel.fromJson(json)).toList();
-    for (final bm in cList) {
-      if (bm.chapter == chapter) {
-        res = true;
-        break;
-      }
-    }
-  } catch (e) {}
-  return res;
-}
-
-void removeBookMark({
-  required String sourcePath,
-  required String title,
-  required void Function() onSuccess,
-  required void Function(String err) onError,
-}) {
-  try {
-    final file = File('$sourcePath/$chapterBookMarkListName');
-    if (!file.existsSync()) {
-      return;
-    }
-    //get
-    List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-    List<ChapterBookMarkModel> cList =
-        jlist.map((json) => ChapterBookMarkModel.fromJson(json)).toList();
-    //remove
-    cList = cList.where((bm) => bm.title != title).toList();
-    //set
-    file.writeAsStringSync(jsonEncode(cList));
-    //callback
-    onSuccess();
-  } catch (e) {
-    onError(e.toString());
-  }
-}
 
 //pdf list
 Future<List<PdfFileModel>> getPdfList({required String sourcePath}) async {
