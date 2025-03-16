@@ -1,3 +1,8 @@
+## 1.8.7
+
+## Fixed
+- pdf reader dark&&light mode error
+
 ## 1.8.6
 
 ## Added

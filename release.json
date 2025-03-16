@@ -9,13 +9,13 @@
   "versions": [
     {
       "platform": "linux",
-      "version": "1.8.5",
+      "version": "1.8.7",
       "size": "10.0MB",
       "download_url": "",
       "direct_download_url": "",
       "content_urls": [],
       "description": "",
-      "date": 1740620781222
+      "date": 1742097996369
     }
   ]
 }

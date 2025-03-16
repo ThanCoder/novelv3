@@ -275,8 +275,12 @@ class NovelContentPageState extends State<NovelContentPage> {
                   width: 150,
                   height: 180,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: MyImageFile(path: novel.coverPath)),
+                    borderRadius: BorderRadius.circular(4),
+                    child: MyImageFile(
+                      path: novel.coverPath,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Column(

@@ -6,6 +6,7 @@ import 'package:novel_v3/app/dialogs/rename_dialog.dart';
 import 'package:novel_v3/app/drawers/pdf_book_mark_list_drawer.dart';
 import 'package:novel_v3/app/models/pdf_config_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
+import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:window_manager/window_manager.dart';
@@ -261,71 +262,76 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
 
   Widget _getHeaderWidgets() {
     if (isFullScreen) {
-      return Container();
+      return const SizedBox.shrink();
     }
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          //page number
-          TextButton(
-            onPressed: () {
-              _showGoToDialog();
-            },
-            child: Text('$currentPage/$pageCount'),
-          ),
-          //theme mode
-          IconButton(
-            onPressed: () {
-              setState(() {
-                config.isDarkMode = !config.isDarkMode;
-              });
-            },
-            icon: Icon(config.isDarkMode ? Icons.light_mode : Icons.dark_mode),
-          ),
-          //pan axis lock
-          IconButton(
-            onPressed: () {
-              setState(() {
-                config.isPanLocked = !config.isPanLocked;
-              });
-            },
-            icon: Icon(
-              config.isPanLocked ? Icons.lock : Icons.lock_open,
+    return Container(
+      color: appConfigNotifier.value.isDarkTheme ? Colors.black : Colors.white,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            //page number
+            TextButton(
+              onPressed: () {
+                _showGoToDialog();
+              },
+              child: Text('$currentPage/$pageCount'),
             ),
-          ),
-          //zoom
-          IconButton(
-            onPressed: () {
-              pdfController.zoomDown();
-            },
-            icon: const Icon(Icons.zoom_out),
-          ),
-          IconButton(
-            onPressed: () {
-              pdfController.zoomUp();
-            },
-            icon: const Icon(Icons.zoom_in),
-          ),
-          //full screen
-          IconButton(
-            onPressed: () {
-              _toggleFullScreen(!isFullScreen);
-            },
-            icon: Icon(isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen),
-          ),
-          //setting
-          PdfReaderConfigActionComponent(
-            pdfConfig: config,
-            onApply: (_pdfConfig) {
-              setState(() {
-                config = _pdfConfig;
-              });
-              _saveConfig();
-              _initConfig();
-            },
-          ),
-        ],
+            //theme mode
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  config.isDarkMode = !config.isDarkMode;
+                });
+              },
+              icon:
+                  Icon(config.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            ),
+            //pan axis lock
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  config.isPanLocked = !config.isPanLocked;
+                });
+              },
+              icon: Icon(
+                config.isPanLocked ? Icons.lock : Icons.lock_open,
+              ),
+            ),
+            //zoom
+            IconButton(
+              onPressed: () {
+                pdfController.zoomDown();
+              },
+              icon: const Icon(Icons.zoom_out),
+            ),
+            IconButton(
+              onPressed: () {
+                pdfController.zoomUp();
+              },
+              icon: const Icon(Icons.zoom_in),
+            ),
+            //full screen
+            IconButton(
+              onPressed: () {
+                _toggleFullScreen(!isFullScreen);
+              },
+              icon:
+                  Icon(isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen),
+            ),
+            //setting
+            PdfReaderConfigActionComponent(
+              pdfConfig: config,
+              onApply: (_pdfConfig) {
+                setState(() {
+                  config = _pdfConfig;
+                });
+                _saveConfig();
+                _initConfig();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -342,6 +348,23 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
       Uri.parse(widget.onlineUrl),
       controller: pdfController,
       params: getParams(),
+    );
+  }
+
+  Widget _getColorFilteredPdfReader() {
+    return Column(
+      children: [
+        SizedBox(height: isFullScreen ? 0 : 40),
+        Expanded(
+          child: ColorFiltered(
+            colorFilter: ColorFilter.mode(
+              Colors.white,
+              config.isDarkMode ? BlendMode.difference : BlendMode.dst,
+            ),
+            child: _getCurrentPdfReader(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -371,19 +394,14 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
         onKeyEvent: _onKeyboradPressed,
         child: GestureDetector(
           onDoubleTap: () => _toggleFullScreen(false),
-          child: Column(
+          child: Stack(
             children: [
-              //header
-              _getHeaderWidgets(),
-              // pdf viewer
-              Expanded(
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    Colors.white,
-                    config.isDarkMode ? BlendMode.difference : BlendMode.dst,
-                  ),
-                  child: _getCurrentPdfReader(),
-                ),
+              _getColorFilteredPdfReader(),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Center(child: _getHeaderWidgets()),
               ),
             ],
           ),

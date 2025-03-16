@@ -1,2 +1,0 @@
-/home/thancoder/projects/flutter_projects/novel_v3/android/app/.cxx/RelWithDebInfo/3w3b6a50/x86/CMakeFiles/edit_cache.dir
-/home/thancoder/projects/flutter_projects/novel_v3/android/app/.cxx/RelWithDebInfo/3w3b6a50/x86/CMakeFiles/rebuild_cache.dir

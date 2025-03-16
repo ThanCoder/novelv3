@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   //init
-  void init() async {
+  Future<void> init() async {
     context.read<NovelProvider>().initList();
   }
 
@@ -133,36 +133,37 @@ class _HomePageState extends State<HomePage> {
     final provider = context.watch<NovelProvider>();
     final isLoading = provider.isLoading;
     final novelList = provider.getList;
-
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          title: const Text(appTitle),
-          floating: true,
-          snap: true,
-          pinned: false,
-          actions: [
-            //search
-            IconButton(
-              onPressed: () {
-                _showSearchBar();
-              },
-              icon: const Icon(Icons.search),
-            ),
-            //more
-            IconButton(
-              onPressed: () {
-                showBottomMenu();
-              },
-              icon: const Icon(Icons.more_vert),
-            ),
-          ],
-        ),
-        if (isLoading)
-          SliverToBoxAdapter(
-            child: TLoader(),
-          )
-        else
+    if (isLoading) {
+      return TLoader();
+    }
+    return RefreshIndicator(
+      onRefresh: () async {
+        init();
+      },
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(appTitle),
+            floating: true,
+            snap: true,
+            pinned: false,
+            actions: [
+              //search
+              IconButton(
+                onPressed: () {
+                  _showSearchBar();
+                },
+                icon: const Icon(Icons.search),
+              ),
+              //more
+              IconButton(
+                onPressed: () {
+                  showBottomMenu();
+                },
+                icon: const Icon(Icons.more_vert),
+              ),
+            ],
+          ),
           SliverGrid.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
@@ -176,33 +177,8 @@ class _HomePageState extends State<HomePage> {
             ),
             itemCount: novelList.length,
           ),
-      ],
+        ],
+      ),
     );
-
-    /*return MyScaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-          actions: [
-            //search
-            IconButton(
-              onPressed: () {
-                _showSearchBar();
-              },
-              icon: const Icon(Icons.search),
-            ),
-            //more
-            IconButton(
-              onPressed: () {
-                showBottomMenu();
-              },
-              icon: const Icon(Icons.more_vert),
-            ),
-          ],
-        ),
-        body: isLoading
-            ? Center(
-                child: TLoader(),
-              )
-            : _getList(novelList),);*/
   }
 }

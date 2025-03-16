@@ -25,10 +25,8 @@ class MyImageFile extends StatelessWidget {
   Widget _getImageWidget() {
     final file = File(path);
     if (file.existsSync()) {
-      // final uniqueKey = file.statSync().modified.millisecondsSinceEpoch;
       return Image.file(
         file,
-        // key: ValueKey<int>(uniqueKey),
         fit: fit,
         width: width,
         height: height,

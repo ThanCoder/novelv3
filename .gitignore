@@ -34,9 +34,6 @@ migrate_working_dir/
 .idea
 .env
 /build/
-/linux
-/web
-/windows
 
 # Symbolication related
 app.*.symbols
