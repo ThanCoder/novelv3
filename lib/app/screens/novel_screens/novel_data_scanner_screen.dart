@@ -46,12 +46,12 @@ class _NovelDataScannerScreenState extends State<NovelDataScannerScreen> {
     final novelDataList = await novelDataScannerIsolate();
     var _novelDataList = await genNovelDataCoverIsolate(
       novelDataList: novelDataList,
-      outDir: getCachePath(),
+      outDir: PathUtil.instance.getCachePath(),
     );
 
     //novel data file က NOVEL APP ထဲမှာ ရှိလားစစ်မယ်
     _novelDataList = _novelDataList.map((n) {
-      final novelDir = Directory('${getSourcePath()}/${n.title}');
+      final novelDir = Directory('${PathUtil.instance.getSourcePath()}/${n.title}');
       n.isAlreadyExists = novelDir.existsSync();
 
       return n;

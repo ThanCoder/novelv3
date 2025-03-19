@@ -9,6 +9,6 @@ class PdfCacheModel {
   });
 
   factory PdfCacheModel.fromPath(String path) {
-    return PdfCacheModel(title: getBasename(path), path: path);
+    return PdfCacheModel(title: PathUtil.instance.getBasename(path), path: path);
   }
 }

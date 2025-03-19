@@ -92,7 +92,7 @@ class _AppVersionUpdateDialogState extends State<AppVersionUpdateDialog> {
           showMessage(context, msg);
           debugPrint(msg);
         },
-        onSuccess: (savedPath) {
+        onSuccess: () {
           showMessage(context, 'Downloaded');
         },
       ),

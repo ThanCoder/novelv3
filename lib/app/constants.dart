@@ -7,6 +7,9 @@ const isDebugPrint = false;
 const githubUrl = 'https://github.com/ThanCoder/novelv3';
 const isUsedReleaseServiceFile = false;
 
+const appBrowserProxyHostUrl = 'https://nodebrowser-production.up.railway.app';
+const appForwardProxyHostUrl = 'https://thanproxy-production.up.railway.app';
+
 //assets
 const defaultIconAssetsPath = 'assets/online.webp';
 //version name

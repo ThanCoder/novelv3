@@ -1,55 +1,64 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/services/core/app_path_services.dart';
 
-String getBasename(String path) {
-  return path.split('/').last;
-}
+import '../constants.dart';
+import '../notifiers/app_notifier.dart';
 
-String getHomePath() {
-  return createDir(appRootPathNotifier.value);
-}
+class PathUtil {
+  static final PathUtil instance = PathUtil._();
+  PathUtil._();
+  factory PathUtil() => instance;
 
-String getConfigPath() {
-  return createDir('${getHomePath()}/config');
-}
-
-String getLibaryPath() {
-  return createDir('${getHomePath()}/libary');
-}
-
-String getCachePath() {
-  if (Platform.isAndroid) {
-    return createDir('${appDataRootPathNotifier.value}/cache');
-  } else {
-    return createDir('${getHomePath()}/cache');
+  String getBasename(String path) {
+    return path.split('/').last;
   }
-}
 
-String getSourcePath() {
-  return createDir('${getHomePath()}/source');
-}
-
-String getOutPath() {
-  if (Platform.isLinux) {
-    String download = createDir('${getAppExternalRootPath()}/Downloads');
-    return createDir('$download/${appName}_out');
+  String getHomePath() {
+    return createDir(appRootPathNotifier.value);
   }
-  return createDir('${getAppExternalRootPath()}/${appName}_out');
-}
 
-String createDir(String path) {
-  try {
-    if (path.isEmpty) path;
-    final dir = Directory(path);
-    if (!dir.existsSync()) {
-      dir.createSync();
+  String getConfigPath() {
+    return createDir('${getHomePath()}/config');
+  }
+
+  String getLibaryPath() {
+    return createDir('${getHomePath()}/libary');
+  }
+
+  String getDatabasePath() {
+    return createDir('${getHomePath()}/database');
+  }
+
+  String getDatabaseSourcePath() {
+    return createDir('${getHomePath()}/databaseSource');
+  }
+
+  String getCachePath() {
+    String homeDir = createDir(appConfigPathNotifier.value);
+    return createDir('$homeDir/cache');
+  }
+
+  String getSourcePath() {
+    return createDir('${getHomePath()}/source');
+  }
+
+  String getOutPath() {
+    String download = createDir(
+        '${appExternalPathNotifier.value}/${Platform.isAndroid ? 'Download' : 'Downloads'}');
+    return createDir('$download/$appName');
+  }
+
+  String createDir(String path) {
+    try {
+      if (path.isEmpty) path;
+      final dir = Directory(path);
+      if (!dir.existsSync()) {
+        dir.createSync();
+      }
+    } catch (e) {
+      debugPrint('createDir: ${e.toString()}');
     }
-  } catch (e) {
-    debugPrint('createDir: ${e.toString()}');
+    return path;
   }
-  return path;
 }

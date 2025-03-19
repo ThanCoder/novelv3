@@ -46,7 +46,7 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
       TServer.instance.get('/', (req) async {
         try {
           final novelList =
-              await getNovelListFromPath(sourcePath: getSourcePath());
+              await getNovelListFromPath(sourcePath: PathUtil.instance.getSourcePath());
           final ml = novelList.map((nv) => nv.toMap()).toList();
           TServer.instance.send(
             req,
@@ -88,7 +88,7 @@ class _ShareNovelDataScreenState extends State<ShareNovelDataScreen> {
         }
         final ml = fl
             .map((f) => {
-                  'name': getBasename(f.path),
+                  'name': PathUtil.instance.getBasename(f.path),
                   'path': f.path,
                   'size': f.statSync().size,
                   'date': f.statSync().modified.millisecondsSinceEpoch,

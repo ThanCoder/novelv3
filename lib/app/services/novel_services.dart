@@ -69,28 +69,16 @@ Future<List<NovelModel>> getNovelListFromPath(
 }
 
 //delete novel
-void deleteNovel({
-  required NovelModel novel,
-  required void Function() onSuccess,
-  required void Function(String msg) onError,
-}) {
-  try {
-    final dir = Directory(novel.path);
-    if (!dir.existsSync()) return;
-    //del
-    dir.deleteSync(recursive: true);
-    //del ui
-    final res =
-        novelListNotifier.value.where((n) => n.title != novel.title).toList();
-    novelListNotifier.value = res;
-    currentNovelNotifier.value = null;
-
-    //callback
-    onSuccess();
-  } catch (e) {
-    onError(e.toString());
-    debugPrint('deleteNovel: ${e.toString()}');
-  }
+Future<void> deleteNovel({required NovelModel novel}) async {
+  final dir = Directory(novel.path);
+  if (!dir.existsSync()) return;
+  //del
+  dir.deleteSync(recursive: true);
+  //del ui
+  final res =
+      novelListNotifier.value.where((n) => n.title != novel.title).toList();
+  novelListNotifier.value = res;
+  currentNovelNotifier.value = null;
 }
 
 //update novel
@@ -137,14 +125,14 @@ Future<void> updateNovel(
 
     //update title
     if (novel.title != oldNovelTitle) {
-      final newDir = Directory('${getSourcePath()}/${novel.title}');
-      final oldDir = Directory('${getSourcePath()}/$oldNovelTitle');
+      final newDir = Directory('${PathUtil.instance.getSourcePath()}/${novel.title}');
+      final oldDir = Directory('${PathUtil.instance.getSourcePath()}/$oldNovelTitle');
 
       if (!await oldDir.exists() || await newDir.exists()) return;
       await newDir.create();
       //move old dir content
       for (final file in oldDir.listSync()) {
-        final newPath = '${newDir.path}/${getBasename(file.path)}';
+        final newPath = '${newDir.path}/${PathUtil.instance.getBasename(file.path)}';
         file.renameSync(newPath);
       }
       //delete old dir
@@ -168,7 +156,6 @@ Future<void> updateNovel(
   return completer.future;
 }
 
-
 //pdf list
 Future<List<PdfFileModel>> getPdfList({required String sourcePath}) async {
   final completer = Completer<List<PdfFileModel>>();
@@ -182,7 +169,7 @@ Future<List<PdfFileModel>> getPdfList({required String sourcePath}) async {
       final files = dir.listSync();
       for (final file in files) {
         if (file.statSync().type != FileSystemEntityType.file) continue;
-        if (!getBasename(file.path).endsWith('.pdf')) continue;
+        if (!PathUtil.instance.getBasename(file.path).endsWith('.pdf')) continue;
         cList.add(PdfFileModel.fromPath(file.path));
       }
 

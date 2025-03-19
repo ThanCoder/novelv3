@@ -39,7 +39,7 @@ class _ImportNovelDataDialogState extends State<ImportNovelDataDialog> {
 
     importNovelDataIsolate(
       filePath: widget.dataFilePath,
-      outDirPath: getSourcePath(),
+      outDirPath: PathUtil.instance.getSourcePath(),
       onProgress: (_max, _progress, _title) {
         setState(() {
           isLoading = false;

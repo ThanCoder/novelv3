@@ -86,8 +86,8 @@ class _ListItem extends StatelessWidget {
                     shareData.name,
                     // overflow: TextOverflow.ellipsis,
                   ),
-                  Text('size: ${getParseFileSize(shareData.size.toDouble())}'),
-                  Text('Date: ${getParseDate(shareData.date)}'),
+                  Text('size: ${AppUtil.instance.getParseFileSize(shareData.size.toDouble())}'),
+                  Text('Date: ${AppUtil.instance.getParseDate(shareData.date)}'),
                 ],
               ),
             ),
@@ -105,7 +105,7 @@ class _ListItem extends StatelessWidget {
       onTap: () => onClick(shareData),
       onLongPress: () => onLongClick(shareData),
       title: Text(
-          '${shareData.name}\nsize: ${getParseFileSize(shareData.size.toDouble())}\nDate: ${getParseDate(shareData.date)}'),
+          '${shareData.name}\nsize: ${AppUtil.instance.getParseFileSize(shareData.size.toDouble())}\nDate: ${AppUtil.instance.getParseDate(shareData.date)}'),
       trailing: IconButton(
         onPressed: () => onDownloadClick(shareData),
         icon: const Icon(Icons.download),

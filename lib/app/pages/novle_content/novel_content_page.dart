@@ -138,19 +138,17 @@ class NovelContentPageState extends State<NovelContentPage> {
   }
 
   void _showPageDialog(String pageUrl) {
-    try {
-      //show page dialog
-      showDialog(
-        context: context,
-        builder: (context) => NovelPageLinkDialog(
-          dialogContext: context,
-          pageUrl: pageUrl,
-          onClick: _openPageUrl,
-        ),
-      );
-    } catch (e) {
-      debugPrint('openPageUrl: ${e.toString()}');
-    }
+    final file = File(pageUrl);
+    final content = file.readAsStringSync();
+    if (content.isEmpty) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => NovelPageLinkDialog(
+        pageUrl: content,
+        onClick: _openPageUrl,
+      ),
+    );
   }
 
   Widget getRecentTextButton(NovelModel novel) {
@@ -200,14 +198,16 @@ class NovelContentPageState extends State<NovelContentPage> {
   }
 
   Widget getPageButton(NovelModel novel) {
-    return isExistsFile('${novel.path}/link')
-        ? ElevatedButton(
-            onPressed: () {
-              _showPageDialog('${novel.path}/link');
-            },
-            child: const Text('Go Page'),
-          )
-        : Container();
+    final file = File('${novel.path}/link');
+    if (file.existsSync() && file.readAsStringSync().isNotEmpty) {
+      return ElevatedButton(
+        onPressed: () {
+          _showPageDialog('${novel.path}/link');
+        },
+        child: const Text('Go Page'),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget getStartButton(NovelModel novel) {
@@ -333,7 +333,8 @@ class NovelContentPageState extends State<NovelContentPage> {
                     //date
                     TextButton(
                         onPressed: () {},
-                        child: Text('Date: ${getParseDate(novel.date)}')),
+                        child: Text(
+                            'Date: ${AppUtil.instance.getParseDate(novel.date)}')),
                     const SizedBox(height: 20),
                     Wrap(
                       children: [

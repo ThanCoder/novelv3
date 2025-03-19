@@ -35,7 +35,7 @@ void toggleNovelBookmarkList({required NovelBookmarkModel bookmark}) {
 void removeNovelBookmarkList({required NovelBookmarkModel bookmark}) {
   try {
     List<NovelBookmarkModel> list = [];
-    final path = '${getLibaryPath()}/$novelBookListName';
+    final path = '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
     final file = File(path);
     if (file.existsSync()) {
       List<dynamic> jlist = jsonDecode(file.readAsStringSync());
@@ -58,7 +58,7 @@ void removeNovelBookmarkList({required NovelBookmarkModel bookmark}) {
 void addNovelBookmarkList({required NovelBookmarkModel bookmark}) {
   try {
     List<NovelBookmarkModel> list = [];
-    final path = '${getLibaryPath()}/$novelBookListName';
+    final path = '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
     final file = File(path);
     if (file.existsSync()) {
       List<dynamic> jlist = jsonDecode(file.readAsStringSync());
@@ -79,7 +79,7 @@ void addNovelBookmarkList({required NovelBookmarkModel bookmark}) {
 List<NovelBookmarkModel> getNovelBookmarkList() {
   List<NovelBookmarkModel> list = [];
   try {
-    final path = '${getLibaryPath()}/$novelBookListName';
+    final path = '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
     final file = File(path);
     if (!file.existsSync()) return list;
 

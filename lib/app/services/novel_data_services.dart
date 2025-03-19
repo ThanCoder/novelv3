@@ -188,7 +188,7 @@ void exportNovelData({
 
     // Create an archive object
     final archive = Archive();
-    final String novelTitle = getBasename(folderPath);
+    final String novelTitle = PathUtil.instance.getBasename(folderPath);
 
     // Recursively add files and subfolders to the archive
     Future<void> addFolderToArchive(String folderPath, String basePath) async {
@@ -199,7 +199,7 @@ void exportNovelData({
         if (entity is File) {
           //progress
           onProgress(
-              res.length, i, "${getBasename(entity.path)} ထည့်သွင်းနေပါတယ်...");
+              res.length, i, "${PathUtil.instance.getBasename(entity.path)} ထည့်သွင်းနေပါတယ်...");
           //delay
           // await Future.delayed(const Duration(milliseconds: 300));
 
@@ -208,7 +208,7 @@ void exportNovelData({
 
           // Get relative path for the file (to preserve folder structure)
           // final relativePath = entity.path.substring(basePath.length + 1);
-          final relativePath = '$novelTitle/${getBasename(entity.path)}';
+          final relativePath = '$novelTitle/${PathUtil.instance.getBasename(entity.path)}';
 
           //add novel directory title
           final novelFolderArchive = ArchiveFile.directory(novelTitle);
@@ -255,7 +255,7 @@ Future<List<NovelDataModel>> novelDataScannerIsolate() async {
   await Isolate.spawn(_novelDataScannerIsolate, [
     receivePort.sendPort,
     rootPath,
-    getSourcePath(),
+    PathUtil.instance.getSourcePath(),
   ]);
 
   receivePort.listen((data) {
@@ -304,7 +304,7 @@ void novelDataScanner({
 
     Future<void> scanPdfFile(Directory folder) async {
       for (final file in folder.listSync()) {
-        String name = getBasename(file.path);
+        String name = PathUtil.instance.getBasename(file.path);
         if (name.startsWith('.') ||
             name.startsWith('Android') ||
             name.startsWith('android-studio') ||
@@ -370,7 +370,7 @@ void _genNovelDataCoverIsolate(List<Object> args) {
     final novelDataList = args[1] as List<NovelDataModel>;
     final outDir = args[2] as String;
 
-    createDir(outDir);
+    PathUtil.instance.createDir(outDir);
     int i = 0;
     for (final data in novelDataList) {
       // Read the ZIP file
@@ -408,7 +408,7 @@ void genNovelDataCover({
   required void Function(String err) onError,
 }) {
   try {
-    createDir(outDir);
+    PathUtil.instance.createDir(outDir);
     // Read the ZIP file
     final zipFile = File(filePath);
     if (!zipFile.existsSync()) throw Exception('မရှိပါ! path:$filePath');

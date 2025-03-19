@@ -62,7 +62,7 @@ void pdfScanner({
 
     Future<void> scanPdfFile(Directory folder) async {
       for (final file in folder.listSync()) {
-        String name = getBasename(file.path);
+        String name = PathUtil.instance.getBasename(file.path);
         if (name.startsWith('.') ||
             name.startsWith('Android') ||
             name.startsWith('android-studio') ||
@@ -100,14 +100,14 @@ Future<List<PdfFileModel>> genPdfCover(
   try {
     //change pdf cover path
     pdfList = pdfList.map((pdf) {
-      pdf.coverPath = '${getCachePath()}/${pdf.title.split('.').first}.png';
+      pdf.coverPath = '${PathUtil.instance.getCachePath()}/${pdf.title.split('.').first}.png';
       return pdf;
     }).toList();
 
     final pathList = pdfList.map((pdf) => pdf.path).toList();
 
     await ThanPkg.platform.genPdfCover(
-      outDirPath: getCachePath(),
+      outDirPath: PathUtil.instance.getCachePath(),
       pdfPathList: pathList,
     );
 

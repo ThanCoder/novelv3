@@ -51,7 +51,7 @@ class _HomeMorePageState extends State<HomeMorePage> {
   void _checkCache() {
     setState(() {
       cacheCount = getCacheCount();
-      cacheSize = getParseFileSize(getCacheSize().toDouble());
+      cacheSize = AppUtil.instance.getParseFileSize(getCacheSize().toDouble());
     });
   }
 
@@ -83,10 +83,10 @@ class _HomeMorePageState extends State<HomeMorePage> {
                   isDarkThemeNotifier.value = value;
                   setState(() {});
                   setConfigFile(appConfigNotifier.value);
-                  CherryToast.success(
-                    inheritThemeColors: true,
-                    title: const Text('Setting သိမ်းပြီးပါပြီ'),
-                  ).show(context);
+                  // CherryToast.success(
+                  //   inheritThemeColors: true,
+                  //   title: const Text('Setting သိမ်းပြီးပါပြီ'),
+                  // ).show(context);
                 },
               ),
             ),

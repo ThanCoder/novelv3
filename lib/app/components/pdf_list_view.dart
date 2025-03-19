@@ -90,8 +90,8 @@ class _ListItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(pdfFile.title, maxLines: 2),
-                      Text(getParseFileSize(pdfFile.size.toDouble())),
-                      Text(getParseDate(pdfFile.date)),
+                      Text(AppUtil.instance.getParseFileSize(pdfFile.size.toDouble())),
+                      Text(AppUtil.instance.getParseDate(pdfFile.date)),
                     ],
                   ),
                 ),

@@ -1,4 +1,4 @@
-export './app_config_model.dart';
+export 'core/app_config_model.dart';
 export './chapter_book_mark_model.dart';
 export './chapter_model.dart';
 export './novel_bookmark_model.dart';

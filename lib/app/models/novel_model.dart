@@ -83,7 +83,7 @@ class NovelModel {
     }
 
     return NovelModel(
-      title: getBasename(dir.path),
+      title: PathUtil.instance.getBasename(dir.path),
       path: dir.path,
       isCompleted: isCompleted,
       isAdult: isAdult,

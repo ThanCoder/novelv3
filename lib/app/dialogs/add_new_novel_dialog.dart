@@ -59,7 +59,7 @@ class _AddNewNovelDialogState extends State<AddNewNovelDialog> {
     try {
       final newNovel = NovelModel(
         title: textController.text,
-        path: '${getSourcePath()}/${textController.text}',
+        path: '${PathUtil.instance.getSourcePath()}/${textController.text}',
         isCompleted: false,
         isAdult: false,
         date: DateTime.now().millisecondsSinceEpoch,

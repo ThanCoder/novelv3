@@ -127,9 +127,9 @@ class PdfListPageState extends State<PdfListPage> {
     try {
       final file = File(pdfFile.path);
       if (file.existsSync()) {
-        file.copySync('${getOutPath()}/${pdfFile.title}');
+        file.copySync('${PathUtil.instance.getOutPath()}/${pdfFile.title}');
         showMessage(
-            context, 'ကူးယူပြီးပါပြီ။ Path: ${getOutPath()}/${pdfFile.title}');
+            context, 'ကူးယူပြီးပါပြီ။ Path: ${PathUtil.instance.getOutPath()}/${pdfFile.title}');
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -140,7 +140,7 @@ class PdfListPageState extends State<PdfListPage> {
     try {
       final file = File(pdfFile.path);
       if (file.existsSync()) {
-        file.renameSync('${getOutPath()}/${pdfFile.title}');
+        file.renameSync('${PathUtil.instance.getOutPath()}/${pdfFile.title}');
         //update ui
         final pdfList = pdfListNotifier.value
             .where((pdf) => pdf.title != pdfFile.title)

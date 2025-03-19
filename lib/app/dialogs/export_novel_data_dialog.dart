@@ -34,7 +34,7 @@ class _ExportNovelDataDialogState extends State<ExportNovelDataDialog> {
 
     exportNovelDataIsolate(
       folderPath: novel.path,
-      outDirPath: getOutPath(),
+      outDirPath: PathUtil.instance.getOutPath(),
       onProgress: (_max, _progress, _title) {
         setState(() {
           isLoading = false;

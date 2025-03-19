@@ -105,7 +105,7 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
       final file = File(pdfFile.path);
       if (file.existsSync() && novel != null) {
         //new path
-        final newPath = '${novel.path}/${getBasename(file.path)}';
+        final newPath = '${novel.path}/${PathUtil.instance.getBasename(file.path)}';
         file.renameSync(newPath);
         //change pdf scanner ui
         final pdfScannerList = pdfScannerListNotifier.value
@@ -131,7 +131,7 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
         final novel = currentNovelNotifier.value;
         final file = File(pdfFile.path);
         if (file.existsSync() && novel != null) {
-          final newPath = '${novel.path}/${getBasename(file.path)}';
+          final newPath = '${novel.path}/${PathUtil.instance.getBasename(file.path)}';
           file.copySync(newPath);
 
           showMessage(context, 'ကူယူပြီးပါပြီ');
@@ -197,8 +197,8 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Title: ${pdf.title}'),
-                Text('Size: ${getParseFileSize(pdf.size.toDouble())}'),
-                Text('Date: ${getParseDate(pdf.date)}'),
+                Text('Size: ${AppUtil.instance.getParseFileSize(pdf.size.toDouble())}'),
+                Text('Date: ${AppUtil.instance.getParseDate(pdf.date)}'),
                 Text('Path: ${pdf.path}'),
               ],
             ),

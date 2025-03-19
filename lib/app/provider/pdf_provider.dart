@@ -43,7 +43,7 @@ class PdfProvider with ChangeNotifier {
       final file = File(pdfFile.path);
       if (file.existsSync()) {
         final newPath = pdfFile.path
-            .replaceAll(getBasename(file.path), '$renamedTitle.pdf');
+            .replaceAll(PathUtil.instance.getBasename(file.path), '$renamedTitle.pdf');
 
         pdfFile.changeFullPath(newPath);
         //update ui
@@ -51,7 +51,7 @@ class PdfProvider with ChangeNotifier {
         _list[index] = pdfFile;
         //gen pdf list
         await ThanPkg.platform.genPdfCover(
-          outDirPath: getCachePath(),
+          outDirPath: PathUtil.instance.getCachePath(),
           pdfPathList: [pdfFile.path],
         );
       }

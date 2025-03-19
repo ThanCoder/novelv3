@@ -90,7 +90,8 @@ class _ReceiveNovelContentScreenState extends State<ReceiveNovelContentScreen> {
 
   void _checkExistsFiles() {
     //check exists
-    final novelDir = Directory('${getSourcePath()}/${widget.novel.title}');
+    final novelDir =
+        Directory('${PathUtil.instance.getSourcePath()}/${widget.novel.title}');
     if (novelDir.existsSync()) {
       final list = dataList.map((data) {
         final file = File('${novelDir.path}/${data.name}');
@@ -157,7 +158,7 @@ class _ReceiveNovelContentScreenState extends State<ReceiveNovelContentScreen> {
       //
       final urlPath = 'http://${widget.apiUrl}/download?path=${shareData.path}';
       final savePath =
-          '${createDir('${getSourcePath()}/${widget.novel.title}')}/${shareData.name}';
+          '${PathUtil.instance.createDir('${PathUtil.instance.getSourcePath()}/${widget.novel.title}')}/${shareData.name}';
       showDialog(
         context: context,
         builder: (ctx) => DownloadDialog(
@@ -169,7 +170,7 @@ class _ReceiveNovelContentScreenState extends State<ReceiveNovelContentScreen> {
             debugPrint(msg);
             showMessage(ctx, msg);
           },
-          onSuccess: (_) {
+          onSuccess: () {
             showMessage(ctx, 'Downloaded');
             //novel data ရှိမရှိ စစ်ဆေးခြင်း
             _checkExistsFiles();
@@ -183,7 +184,8 @@ class _ReceiveNovelContentScreenState extends State<ReceiveNovelContentScreen> {
   }
 
   void _allDownload() async {
-    final saveDirPath = createDir('${getSourcePath()}/${widget.novel.title}');
+    final saveDirPath = PathUtil.instance.createDir(
+        '${PathUtil.instance.getSourcePath()}/${widget.novel.title}');
 
     showDialog(
       context: context,

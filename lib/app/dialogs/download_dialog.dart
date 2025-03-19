@@ -9,7 +9,7 @@ class DownloadDialog extends StatefulWidget {
   String url;
   String message;
   String saveFullPath;
-  void Function(String savedPath) onSuccess;
+  void Function() onSuccess;
   void Function(String msg) onError;
   DownloadDialog({
     super.key,
@@ -53,7 +53,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
           });
         },
       );
-      widget.onSuccess(widget.saveFullPath);
+      widget.onSuccess();
       if (!mounted) return;
       Navigator.pop(context);
     } catch (e) {
@@ -92,7 +92,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
             fileSize == 0
                 ? const SizedBox.shrink()
                 : Text(
-                    '${getParseFileSize(downloadedSize)} / ${getParseFileSize(fileSize)}'),
+                    '${AppUtil.instance.getParseFileSize(downloadedSize)} / ${AppUtil.instance.getParseFileSize(fileSize)}'),
           ],
         ),
       ),

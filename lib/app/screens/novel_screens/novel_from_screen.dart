@@ -37,6 +37,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
   bool isAdult = false;
   bool isCompleted = false;
   String? titleErrorText;
+  bool isLoading = true;
 
   void init() async {
     try {
@@ -54,7 +55,14 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
       contentController.text = novel.content;
       isAdult = novel.isAdult;
       isCompleted = novel.isCompleted;
+
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       debugPrint(e.toString());
     }
   }
@@ -143,6 +151,7 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
         }
       },
       child: MyScaffold(
+        contentPadding: 0,
         appBar: AppBar(
           title: Text(novel.title),
           actions: [
@@ -155,104 +164,106 @@ class _NovelFromScreenState extends State<NovelFromScreen> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //cover
-                _NovelCover(novel: novel),
-                const Divider(),
-                TTextField(
-                  isSelectedAll: true,
-                  label: const Text('Novel Title'),
-                  controller: titleController,
-                  errorText: titleErrorText,
-                  onChanged: (value) {
-                    isChanged = true;
-                    if (value.isNotEmpty) {
-                      checkNovelTitle(value);
-                    }
-                  },
+        body: isLoading
+            ? TLoader()
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //cover
+                      _NovelCover(novel: novel),
+                      const Divider(),
+                      TTextField(
+                        isSelectedAll: true,
+                        label: const Text('Novel Title'),
+                        controller: titleController,
+                        errorText: titleErrorText,
+                        onChanged: (value) {
+                          isChanged = true;
+                          if (value.isNotEmpty) {
+                            checkNovelTitle(value);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TTextField(
+                        isSelectedAll: true,
+                        label: const Text('Page Url'),
+                        controller: pageUrlController,
+                        onChanged: (value) {
+                          isChanged = true;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TTextField(
+                        isSelectedAll: true,
+                        label: const Text('MC'),
+                        controller: mcController,
+                        onChanged: (value) {
+                          isChanged = true;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TTextField(
+                        isSelectedAll: true,
+                        label: const Text('Author'),
+                        controller: authorController,
+                        onChanged: (value) {
+                          isChanged = true;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      //switch
+                      Row(
+                        children: [
+                          //is Adult
+                          Row(
+                            children: [
+                              const Text('Adult'),
+                              Switch(
+                                value: isAdult,
+                                onChanged: (value) {
+                                  isChanged = true;
+                                  setState(() {
+                                    isAdult = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 10),
+                          //is Completed
+                          Row(
+                            children: [
+                              const Text('Completed'),
+                              Switch(
+                                value: isCompleted,
+                                onChanged: (value) {
+                                  isChanged = true;
+                                  setState(() {
+                                    isCompleted = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      //content
+                      const SizedBox(height: 10),
+                      TTextField(
+                        isSelectedAll: true,
+                        label: const Text('Content or Review'),
+                        controller: contentController,
+                        maxLines: 7,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 10),
-                TTextField(
-                  isSelectedAll: true,
-                  label: const Text('Page Url'),
-                  controller: pageUrlController,
-                  onChanged: (value) {
-                    isChanged = true;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TTextField(
-                  isSelectedAll: true,
-                  label: const Text('MC'),
-                  controller: mcController,
-                  onChanged: (value) {
-                    isChanged = true;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TTextField(
-                  isSelectedAll: true,
-                  label: const Text('Author'),
-                  controller: authorController,
-                  onChanged: (value) {
-                    isChanged = true;
-                  },
-                ),
-                const SizedBox(height: 10),
-                //switch
-                Row(
-                  children: [
-                    //is Adult
-                    Row(
-                      children: [
-                        const Text('Adult'),
-                        Switch(
-                          value: isAdult,
-                          onChanged: (value) {
-                            isChanged = true;
-                            setState(() {
-                              isAdult = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 10),
-                    //is Completed
-                    Row(
-                      children: [
-                        const Text('Completed'),
-                        Switch(
-                          value: isCompleted,
-                          onChanged: (value) {
-                            isChanged = true;
-                            setState(() {
-                              isCompleted = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                //content
-                const SizedBox(height: 10),
-                TTextField(
-                  isSelectedAll: true,
-                  label: const Text('Content or Review'),
-                  controller: contentController,
-                  maxLines: 7,
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }
@@ -315,31 +326,36 @@ class _NovelCoverState extends State<_NovelCover> {
   void showMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        children: [
-          //change cover
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              changeCover();
-            },
-            leading: const Icon(Icons.change_circle),
-            title: Text(
-                'Change ${isContentCoverMenu ? 'Content Cover' : 'Cover'}'),
+      builder: (context) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 200),
+          child: Column(
+            children: [
+              //change cover
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  changeCover();
+                },
+                leading: const Icon(Icons.change_circle),
+                title: Text(
+                    'Change ${isContentCoverMenu ? 'Content Cover' : 'Cover'}'),
+              ),
+              //delete
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  deleteCover();
+                },
+                leading: const Icon(Icons.delete_forever),
+                title: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
           ),
-          //delete
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              deleteCover();
-            },
-            leading: const Icon(Icons.delete_forever),
-            title: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

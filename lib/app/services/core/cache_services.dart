@@ -6,7 +6,7 @@ import 'package:novel_v3/app/utils/path_util.dart';
 int getCacheCount() {
   int res = 0;
   try {
-    final dir = Directory(getCachePath());
+    final dir = Directory(PathUtil.instance.getCachePath());
     final files = dir.listSync(recursive: true);
     res = files.length;
   } catch (e) {
@@ -18,7 +18,7 @@ int getCacheCount() {
 int getCacheSize() {
   int res = 0;
   try {
-    final dir = Directory(getCachePath());
+    final dir = Directory(PathUtil.instance.getCachePath());
     final files = dir.listSync(recursive: true);
     for (var file in files) {
       if (file.statSync().type == FileSystemEntityType.directory) continue;
@@ -32,7 +32,7 @@ int getCacheSize() {
 
 Future<void> cleanCache() async {
   try {
-    final dir = Directory(getCachePath());
+    final dir = Directory(PathUtil.instance.getCachePath());
     final files = dir.list(recursive: true);
     await for (var file in files) {
       if (file.statSync().type == FileSystemEntityType.directory) continue;

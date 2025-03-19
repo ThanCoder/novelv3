@@ -33,7 +33,7 @@ class PdfFileModel {
 
     if (file.existsSync()) {
       pdfFile = PdfFileModel(
-        title: getBasename(path),
+        title: PathUtil.instance.getBasename(path),
         path: path,
         size: file.lengthSync(),
         date: file.statSync().modified.millisecondsSinceEpoch,
@@ -47,7 +47,7 @@ class PdfFileModel {
 
   void setFullPath(String newPath) {
     path = newPath;
-    title = getBasename(path);
+    title = PathUtil.instance.getBasename(path);
     bookMarkPath = path.replaceAll('.pdf', pdfBookListName);
     configPath = path.replaceAll('.pdf', pdfConfigName);
     configOldPath = path.replaceAll('.pdf', pdfOldConfigName);
@@ -79,6 +79,6 @@ class PdfFileModel {
 
   @override
   String toString() {
-    return '\ntitle => $title\npath => $path\nsize => $size\nsize label => ${getParseFileSize(size.toDouble())}\nbookMarkPath => $bookMarkPath\nconfigPath => $configPath\ncoverPath => $coverPath\n';
+    return '\ntitle => $title\npath => $path\nsize => $size\nsize label => ${AppUtil.instance.getParseFileSize(size.toDouble())}\nbookMarkPath => $bookMarkPath\nconfigPath => $configPath\ncoverPath => $coverPath\n';
   }
 }

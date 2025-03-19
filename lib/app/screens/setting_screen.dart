@@ -8,7 +8,6 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/utils/config_util.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/index.dart';
@@ -28,7 +27,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   bool isChanged = false;
-  late AppConfigModel configFile;
+  late AppConfigModel config;
   bool isUsedCustomPath = false;
   bool isDarkTheme = false;
   bool isShowNovelContentCover = false;
@@ -36,14 +35,14 @@ class _SettingScreenState extends State<SettingScreen> {
 
   void init() async {
     customPathTextController.text = '${getAppExternalRootPath()}/.$appName';
-    configFile = appConfigNotifier.value;
+    config = appConfigNotifier.value;
     setState(() {
-      isUsedCustomPath = configFile.isUseCustomPath;
-      customPathTextController.text = configFile.customPath.isEmpty
+      isUsedCustomPath = config.isUseCustomPath;
+      customPathTextController.text = config.customPath.isEmpty
           ? '${getAppExternalRootPath()}/.$appName'
-          : configFile.customPath;
-      isDarkTheme = configFile.isDarkTheme;
-      isShowNovelContentCover = configFile.isShowNovelContentBgImage;
+          : config.customPath;
+      isDarkTheme = config.isDarkTheme;
+      isShowNovelContentCover = config.isShowNovelContentBgImage;
     });
   }
 
@@ -58,19 +57,19 @@ class _SettingScreenState extends State<SettingScreen> {
         }
       }
       //reset
-      configFile.customPath = customPathTextController.text;
-      configFile.isUseCustomPath = isUsedCustomPath;
-      configFile.isDarkTheme = isDarkTheme;
-      configFile.isShowNovelContentBgImage = isShowNovelContentCover;
+      config.customPath = customPathTextController.text;
+      config.isUseCustomPath = isUsedCustomPath;
+      config.isDarkTheme = isDarkTheme;
+      config.isShowNovelContentBgImage = isShowNovelContentCover;
       //save
-      setConfigFile(configFile);
-      appConfigNotifier.value = configFile;
+      setConfigFile(config);
+      appConfigNotifier.value = config;
       if (isUsedCustomPath) {
         //change
-        appRootPathNotifier.value = configFile.customPath;
+        appRootPathNotifier.value = config.customPath;
       }
       //init config
-      await initConfig();
+      await initAppConfigService();
       //init
 
       if (!mounted) return;

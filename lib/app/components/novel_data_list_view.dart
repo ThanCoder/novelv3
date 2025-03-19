@@ -95,7 +95,7 @@ class _ListItem extends StatelessWidget {
                         ],
                       ),
                       Text(
-                          'Size: ${getParseFileSize(novelData.size.toDouble())}'),
+                          'Size: ${AppUtil.instance.getParseFileSize(novelData.size.toDouble())}'),
                       novelData.isAlreadyExists
                           ? Text(
                               'ရှိနေပြီးသားပါ!',
@@ -111,7 +111,7 @@ class _ListItem extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                      Text('Date: ${getParseDate(novelData.date)}'),
+                      Text('Date: ${AppUtil.instance.getParseDate(novelData.date)}'),
                     ],
                   ),
                 ),

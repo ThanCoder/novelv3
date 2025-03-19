@@ -269,6 +269,8 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             //page number
             TextButton(
@@ -401,7 +403,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: Center(child: _getHeaderWidgets()),
+                child: _getHeaderWidgets(),
               ),
             ],
           ),

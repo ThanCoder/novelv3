@@ -1,3 +1,11 @@
+## 1.8.8
+
+## Fixed
+- pdf reader color
+
+## Added
+- add mediafire downloader
+
 ## 1.8.7
 
 ## Fixed

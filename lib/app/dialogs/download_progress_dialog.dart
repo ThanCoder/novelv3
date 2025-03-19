@@ -71,13 +71,13 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
 
           final urlPath = '$api/download?path=$path';
           final savePath =
-              '${createDir(widget.saveDirPath)}/${getBasename(path)}';
+              '${PathUtil.instance.createDir(widget.saveDirPath)}/${PathUtil.instance.getBasename(path)}';
           final saveFile = File(savePath);
 
           if (saveFile.existsSync()) {
             setState(() {
               progress++;
-              title = getBasename(path);
+              title = PathUtil.instance.getBasename(path);
             });
           }
           //download file
@@ -97,7 +97,7 @@ class _DownloadProgressDialogState extends State<DownloadProgressDialog> {
           //progress
           setState(() {
             downloadIndex++;
-            title = getBasename(path);
+            title = PathUtil.instance.getBasename(path);
           });
           // await Future.delayed(const Duration(milliseconds: 100));
           // await Future.delayed(const Duration(milliseconds: 1200));

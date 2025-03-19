@@ -14,7 +14,7 @@ enum PortType {
 Future<List<NovelModel>> getNovelListFromPathIsolate() async {
   final completer = Completer<List<NovelModel>>();
   try {
-    String sourcePath = getSourcePath();
+    String sourcePath = PathUtil.instance.getSourcePath();
     final list = Isolate.run<List<NovelModel>>(() {
       List<NovelModel> novelList = [];
       final dir = Directory(sourcePath);

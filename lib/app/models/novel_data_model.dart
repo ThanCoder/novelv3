@@ -28,7 +28,7 @@ class NovelDataModel {
   factory NovelDataModel.fromPath(String path) {
     final file = File(path);
     return NovelDataModel(
-      title: getBasename(path),
+      title: PathUtil.instance.getBasename(path),
       path: path,
       coverPath: '',
       size: file.statSync().size,

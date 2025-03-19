@@ -15,7 +15,7 @@ class ChapterModel {
     return ChapterModel.fromFile(File(path));
   }
   factory ChapterModel.fromFile(File file) {
-    return ChapterModel(title: getBasename(file.path), path: file.path);
+    return ChapterModel(title: PathUtil.instance.getBasename(file.path), path: file.path);
   }
 
   @override

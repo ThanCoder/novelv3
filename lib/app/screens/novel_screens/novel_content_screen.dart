@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/dialogs/export_novel_data_dialog.dart';
 import 'package:novel_v3/app/models/novel_bookmark_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
@@ -13,11 +11,8 @@ import 'package:novel_v3/app/pages/novle_content/chapter_bookmark_list_page.dart
 import 'package:novel_v3/app/pages/novle_content/novel_content_page.dart';
 import 'package:novel_v3/app/pages/novle_content/pdf_list_page.dart';
 import 'package:novel_v3/app/provider/index.dart';
-import 'package:novel_v3/app/screens/novel_screens/chapter_add_from_screen.dart';
-import 'package:novel_v3/app/screens/novel_screens/novel_from_screen.dart';
-import 'package:novel_v3/app/screens/pdf_screens/pdf_add_form_screen.dart';
 import 'package:novel_v3/app/services/novel_bookmark_services.dart';
-import 'package:novel_v3/app/services/novel_services.dart';
+import 'package:novel_v3/app/modal_bottom_sheets/novel_content_modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/index.dart';
@@ -58,126 +53,16 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     }
   }
 
-  void goBack() {
+  void _goBack() {
     Navigator.pop(context);
   }
 
   void showBottomMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => SizedBox(
-        height: 240,
-        child: ListView(
-          children: [
-            //edit novel
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-
-                final novel = context.read<NovelProvider>().getNovel;
-
-                if (novel != null) {
-                  //go edit form
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NovelFromScreen(novel: novel),
-                    ),
-                  );
-                }
-              },
-              leading: const Icon(Icons.add),
-              title: const Text('Edit Novel'),
-            ),
-            //add chapter
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ChapterAddFromScreen(),
-                  ),
-                );
-              },
-              leading: const Icon(Icons.add),
-              title: const Text('Add Chapter'),
-            ),
-            //add pdf
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PdfAddFormScreen(),
-                  ),
-                );
-              },
-              leading: const Icon(Icons.add),
-              title: const Text('Add PDF Files'),
-            ),
-            //export novel data
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) =>
-                      ExportNovelDataDialog(dialogContext: context),
-                );
-              },
-              leading: const Icon(Icons.import_export),
-              title: const Text('Novel Data ထုတ်မယ်'),
-            ),
-            //delete novel
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-                deleteNovelConfim();
-              },
-              leading: const Icon(Icons.delete_forever),
-              title: const Text(
-                'Delete Novel',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void deleteNovelConfim() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('အတည်ပြုခြင်း'),
-        content: const Text('ဖျက်ချင်တာ သေချာပြီလား?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('No'),
-          ),
-          TextButton(
-            onPressed: () {
-              deleteNovel(
-                novel: widget.novel,
-                onSuccess: () {
-                  Navigator.pop(context);
-                  goBack();
-                },
-                onError: (msg) {
-                  showMessage(context, msg);
-                },
-              );
-            },
-            child: const Text('Yes'),
-          ),
-        ],
+      builder: (context) => NovelContentModalBottomSheet(
+        novel: widget.novel,
+        onBackPress: _goBack,
       ),
     );
   }
@@ -235,27 +120,6 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         );
       },
     );
-    /*return MyScaffold(
-      appBar: AppBar(
-        title: const Text('Novel Content'),
-        actions: [
-          IconButton(
-            onPressed: _toggleBookMark,
-            icon: Icon(
-                color: isExistsBookmark ? dangerColor : activeColor,
-                isExistsBookmark ? Icons.bookmark_remove : Icons.bookmark_add),
-          ),
-          IconButton(
-            onPressed: () {
-              showBottomMenu();
-            },
-            icon: const Icon(Icons.more_vert),
-          ),
-        ],
-      ),
-      body: const _BodyTab(),
-    );
-    */
   }
 }
 
