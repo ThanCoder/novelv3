@@ -81,7 +81,7 @@ class ChapterBookmarkProvider with ChangeNotifier {
       barrierDismissible: false,
       builder: (context) => RenameDialog(
         title: 'Update Title',
-        renameText: bookmark.title,
+        text: bookmark.title,
         onCancel: () {},
         onSubmit: (title) async {
           try {

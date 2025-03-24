@@ -221,15 +221,8 @@ class _ReceiveNovelContentScreenState extends State<ReceiveNovelContentScreen> {
           context,
           MaterialPageRoute(
             builder: (context) => PdfrxReader(
-              isOffline: false,
-              onlineUrl: url,
-              pdfFile: PdfFileModel(
-                title: shareData.name,
-                path: '',
-                size: 0,
-                date: 0,
-              ),
-              pdfConfig: PdfConfigModel(),
+              title: shareData.name,
+              sourcePath: url,
             ),
           ));
       return;

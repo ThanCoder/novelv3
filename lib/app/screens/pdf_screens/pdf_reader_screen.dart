@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/models/pdf_config_model.dart';
+import 'package:novel_v3/app/pdf_readers/pdf_config_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader.dart';
 
@@ -20,13 +19,12 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
       //get pdf config
       final pdfConfig = PdfConfigModel.fromPath(widget.pdfFile.configPath);
       return PdfrxReader(
-        pdfFile: widget.pdfFile,
+        title: widget.pdfFile.title,
+        sourcePath: widget.pdfFile.path,
         pdfConfig: pdfConfig,
         saveConfig: (pdfConfig) {
           try {
-            final file = File(widget.pdfFile.configPath);
-            file.writeAsStringSync(
-                const JsonEncoder.withIndent(' ').convert(pdfConfig.toJson()));
+            pdfConfig.saveConfig(widget.pdfFile.configPath);
           } catch (e) {
             debugPrint('PdfrxReader->saveConfig: ${e.toString()}');
           }

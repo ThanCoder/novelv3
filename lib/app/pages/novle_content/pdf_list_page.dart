@@ -114,7 +114,7 @@ class PdfListPageState extends State<PdfListPage> {
       barrierDismissible: false,
       builder: (ctx) => RenameDialog(
         renameLabelText: const Text('Rename PDF Title'),
-        renameText: pdfFile.title.replaceAll('.pdf', ''),
+        text: pdfFile.title.replaceAll('.pdf', ''),
         onCancel: () {},
         onSubmit: (title) {
           ctx.read<PdfProvider>().rename(pdfFile: pdfFile, renamedTitle: title);
@@ -128,8 +128,8 @@ class PdfListPageState extends State<PdfListPage> {
       final file = File(pdfFile.path);
       if (file.existsSync()) {
         file.copySync('${PathUtil.instance.getOutPath()}/${pdfFile.title}');
-        showMessage(
-            context, 'ကူးယူပြီးပါပြီ။ Path: ${PathUtil.instance.getOutPath()}/${pdfFile.title}');
+        showMessage(context,
+            'ကူးယူပြီးပါပြီ။ Path: ${PathUtil.instance.getOutPath()}/${pdfFile.title}');
       }
     } catch (e) {
       debugPrint(e.toString());

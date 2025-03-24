@@ -1,31 +1,34 @@
+import 'dart:io';
+
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/app/components/pdf_reader_config_action_component.dart';
+import 'package:novel_v3/app/extensions/screen_orientation_types_extension.dart';
+import 'package:novel_v3/app/pdf_readers/pdf_reader_config_action_component.dart';
+import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/rename_dialog.dart';
 import 'package:novel_v3/app/drawers/pdf_book_mark_list_drawer.dart';
-import 'package:novel_v3/app/models/pdf_config_model.dart';
+import 'package:novel_v3/app/pdf_readers/pdf_config_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:pdfrx/pdfrx.dart';
+import 'package:than_pkg/than_pkg.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../widgets/index.dart';
 
 class PdfrxReader extends StatefulWidget {
-  PdfFileModel pdfFile;
-  PdfConfigModel pdfConfig;
-  bool isOffline;
-  String onlineUrl;
+  PdfConfigModel? pdfConfig;
+  String sourcePath;
+  String title;
   void Function(PdfConfigModel pdfConfig)? saveConfig;
   PdfrxReader({
     super.key,
-    required this.pdfFile,
-    required this.pdfConfig,
+    this.pdfConfig,
+    required this.sourcePath,
+    required this.title,
     this.saveConfig,
-    this.isOffline = true,
-    this.onlineUrl = '',
   });
 
   @override
@@ -37,55 +40,87 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
   bool isLoading = true;
   int currentPage = 1;
   int pageCount = 0;
-  bool initCalled = false;
-  bool isFullScreen = false;
+  bool isInitCalled = false;
   late PdfConfigModel config;
-  double oldZoom = 0;
-  double oldOffsetX = 0;
-  double oldOffsetY = 0;
-  int oldPage = 1;
+  bool isFullScreen = false;
+  bool isCanGoBack = true;
 
   @override
   void initState() {
     windowManager.addListener(this);
-    config = widget.pdfConfig;
-    oldPage = config.page;
-    oldZoom = config.zoom;
-    oldOffsetX = config.offsetDx;
-    oldOffsetY = config.offsetDy;
+    if (widget.pdfConfig != null) {
+      config = widget.pdfConfig!;
+    } else {
+      config = PdfConfigModel();
+    }
     super.initState();
+    _initConfig();
+  }
+
+  void _initConfig() async {
+    try {
+      if (Platform.isAndroid) {
+        await ThanPkg.android.app
+            .toggleKeepScreenOn(isKeep: config.isKeepScreen);
+        await ThanPkg.android.app.requestOrientation(
+          type: ScreenOrientationTypesExtension.fromType(
+            config.screenOrientation,
+          ),
+        );
+      }
+      isCanGoBack = !config.isOnBackpressConfirm;
+    } catch (e) {
+      debugPrint('_initConfig: ${e.toString()}');
+    }
   }
 
   //pdf loaded
-  void onPdfLoaded() async {
+  void onPdfLoaded(PdfDocument document, PdfViewerController controller) async {
     try {
       //set offset
-      final newOffset = Offset(oldOffsetX, oldOffsetY);
-      if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
-        pdfController.setZoom(newOffset, oldZoom);
+      final newOffset = Offset(config.offsetDx, config.offsetDy);
+      if (config.zoom != 0 && config.offsetDx != 0 && config.offsetDy != 0) {
+        pdfController.setZoom(newOffset, config.zoom);
         //delay
         await Future.delayed(const Duration(milliseconds: 800));
-        goPage(oldPage);
+        goPage(config.page);
       } else {
-        goPage(oldPage);
+        goPage(config.page);
       }
 
+      if (!mounted) return;
       // pdfController.
       setState(() {
         isLoading = false;
+        isInitCalled = true;
       });
-      _initConfig();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         isLoading = false;
+        isInitCalled = true;
       });
       debugPrint('onPdfLoaded: ${e.toString()}');
     }
   }
 
-  void _initConfig() {
-    //keep screen
-    toggleAndroidKeepScreen(config.isKeepScreen);
+  // page change အရင်အခေါ်တယ်
+  void _onPdfPageChanged(int? pageNumber) {
+    try {
+      setState(() {
+        currentPage = pageNumber ?? 1;
+        pageCount = pdfController.pageCount;
+      });
+      //init call ပြီးမှ
+      if (!isInitCalled) return;
+      final offset = pdfController.centerPosition;
+      config.zoom = pdfController.currentZoom;
+      config.offsetDx = offset.dx;
+      config.offsetDy = offset.dy;
+      // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
+    } catch (e) {
+      debugPrint('onPageChanged: ${e.toString()}');
+    }
   }
 
   //save config
@@ -93,9 +128,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
     try {
       //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
       if (isLoading) return;
-
       config.page = currentPage;
-
       if (widget.saveConfig != null) {
         widget.saveConfig!(config);
       }
@@ -108,38 +141,6 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
   void onWindowClose() {
     _saveConfig();
     super.onWindowClose();
-  }
-
-  void _onKeyboradPressed(KeyEvent ev) {
-    if (ev is KeyDownEvent) {
-      String? keyName = ev.logicalKey.debugName;
-      if (keyName != null && keyName.isNotEmpty) {
-        _keySwitch(keyName);
-      }
-    }
-  }
-
-  void _keySwitch(String kName) {
-    switch (kName) {
-      case 'Arrow Right':
-        if (currentPage <= pageCount) {
-          goPage(currentPage + 1);
-        }
-        break;
-      case 'Arrow Left':
-        if (currentPage > 0) {
-          goPage(currentPage - 1);
-        }
-        break;
-      case 'Key F':
-        _toggleFullScreen(!isFullScreen);
-
-        break;
-      case 'Arrow Up':
-        break;
-      case 'Arrow Down':
-        break;
-    }
   }
 
   //go page
@@ -155,7 +156,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
     showDialog(
       context: context,
       builder: (context) => RenameDialog(
-        renameText: currentPage.toString(),
+        text: currentPage.toString(),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         textInputType: TextInputType.number,
         renameLabelText: Text('Go To Page Range(1-$pageCount)'),
@@ -193,6 +194,7 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
     toggleFullScreenPlatform(isFullScreen);
   }
 
+  //pdf params
   PdfViewerParams getParams() => PdfViewerParams(
         margin: 0,
         scrollByMouseWheel: config.scrollByMouseWheel,
@@ -211,25 +213,9 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
           );
         },
         //page changed
-        onPageChanged: (pageNumber) {
-          try {
-            final offset = pdfController.centerPosition;
-            config.zoom = pdfController.currentZoom;
-            config.offsetDx = offset.dx;
-            config.offsetDy = offset.dy;
-            // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
-            setState(() {
-              currentPage = pageNumber ?? 1;
-              pageCount = pdfController.pageCount;
-            });
-          } catch (e) {
-            debugPrint('onPageChanged: ${e.toString()}');
-          }
-        },
+        onPageChanged: _onPdfPageChanged,
         //pdf ready
-        onViewerReady: (document, controller) {
-          onPdfLoaded();
-        },
+        onViewerReady: onPdfLoaded,
         viewerOverlayBuilder: config.isShowScrollThumb
             ? (context, size, handleLinkTap) => [
                   // Add vertical scroll thumb on viewer's right side
@@ -325,11 +311,10 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
             PdfReaderConfigActionComponent(
               pdfConfig: config,
               onApply: (_pdfConfig) {
-                setState(() {
-                  config = _pdfConfig;
-                });
+                config = _pdfConfig;
                 _saveConfig();
                 _initConfig();
+                setState(() {});
               },
             ),
           ],
@@ -339,18 +324,21 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
   }
 
   Widget _getCurrentPdfReader() {
-    if (widget.isOffline) {
+    if (widget.sourcePath.startsWith('http')) {
+      //is online
+      return PdfViewer.uri(
+        Uri.parse(widget.sourcePath),
+        controller: pdfController,
+        params: getParams(),
+      );
+    } else {
+      //offline
       return PdfViewer.file(
-        widget.pdfFile.path,
+        widget.sourcePath,
         controller: pdfController,
         params: getParams(),
       );
     }
-    return PdfViewer.uri(
-      Uri.parse(widget.onlineUrl),
-      controller: pdfController,
-      params: getParams(),
-    );
   }
 
   Widget _getColorFilteredPdfReader() {
@@ -370,32 +358,57 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: isFullScreen
-          ? null
-          : AppBar(
-              title: Text(
-                widget.pdfFile.title,
-                style: const TextStyle(
-                  fontSize: 11,
-                ),
-              ),
-            ),
-      endDrawer: PdfBookMarkListDrawer(
-        pdfFile: widget.pdfFile,
-        currentPage: currentPage,
-        onClick: (pageIndex) {
-          goPage(pageIndex);
+  void _onBackpress() {
+    if (isCanGoBack) return;
+    showDialog(
+      context: context,
+      builder: (context) => ConfirmDialog(
+        contentText: 'အပြင်ထွက်ချင်ပါသလား?',
+        submitText: 'ထွက်မယ်',
+        cancelText: 'မထွက်ဘူး',
+        onCancel: () {},
+        onSubmit: () {
+          isCanGoBack = true;
+          Navigator.pop(context);
         },
       ),
-      body: KeyboardListener(
-        focusNode: FocusNode(),
-        onKeyEvent: _onKeyboradPressed,
-        child: GestureDetector(
-          onDoubleTap: () => _toggleFullScreen(false),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: isCanGoBack,
+      onPopInvokedWithResult: (didPop, result) {
+        _onBackpress();
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        appBar: isFullScreen
+            ? null
+            : AppBar(
+                title: Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+        endDrawer: widget.sourcePath.startsWith('http')
+            ? null
+            : PdfBookMarkListDrawer(
+                pdfFile: PdfFileModel.fromPath(widget.sourcePath),
+                currentPage: currentPage,
+                onClick: (pageIndex) {
+                  goPage(pageIndex);
+                },
+              ),
+        body: GestureDetector(
+          onDoubleTap: () {
+            setState(() {
+              isFullScreen = !isFullScreen;
+            });
+          },
           child: Stack(
             children: [
               _getColorFilteredPdfReader(),

@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
@@ -280,7 +280,7 @@ class _NovelCover extends StatefulWidget {
 
 class _NovelCoverState extends State<_NovelCover> {
   bool isContentCoverMenu = false;
-  final ImagePicker _picker = ImagePicker();
+
   bool isLoading = false;
 
   //change cover
@@ -289,9 +289,19 @@ class _NovelCoverState extends State<_NovelCover> {
       setState(() {
         isLoading = true;
       });
-      final res = await _picker.pickImage(source: ImageSource.gallery);
-      if (res != null) {
-        final file = File(res.path);
+      final files = await openFiles(
+        acceptedTypeGroups: [
+          const XTypeGroup(mimeTypes: [
+            'image/png',
+            'image/jpg',
+            'image/webp',
+            'image/jpeg'
+          ]),
+        ],
+      );
+      if (files.isNotEmpty) {
+        final path = files.first.path;
+        final file = File(path);
         if (isContentCoverMenu) {
           await file.copy(widget.novel.contentCoverPath);
         } else {

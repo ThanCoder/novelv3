@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../widgets/index.dart';
+import 'package:novel_v3/app/widgets/core/t_text_field.dart';
 
 class RenameDialog extends StatefulWidget {
   String title;
-  String renameText;
-  List<String>? renameExistsTextList;
+  String text;
   String cancelText;
   String submitText;
   void Function() onCancel;
@@ -20,8 +18,7 @@ class RenameDialog extends StatefulWidget {
   RenameDialog({
     super.key,
     this.title = 'အတည်ပြုခြင်း',
-    this.renameText = 'Untitled',
-    this.renameExistsTextList,
+    this.text = 'Untitled',
     this.cancelText = 'Cancel',
     this.submitText = 'Submit',
     required this.onCancel,
@@ -42,7 +39,7 @@ class _RenameDialogState extends State<RenameDialog> {
 
   @override
   void initState() {
-    controller.text = widget.renameText;
+    controller.text = widget.text;
     _checkError(controller.text);
     super.initState();
   }
@@ -57,20 +54,15 @@ class _RenameDialogState extends State<RenameDialog> {
       });
       return;
     } else {
+      if (widget.onCheckIsError != null) {
+        final text = widget.onCheckIsError!(value);
+        setState(() {
+          errorText = text;
+        });
+        return;
+      }
       setState(() {
         errorText = null;
-      });
-    }
-    if (widget.onCheckIsError != null) {
-      final text = widget.onCheckIsError!(value);
-      setState(() {
-        errorText = text;
-      });
-    }
-    if (widget.renameExistsTextList != null) {
-      final res = widget.renameExistsTextList!.where((name) => name == value);
-      setState(() {
-        errorText = res.isNotEmpty ? 'title က ရှိနေပြီးသား ဖြစ်နေပါတယ်' : null;
       });
     }
   }

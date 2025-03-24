@@ -11,7 +11,7 @@ const appBrowserProxyHostUrl = 'https://nodebrowser-production.up.railway.app';
 const appForwardProxyHostUrl = 'https://thanproxy-production.up.railway.app';
 
 //assets
-const defaultIconAssetsPath = 'assets/online.webp';
+const defaultIconAssetsPath = 'assets/cover.webp';
 //version name
 const appVersionName = 'beta-4';
 const appName = 'novel_v3';

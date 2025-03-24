@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/app_components.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
-import 'package:novel_v3/app/models/pdf_config_model.dart';
+import 'package:novel_v3/app/pdf_readers/pdf_config_model.dart';
 import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pages/pdf_scanner_page.dart';
@@ -55,7 +55,8 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PdfrxReader(
-                      pdfFile: pdfFile,
+                      title: pdfFile.title,
+                      sourcePath: pdfFile.path,
                       pdfConfig: PdfConfigModel(),
                     ),
                   ),
@@ -105,7 +106,8 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
       final file = File(pdfFile.path);
       if (file.existsSync() && novel != null) {
         //new path
-        final newPath = '${novel.path}/${PathUtil.instance.getBasename(file.path)}';
+        final newPath =
+            '${novel.path}/${PathUtil.instance.getBasename(file.path)}';
         file.renameSync(newPath);
         //change pdf scanner ui
         final pdfScannerList = pdfScannerListNotifier.value
@@ -131,7 +133,8 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
         final novel = currentNovelNotifier.value;
         final file = File(pdfFile.path);
         if (file.existsSync() && novel != null) {
-          final newPath = '${novel.path}/${PathUtil.instance.getBasename(file.path)}';
+          final newPath =
+              '${novel.path}/${PathUtil.instance.getBasename(file.path)}';
           file.copySync(newPath);
 
           showMessage(context, 'ကူယူပြီးပါပြီ');
@@ -197,7 +200,8 @@ class _PdfAddFormScreenState extends State<PdfAddFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Title: ${pdf.title}'),
-                Text('Size: ${AppUtil.instance.getParseFileSize(pdf.size.toDouble())}'),
+                Text(
+                    'Size: ${AppUtil.instance.getParseFileSize(pdf.size.toDouble())}'),
                 Text('Date: ${AppUtil.instance.getParseDate(pdf.date)}'),
                 Text('Path: ${pdf.path}'),
               ],

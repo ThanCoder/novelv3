@@ -68,7 +68,7 @@ class _NovelContentModalBottomSheetState
       builder: (context) => RenameDialog(
         title: 'Mediafire Downloader',
         renameLabelText: const Text('PDF Url'),
-        renameText: '',
+        text: '',
         submitText: 'Download',
         onCancel: () {},
         onSubmit: (url) {

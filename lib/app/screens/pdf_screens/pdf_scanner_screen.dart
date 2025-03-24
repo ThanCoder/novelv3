@@ -93,8 +93,8 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => PdfrxReader(
-                pdfFile: pdfFile,
-                pdfConfig: PdfConfigModel(),
+                title: pdfFile.title,
+                sourcePath: pdfFile.path,
               ),
             ),
           );

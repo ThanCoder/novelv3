@@ -62,7 +62,7 @@ class _PdfBookMarkListDrawerState extends State<PdfBookMarkListDrawer> {
     showDialog(
       context: context,
       builder: (context) => RenameDialog(
-        renameText: 'Untitled',
+        text: 'Untitled',
         renameLabelText: const Text('Book Mark Title'),
         onCancel: () {},
         onSubmit: (text) {

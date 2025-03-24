@@ -71,7 +71,7 @@ class NovelContentPageState extends State<NovelContentPage> {
         title: 'Readed',
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         textInputType: TextInputType.number,
-        renameText: readed.toString(),
+        text: readed.toString(),
         onCancel: () {},
         onSubmit: (text) {
           try {
