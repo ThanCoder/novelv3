@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
@@ -138,7 +140,7 @@ class _HomePageState extends State<HomePage> {
     }
     return RefreshIndicator(
       onRefresh: () async {
-        init();
+        context.read<NovelProvider>().initList(isReset: true);
       },
       child: CustomScrollView(
         slivers: [
@@ -155,6 +157,15 @@ class _HomePageState extends State<HomePage> {
                 },
                 icon: const Icon(Icons.search),
               ),
+              //refresh
+              Platform.isLinux
+                  ? IconButton(
+                      onPressed: () {
+                        context.read<NovelProvider>().initList(isReset: true);
+                      },
+                      icon: const Icon(Icons.refresh),
+                    )
+                  : const SizedBox.shrink(),
               //more
               IconButton(
                 onPressed: () {

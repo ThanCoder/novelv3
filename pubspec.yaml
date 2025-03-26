@@ -11,8 +11,8 @@ dependencies:
   cherry_toast: ^1.12.0
   crypto: ^3.0.6
   cupertino_icons: ^1.0.8
-  file_selector: ^1.0.3
   dio: ^5.8.0+1
+  file_selector: ^1.0.3
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.2.1
@@ -24,7 +24,7 @@ dependencies:
   provider: ^6.1.2
   supabase_flutter: ^2.8.3
   t_release: ^0.0.2
-  than_pkg: ^1.6.3
+  than_pkg: ^1.6.4
   url_launcher: ^6.3.1
 
 dev_dependencies:
@@ -41,7 +41,7 @@ flutter_launcher_icons:
   image_path: "assets/cover.webp"
 
 t_release:
-  platfoms: android,linux 
+  platfoms: android,linux
   cover_path: "assets/cover.webp"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

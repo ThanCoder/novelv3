@@ -36,8 +36,13 @@ class PdfConfigModel {
   factory PdfConfigModel.fromPath(String configPath) {
     final file = File(configPath);
     if (file.existsSync()) {
-      final map = jsonDecode(file.readAsStringSync());
-      return PdfConfigModel.fromMap(map);
+      try {
+        final map = jsonDecode(file.readAsStringSync());
+        return PdfConfigModel.fromMap(map);
+      } catch (e) {
+        file.deleteSync();
+      }
+      return PdfConfigModel();
     } else {
       //config မရှိ
       int pageIndex = 1;

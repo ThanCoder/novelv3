@@ -13,8 +13,11 @@ class NovelProvider with ChangeNotifier {
   NovelModel? get getNovel => _currentNovel;
   bool get isLoading => _isLoading;
 
-  void initList() async {
+  void initList({bool isReset = false}) async {
     try {
+      if (_list.isNotEmpty && !isReset) {
+        return;
+      }
       _isLoading = true;
       notifyListeners();
 
