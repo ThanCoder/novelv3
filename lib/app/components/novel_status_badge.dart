@@ -32,7 +32,10 @@ class NovelStatusBadge extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: TextStyle(color: textColor),
+            style: TextStyle(
+              color: textColor,
+              fontSize: 12,
+            ),
           ),
         ),
       ),

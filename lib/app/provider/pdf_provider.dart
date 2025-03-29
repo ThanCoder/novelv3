@@ -42,8 +42,8 @@ class PdfProvider with ChangeNotifier {
     try {
       final file = File(pdfFile.path);
       if (file.existsSync()) {
-        final newPath = pdfFile.path
-            .replaceAll(PathUtil.instance.getBasename(file.path), '$renamedTitle.pdf');
+        final newPath = pdfFile.path.replaceAll(
+            PathUtil.instance.getBasename(file.path), '$renamedTitle.pdf');
 
         pdfFile.changeFullPath(newPath);
         //update ui
@@ -74,8 +74,22 @@ class PdfProvider with ChangeNotifier {
     }
   }
 
-  void delete() async {
-    try {} catch (e) {
+  void delete(PdfFileModel pdfFile) async {
+    try {
+      final file = File(pdfFile.path);
+      if (file.existsSync()) {
+        file.deleteSync();
+        //update ui
+        final pdfList =
+            _list.where((pdf) => pdf.title != pdfFile.title).toList();
+        pdfListNotifier.value = [];
+        pdfListNotifier.value = pdfList;
+        _list.clear();
+        _list.addAll(pdfList);
+
+        notifyListeners();
+      }
+    } catch (e) {
       debugPrint('delete: ${e.toString()}');
     }
   }

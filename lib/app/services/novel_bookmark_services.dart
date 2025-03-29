@@ -3,92 +3,89 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/models/novel_bookmark_model.dart';
+import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
-bool isExistsNovelBookmarkList({required NovelBookmarkModel bookmark}) {
-  bool res = false;
-  try {
-    final resList =
-        getNovelBookmarkList().where((bm) => bm.title == bookmark.title);
-    res = resList.isNotEmpty;
-  } catch (e) {
-    debugPrint('toggleNovelBookmarkList: ${e.toString()}');
-  }
-  return res;
-}
+class NovelBookmarkServices {
+  static final NovelBookmarkServices instance = NovelBookmarkServices._();
+  NovelBookmarkServices._();
+  factory NovelBookmarkServices() => instance;
 
-void toggleNovelBookmarkList({required NovelBookmarkModel bookmark}) {
-  try {
-    if (isExistsNovelBookmarkList(bookmark: bookmark)) {
+  Future<bool> isExists(NovelModel novel) async {
+    bool res = false;
+    try {
+      final list = await getList();
+      return list.any((nv) => nv.title == novel.title);
+    } catch (e) {
+      debugPrint('isExists: ${e.toString()}');
+    }
+    return res;
+  }
+
+  Future<void> toggle({required NovelModel novel}) async {
+    try {
+      if (await isExists(novel)) {
+        //remove
+        await remove(novel);
+      } else {
+        //add
+        await add(novel);
+      }
+    } catch (e) {
+      debugPrint('toggle: ${e.toString()}');
+    }
+  }
+
+  Future<void> remove(NovelModel novel) async {
+    try {
+      List<NovelModel> list = await getList();
       //remove
-      removeNovelBookmarkList(bookmark: bookmark);
-    } else {
+      list = list.where((bm) => bm.title != novel.title).toList();
+
+      //save
+      final jData = list.map((bm) => bm.toMap()).toList();
+      final file = File(getPath());
+      file.writeAsStringSync(jsonEncode(jData));
+    } catch (e) {
+      debugPrint('remove: ${e.toString()}');
+    }
+  }
+
+  Future<void> add(NovelModel novel) async {
+    try {
+      List<NovelModel> list = await getList();
       //add
-      addNovelBookmarkList(bookmark: bookmark);
+      list.insert(0, novel);
+      //save
+      final jData = list.map((bm) => bm.toMap()).toList();
+      final file = File(getPath());
+      file.writeAsStringSync(jsonEncode(jData));
+    } catch (e) {
+      debugPrint('add: ${e.toString()}');
     }
-  } catch (e) {
-    debugPrint('toggleNovelBookmarkList: ${e.toString()}');
   }
-}
 
-void removeNovelBookmarkList({required NovelBookmarkModel bookmark}) {
-  try {
-    List<NovelBookmarkModel> list = [];
-    final path = '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
-    final file = File(path);
-    if (file.existsSync()) {
-      List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-      list = jlist.map((map) => NovelBookmarkModel.fromMap(map)).toList();
+  Future<List<NovelModel>> getList() async {
+    List<NovelModel> list = [];
+    try {
+      final file = File(getPath());
+      if (!await file.exists()) return list;
+
+      if (await file.exists()) {
+        try {
+          List<dynamic> jlist = jsonDecode(file.readAsStringSync());
+          list = jlist.map((map) => NovelModel.fromMap(map)).toList();
+        } catch (e) {
+          file.deleteSync();
+        }
+      }
+    } catch (e) {
+      debugPrint('getList: ${e.toString()}');
     }
-
-    //remove
-    list = getNovelBookmarkList()
-        .where((bm) => bm.title != bookmark.title)
-        .toList();
-
-    //save
-    final jData = list.map((bm) => bm.toMap()).toList();
-    file.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(jData));
-  } catch (e) {
-    debugPrint('removeNovelBookmarkList: ${e.toString()}');
+    return list;
   }
-}
 
-void addNovelBookmarkList({required NovelBookmarkModel bookmark}) {
-  try {
-    List<NovelBookmarkModel> list = [];
-    final path = '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
-    final file = File(path);
-    if (file.existsSync()) {
-      List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-      list = jlist.map((map) => NovelBookmarkModel.fromMap(map)).toList();
-    }
-
-    //add
-    list.insert(0, bookmark);
-
-    //save
-    final jData = list.map((bm) => bm.toMap()).toList();
-    file.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(jData));
-  } catch (e) {
-    debugPrint('addNovelBookmarkList: ${e.toString()}');
+  String getPath() {
+    return '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
   }
-}
-
-List<NovelBookmarkModel> getNovelBookmarkList() {
-  List<NovelBookmarkModel> list = [];
-  try {
-    final path = '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
-    final file = File(path);
-    if (!file.existsSync()) return list;
-
-    if (file.existsSync()) {
-      List<dynamic> jlist = jsonDecode(file.readAsStringSync());
-      list = jlist.map((map) => NovelBookmarkModel.fromMap(map)).toList();
-    }
-  } catch (e) {
-    debugPrint('getNovelBookmarkList: ${e.toString()}');
-  }
-  return list;
 }

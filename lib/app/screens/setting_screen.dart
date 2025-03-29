@@ -77,7 +77,7 @@ class _SettingScreenState extends State<SettingScreen> {
       setState(() {
         isChanged = false;
       });
-      context.read<NovelProvider>().initList();
+      context.read<NovelProvider>().initList(isReset: true);
       Navigator.pop(context);
     } catch (e) {
       debugPrint('saveConfig: ${e.toString()}');

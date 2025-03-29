@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_list_view.dart';
+import 'package:novel_v3/app/components/novel_see_all_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/customs/novel_search_delegate.dart';
 import 'package:novel_v3/app/dialogs/add_new_novel_dialog.dart';
@@ -10,6 +11,9 @@ import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
+import 'package:novel_v3/app/screens/novel_screens/novel_show_all_screen.dart';
+import 'package:novel_v3/app/services/index.dart';
+import 'package:novel_v3/app/services/novel_recent_services.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/index.dart';
 
@@ -30,8 +34,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   //init
-  Future<void> init() async {
-    context.read<NovelProvider>().initList();
+  Future<void> init({bool isReset = false}) async {
+    context.read<NovelProvider>().initList(isReset: isReset);
+    novelBookMarkListNotifier.value = [];
+    novelBookMarkListNotifier.value =
+        await NovelBookmarkServices.instance.getList();
   }
 
   //menu
@@ -135,12 +142,19 @@ class _HomePageState extends State<HomePage> {
     final provider = context.watch<NovelProvider>();
     final isLoading = provider.isLoading;
     final novelList = provider.getList;
+    final adultList = novelList.where((nv) => nv.isAdult).toList();
+    final completedList = novelList.where((nv) => nv.isCompleted).toList();
+    final onGoingList = novelList.where((nv) => !nv.isCompleted).toList();
+    //random
+    final randomList = List.of(novelList);
+    randomList.shuffle();
+
     if (isLoading) {
       return TLoader();
     }
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<NovelProvider>().initList(isReset: true);
+        init(isReset: true);
       },
       child: CustomScrollView(
         slivers: [
@@ -161,7 +175,7 @@ class _HomePageState extends State<HomePage> {
               Platform.isLinux
                   ? IconButton(
                       onPressed: () {
-                        context.read<NovelProvider>().initList(isReset: true);
+                        init(isReset: true);
                       },
                       icon: const Icon(Icons.refresh),
                     )
@@ -175,18 +189,155 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          SliverGrid.builder(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              mainAxisExtent: 220,
-              crossAxisSpacing: 0.5,
-              mainAxisSpacing: 0.5,
+
+          //recent Novel
+          SliverToBoxAdapter(
+            child: FutureBuilder(
+              future: NovelRecentServices.instance.getList(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return TLoader();
+                }
+                if (snapshot.hasData) {
+                  return NovelSeeAllListView(
+                    title: 'မကြာခင်က',
+                    list: snapshot.data ?? [],
+                    onClicked: _goContentPage,
+                    onSeeAllClicked: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NovelShowAllScreen(
+                            title: 'မကြာခင်က',
+                            list: snapshot.data ?? [],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
-            itemBuilder: (context, index) => NovelListViewItem(
-              novel: novelList[index],
-              onClick: _goContentPage,
+          ),
+          //bookmark Novel
+          SliverToBoxAdapter(
+            child: ValueListenableBuilder(
+              valueListenable: novelBookMarkListNotifier,
+              builder: (context, value, child) {
+                return NovelSeeAllListView(
+                  title: 'မှတ်သားထားသော',
+                  list: value,
+                  onClicked: _goContentPage,
+                  onSeeAllClicked: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NovelShowAllScreen(
+                          title: 'မှတ်သားထားသော',
+                          list: value,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
-            itemCount: novelList.length,
+          ),
+          //Latest Novel
+          SliverToBoxAdapter(
+            child: NovelSeeAllListView(
+              title: 'အသစ်များ',
+              list: novelList,
+              onClicked: _goContentPage,
+              onSeeAllClicked: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovelShowAllScreen(
+                      title: 'အသစ်များ',
+                      list: novelList,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          //Completed list
+          SliverToBoxAdapter(
+            child: NovelSeeAllListView(
+              title: 'ပြီးဆုံးသွားတော့',
+              list: completedList,
+              onClicked: _goContentPage,
+              onSeeAllClicked: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovelShowAllScreen(
+                      title: 'ပြီးဆုံးသွားတော့',
+                      list: completedList,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          //OnGoing list
+          SliverToBoxAdapter(
+            child: NovelSeeAllListView(
+              title: 'ဆက်ရေးနေဆဲ',
+              list: onGoingList,
+              onClicked: _goContentPage,
+              onSeeAllClicked: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovelShowAllScreen(
+                      title: 'ဆက်ရေးနေဆဲ',
+                      list: onGoingList,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          //Adult list
+          SliverToBoxAdapter(
+            child: NovelSeeAllListView(
+              title: 'Adult Novel',
+              list: adultList,
+              onClicked: _goContentPage,
+              onSeeAllClicked: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovelShowAllScreen(
+                      title: 'Adult Novel',
+                      list: adultList,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          //random list
+          SliverToBoxAdapter(
+            child: NovelSeeAllListView(
+              title: 'ကျပန်း ပြသခြင်း',
+              list: randomList,
+              onClicked: _goContentPage,
+              onSeeAllClicked: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NovelShowAllScreen(
+                      title: 'ကျပန်း ပြသခြင်း',
+                      list: randomList,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

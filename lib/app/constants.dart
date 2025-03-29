@@ -13,7 +13,7 @@ const appForwardProxyHostUrl = 'https://thanproxy-production.up.railway.app';
 //assets
 const defaultIconAssetsPath = 'assets/cover.webp';
 //version name
-const appVersionName = 'beta-4';
+const appVersionName = 'beta-5';
 const appName = 'novel_v3';
 const appTitle = 'Novel V3';
 const novelDataExtName = 'npz';

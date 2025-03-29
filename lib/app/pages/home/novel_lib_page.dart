@@ -6,7 +6,6 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
-import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/index.dart';
@@ -42,7 +41,7 @@ class _NovelLibPageState extends State<NovelLibPage> {
         isLoading = true;
       });
       novelBookMarkListNotifier.value = [];
-      final bmList = getNovelBookmarkList();
+      final bmList = [];
       final novelList =
           bmList.map((bm) => NovelModel.fromPath(bm.path)).toList();
       novelBookMarkListNotifier.value = novelList;
@@ -68,7 +67,7 @@ class _NovelLibPageState extends State<NovelLibPage> {
       //book mark
       if (name == BookMarkSortName.novelBookMark) {
         novelBookMarkListNotifier.value = [];
-        final bmList = getNovelBookmarkList();
+        final bmList = [];
         final novelList =
             bmList.map((bm) => NovelModel.fromPath(bm.path)).toList();
         novelBookMarkListNotifier.value = novelList;

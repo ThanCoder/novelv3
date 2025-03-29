@@ -162,19 +162,7 @@ class PdfListPageState extends State<PdfListPage> {
         submitText: 'ဖျက်မယ်',
         onCancel: () {},
         onSubmit: () async {
-          try {
-            final file = File(pdfFile.path);
-            if (file.existsSync()) {
-              file.deleteSync();
-              //update ui
-              final pdfList = pdfListNotifier.value
-                  .where((pdf) => pdf.title != pdfFile.title)
-                  .toList();
-              pdfListNotifier.value = pdfList;
-            }
-          } catch (e) {
-            debugPrint(e.toString());
-          }
+          context.read<PdfProvider>().delete(pdfFile);
         },
       ),
     );
@@ -226,7 +214,6 @@ class PdfListPageState extends State<PdfListPage> {
     }
     return RefreshIndicator(
       onRefresh: () async {
-        await Future.delayed(const Duration(milliseconds: 800));
         init();
       },
       child: PdfListView(

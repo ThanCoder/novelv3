@@ -69,6 +69,12 @@ class _NovelContentModalBottomSheetState
         title: 'Mediafire Downloader',
         renameLabelText: const Text('PDF Url'),
         text: '',
+        onCheckIsError: (text) {
+          if (!text.startsWith('https://www.mediafire')) {
+            return 'mediafire url ပဲလက်ခံတယ်!!!.';
+          }
+          return null;
+        },
         submitText: 'Download',
         onCancel: () {},
         onSubmit: (url) {

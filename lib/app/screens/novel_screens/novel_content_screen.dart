@@ -1,18 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/novel_bookmark_toggle_button.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/models/novel_bookmark_model.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/pages/novle_content/chapter_list_page.dart';
 import 'package:novel_v3/app/pages/novle_content/chapter_bookmark_list_page.dart';
 import 'package:novel_v3/app/pages/novle_content/novel_content_page.dart';
 import 'package:novel_v3/app/pages/novle_content/pdf_list_page.dart';
 import 'package:novel_v3/app/provider/index.dart';
-import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:novel_v3/app/modal_bottom_sheets/novel_content_modal_bottom_sheet.dart';
+import 'package:novel_v3/app/services/novel_recent_services.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/index.dart';
@@ -39,15 +38,9 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     });
   }
 
-  bool isExistsBookmark = false;
-
-  void init() {
+  void init() async {
     try {
-      final title = widget.novel.title;
-      final path = widget.novel.path;
-      isExistsBookmark = isExistsNovelBookmarkList(
-          bookmark: NovelBookmarkModel(title: title, path: path));
-      setState(() {});
+      await NovelRecentServices.instance.add(widget.novel);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -67,24 +60,6 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     );
   }
 
-  void _toggleBookMark() {
-    final title = currentNovelNotifier.value!.title;
-    final path = currentNovelNotifier.value!.path;
-    toggleNovelBookmarkList(
-      bookmark: NovelBookmarkModel(title: title, path: path),
-    );
-    //remove ui
-    if (isExistsBookmark) {
-      final resList = novelBookMarkListNotifier.value
-          .where((nv) => nv.title != title)
-          .toList();
-      novelBookMarkListNotifier.value = resList;
-    }
-    setState(() {
-      isExistsBookmark = !isExistsBookmark;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -99,14 +74,8 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
                 : AppBar(
                     title: const Text('Novel Content'),
                     actions: [
-                      IconButton(
-                        onPressed: _toggleBookMark,
-                        icon: Icon(
-                            color: isExistsBookmark ? dangerColor : activeColor,
-                            isExistsBookmark
-                                ? Icons.bookmark_remove
-                                : Icons.bookmark_add),
-                      ),
+                      //book mark
+                      const NovelBookmarkToggleButton(),
                       IconButton(
                         onPressed: () {
                           showBottomMenu();
