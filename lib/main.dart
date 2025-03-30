@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/provider/index.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:t_release/services/t_release_services.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 void main() async {
@@ -25,7 +27,7 @@ void main() async {
 
   //init config
   await initAppConfigService();
-  await ReleaseServices.instance.initReleaseService();
+  await TReleaseServices.instance.initial(githubUrl);
 
   runApp(
     MultiProvider(

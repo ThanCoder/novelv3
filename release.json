@@ -1,6 +1,6 @@
 {
  "description": "WebNovel App",
- "version": "1.8.9",
+ "version": "1.9.0",
  "repository": "https://github.com/ThanCoder/novelv3",
  "changelog_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/CHANGELOG.md",
  "readme_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/README.md",
@@ -8,18 +8,18 @@
  "license_url": "https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/LICENSE",
  "versions": [
   {
-   "version": "1.8.9",
+   "version": "1.9.0",
    "platform": "linux",
    "url": "",
    "description": "",
-   "date": 1742800709066
+   "date": 1743326244765
   },
   {
-   "version": "1.8.9",
+   "version": "1.9.0",
    "platform": "android",
    "url": "",
    "description": "",
-   "date": 1742800709065
+   "date": 1743326244765
   }
  ]
 }

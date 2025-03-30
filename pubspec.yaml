@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.2.1
+  flutter_markdown: ^0.7.6+2
   flutter_spinkit: ^5.2.1
   getwidget: ^5.0.0
   html: ^0.15.5
@@ -23,7 +24,7 @@ dependencies:
   pdfrx: ^1.1.12
   provider: ^6.1.2
   supabase_flutter: ^2.8.3
-  t_release: ^0.0.2
+  t_release: ^0.0.4
   than_pkg: ^1.6.5
   timeago: ^3.2.2
 
@@ -43,30 +44,12 @@ flutter_launcher_icons:
 t_release:
   platfoms: android,linux
   cover_path: "assets/cover.webp"
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-# The following section is specific to Flutter packages.
 flutter:
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
     - .env
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   # fonts:
   #   - family: Schyler
   #     fonts:

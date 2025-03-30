@@ -1,10 +1,10 @@
-import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/app_version_update_dialog.dart';
 import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
+import 'package:novel_v3/app/release_version_system/release_version_checker_button.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_mc_search_screen.dart';
 import 'package:novel_v3/app/screens/pdf_screens/pdf_scanner_screen.dart';
@@ -212,24 +212,7 @@ class _HomeMorePageState extends State<HomeMorePage> {
               title: 'Setting',
             ),
             //app version
-            ListTileWithDesc(
-              leading: const Icon(Icons.cloud_upload_rounded),
-              title: 'App Version',
-              desc:
-                  'Current Version: ${ReleaseServices.instance.getVersion()} ($appVersionName)',
-              onClick: () async {
-                final isLatest =
-                    await ReleaseServices.instance.isLatestVersion();
-                if (isLatest) {
-                  CherryToast.success(
-                    inheritThemeColors: true,
-                    title: const Text('နောက်ဆုံးထွက် version'),
-                  ).show(context);
-                } else {
-                  _showVersionDialog();
-                }
-              },
-            ),
+            const ReleaseVersionCheckerButton(),
             //about
             ListTileWithDesc(
               title: 'About',
