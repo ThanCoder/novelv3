@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/utils/path_util.dart';
 
 import '../constants.dart';
-import '../utils/path_util.dart';
+import '../notifiers/app_notifier.dart';
 
 class DioServices {
   static final DioServices instance = DioServices._();
@@ -14,30 +15,28 @@ class DioServices {
   final _dio = Dio();
 
   Future<String> getForwardProxyHtml(String url) async {
-    var result = '';
     try {
       final res = await getDio.get(getForwardProxyUrl(url));
 
-      result = res.data.toString();
+      return res.data.toString();
     } catch (e) {
       debugPrint('getForwardProxy: ${e.toString()}');
+      return '';
     }
-    return result;
-  }
-
-  String getForwardProxyUrl(String targetUrl) {
-    return '$appForwardProxyHostUrl?url=$targetUrl';
   }
 
   Future<String> getBrowsesrProxyHtml(String url) async {
-    var result = '';
     try {
       final res = await getDio.get('$appBrowserProxyHostUrl?url=$url');
-      result = res.data.toString();
+      return res.data.toString();
     } catch (e) {
       debugPrint('getBrowsesrProxyHtml: ${e.toString()}');
+      return '';
     }
-    return result;
+  }
+
+  String getForwardProxyUrl(String targetUrl) {
+    return '${appConfigNotifier.value.forwardProxy}?url=$targetUrl';
   }
 
   Future<void> downloadCover({
@@ -50,7 +49,7 @@ class DioServices {
       final cacheFile = File(savePath);
       if (await cacheFile.exists()) return;
       //မရှိရင်
-      await getDio.download(getForwardProxyUrl(url), savePath);
+      await getDio.download(url, savePath);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -71,9 +70,9 @@ class DioServices {
         return res;
       }
       //မရှိရင်
-      final result = await getForwardProxyHtml(url);
-      await cacheFile.writeAsString(result);
-      res = result;
+      final result = await getDio.get(url);
+      await cacheFile.writeAsString(result.data.toString());
+      res = result.data.toString();
     } catch (e) {
       debugPrint(e.toString());
     }

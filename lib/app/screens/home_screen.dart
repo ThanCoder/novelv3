@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/pages/home/home_page.dart';
-import 'package:novel_v3/app/pages/home/online/novel_online_page.dart';
 import 'package:novel_v3/app/pages/home/home_more_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,12 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
       valueListenable: isShowHomeBottomBarNotifier,
       builder: (context, isShowTabBar, child) {
         return DefaultTabController(
-          length: 3,
+          length: 2,
           child: Scaffold(
             body: const TabBarView(
               children: [
                 HomePage(),
-                NovelOnlinePage(),
                 HomeMorePage(),
               ],
             ),
@@ -40,10 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       Tab(
                         text: 'Home',
                         icon: Icon(Icons.home),
-                      ),
-                      Tab(
-                        text: 'Online',
-                        icon: Icon(Icons.cloud_download_outlined),
                       ),
                       Tab(
                         text: 'More',

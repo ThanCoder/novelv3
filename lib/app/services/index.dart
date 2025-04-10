@@ -15,3 +15,4 @@ export 'core/wifi_services.dart';
 export 'core/cache_services.dart';
 export './release_services.dart';
 export 'chapter_bookmark_services.dart';
+export 'dio_services.dart';

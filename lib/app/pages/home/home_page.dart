@@ -6,10 +6,10 @@ import 'package:novel_v3/app/components/novel_see_all_list_view.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/customs/novel_search_delegate.dart';
 import 'package:novel_v3/app/dialogs/add_new_novel_dialog.dart';
+import 'package:novel_v3/app/general_server/general_server_noti_button.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/notifiers/novel_notifier.dart';
 import 'package:novel_v3/app/provider/index.dart';
-import 'package:novel_v3/app/release_version_system/release_version_action_button.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/screens/novel_screens/novel_show_all_screen.dart';
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 icon: const Icon(Icons.search),
               ),
-              const ReleaseVersionActionButton(),
+              const GeneralServerNotiButton(),
               //refresh
               Platform.isLinux
                   ? IconButton(
