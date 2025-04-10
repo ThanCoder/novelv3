@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/services/core/app_path_services.dart';
+
+import '../../notifiers/app_notifier.dart';
 
 T? getRecentDB<T>(String key) {
   T? res;
   try {
-    final dbFile = File('${getAppRootPath()}/recent.db.json');
+    final dbFile = File('${appRootPathNotifier.value}/recent.db.json');
     if (!dbFile.existsSync()) return null;
     //ရှိနေရင်
     Map<String, dynamic> map = jsonDecode(dbFile.readAsStringSync());
@@ -22,7 +23,7 @@ T? getRecentDB<T>(String key) {
 
 void setRecentDB<T>(String key, T value) {
   try {
-    final dbFile = File('${getAppRootPath()}/recent.db.json');
+    final dbFile = File('${appRootPathNotifier.value}/recent.db.json');
     Map<String, dynamic> map = {};
     //ရှိနေရင်
     if (dbFile.existsSync()) {
@@ -39,7 +40,7 @@ void setRecentDB<T>(String key, T value) {
 
 void recentDBClear(String key) {
   try {
-    final dbFile = File('${getAppRootPath()}/recent.db.json');
+    final dbFile = File('${appRootPathNotifier.value}/recent.db.json');
     Map<String, dynamic> map = {};
     //ရှိနေရင်
     if (dbFile.existsSync()) {

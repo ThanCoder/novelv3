@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/app/components/android_screen_orientation_chooser.dart';
 import 'package:novel_v3/app/pdf_readers/pdf_config_model.dart';
 
 import '../widgets/index.dart';
@@ -74,18 +71,18 @@ class _PdfReaderConfigActionComponentState
                     ),
                   ),
                   //on backpress confirm
-                  Platform.isAndroid
-                      ? ListTileWithDesc(
-                          title: 'Screen Orientation',
-                          desc: 'Portrait,Landscape',
-                          trailing: AndroidScreenOrientationChooser(
-                            value: pdfConfig.screenOrientation,
-                            onChanged: (type) {
-                              pdfConfig.screenOrientation = type;
-                            },
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                  // Platform.isAndroid
+                  //     ? ListTileWithDesc(
+                  //         title: 'Screen Orientation',
+                  //         desc: 'Portrait,Landscape',
+                  //         trailing: AndroidScreenOrientationChooser(
+                  //           value: pdfConfig.screenOrientation,
+                  //           onChanged: (type) {
+                  //             pdfConfig.screenOrientation = type;
+                  //           },
+                  //         ),
+                  //       )
+                  //     : const SizedBox.shrink(),
                   //on backpress confirm
                   ListTileWithDesc(
                     title: 'On Backpress Confirm',

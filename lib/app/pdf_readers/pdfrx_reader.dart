@@ -3,12 +3,9 @@ import 'dart:io';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/pdf_readers/pdf_reader_config_action_component.dart';
-import 'package:novel_v3/app/dialogs/confirm_dialog.dart';
-import 'package:novel_v3/app/dialogs/rename_dialog.dart';
-import 'package:novel_v3/app/drawers/pdf_book_mark_list_drawer.dart';
 import 'package:novel_v3/app/pdf_readers/pdf_config_model.dart';
-import 'package:novel_v3/app/models/pdf_file_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:pdfrx/pdfrx.dart';
@@ -401,15 +398,15 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
                   ),
                 ),
               ),
-        endDrawer: widget.sourcePath.startsWith('http')
-            ? null
-            : PdfBookMarkListDrawer(
-                pdfFile: PdfFileModel.fromPath(widget.sourcePath),
-                currentPage: currentPage,
-                onClick: (pageIndex) {
-                  goPage(pageIndex);
-                },
-              ),
+        // endDrawer: widget.sourcePath.startsWith('http')
+        //     ? null
+        //     : PdfBookMarkListDrawer(
+        //         pdfFile: PdfFileModel.fromPath(widget.sourcePath),
+        //         currentPage: currentPage,
+        //         onClick: (pageIndex) {
+        //           goPage(pageIndex);
+        //         },
+        //       ),
         body: GestureDetector(
           onDoubleTap: () {
             isFullScreen = !isFullScreen;
@@ -436,8 +433,8 @@ class _PdfrxReaderState extends State<PdfrxReader> with WindowListener {
     windowManager.removeListener(this);
     _saveConfig();
     toggleFullScreenPlatform(false);
-    toggleAndroidKeepScreen(false);
     if (Platform.isAndroid) {
+      ThanPkg.android.app.toggleKeepScreenOn(isKeep: false);
       ThanPkg.android.app
           .requestOrientation(type: ScreenOrientationTypes.Portrait);
     }

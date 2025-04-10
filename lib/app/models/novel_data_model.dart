@@ -1,7 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-
-import 'package:novel_v3/app/services/novel_data_services.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 class NovelDataModel {
@@ -33,8 +31,8 @@ class NovelDataModel {
       coverPath: '',
       size: file.statSync().size,
       date: file.statSync().modified.millisecondsSinceEpoch,
-      isAdult: novelDataCheckIsAdult(dataFilePath: path),
-      isCompleted: novelDataCheckIsCompleted(dataFilePath: path),
+      isAdult: NovelDataServices.instance.dataCheckIsAdult(dataFilePath: path),
+      isCompleted: NovelDataServices.instance.dataCheckIsCompleted(dataFilePath: path),
     );
   }
 

@@ -1,15 +1,2 @@
-export 'novel_screens/chapter_add_from_screen.dart';
-export 'novel_screens/chapter_text_reader_screen.dart';
 export './home_screen.dart';
-export 'novel_screens/novel_content_screen.dart';
-export 'novel_screens/novel_data_scanner_screen.dart';
-export 'novel_screens/novel_from_screen.dart';
-export 'novel_screens/novel_lib_screen.dart';
-export 'novel_screens/novel_mc_search_screen.dart';
-export 'pdf_screens/pdf_add_form_screen.dart';
-export 'pdf_screens/pdf_reader_screen.dart';
-export 'pdf_screens/pdf_scanner_screen.dart';
-export './setting_screen.dart';
-export './share/receive_novel_data_screen.dart';
-export 'share/receive_novel_content_screen.dart';
-export './share/share_novel_data_screen.dart';
+export 'app_setting_screen.dart';

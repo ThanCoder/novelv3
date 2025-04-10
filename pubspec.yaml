@@ -36,11 +36,9 @@ dev_dependencies:
 
 flutter_launcher_icons:
   android: "launcher_icon"
-  image_path: "assets/cover.webp"
+  image_path: "assets/cover.png"
 
-t_release:
-  platfoms: android,linux
-  cover_path: "assets/cover.webp"
+
 flutter:
   uses-material-design: true
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 void showConfirmStoragePermissionDialog(BuildContext context) {
@@ -46,7 +47,33 @@ Future<void> requestStoragePermission() async {
 //full screen
 void toggleAndroidFullScreen(bool isFullScreen) async {
   try {
-    ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
+    if (isFullScreen) {
+      // SystemChrome.setSystemUIOverlayStyle(
+      //   const SystemUiOverlayStyle(
+      //     statusBarColor: Colors.transparent, // Transparent status bar
+      //     systemNavigationBarColor:
+      //         Colors.transparent, // Transparent navigation bar
+      //   ),
+      // );
+      // Transparent status bar and navigation bar
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, // Transparent status bar
+          systemNavigationBarColor:
+              Colors.transparent, // Transparent navigation bar
+          systemNavigationBarIconBrightness:
+              Brightness.light, // For icon color on nav bar
+          statusBarIconBrightness:
+              Brightness.light, // For status bar icons color
+        ),
+      );
+
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } else {
+      // Exit Full-Screen Mode
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
+    }
   } catch (e) {
     debugPrint('toggleAndroidFullScreen: ${e.toString()}');
   }

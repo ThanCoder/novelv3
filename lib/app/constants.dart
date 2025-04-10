@@ -3,17 +3,14 @@ import 'package:flutter/services.dart';
 
 //debug
 const isDebugPrint = false;
-//github url
-const githubUrl = 'https://github.com/ThanCoder/novelv3';
-const isUsedReleaseServiceFile = false;
 
 const appBrowserProxyHostUrl = 'https://nodebrowser-production.up.railway.app';
 const appForwardProxyHostUrl = 'https://thanproxy-production.up.railway.app';
 
 //assets
-const defaultIconAssetsPath = 'assets/cover.webp';
+const defaultIconAssetsPath = 'assets/cover.png';
 //version name
-const appVersionName = 'beta-5';
+const appVersionName = 'beta-6';
 const appName = 'novel_v3';
 const appTitle = 'Novel V3';
 const novelDataExtName = 'npz';
