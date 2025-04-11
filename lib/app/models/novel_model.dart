@@ -1,14 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
+import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 class NovelModel {
   String title;
   String path;
-  late String coverPath;
-  late String coverUrl;
-  late String contentCoverPath;
   bool isCompleted;
   bool isAdult;
   int date;
@@ -17,6 +15,9 @@ class NovelModel {
   int readed;
   String mc;
   String author;
+  late String coverPath;
+  late String contentCoverPath;
+  late String chapterBookmarkPath;
 
   NovelModel({
     required this.title,
@@ -32,7 +33,7 @@ class NovelModel {
   }) {
     coverPath = '$path/cover.png';
     contentCoverPath = '$path/content_cover';
-    coverUrl = '';
+    chapterBookmarkPath = '$path/$chapterBookMarkListName';
   }
 
   set allPath(String _path) {
@@ -130,6 +131,6 @@ class NovelModel {
 
   @override
   String toString() {
-    return '\ntitle => $title\npath => $path\ncoverPath => $coverPath \nisCompleted => ${isCompleted.toString()} \nisAdult => ${isAdult.toString()}\nMC => $mc\nAuthor => $author\nreaded => $readed\n<======>';
+    return title;
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../extensions/datetime_extenstion.dart';
+import 'package:novel_v3/app/extensions/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../../widgets/core/index.dart';
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   @override
@@ -154,19 +154,19 @@ class ReleaseAppListItem extends StatelessWidget {
                   Text('Platform: ${app.platform}'),
                   // Text(app.url),
                   app.description.isEmpty
-                      ? SizedBox.shrink()
+                      ? const SizedBox.shrink()
                       : Text('Desc: ${app.description}'),
                   Text('Date: ${DateTime.parse(app.date).toParseTime()}'),
                   Text('Ago: ${DateTime.parse(app.date).toTimeAgo()}'),
                   app.url.isEmpty
-                      ? SizedBox.shrink()
+                      ? const SizedBox.shrink()
                       : IconButton(
                           onPressed: () {
                             if (onDownloadClicked != null) {
                               onDownloadClicked!(app);
                             }
                           },
-                          icon: Icon(Icons.download),
+                          icon: const Icon(Icons.download),
                         )
                 ],
               ),

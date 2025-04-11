@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/screens/app_setting_screen.dart';
 
-import '../components/index.dart';
-import '../notifiers/app_notifier.dart';
-import '../services/index.dart';
+import '../../components/index.dart';
+import '../../notifiers/app_notifier.dart';
+import '../../services/index.dart';
 import '/app/widgets/index.dart';
 
 class AppMorePage extends StatelessWidget {
@@ -13,14 +13,14 @@ class AppMorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyScaffold(
       appBar: AppBar(
-        title: Text('More'),
+        title: const Text('More'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             //theme
             ListTileWithDesc(
-              leading: Icon(Icons.dark_mode_outlined),
+              leading: const Icon(Icons.dark_mode_outlined),
               title: 'Dark Theme',
               trailing: ValueListenableBuilder(
                 valueListenable: isDarkThemeNotifier,
@@ -37,9 +37,9 @@ class AppMorePage extends StatelessWidget {
             ),
             //version
             ListTileWithDesc(
-              leading: Icon(Icons.settings),
+              leading: const Icon(Icons.settings),
               title: 'Setting',
-              trailing: Icon(Icons.arrow_forward_ios_rounded),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
               onClick: () {
                 Navigator.push(
                   context,
@@ -54,7 +54,6 @@ class AppMorePage extends StatelessWidget {
 
             //version
             const Divider(),
-            
           ],
         ),
       ),

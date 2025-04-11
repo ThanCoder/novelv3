@@ -21,6 +21,7 @@ const chapterBookMarkListName = 'fav_list2.json';
 const pdfConfigName = '-v3-config.json';
 const pdfOldConfigName = '-config.json';
 const pdfBookListName = '-book_list.json';
+
 const novelBookListName = 'novel_book_list.json';
 const textReaderConfigName = 'reader.config.json';
 //novel status color
