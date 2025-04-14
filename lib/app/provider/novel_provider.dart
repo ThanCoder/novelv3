@@ -29,4 +29,17 @@ class NovelProvider with ChangeNotifier {
     _novel = NovelModel.fromPath(novel.path, isFullInfo: true);
     notifyListeners();
   }
+
+  Future<void> insertUI(NovelModel novel) async {
+    _list.insert(0, novel);
+    notifyListeners();
+  }
+
+  Future<void> removeUI(NovelModel novel) async {
+    final res = _list.where((nv) => nv.title != novel.title).toList();
+    _list.clear();
+    _list.addAll(res);
+
+    notifyListeners();
+  }
 }

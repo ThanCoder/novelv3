@@ -7,15 +7,15 @@ import 'package:novel_v3/app/tag_components/tags_wrap_view.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:provider/provider.dart';
 
-class NovelFormScreen extends StatefulWidget {
+class NovelEditFormScreen extends StatefulWidget {
   NovelModel novel;
-  NovelFormScreen({super.key, required this.novel});
+  NovelEditFormScreen({super.key, required this.novel});
 
   @override
-  State<NovelFormScreen> createState() => _NovelFormScreenState();
+  State<NovelEditFormScreen> createState() => _NovelEditFormScreenState();
 }
 
-class _NovelFormScreenState extends State<NovelFormScreen> {
+class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
   final TextEditingController mcController = TextEditingController();

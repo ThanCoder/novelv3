@@ -137,6 +137,20 @@ class NovelModel {
     return novel;
   }
 
+  factory NovelModel.create(String title) {
+    final dir = Directory('${PathUtil.instance.getSourcePath()}/$title');
+    if (!dir.existsSync()) {
+      dir.createSync();
+    }
+    return NovelModel(
+      title: title,
+      path: dir.path,
+      isCompleted: false,
+      isAdult: false,
+      date: dir.statSync().modified.millisecondsSinceEpoch,
+    );
+  }
+
   Map<String, dynamic> toMap() => {
         "title": title,
         "path": path,
@@ -150,6 +164,13 @@ class NovelModel {
         'date': date,
         'page_link': pageLink,
       };
+
+  Future<void> delete() async {
+    final dir = Directory('${PathUtil.instance.getSourcePath()}/$title');
+    if (await dir.exists()) {
+      await dir.delete(recursive: true);
+    }
+  }
 
   Future<void> save() async {
     final readedFile = File('$path/readed');

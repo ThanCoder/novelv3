@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/action_buttons/novel_home_action_button.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
@@ -26,8 +27,8 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
-  Future<void> init() async {
-    context.read<NovelProvider>().initList();
+  Future<void> init({bool isReset = false}) async {
+    context.read<NovelProvider>().initList(isReset: isReset);
     context.read<NovelBookmarkProvider>().initList();
     context.read<RecentProvider>().initList();
   }
@@ -62,17 +63,20 @@ class _HomePageState extends State<HomePage> {
             PlatformExtension.isDesktop()
                 ? IconButton(
                     onPressed: () {
-                      context.read<NovelProvider>().initList(isReset: true);
+                      init(isReset: true);
                     },
                     icon: const Icon(Icons.refresh),
                   )
                 : const SizedBox.shrink(),
+            //menu
+            const NovelHomeActionButton(),
           ],
         ),
 
         // Recent
         SliverToBoxAdapter(
           child: NovelSeeAllView(
+            showLines: 1,
             margin: const EdgeInsets.only(bottom: 20),
             title: 'မကြာခင်က',
             list: recentList,
@@ -80,16 +84,7 @@ class _HomePageState extends State<HomePage> {
             onClicked: _goContentScreen,
           ),
         ),
-        // Random
-        SliverToBoxAdapter(
-          child: NovelSeeAllView(
-            margin: const EdgeInsets.only(bottom: 20),
-            title: 'ကျပန်း',
-            list: randomList,
-            onSeeAllClicked: _goShowAllScreen,
-            onClicked: _goContentScreen,
-          ),
-        ),
+
         // latest
         SliverToBoxAdapter(
           child: NovelSeeAllView(
@@ -134,9 +129,21 @@ class _HomePageState extends State<HomePage> {
         // Book Mark
         SliverToBoxAdapter(
           child: NovelSeeAllView(
+            showLines: 1,
             margin: const EdgeInsets.only(bottom: 20),
             title: 'Book Mark',
             list: bookList,
+            onSeeAllClicked: _goShowAllScreen,
+            onClicked: _goContentScreen,
+          ),
+        ),
+        // Random
+        SliverToBoxAdapter(
+          child: NovelSeeAllView(
+            showLines: 1,
+            margin: const EdgeInsets.only(bottom: 20),
+            title: 'ကျပန်း',
+            list: randomList,
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
           ),
@@ -152,12 +159,14 @@ class _HomePageState extends State<HomePage> {
     final list = provider.getList;
     return MyScaffold(
       contentPadding: 0,
-      body: isLoading ? TLoader() : _getListWidget(list),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
+      body: isLoading
+          ? TLoader()
+          : RefreshIndicator(
+              onRefresh: () async {
+                init(isReset: true);
+              },
+              child: _getListWidget(list),
+            ),
     );
   }
 }

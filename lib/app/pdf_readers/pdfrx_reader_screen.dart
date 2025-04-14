@@ -4,6 +4,7 @@ import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdfrx/pdfrx.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -43,6 +44,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
   double oldOffsetX = 0;
   double oldOffsetY = 0;
   int oldPage = 1;
+  bool isCanGoBack = true;
 
   @override
   void initState() {
@@ -82,10 +84,26 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
     }
   }
 
-  void _initConfig() {
-    if (Platform.isAndroid) {
-      //keep screen
-      ThanPkg.android.app.toggleKeepScreenOn(isKeep: config.isKeepScreen);
+  void _initConfig() async {
+    try {
+      if (Platform.isAndroid) {
+        await ThanPkg.android.app
+            .toggleKeepScreenOn(isKeep: config.isKeepScreen);
+        await ThanPkg.android.app.requestOrientation(
+          type: ScreenOrientationTypesExtension.getType(
+            config.screenOrientation,
+          ),
+        );
+        if (config.screenOrientation == ScreenOrientationTypes.Landscape.name) {
+          //full screen
+          await ThanPkg.android.app.showFullScreen();
+        }
+      }
+      setState(() {
+        isCanGoBack = !config.isOnBackpressConfirm;
+      });
+    } catch (e) {
+      debugPrint('_initConfig: ${e.toString()}');
     }
   }
 
@@ -349,7 +367,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
   }
 
   Widget _getCurrentPdfReader() {
-    if (widget.sourcePath.isEmpty) return SizedBox.shrink();
+    if (widget.sourcePath.isEmpty) return const SizedBox.shrink();
     if (widget.sourcePath.startsWith('http')) {
       //is online
       return PdfViewer.uri(
@@ -383,43 +401,67 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
     );
   }
 
+  void _onBackpress() async {
+    if (!isCanGoBack) {
+      showDialog(
+        context: context,
+        builder: (context) => ConfirmDialog(
+          contentText: 'အပြင်ထွက်ချင်ပါသလား?',
+          submitText: 'ထွက်မယ်',
+          cancelText: 'မထွက်ဘူး',
+          onCancel: () {},
+          onSubmit: () {
+            isCanGoBack = true;
+            Navigator.pop(context);
+          },
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: isFullScreen
-          ? null
-          : AppBar(
-              title: Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 11,
+    return PopScope(
+      canPop: isCanGoBack,
+      onPopInvokedWithResult: (didPop, result) {
+        _onBackpress();
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        appBar: isFullScreen
+            ? null
+            : AppBar(
+                title: Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 11,
+                  ),
                 ),
               ),
+        // endDrawer: PdfBookMarkListDrawer(
+        //   pdfFile: widget.pdfFile,
+        //   currentPage: currentPage,
+        //   onClick: (pageIndex) {
+        //     goPage(pageIndex);
+        //   },
+        // ),
+        body: KeyboardListener(
+          focusNode: FocusNode(),
+          onKeyEvent: _onKeyboradPressed,
+          child: GestureDetector(
+            onDoubleTap: () => _toggleFullScreen(!isFullScreen),
+            onSecondaryTap: _showSetting,
+            child: Stack(
+              children: [
+                _getColorFilteredPdfReader(),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: _getHeaderWidgets(),
+                ),
+              ],
             ),
-      // endDrawer: PdfBookMarkListDrawer(
-      //   pdfFile: widget.pdfFile,
-      //   currentPage: currentPage,
-      //   onClick: (pageIndex) {
-      //     goPage(pageIndex);
-      //   },
-      // ),
-      body: KeyboardListener(
-        focusNode: FocusNode(),
-        onKeyEvent: _onKeyboradPressed,
-        child: GestureDetector(
-          onDoubleTap: () => _toggleFullScreen(!isFullScreen),
-          onSecondaryTap: _showSetting,
-          child: Stack(
-            children: [
-              _getColorFilteredPdfReader(),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: _getHeaderWidgets(),
-              ),
-            ],
           ),
         ),
       ),
@@ -428,9 +470,11 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
 
   void _close() async {
     _saveConfig();
+    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    ThanPkg.platform.toggleKeepScreen(isKeep: false);
     if (Platform.isAndroid) {
-      ThanPkg.android.app.toggleKeepScreenOn(isKeep: false);
-      ThanPkg.android.app.hideFullScreen();
+      ThanPkg.android.app
+          .requestOrientation(type: ScreenOrientationTypes.Portrait);
     }
     windowManager.removeListener(this);
   }

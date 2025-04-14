@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/action_buttons/content_action_button.dart';
+import 'package:novel_v3/app/action_buttons/novel_content_action_button.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/constants.dart';
@@ -69,7 +69,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
                 title: Text(novel.author),
               ),
               TListTile(
-                leading: const Icon(Icons.person_4_rounded),
+                leading: const Icon(Icons.person),
                 title: Text(novel.mc),
               ),
               TListTile(
@@ -112,7 +112,11 @@ class _ContentHomePageState extends State<ContentHomePage> {
               floating: true,
               actions: [
                 NovelBookmarkButton(novel: novel),
-                const ContentActionButton(),
+                NovelContentActionButton(
+                  onBackpress: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ],
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
@@ -131,8 +135,8 @@ class _ContentHomePageState extends State<ContentHomePage> {
                       title: 'Chapter Count: ',
                       novelPath: novel.path,
                       style: const TextStyle(
-                        color: Color.fromARGB(255, 74, 142, 187),
-                        backgroundColor: Color.fromARGB(123, 0, 0, 0),
+                        color: Colors.white,
+                        backgroundColor: Color.fromARGB(171, 0, 0, 0),
                       ),
                     ),
                   ],

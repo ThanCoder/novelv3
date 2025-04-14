@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/core/index.dart';
+import 'android_screen_orientation_chooser.dart';
 import 'pdf_config_model.dart';
 
 class PdfReaderSettingDialog extends StatefulWidget {
@@ -86,6 +89,33 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                   },
                 ),
               ),
+              //on backpress confirm
+              Platform.isAndroid
+                  ? ListTileWithDesc(
+                      title: 'Screen Orientation',
+                      desc: 'Portrait,Landscape',
+                      trailing: AndroidScreenOrientationChooser(
+                        value: config.screenOrientation,
+                        onChanged: (type) {
+                          config.screenOrientation = type;
+                        },
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              //on backpress confirm
+              ListTileWithDesc(
+                title: 'On Backpress Confirm',
+                desc: 'Reader ထဲက ထွက်ရင် အတည်ပြုခြင်း',
+                trailing: Switch(
+                  value: config.isOnBackpressConfirm,
+                  onChanged: (value) {
+                    setState(() {
+                      config.isOnBackpressConfirm = value;
+                    });
+                  },
+                ),
+              ),
+
               //mouse wheel
               ListTileWithDesc(
                 title: 'Mouse Scroll',

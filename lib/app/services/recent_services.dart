@@ -13,9 +13,11 @@ class RecentServices {
       if (!await file.exists()) return [];
       List<dynamic> resList = jsonDecode(await file.readAsString());
       return resList
+          .where((name) =>
+              Directory('${PathUtil.instance.getSourcePath()}/$name')
+                  .existsSync())
           .map((name) =>
               NovelModel.fromPath('${PathUtil.instance.getSourcePath()}/$name'))
-          .where((novel) => Directory(novel.path).existsSync())
           .toList();
     } catch (e) {
       debugPrint(e.toString());
