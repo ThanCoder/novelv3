@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/content_action_button.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
+import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
@@ -118,6 +119,39 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
             // header
             SliverToBoxAdapter(child: _header(novel)),
+            // chapter count
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Divider(),
+                    ChapterCountView(
+                      title: 'Chapter Count: ',
+                      novelPath: novel.path,
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 74, 142, 187),
+                        backgroundColor: Color.fromARGB(123, 0, 0, 0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            //content cover
+            SliverToBoxAdapter(
+              child: File(novel.contentCoverPath).existsSync()
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyImageFile(
+                        path: novel.contentCoverPath,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+
             // content text
             SliverToBoxAdapter(
               child: Padding(

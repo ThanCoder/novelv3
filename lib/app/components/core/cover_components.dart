@@ -11,7 +11,8 @@ import '../index.dart';
 
 class CoverComponents extends StatefulWidget {
   String coverPath;
-  CoverComponents({super.key, required this.coverPath});
+  VoidCallback? onChanged;
+  CoverComponents({super.key, required this.coverPath, this.onChanged});
 
   @override
   State<CoverComponents> createState() => _CoverComponentsState();
@@ -27,11 +28,53 @@ class _CoverComponentsState extends State<CoverComponents> {
     super.initState();
   }
 
+  void _showMenu() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 150),
+          child: Column(
+            children: [
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  _addFromPath();
+                },
+                leading: const Icon(Icons.add),
+                title: const Text('Add From Path'),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  _downloadUrl();
+                },
+                leading: const Icon(Icons.add),
+                title: const Text('Add From Url'),
+              ),
+              File(widget.coverPath).existsSync()
+                  ? ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _delete();
+                      },
+                      iconColor: Colors.red,
+                      leading: const Icon(Icons.delete_forever_rounded),
+                      title: const Text('Delete'),
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _downloadUrl() {
     showDialog(
       context: context,
       builder: (context) => RenameDialog(
-        renameLabelText: Text('Download From Url'),
+        renameLabelText: const Text('Download From Url'),
         submitText: 'Download',
         text: '',
         onCancel: () {},
@@ -45,6 +88,9 @@ class _CoverComponentsState extends State<CoverComponents> {
             setState(() {
               isLoading = false;
             });
+            if (widget.onChanged != null) {
+              widget.onChanged!();
+            }
           } catch (e) {
             setState(() {
               isLoading = false;
@@ -67,7 +113,7 @@ class _CoverComponentsState extends State<CoverComponents> {
       });
       final files = await openFiles(
         acceptedTypeGroups: [
-          XTypeGroup(mimeTypes: [
+          const XTypeGroup(mimeTypes: [
             'image/png',
             'image/jpg',
             'image/webp',
@@ -85,9 +131,13 @@ class _CoverComponentsState extends State<CoverComponents> {
         }
         imagePath = path;
       }
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
+      if (widget.onChanged != null) {
+        widget.onChanged!();
+      }
     } catch (e) {
       debugPrint(e.toString());
       setState(() {
@@ -96,30 +146,29 @@ class _CoverComponentsState extends State<CoverComponents> {
     }
   }
 
-  void _showMenu() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => ListView(
-        children: [
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              _addFromPath();
-            },
-            leading: const Icon(Icons.add),
-            title: const Text('Add From Path'),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              _downloadUrl();
-            },
-            leading: const Icon(Icons.add),
-            title: const Text('Add From Url'),
-          ),
-        ],
-      ),
-    );
+  void _delete() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final file = File(widget.coverPath);
+      if (await file.exists()) {
+        await file.delete();
+        await clearAndRefreshImage();
+
+        await Future.delayed(const Duration(seconds: 1));
+
+        if (!mounted) return;
+        setState(() {
+          isLoading = false;
+        });
+        if (widget.onChanged != null) {
+          widget.onChanged!();
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override

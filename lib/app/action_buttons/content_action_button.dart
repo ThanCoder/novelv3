@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/screens/novel_form_screen.dart';
+import 'package:provider/provider.dart';
 
 class ContentActionButton extends StatefulWidget {
   const ContentActionButton({super.key});
@@ -21,6 +24,7 @@ class _ContentActionButtonState extends State<ContentActionButton> {
               ListTile(
                 onTap: () {
                   Navigator.pop(context);
+                  _goEditScreen();
                 },
                 leading: const Icon(Icons.edit),
                 title: const Text('Edit'),
@@ -28,6 +32,17 @@ class _ContentActionButtonState extends State<ContentActionButton> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _goEditScreen() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NovelFormScreen(novel: novel),
       ),
     );
   }

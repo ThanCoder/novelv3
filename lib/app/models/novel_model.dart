@@ -42,6 +42,28 @@ class NovelModel {
     contentCoverPath = '$_path/content_cover';
   }
 
+  String get getContent {
+    final file = File('$path/content');
+    if (!file.existsSync()) return '';
+    return file.readAsStringSync();
+  }
+
+  List<String> get getPageLinkList {
+    return pageLink.split(',').where((name) => name.isNotEmpty).toList();
+  }
+
+  void setPageLinkList(List<String> list) {
+    String data = list.join(',');
+    pageLink = data;
+    final file = File('$path/link');
+    file.writeAsStringSync(data);
+  }
+
+  void setContent(String text) {
+    final file = File('$path/content');
+    file.writeAsStringSync(text);
+  }
+
   factory NovelModel.fromPath(String path, {bool isFullInfo = false}) {
     final dir = Directory(path);
     bool isAdult = File('${dir.path}/is-adult').existsSync();
@@ -128,6 +150,37 @@ class NovelModel {
         'date': date,
         'page_link': pageLink,
       };
+
+  Future<void> save() async {
+    final readedFile = File('$path/readed');
+    final mcFile = File('$path/mc');
+    final authorFile = File('$path/author');
+    final contentFile = File('$path/content');
+    final pageLinkFile = File('$path/link');
+    //write
+    await readedFile.writeAsString(readed.toString());
+    await mcFile.writeAsString(mc);
+    await authorFile.writeAsString(author);
+    await contentFile.writeAsString(content);
+    await pageLinkFile.writeAsString(pageLink);
+    //
+    final adultFile = File('$path/is-adult');
+    final completedFile = File('$path/is-completed');
+    if (isAdult) {
+      await adultFile.writeAsString('');
+    } else {
+      if (await adultFile.exists()) {
+        await adultFile.delete();
+      }
+    }
+    if (isCompleted) {
+      await completedFile.writeAsString('');
+    } else {
+      if (await completedFile.exists()) {
+        await completedFile.delete();
+      }
+    }
+  }
 
   @override
   String toString() {
