@@ -52,11 +52,11 @@ class PdfListItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text(pdf.size.toDouble().toParseFileSize()),
-                    Text(DateTime.fromMillisecondsSinceEpoch(pdf.date)
-                        .toParseTime()),
-                    Text(DateTime.fromMillisecondsSinceEpoch(pdf.date)
-                        .toTimeAgo()),
+                    Text('Size: ${pdf.size.toDouble().toParseFileSize()}'),
+                    Text(
+                        'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
+                    Text(
+                        'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toTimeAgo()}'),
                   ],
                 ),
               ),

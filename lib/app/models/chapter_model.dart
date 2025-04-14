@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
+import 'package:novel_v3/app/text_reader/text_reader_data_interface.dart';
 
-class ChapterModel {
+class ChapterModel extends TextReaderDataInterface {
   String title;
   int number;
   String path;
@@ -25,30 +27,40 @@ class ChapterModel {
       path: file.path,
     );
   }
+
+  @override
   String getContent() {
     final file = File(path);
+    if (!file.existsSync()) return '';
     return file.readAsStringSync();
   }
 
-  bool isExistNext() {
+  @override
+  bool isExistsNext() {
     final file = File(path.replaceAll('$number', '${number + 1}'));
     return file.existsSync();
   }
 
-  bool isExistPrev() {
+  @override
+  bool isExistsPrev() {
     final file = File(path.replaceAll('$number', '${number - 1}'));
     return file.existsSync();
   }
 
+  @override
   ChapterModel getNext() {
     String _path = path.replaceAll('$number', '${number + 1}');
     return ChapterModel.fromPath(_path);
   }
 
+  @override
   ChapterModel getPrev() {
     String _path = path.replaceAll('$number', '${number - 1}');
     return ChapterModel.fromPath(_path);
   }
+
+  String get getConfigPath => '${File(path).parent.path}/$textReaderConfigName';
+  String get getNovelPath => File(path).parent.path;
 
   @override
   String toString() {

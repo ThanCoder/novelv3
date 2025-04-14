@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/provider/recent_provider.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> init() async {
     context.read<NovelProvider>().initList();
+    context.read<NovelBookmarkProvider>().initList();
+    context.read<RecentProvider>().initList();
   }
 
   void _goShowAllScreen(String title, List<NovelModel> list) {
@@ -45,10 +49,15 @@ class _HomePageState extends State<HomePage> {
     final randomList = List.of(list);
     randomList.shuffle();
 
+    final bookList = context.watch<NovelBookmarkProvider>().getList;
+    final recentList = context.watch<RecentProvider>().getList;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           title: const Text(appTitle),
+          snap: true,
+          floating: true,
           actions: [
             PlatformExtension.isDesktop()
                 ? IconButton(
@@ -60,11 +69,22 @@ class _HomePageState extends State<HomePage> {
                 : const SizedBox.shrink(),
           ],
         ),
+
+        // Recent
+        SliverToBoxAdapter(
+          child: NovelSeeAllView(
+            margin: const EdgeInsets.only(bottom: 20),
+            title: 'မကြာခင်က',
+            list: recentList,
+            onSeeAllClicked: _goShowAllScreen,
+            onClicked: _goContentScreen,
+          ),
+        ),
         // Random
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'Random',
+            title: 'ကျပန်း',
             list: randomList,
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -74,7 +94,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'Latest',
+            title: 'နောက်ဆုံး',
             list: list,
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -84,7 +104,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'Completed',
+            title: 'ပြီးဆုံး',
             list: list.where((nv) => nv.isCompleted).toList(),
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -94,7 +114,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'OnGoing',
+            title: 'ဆက်သွားနေဆဲ',
             list: list.where((nv) => !nv.isCompleted).toList(),
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -110,6 +130,17 @@ class _HomePageState extends State<HomePage> {
             onClicked: _goContentScreen,
           ),
         ),
+
+        // Book Mark
+        SliverToBoxAdapter(
+          child: NovelSeeAllView(
+            margin: const EdgeInsets.only(bottom: 20),
+            title: 'Book Mark',
+            list: bookList,
+            onSeeAllClicked: _goShowAllScreen,
+            onClicked: _goContentScreen,
+          ),
+        ),
       ],
     );
   }
@@ -120,6 +151,7 @@ class _HomePageState extends State<HomePage> {
     final isLoading = provider.isLoading;
     final list = provider.getList;
     return MyScaffold(
+      contentPadding: 0,
       body: isLoading ? TLoader() : _getListWidget(list),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () async {

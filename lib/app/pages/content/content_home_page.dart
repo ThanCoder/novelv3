@@ -2,16 +2,35 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/content_action_button.dart';
+import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/provider/recent_provider.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:novel_v3/app/widgets/t_list_tile.dart';
 import 'package:provider/provider.dart';
 
-class ContentHomePage extends StatelessWidget {
+class ContentHomePage extends StatefulWidget {
   const ContentHomePage({super.key});
+
+  @override
+  State<ContentHomePage> createState() => _ContentHomePageState();
+}
+
+class _ContentHomePageState extends State<ContentHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  void init() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    context.read<RecentProvider>().add(novel);
+  }
 
   ImageProvider _getImage(String path) {
     final file = File(path);
@@ -71,7 +90,7 @@ class ContentHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = context.watch<NovelProvider>().getCurrent;
     if (novel == null) return const Text('novel is null');
     return MyScaffold(
       contentPadding: 0,
@@ -86,12 +105,13 @@ class ContentHomePage extends StatelessWidget {
         ),
         child: CustomScrollView(
           slivers: [
-            const SliverAppBar(
-              title: Text('Content'),
+            SliverAppBar(
+              title: const Text('Content'),
               snap: true,
               floating: true,
               actions: [
-                ContentActionButton(),
+                NovelBookmarkButton(novel: novel),
+                const ContentActionButton(),
               ],
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 20)),

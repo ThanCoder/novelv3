@@ -4,11 +4,13 @@ import 'package:novel_v3/app/widgets/core/index.dart';
 
 class NovelGridItem extends StatelessWidget {
   NovelModel novel;
+  double fontSize;
   void Function(NovelModel novel) onClicked;
   NovelGridItem({
     super.key,
     required this.novel,
     required this.onClicked,
+    this.fontSize = 12,
   });
 
   @override
@@ -47,9 +49,9 @@ class NovelGridItem extends StatelessWidget {
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: fontSize,
                   ),
                 ),
               ),

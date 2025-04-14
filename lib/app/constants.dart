@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 //debug
 const isDebugPrint = false;
 
-const appBrowserProxyHostUrl = 'https://nodebrowser-production.up.railway.app';
-const appForwardProxyHostUrl = 'https://thanproxy-production.up.railway.app';
+const appBrowserProxyHostUrl = 'https://node-browser.vercel.app';
+const appForwardProxyHostUrl = 'https://express-forward-proxy.vercel.app';
 
 //assets
 const defaultIconAssetsPath = 'assets/cover.png';
@@ -17,12 +17,14 @@ const novelDataExtName = 'npz';
 const androidRootPath = "/storage/emulated/0";
 //config
 const appConfigFileName = 'main.config.json';
-const chapterBookMarkListName = 'fav_list2.json';
 const pdfConfigName = '-v3-config.json';
 const pdfOldConfigName = '-config.json';
 const pdfBookListName = '-book_list.json';
-
+//book mark
+const chapterBookMarkListName = 'fav_list2.json';
 const novelBookListName = 'novel_book_list.json';
+const novelRecentDBName = 'novel_recent_list.json';
+
 const textReaderConfigName = 'reader.config.json';
 //novel status color
 final novelStatusOnGoingColor = Colors.teal[900];

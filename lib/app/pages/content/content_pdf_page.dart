@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/pdf_provider.dart';
+import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:provider/provider.dart';
 
@@ -39,9 +40,10 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           : ListView.builder(
               itemBuilder: (context, index) => PdfListItem(
                 pdf: list[index],
-                onClicked: (chapter) {},
+                onClicked: (pdf) {
+                  goPdfReader(context, pdf);
+                },
               ),
-              // separatorBuilder: (context, index) => const Divider(),
               itemCount: list.length,
             ),
     );

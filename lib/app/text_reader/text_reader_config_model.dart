@@ -32,6 +32,11 @@ class TextReaderConfigModel {
       padding: map['padding'] ?? 8.0,
     );
   }
+  void savePath(String path) {
+    final file = File(path);
+    final data = const JsonEncoder.withIndent(' ').convert(toMap());
+    file.writeAsStringSync(data);
+  }
 
   Map<String, dynamic> toMap() => {
         'font_size': fontSize,

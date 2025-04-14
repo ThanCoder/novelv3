@@ -6,9 +6,12 @@ class NovelSeeAllView extends StatelessWidget {
   List<NovelModel> list;
   String title;
   int showCount;
+  int? showLines;
+  double fontSize;
   void Function(String title, List<NovelModel> list) onSeeAllClicked;
   void Function(NovelModel novel) onClicked;
   EdgeInsetsGeometry? margin;
+  double padding;
 
   NovelSeeAllView({
     super.key,
@@ -18,15 +21,24 @@ class NovelSeeAllView extends StatelessWidget {
     required this.onClicked,
     this.showCount = 8,
     this.margin,
+    this.showLines,
+    this.fontSize = 11,
+    this.padding = 6,
   });
 
   @override
   Widget build(BuildContext context) {
     final showList = list.take(showCount).toList();
+    if (showList.isEmpty) return const SizedBox.shrink();
+    int _showLines = showLines ?? 1;
+    if (showList.length > 1) {
+      _showLines = 2;
+    }
     return Container(
+      padding: EdgeInsets.all(padding),
       margin: margin,
       child: SizedBox(
-        height: 270,
+        height: _showLines * 160,
         child: Column(
           spacing: 5,
           children: [
@@ -53,10 +65,11 @@ class NovelSeeAllView extends StatelessWidget {
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 150,
                   mainAxisExtent: 130,
-                  mainAxisSpacing: 3,
-                  crossAxisSpacing: 3,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
                 ),
                 itemBuilder: (context, index) => NovelGridItem(
+                  fontSize: fontSize,
                   novel: showList[index],
                   onClicked: onClicked,
                 ),

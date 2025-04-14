@@ -33,10 +33,12 @@ class ChapterBookListItem extends StatelessWidget {
             spacing: 7,
             children: [
               Text(book.chapter.toString()),
-              Text(
-                book.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  book.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),

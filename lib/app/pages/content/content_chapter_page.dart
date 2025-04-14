@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
-import 'package:novel_v3/app/models/text_reader_config_model.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:novel_v3/app/screens/text_reader_screen.dart';
+import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:provider/provider.dart';
 
@@ -44,15 +43,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
               itemBuilder: (context, index) => ChapterListItem(
                 chapter: list[index],
                 onClicked: (chapter) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TextReaderScreen(
-                        chapter: chapter,
-                        config: TextReaderConfigModel(),
-                      ),
-                    ),
-                  );
+                  goTextReader(context, chapter);
                 },
               ),
               separatorBuilder: (context, index) => const Divider(),

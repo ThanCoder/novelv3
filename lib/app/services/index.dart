@@ -5,6 +5,5 @@ export 'core/app_services.dart';
 export './novel_data_services.dart';
 export './chapter_services.dart';
 export 'core/recent_db_services.dart';
-export 'text_reader_services.dart';
 export 'core/cache_services.dart';
 export 'dio_services.dart';
