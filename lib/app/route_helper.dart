@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
@@ -22,8 +23,18 @@ void goNovelContentPage(BuildContext context, NovelModel novel) async {
   );
 }
 
-void goPdfReader(BuildContext context, PdfModel pdf) async {
+void goNovelEditForm(BuildContext context, NovelModel novel) async {
+  await context.read<NovelProvider>().setCurrent(novel);
   if (!context.mounted) return;
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => NovelEditFormScreen(novel: novel),
+    ),
+  );
+}
+
+void goPdfReader(BuildContext context, PdfModel pdf) async {
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -49,32 +60,43 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
     MaterialPageRoute(
       builder: (context) => TextReaderScreen(
         data: chapter,
-        bookmarkValue: provider.isExists(chapter.number),
-        onBookmarkChanged: (bookmarkValue) {
-          provider.toggle(
-            chapter.getNovelPath,
-            ChapterBookmarkModel(
-              title: chapter.title,
-              chapter: chapter.number,
-            ),
-          );
-        },
         config: TextReaderConfigModel.fromPath(chapter.getConfigPath),
         onConfigChanged: (config) {
           config.savePath(chapter.getConfigPath);
         },
+        bookmarkValue: provider.isExists(chapter.number),
+        onBookmarkChanged: (bookmarkValue) {
+          //add book mark
+          if (bookmarkValue) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => RenameDialog(
+                title: 'BM Title ထည့်ခြင်း',
+                text: chapter.title,
+                onCancel: () {},
+                onSubmit: (title) {
+                  provider.add(
+                    chapter.getNovelPath,
+                    ChapterBookmarkModel(
+                      title: title,
+                      chapter: chapter.number,
+                    ),
+                  );
+                },
+              ),
+            );
+          } else {
+            provider.toggle(
+              chapter.getNovelPath,
+              ChapterBookmarkModel(
+                title: chapter.title,
+                chapter: chapter.number,
+              ),
+            );
+          }
+        },
       ),
-    ),
-  );
-}
-
-void goNovelEditForm(BuildContext context, NovelModel novel) async {
-  await context.read<NovelProvider>().setCurrent(novel);
-  if (!context.mounted) return;
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => NovelEditFormScreen(novel: novel),
     ),
   );
 }

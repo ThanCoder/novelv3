@@ -156,7 +156,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
           controller: _controller,
           slivers: [
             SliverAppBar(
-              title: Text(currentData.title),
+              title: Text('${currentData.number}: ${currentData.title}'),
               snap: true,
               floating: true,
               actions: [

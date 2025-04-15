@@ -17,7 +17,7 @@ class _CacheComponentState extends State<CacheComponent> {
   @override
   Widget build(BuildContext context) {
     if (CacheServices.instance.getCacheCount() == 0) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return ListTileWithDesc(
       onClick: () {

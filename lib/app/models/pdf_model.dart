@@ -22,19 +22,45 @@ class PdfModel {
     this.configPath = '',
   });
 
-  factory PdfModel.fromPath(String path) {
+  factory PdfModel.fromPath(
+    String path, {
+    String? coverPath,
+    String? configPath,
+    String? bookmarkPath,
+  }) {
     final file = File(path);
     final name = file.path.getName(withExt: false);
+    var cp = coverPath ?? file.path.replaceAll('.pdf', '.png');
+    var config = configPath ?? file.path.replaceAll('.pdf', pdfConfigName);
+    var bookmark =
+        bookmarkPath ?? file.path.replaceAll('.pdf', pdfBookListName);
+
     return PdfModel(
       title: name,
       path: path,
-      coverPath: file.path.replaceAll('.pdf', '.png'),
+      coverPath: cp,
       size: file.statSync().size,
       date: file.statSync().modified.millisecondsSinceEpoch,
-      configPath: file.path.replaceAll('.pdf', pdfConfigName),
-      bookMarkPath: file.path.replaceAll('.pdf', pdfBookListName),
+      configPath: config,
+      bookMarkPath: bookmark,
     );
   }
+
+  void delete() {
+    final pdfFile = File(path);
+    final coverFile = File(coverPath);
+    final configFile = File(path);
+    if (pdfFile.existsSync()) {
+      pdfFile.deleteSync();
+    }
+    if (coverFile.existsSync()) {
+      coverFile.deleteSync();
+    }
+    if (configFile.existsSync()) {
+      configFile.deleteSync();
+    }
+  }
+
   @override
   String toString() {
     return title;

@@ -47,14 +47,11 @@ class BookmarkServices {
       if (!await file.exists()) return [];
       List<dynamic> resList = jsonDecode(await file.readAsString());
       final list = resList
-          .where((name) =>
-              Directory('${PathUtil.instance.getSourcePath()}/$name')
-                  .existsSync())
+          .where((map) => File('$novelPath/${map['chapter']}').existsSync())
           .map((map) => ChapterBookmarkModel.fromMap(map))
           .toList();
       //sort
       list.sort((a, b) => a.chapter.compareTo(b.chapter));
-
       return list;
     } catch (e) {
       debugPrint('getChapterBookmarkList: ${e.toString()}');

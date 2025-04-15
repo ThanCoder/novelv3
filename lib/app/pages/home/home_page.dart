@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/novel_home_action_button.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/extensions/index.dart';
+import 'package:novel_v3/app/general_server/general_server_noti_button.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
@@ -60,6 +61,7 @@ class _HomePageState extends State<HomePage> {
           snap: true,
           floating: true,
           actions: [
+            const GeneralServerNotiButton(),
             PlatformExtension.isDesktop()
                 ? IconButton(
                     onPressed: () {
@@ -99,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'ပြီးဆုံး',
+            title: 'ပြီးဆုံး စာစဥ်များ',
             list: list.where((nv) => nv.isCompleted).toList(),
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -109,7 +111,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'ဆက်သွားနေဆဲ',
+            title: 'ဆက်သွားနေဆဲ စာစဥ်များ',
             list: list.where((nv) => !nv.isCompleted).toList(),
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -119,7 +121,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: NovelSeeAllView(
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'Adult',
+            title: 'Adult စာစဥ်များ',
             list: list.where((nv) => nv.isAdult).toList(),
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,
@@ -142,7 +144,7 @@ class _HomePageState extends State<HomePage> {
           child: NovelSeeAllView(
             showLines: 1,
             margin: const EdgeInsets.only(bottom: 20),
-            title: 'ကျပန်း',
+            title: 'ကျပန်း စာစဥ်များ',
             list: randomList,
             onSeeAllClicked: _goShowAllScreen,
             onClicked: _goContentScreen,

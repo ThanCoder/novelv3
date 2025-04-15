@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/screens/app_setting_screen.dart';
+import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
 
 import '../../components/index.dart';
 import '../../notifiers/app_notifier.dart';
@@ -51,9 +52,20 @@ class AppMorePage extends StatelessWidget {
             ),
             //Clean Cache
             const CacheComponent(),
-
-            //version
             const Divider(),
+            //pdf scanner
+            ListTileWithDesc(
+              title: 'PDF Scanner',
+              desc: 'PDF Files အားလုံးကို Scan လုပ်ပေးသည်',
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PdfScannerScreen(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

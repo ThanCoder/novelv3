@@ -4,6 +4,7 @@ import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
+import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
 import 'package:provider/provider.dart';
 
 class NovelContentActionButton extends StatefulWidget {
@@ -60,6 +61,21 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
     );
   }
 
+  void _addPdfFromScanner() {
+    final provider = context.read<NovelProvider>();
+    final novel = provider.getCurrent;
+    if (novel == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PdfScannerScreen(
+          novel: novel,
+        ),
+      ),
+    );
+  }
+
   void _showMenu() {
     showModalBottomSheet(
       context: context,
@@ -78,6 +94,15 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
                   _goEditScreen();
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.add),
+                title: const Text('Add PDF'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _addPdfFromScanner();
+                },
+              ),
+              //delete
               ListTile(
                 iconColor: Colors.red,
                 leading: const Icon(Icons.delete_forever_rounded),

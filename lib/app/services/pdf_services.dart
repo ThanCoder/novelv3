@@ -1,7 +1,13 @@
 import 'dart:io';
+import 'dart:isolate';
 
+import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
+import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/extensions/string_extension.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
+import 'package:novel_v3/app/utils/path_util.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfServices {
   static final PdfServices instance = PdfServices._();
@@ -20,6 +26,83 @@ class PdfServices {
     }
     //sort
     list.sort((a, b) => a.title.compareTo(b.title));
+    return list;
+  }
+
+  Future<List<PdfModel>> pdfScanner() async {
+    final dirs = [];
+    final homePath = await ThanPkg.platform.getAppExternalPath();
+    if (homePath == null) return [];
+    //
+    final cachePath = PathUtil.instance.getCachePath();
+    final filterPaths = [
+      'Android',
+      'AndroidIDEProjects',
+      'Apk',
+      'Mihon',
+      'backups',
+      'Musics',
+      'Pictures',
+      'VidMate',
+      'DCMI'
+    ];
+
+    if (Platform.isAndroid) {
+      dirs.add(homePath);
+    }
+    if (Platform.isLinux) {
+      dirs.add('$homePath/Downloads');
+      dirs.add('$homePath/Documents');
+      dirs.add('$homePath/Videos');
+      dirs.add('$homePath/Public');
+    }
+    final list = await Isolate.run<List<PdfModel>>(() async {
+      List<PdfModel> list = [];
+      // inner function
+      void scanDir(Directory dir) async {
+        try {
+          // if (await dir.exists())
+          for (var file in dir.listSync()) {
+            //hidden skip
+            if (file.path.getName().startsWith('.')) continue;
+
+            if (file.statSync().type == FileSystemEntityType.directory) {
+              scanDir(Directory(file.path));
+            }
+            if (file.statSync().type != FileSystemEntityType.file) continue;
+            if (filterPaths.contains(file.path.getName())) continue;
+
+            final mime = lookupMimeType(file.path) ?? '';
+            if (!mime.startsWith('application/pdf')) continue;
+            //add pdf
+            list.add(PdfModel.fromPath(
+              file.path,
+              coverPath: '$cachePath/${file.path.getName(withExt: false)}.png',
+              configPath:
+                  '$cachePath/${file.path.getName(withExt: false)}$pdfConfigName',
+              bookmarkPath:
+                  '$cachePath/${file.path.getName(withExt: false)}$pdfBookListName',
+            ));
+          }
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+      }
+
+      for (var path in dirs) {
+        final dir = Directory(path);
+        if (!dir.existsSync()) continue;
+        scanDir(dir);
+      }
+      //sort
+      list.sort((a, b) {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        return 0;
+      });
+
+      return list;
+    });
     return list;
   }
 }

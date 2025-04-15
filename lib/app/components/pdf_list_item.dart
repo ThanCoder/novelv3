@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/extensions/datetime_extension.dart';
 import 'package:novel_v3/app/extensions/double_extension.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
+import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 
 class PdfListItem extends StatelessWidget {
   PdfModel pdf;
   void Function(PdfModel pdf) onClicked;
   void Function(PdfModel pdf)? onLongClicked;
+  bool isShowPathLabel;
   PdfListItem({
     super.key,
     required this.pdf,
     required this.onClicked,
+    this.onLongClicked,
+    this.isShowPathLabel = false,
   });
 
   @override
@@ -35,10 +39,11 @@ class PdfListItem extends StatelessWidget {
             spacing: 7,
             children: [
               SizedBox(
-                width: 150,
-                height: 160,
+                width: 130,
+                height: 140,
                 child: Container(
-                  color: Colors.black,
+                  color:
+                      isDarkThemeNotifier.value ? Colors.white : Colors.black,
                   child: MyImageFile(path: pdf.coverPath),
                 ),
               ),
@@ -57,6 +62,12 @@ class PdfListItem extends StatelessWidget {
                         'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
                     Text(
                         'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toTimeAgo()}'),
+                    isShowPathLabel
+                        ? Text(
+                            'Path: ${pdf.path}',
+                            style: const TextStyle(fontSize: 12),
+                          )
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),
