@@ -35,6 +35,11 @@ class ChapterModel extends TextReaderDataInterface {
     return file.readAsStringSync();
   }
 
+  void setContent(String content) {
+    final file = File(path);
+    file.writeAsStringSync(content);
+  }
+
   @override
   bool isExistsNext() {
     final file = File(path.replaceAll('$number', '${number + 1}'));
@@ -57,6 +62,13 @@ class ChapterModel extends TextReaderDataInterface {
   ChapterModel getPrev() {
     String _path = path.replaceAll('$number', '${number - 1}');
     return ChapterModel.fromPath(_path);
+  }
+
+  void delete() {
+    final file = File(path);
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
   }
 
   String get getConfigPath => '${File(path).parent.path}/$textReaderConfigName';

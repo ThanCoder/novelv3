@@ -6,6 +6,7 @@ import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader_screen.dart';
 import 'package:novel_v3/app/provider/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/text_reader/text_reader_config_model.dart';
@@ -30,6 +31,19 @@ void goNovelEditForm(BuildContext context, NovelModel novel) async {
     context,
     MaterialPageRoute(
       builder: (context) => NovelEditFormScreen(novel: novel),
+    ),
+  );
+}
+
+void goChapterEditForm(BuildContext context) async {
+  final provider = context.read<NovelProvider>();
+  final novel = provider.getCurrent;
+  if (novel == null) return;
+  if (!context.mounted) return;
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ChapterEditForm(novelPath: novel.path),
     ),
   );
 }

@@ -3,6 +3,7 @@ import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
 import 'package:provider/provider.dart';
@@ -92,6 +93,14 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
                 onTap: () {
                   Navigator.pop(context);
                   _goEditScreen();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.add),
+                title: const Text('Add Chapter'),
+                onTap: () {
+                  Navigator.pop(context);
+                  goChapterEditForm(context);
                 },
               ),
               ListTile(

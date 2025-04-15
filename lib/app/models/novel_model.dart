@@ -165,6 +165,11 @@ class NovelModel {
         'page_link': pageLink,
       };
 
+  bool get isExistsReaded {
+    final file = File('$path/$readed');
+    return file.existsSync();
+  }
+
   Future<void> delete() async {
     final dir = Directory('${PathUtil.instance.getSourcePath()}/$title');
     if (await dir.exists()) {

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
+import 'package:novel_v3/app/components/core/index.dart';
+import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
+import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +33,72 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
         .initList(novelPath: novel.path, isReset: true);
   }
 
+  void _deleteConfirm(ChapterModel chapter) {
+    showDialog(
+      context: context,
+      builder: (context) => ConfirmDialog(
+        contentText: '`Chapter: ${chapter.number}` ကိုဖျက်ချင်တာ သေချာပြီလား?`',
+        submitText: 'Delete',
+        onCancel: () {},
+        onSubmit: () async {
+          try {
+            //ui
+            context.read<ChapterProvider>().delete(chapter);
+          } catch (e) {
+            if (!mounted) return;
+            showDialogMessage(context, e.toString());
+          }
+        },
+      ),
+    );
+  }
+
+  void _goEditForm(ChapterModel chapter) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChapterEditForm(
+          novelPath: chapter.getNovelPath,
+          chapter: chapter,
+        ),
+      ),
+    );
+  }
+
+  void _showMenu(ChapterModel chapter) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 150),
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.edit_document),
+                title: const Text('Edit'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _goEditForm(chapter);
+                },
+              ),
+
+              //delete
+              ListTile(
+                iconColor: Colors.red,
+                leading: const Icon(Icons.delete_forever_rounded),
+                title: const Text('Delete'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteConfirm(chapter);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<ChapterProvider>();
@@ -48,6 +118,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
                 onClicked: (chapter) {
                   goTextReader(context, chapter);
                 },
+                onLongClicked: _showMenu,
               ),
               separatorBuilder: (context, index) => const Divider(),
               itemCount: list.length,

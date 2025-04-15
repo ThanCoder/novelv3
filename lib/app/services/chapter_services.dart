@@ -47,30 +47,20 @@ class ChapterServices {
     return completer.future;
   }
 
-  Future<int> getLastChapter({required String novelPath}) async {
-    int num = 0;
-    try {
-      final res = await getList(novelPath: novelPath);
-      if (res.isNotEmpty) {
-        num = int.tryParse(res.last.title) ?? 0;
-      }
-    } catch (e) {
-      debugPrint('getLastChapterListFromPath: ${e.toString()}');
+  Future<ChapterModel?> getLastChapter({required String novelPath}) async {
+    final res = await getList(novelPath: novelPath);
+    if (res.isNotEmpty) {
+      return res.last;
     }
-    return num;
+    return null;
   }
 
-  Future<int> getFirstChapter({required String novelPath}) async {
-    int num = 1;
-    try {
-      final res = await getList(novelPath: novelPath);
-      if (res.isNotEmpty) {
-        num = int.tryParse(res.first.title) ?? 1;
-      }
-    } catch (e) {
-      debugPrint('getLastChapterListFromPath: ${e.toString()}');
+  Future<ChapterModel?> getFirstChapter({required String novelPath}) async {
+    final res = await getList(novelPath: novelPath);
+    if (res.isNotEmpty) {
+      return res.first;
     }
-    return num;
+    return null;
   }
 
   //book mark

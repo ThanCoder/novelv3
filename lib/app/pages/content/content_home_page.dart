@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_action_button.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
+import 'package:novel_v3/app/components/content/novel_page_button.dart';
+import 'package:novel_v3/app/components/content/novel_readed_button.dart';
+import 'package:novel_v3/app/components/content/novel_readed_number_button.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
@@ -72,6 +75,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
                 leading: const Icon(Icons.person),
                 title: Text(novel.mc),
               ),
+              NovelReadedNumberButton(novel: novel),
               TListTile(
                 leading: const Icon(Icons.access_time_filled),
                 title: Text(DateTime.fromMillisecondsSinceEpoch(novel.date)
@@ -85,6 +89,21 @@ class _ContentHomePageState extends State<ContentHomePage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _bottomBar(NovelModel novel) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            NovelPageButton(novel: novel),
+            NovelReadedButton(novel: novel),
+          ],
+        ),
       ),
     );
   }
@@ -106,6 +125,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
         ),
         child: CustomScrollView(
           slivers: [
+            // app bar
             SliverAppBar(
               title: const Text('Content'),
               snap: true,
@@ -119,6 +139,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
                 ),
               ],
             ),
+
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
             // header
@@ -143,6 +164,8 @@ class _ContentHomePageState extends State<ContentHomePage> {
                 ),
               ),
             ),
+            //bottom bar
+            SliverToBoxAdapter(child: _bottomBar(novel)),
 
             //content cover
             SliverToBoxAdapter(

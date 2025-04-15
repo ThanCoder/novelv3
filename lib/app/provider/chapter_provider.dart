@@ -26,4 +26,13 @@ class ChapterProvider with ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  void delete(ChapterModel chapter) {
+    final res = _list.where((ch) => ch.number == chapter.number).toList();
+    _list.clear();
+    _list.addAll(res);
+
+    chapter.delete();
+    notifyListeners();
+  }
 }

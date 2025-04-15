@@ -6,6 +6,7 @@ class TagsWrapView extends StatelessWidget {
   String values;
   void Function()? onAddClicked;
   void Function(String value)? onDeleted;
+  void Function(String value)? onClicked;
   void Function(String values)? onApply;
   TagsWrapView({
     super.key,
@@ -13,6 +14,7 @@ class TagsWrapView extends StatelessWidget {
     required this.values,
     this.onAddClicked,
     this.onDeleted,
+    this.onClicked,
     this.onApply,
   });
 
@@ -28,6 +30,7 @@ class TagsWrapView extends StatelessWidget {
         return TChip(
           title: name,
           onDelete: onDeleted != null ? () => onDeleted!(name) : null,
+          onClick: onClicked != null ? () => onClicked!(name) : null,
         );
       },
     );

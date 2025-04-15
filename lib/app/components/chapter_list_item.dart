@@ -9,6 +9,7 @@ class ChapterListItem extends StatelessWidget {
     super.key,
     required this.chapter,
     required this.onClicked,
+    this.onLongClicked,
   });
 
   @override
