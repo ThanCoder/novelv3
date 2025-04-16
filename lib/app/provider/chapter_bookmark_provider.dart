@@ -36,6 +36,22 @@ class ChapterBookmarkProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> update(String novelPath, ChapterBookmarkModel book) async {
+    final res = _list.map((bm) {
+      if (bm.chapter == book.chapter) {
+        return book;
+      }
+      return bm;
+    }).toList();
+    _list.clear();
+    _list.addAll(res);
+    //db
+    await BookmarkServices.instance
+        .setChapterBookmarkList(novelPath, list: _list);
+
+    notifyListeners();
+  }
+
   Future<void> toggle(String novelPath, ChapterBookmarkModel book) async {
     if (isExists(book.chapter)) {
       await remove(novelPath, book);

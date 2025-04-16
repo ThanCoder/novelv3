@@ -3,6 +3,7 @@ import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
+import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
@@ -25,12 +26,12 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
-  Future<void> init() async {
+  Future<void> init({bool isReset = false}) async {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
     context
         .read<ChapterProvider>()
-        .initList(novelPath: novel.path, isReset: true);
+        .initList(novelPath: novel.path, isReset: isReset);
   }
 
   void _deleteConfirm(ChapterModel chapter) {
@@ -109,19 +110,32 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
         title: list.isNotEmpty
             ? ChapterCountView(novelPath: list.first.getNovelPath)
             : const Text('Chapter'),
+        actions: [
+          PlatformExtension.isDesktop()
+              ? IconButton(
+                  onPressed: () => init(isReset: true),
+                  icon: const Icon(Icons.refresh),
+                )
+              : const SizedBox.shrink(),
+        ],
       ),
       body: isLoading
           ? TLoader()
-          : ListView.separated(
-              itemBuilder: (context, index) => ChapterListItem(
-                chapter: list[index],
-                onClicked: (chapter) {
-                  goTextReader(context, chapter);
-                },
-                onLongClicked: _showMenu,
+          : RefreshIndicator(
+              onRefresh: () async {
+                await init(isReset: true);
+              },
+              child: ListView.separated(
+                itemBuilder: (context, index) => ChapterListItem(
+                  chapter: list[index],
+                  onClicked: (chapter) {
+                    goTextReader(context, chapter);
+                  },
+                  onLongClicked: _showMenu,
+                ),
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: list.length,
               ),
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: list.length,
             ),
     );
   }

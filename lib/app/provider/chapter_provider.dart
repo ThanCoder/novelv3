@@ -48,4 +48,8 @@ class ChapterProvider with ChangeNotifier {
     chapter.delete();
     notifyListeners();
   }
+
+  void listClear() {
+    _list.clear();
+  }
 }

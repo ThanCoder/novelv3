@@ -8,7 +8,7 @@ class RenameDialog extends StatefulWidget {
   String text;
   String cancelText;
   String submitText;
-  void Function() onCancel;
+  void Function()? onCancel;
   void Function(String text) onSubmit;
   Widget? renameLabelText;
   void Function(String text)? onChanged;
@@ -22,7 +22,7 @@ class RenameDialog extends StatefulWidget {
     this.text = 'Untitled',
     this.cancelText = 'Cancel',
     this.submitText = 'Submit',
-    required this.onCancel,
+    this.onCancel,
     required this.onSubmit,
     this.renameLabelText,
     this.onChanged,
@@ -106,7 +106,9 @@ class _RenameDialogState extends State<RenameDialog> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              widget.onCancel();
+              if (widget.onCancel != null) {
+                widget.onCancel!();
+              }
             },
             child: Text(widget.cancelText),
           ),

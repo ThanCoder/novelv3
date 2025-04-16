@@ -49,29 +49,33 @@ class _NovelDataScannerState extends State<NovelDataScanner> {
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
-      appBar: AppBar(
-        title: const Text('Data Scanner'),
-        actions: [
-          PlatformExtension.isDesktop()
-              ? IconButton(
-                  onPressed: init,
-                  icon: const Icon(Icons.refresh),
-                )
-              : const SizedBox.shrink(),
-        ],
-      ),
+      contentPadding: 0,
       body: isLoading
           ? TLoader()
           : RefreshIndicator(
               onRefresh: init,
-              child: ListView.builder(
-                itemBuilder: (context, index) => NovelDataListItem(
-                  novelData: list[index],
-                  onClicked: (novelData) {},
-                ),
-                itemCount: list.length,
-              ),
-            ),
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    title: const Text('Data Scanner'),
+                    actions: [
+                      PlatformExtension.isDesktop()
+                          ? IconButton(
+                              onPressed: init,
+                              icon: const Icon(Icons.refresh),
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
+                  SliverList.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) => NovelDataListItem(
+                      novelData: list[index],
+                      onClicked: (novelData) {},
+                    ),
+                  ),
+                ],
+              )),
     );
   }
 }

@@ -43,4 +43,8 @@ class NovelProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void listClear() {
+    _list.clear();
+  }
 }
