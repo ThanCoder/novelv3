@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/novel_home_action_button.dart';
+import 'package:novel_v3/app/action_buttons/search_button.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/general_server/general_server_noti_button.dart';
@@ -62,6 +63,7 @@ class _HomePageState extends State<HomePage> {
           floating: true,
           actions: [
             const GeneralServerNotiButton(),
+            const SearchButton(),
             PlatformExtension.isDesktop()
                 ? IconButton(
                     onPressed: () {

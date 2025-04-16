@@ -9,6 +9,7 @@ import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
+import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/app/text_reader/text_reader_config_model.dart';
 import 'package:novel_v3/app/text_reader/text_reader_screen.dart';
 import 'package:provider/provider.dart';
@@ -111,6 +112,28 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
           }
         },
       ),
+    ),
+  );
+}
+
+void goSeeAllScreenWithAuthor(BuildContext context, String author) {
+  final list = context.read<NovelProvider>().getList;
+  final res = list.where((nv) => nv.author == author).toList();
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => NovelSeeAllScreen(title: author, list: res),
+    ),
+  );
+}
+
+void goSeeAllScreenWithMC(BuildContext context, String mc) {
+  final list = context.read<NovelProvider>().getList;
+  final res = list.where((nv) => nv.mc == mc).toList();
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => NovelSeeAllScreen(title: mc, list: res),
     ),
   );
 }

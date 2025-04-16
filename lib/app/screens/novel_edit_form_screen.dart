@@ -42,6 +42,10 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
 
   void _saveNovel() async {
     try {
+      if (novel.title != titleController.text) {
+        //change dir
+        novel = await novel.changeTitle(titleController.text);
+      }
       novel.title = titleController.text;
       novel.author = authorController.text;
       novel.mc = mcController.text;

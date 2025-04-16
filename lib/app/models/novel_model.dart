@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/extensions/file_system_entity_extension.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 class NovelModel {
@@ -175,6 +176,27 @@ class NovelModel {
     if (await dir.exists()) {
       await dir.delete(recursive: true);
     }
+  }
+
+  Future<NovelModel> changeTitle(String newTitle) async {
+    final newDir = Directory('${PathUtil.instance.getSourcePath()}/$newTitle');
+    final oldDir = Directory(path);
+    if (await newDir.exists()) {
+      throw Exception('newTitle is already exists');
+    }
+    if (!await oldDir.exists()) {
+      throw Exception('oldDir not found!');
+    }
+    // create new dir
+    await newDir.create();
+    //move to new
+    for (var file in oldDir.listSync()) {
+      await file.rename('${newDir.path}/${file.getName()}');
+    }
+    //delete old dir
+    await oldDir.delete();
+
+    return NovelModel.fromPath(newDir.path);
   }
 
   Future<void> save() async {
