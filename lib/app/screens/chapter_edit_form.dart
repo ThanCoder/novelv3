@@ -74,6 +74,9 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     final res = await pasteFromClipboard();
     if (res.isEmpty) return;
     contentController.text = res;
+    setState(() {
+      isChanged = true;
+    });
   }
 
   void _incre({bool isShowSubmit = true}) {
@@ -99,16 +102,15 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
 
   void _save() {
     try {
+      // only save
       final ch = ChapterModel(
           title: '', number: chapter, path: '${widget.novelPath}/$chapter');
       ch.setContent(contentController.text);
+      context.read<ChapterProvider>().update(ch.refreshData());
+
       isChanged = false;
       setState(() {});
-      // only save
-      if (_isContentFileExists) {
-        context.read<ChapterProvider>().update(ch.refreshData());
-        return;
-      }
+
       if (isAutoIncrement) {
         _incre(isShowSubmit: false);
       } else {

@@ -37,6 +37,7 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
   }
 
   bool isLoading = false;
+  bool isSorted = true;
   List<PdfModel> list = [];
 
   Future<void> init() async {
@@ -296,6 +297,17 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
                   icon: const Icon(Icons.refresh),
                 )
               : SizedBox.fromSize(),
+          IconButton(
+            onPressed: () {
+              final res = list.reversed.toList();
+              list = res;
+              isSorted = !isSorted;
+              setState(() {});
+            },
+            icon: const Icon(
+              Icons.sort_by_alpha_sharp,
+            ),
+          ),
         ],
       ),
       body: isLoading

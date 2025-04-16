@@ -52,4 +52,10 @@ class ChapterProvider with ChangeNotifier {
   void listClear() {
     _list.clear();
   }
+
+  void reversedList() {
+    final res = _list.reversed.toList();
+    _list.clear();
+    _list.addAll(res);
+  }
 }

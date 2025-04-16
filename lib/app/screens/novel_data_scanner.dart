@@ -23,6 +23,7 @@ class _NovelDataScannerState extends State<NovelDataScanner> {
   }
 
   bool isLoading = false;
+  bool isSorted = true;
   List<NovelDataModel> list = [];
 
   Future<void> init() async {
@@ -65,6 +66,17 @@ class _NovelDataScannerState extends State<NovelDataScanner> {
                               icon: const Icon(Icons.refresh),
                             )
                           : const SizedBox.shrink(),
+                      IconButton(
+                        onPressed: () {
+                          final res = list.reversed.toList();
+                          list = res;
+                          isSorted = !isSorted;
+                          setState(() {});
+                        },
+                        icon: const Icon(
+                          Icons.sort_by_alpha_sharp,
+                        ),
+                      ),
                     ],
                   ),
                   SliverList.builder(

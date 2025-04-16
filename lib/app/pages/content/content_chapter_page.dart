@@ -26,6 +26,8 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
+  bool isSorted = true;
+
   Future<void> init({bool isReset = false}) async {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
@@ -117,6 +119,16 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
                   icon: const Icon(Icons.refresh),
                 )
               : const SizedBox.shrink(),
+          IconButton(
+            onPressed: () {
+              provider.reversedList();
+              isSorted = !isSorted;
+              setState(() {});
+            },
+            icon: const Icon(
+              Icons.sort_by_alpha_sharp,
+            ),
+          ),
         ],
       ),
       body: isLoading
