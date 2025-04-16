@@ -7,6 +7,7 @@ class AppConfigModel {
   bool isDarkTheme;
   bool isShowNovelContentBgImage;
   String forwardProxy;
+  String browserProxy;
 
   AppConfigModel({
     this.isUseCustomPath = false,
@@ -14,6 +15,7 @@ class AppConfigModel {
     this.isDarkTheme = false,
     this.isShowNovelContentBgImage = true,
     this.forwardProxy = appForwardProxyHostUrl,
+    this.browserProxy = appBrowserProxyHostUrl,
   });
 
   factory AppConfigModel.fromJson(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class AppConfigModel {
       isDarkTheme: map['is_dark_theme'] ?? false,
       isShowNovelContentBgImage: map['is_show_novel_content_bg_image'] ?? true,
       forwardProxy: map['forward_proxy'] ?? appForwardProxyHostUrl,
+      browserProxy: map['browser_proxy'] ?? appBrowserProxyHostUrl,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -31,6 +34,7 @@ class AppConfigModel {
         'is_dark_theme': isDarkTheme,
         'is_show_novel_content_bg_image': isShowNovelContentBgImage,
         'forward_proxy': forwardProxy,
+        'browser_proxy': browserProxy,
       };
 
   @override

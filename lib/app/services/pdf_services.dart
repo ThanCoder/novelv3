@@ -6,8 +6,8 @@ import 'package:mime/mime.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/string_extension.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
+import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class PdfServices {
   static final PdfServices instance = PdfServices._();
@@ -30,32 +30,11 @@ class PdfServices {
   }
 
   Future<List<PdfModel>> pdfScanner() async {
-    final dirs = [];
-    final homePath = await ThanPkg.platform.getAppExternalPath();
-    if (homePath == null) return [];
+    final dirs = await getScanDirPathList();
+    final filterPaths = getScanFilteringPathList();
     //
     final cachePath = PathUtil.instance.getCachePath();
-    final filterPaths = [
-      'Android',
-      'AndroidIDEProjects',
-      'Apk',
-      'Mihon',
-      'backups',
-      'Musics',
-      'Pictures',
-      'VidMate',
-      'DCMI'
-    ];
 
-    if (Platform.isAndroid) {
-      dirs.add(homePath);
-    }
-    if (Platform.isLinux) {
-      dirs.add('$homePath/Downloads');
-      dirs.add('$homePath/Documents');
-      dirs.add('$homePath/Videos');
-      dirs.add('$homePath/Public');
-    }
     final list = await Isolate.run<List<PdfModel>>(() async {
       List<PdfModel> list = [];
       // inner function

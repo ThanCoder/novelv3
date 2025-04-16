@@ -19,9 +19,9 @@ class GeneralServices {
   }
 
   final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 5),
-    sendTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 5),
+    connectTimeout: const Duration(seconds: 8),
+    sendTimeout: const Duration(seconds: 8),
+    receiveTimeout: const Duration(seconds: 8),
   ));
 
   Future<List<ReleaseModel>> getReleaseList() async {

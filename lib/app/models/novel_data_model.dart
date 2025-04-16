@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'package:novel_v3/app/extensions/string_extension.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/utils/path_util.dart';
 
 class NovelDataModel {
   String title;
@@ -23,16 +23,18 @@ class NovelDataModel {
     this.isAlreadyExists = false,
   });
 
-  factory NovelDataModel.fromPath(String path) {
+  factory NovelDataModel.fromPath(String path, {String? coverPath}) {
     final file = File(path);
+
     return NovelDataModel(
-      title: PathUtil.instance.getBasename(path),
+      title: path.getName(withExt: false),
       path: path,
-      coverPath: '',
+      coverPath: coverPath ?? '',
       size: file.statSync().size,
       date: file.statSync().modified.millisecondsSinceEpoch,
       isAdult: NovelDataServices.instance.dataCheckIsAdult(dataFilePath: path),
-      isCompleted: NovelDataServices.instance.dataCheckIsCompleted(dataFilePath: path),
+      isCompleted:
+          NovelDataServices.instance.dataCheckIsCompleted(dataFilePath: path),
     );
   }
 

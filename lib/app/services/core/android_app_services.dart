@@ -90,3 +90,33 @@ Future<int> getAndroidVersion() async {
   }
   return verInt;
 }
+
+Future<List<String>> getScanDirPathList() async {
+  List<String> dirs = [];
+  final homePath = await ThanPkg.platform.getAppExternalPath();
+  if (homePath == null) return [];
+  if (Platform.isAndroid) {
+    dirs.add(homePath);
+  }
+  if (Platform.isLinux) {
+    dirs.add('$homePath/Downloads');
+    dirs.add('$homePath/Documents');
+    dirs.add('$homePath/Videos');
+    dirs.add('$homePath/Public');
+  }
+  return dirs;
+}
+
+List<String> getScanFilteringPathList() {
+  return [
+    'Android',
+    'AndroidIDEProjects',
+    'Apk',
+    'Mihon',
+    'backups',
+    'Musics',
+    'Pictures',
+    'VidMate',
+    'DCMI'
+  ];
+}

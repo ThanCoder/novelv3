@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
+import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/services/chapter_services.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:provider/provider.dart';
 
 class ChapterEditForm extends StatefulWidget {
   String novelPath;
@@ -26,6 +28,7 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     init();
   }
 
+  bool isLoading = false;
   bool isChanged = false;
   bool isAutoIncrement = true;
   int chapter = 1;
@@ -37,6 +40,9 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
       contentController.text = widget.chapter!.getContent();
       return;
     }
+    setState(() {
+      isLoading = true;
+    });
     chapterController.text = chapter.toString();
     final _chapter = await ChapterServices.instance
         .getLastChapter(novelPath: widget.novelPath);
@@ -45,6 +51,10 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
       chapterController.text = chapter.toString();
       // contentController.text = _chapter.getContent();
     }
+    if (!mounted) return;
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String get _getContent {
@@ -64,8 +74,6 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     final res = await pasteFromClipboard();
     if (res.isEmpty) return;
     contentController.text = res;
-    isChanged = true;
-    setState(() {});
   }
 
   void _incre({bool isShowSubmit = true}) {
@@ -96,6 +104,11 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
       ch.setContent(contentController.text);
       isChanged = false;
       setState(() {});
+      // only save
+      if (_isContentFileExists) {
+        context.read<ChapterProvider>().update(ch.refreshData());
+        return;
+      }
       if (isAutoIncrement) {
         _incre(isShowSubmit: false);
       } else {
@@ -113,78 +126,94 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
       appBar: AppBar(
         title: const Text('Chapter Form'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            spacing: 14,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // chapter
-              TTextField(
-                label: const Text('Chapter Number'),
-                controller: chapterController,
-                textInputType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              // row
-              Row(
-                spacing: 5,
-                children: [
-                  // auto
-                  Row(
-                    spacing: 4,
-                    children: [
-                      Text(isAutoIncrement
-                          ? 'Auto Increment'
-                          : 'Auto Decrement'),
-                      Switch(
-                        value: isAutoIncrement,
-                        onChanged: (value) {
-                          isAutoIncrement = value;
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(width: 10),
-                  //decre
-                  IconButton(
-                    onPressed: _decre,
-                    icon: const Icon(
-                      Icons.remove_circle_outlined,
-                      color: Colors.red,
+      body: isLoading
+          ? TLoader()
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  spacing: 14,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // chapter
+                    TTextField(
+                      label: const Text('Chapter Number'),
+                      controller: chapterController,
+                      textInputType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {
+                        if (!isChanged) {
+                          setState(() {
+                            isChanged = true;
+                          });
+                        }
+                      },
                     ),
-                  ),
-                  // const SizedBox(width: 10),
-                  //incre
-                  IconButton(
-                    onPressed: _incre,
-                    icon: const Icon(
-                      Icons.add_circle_outlined,
-                      color: Colors.green,
-                    ),
-                  ),
+                    // row
+                    Row(
+                      spacing: 5,
+                      children: [
+                        // auto
+                        Row(
+                          spacing: 4,
+                          children: [
+                            Text(isAutoIncrement
+                                ? 'Auto Increment'
+                                : 'Auto Decrement'),
+                            Switch(
+                              value: isAutoIncrement,
+                              onChanged: (value) {
+                                isAutoIncrement = value;
+                                setState(() {});
+                              },
+                            ),
+                          ],
+                        ),
 
-                  const Spacer(),
-                  //paste
-                  IconButton(
-                    onPressed: _paste,
-                    icon: const Icon(Icons.paste_rounded),
-                  ),
-                ],
+                        const SizedBox(width: 10),
+                        //decre
+                        IconButton(
+                          onPressed: _decre,
+                          icon: const Icon(
+                            Icons.remove_circle_outlined,
+                            color: Colors.red,
+                          ),
+                        ),
+                        // const SizedBox(width: 10),
+                        //incre
+                        IconButton(
+                          onPressed: _incre,
+                          icon: const Icon(
+                            Icons.add_circle_outlined,
+                            color: Colors.green,
+                          ),
+                        ),
+
+                        const Spacer(),
+                        //paste
+                        IconButton(
+                          onPressed: _paste,
+                          icon: const Icon(Icons.paste_rounded),
+                        ),
+                      ],
+                    ),
+                    //content
+                    TTextField(
+                      label: const Text('Content'),
+                      controller: contentController,
+                      maxLines: null,
+                      onChanged: (value) {
+                        if (!isChanged) {
+                          setState(() {
+                            isChanged = true;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-              //content
-              TTextField(
-                label: const Text('Content'),
-                controller: contentController,
-                maxLines: null,
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
       floatingActionButton: isChanged
           ? FloatingActionButton(
               onPressed: _save,

@@ -7,6 +7,7 @@ import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/components/content/novel_page_button.dart';
 import 'package:novel_v3/app/components/content/novel_readed_button.dart';
 import 'package:novel_v3/app/components/content/novel_readed_number_button.dart';
+import 'package:novel_v3/app/components/status_text.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
@@ -63,9 +64,17 @@ class _ContentHomePageState extends State<ContentHomePage> {
             spacing: 3,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TListTile(
-                leading: const Icon(Icons.title),
-                title: Text(novel.title),
+              // title
+              Row(
+                children: [
+                  const Icon(Icons.title),
+                  Expanded(
+                    child: Text(
+                      novel.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
               TListTile(
                 leading: const Icon(Icons.edit_document),
@@ -86,6 +95,25 @@ class _ContentHomePageState extends State<ContentHomePage> {
                 title: Text(DateTime.fromMillisecondsSinceEpoch(novel.date)
                     .toTimeAgo()),
               ),
+              // status
+              Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: [
+                  StatusText(
+                    bgColor: novel.isCompleted
+                        ? StatusText.completedColor
+                        : StatusText.onGoingColor,
+                    text: novel.isCompleted ? 'Completed' : 'OnGoing',
+                  ),
+                  novel.isAdult
+                      ? StatusText(
+                          text: 'Adult',
+                          bgColor: StatusText.adultColor,
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
             ],
           ),
         ],
@@ -99,6 +127,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
+          spacing: 5,
           children: [
             NovelPageButton(novel: novel),
             NovelReadedButton(novel: novel),

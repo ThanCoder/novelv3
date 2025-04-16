@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
@@ -8,10 +7,12 @@ import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
+import 'package:novel_v3/app/provider/pdf_provider.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/services/pdf_services.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:provider/provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
 
@@ -132,16 +133,22 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
         return;
       }
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
-      await Isolate.run(() async {
-        await file.copy(newPath);
-      });
+
+      /// copy file
+      final outFile = File(newPath);
+      await file.openRead().pipe(outFile.openWrite());
+
+      ///
       if (!mounted) return;
       setState(() {
         isLoading = false;
       });
-      showMessage(context, 'PDF Copied');
+      if (widget.novel != null) {
+        context.read<PdfProvider>().initList(novelPath: widget.novel!.path);
+      }
+      showMessage(context, 'PDF Copied', oldStyle: true);
     } catch (e) {
       if (!mounted) return;
       setState(() {

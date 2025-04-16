@@ -28,6 +28,20 @@ class ChapterModel extends TextReaderDataInterface {
     );
   }
 
+  ChapterModel refreshData() {
+    File file = File(path);
+    String name = file.path.getName();
+    String title = '';
+    if (file.readAsLinesSync().isNotEmpty) {
+      title = file.readAsLinesSync().first;
+    }
+    return ChapterModel(
+      number: int.tryParse(name) ?? 1,
+      title: title,
+      path: file.path,
+    );
+  }
+
   @override
   String getContent() {
     final file = File(path);

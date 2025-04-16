@@ -5,8 +5,9 @@ import 'dart:isolate';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/extensions/string_extension.dart';
 import 'package:novel_v3/app/models/novel_data_model.dart';
-import 'package:novel_v3/app/services/core/app_path_services.dart';
+import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 class NovelDataServices {
@@ -252,191 +253,89 @@ class NovelDataServices {
   }
 
 //data scanner
-  Future<List<NovelDataModel>> novelDataScannerIsolate() async {
-    final completer = Completer<List<NovelDataModel>>();
-    final receivePort = ReceivePort();
-    final rootPath = Platform.isLinux
-        ? '${getAppExternalRootPath()}/Downloads'
-        : getAppExternalRootPath();
-    await Isolate.spawn(_novelDataScannerIsolate, [
-      receivePort.sendPort,
-      rootPath,
-      PathUtil.instance.getSourcePath(),
-    ]);
+  Future<List<NovelDataModel>> dataScanner() async {
+    final dirs = await getScanDirPathList();
+    final filterPaths = getScanFilteringPathList();
+    //
+    final cachePath = PathUtil.instance.getCachePath();
 
-    receivePort.listen((data) {
-      if (data is Map) {
-        String type = data['type'];
-        if (type == 'err') {
-          completer.completeError(data['msg']);
-          receivePort.close();
-        }
-        if (type == 'succ') {
-          completer.complete(data['list']);
-          receivePort.close();
-        }
-      }
-    });
-    return completer.future;
-  }
+    return await Isolate.run<List<NovelDataModel>>(() async {
+      List<NovelDataModel> list = [];
+      // inner function
+      void scanDir(Directory dir) async {
+        try {
+          // if (await dir.exists())
+          for (var file in dir.listSync()) {
+            //hidden skip
+            if (file.path.getName().startsWith('.')) continue;
 
-  void _novelDataScannerIsolate(List<Object> args) {
-    final sendPort = args[0] as SendPort;
-    final rootPath = args[1] as String;
-    final novelSourceDir = args[2] as String;
+            if (file.statSync().type == FileSystemEntityType.directory) {
+              scanDir(Directory(file.path));
+            }
+            if (file.statSync().type != FileSystemEntityType.file) continue;
+            if (filterPaths.contains(file.path.getName())) continue;
 
-    _novelDataScanner(
-      rootPath: rootPath,
-      novelSourceDir: novelSourceDir,
-      onSuccess: (dataList) {
-        sendPort.send({'type': 'succ', 'list': dataList});
-      },
-      onError: (msg) {
-        sendPort.send({'type': 'err', 'msg': msg});
-      },
-    );
-  }
+            // final mime = lookupMimeType(file.path) ?? '';
+            // if (!mime.startsWith('application/zip')) continue;
+            //add pdf
+            if (!file.path.endsWith('.$novelDataExtName')) continue;
+            //add
+            final name = file.path.getName(withExt: false);
+            final novelData = NovelDataModel.fromPath(
+              file.path,
+              coverPath: '$cachePath/$name.png',
+            );
 
-  void _novelDataScanner({
-    required String rootPath,
-    required String novelSourceDir,
-    required void Function(List<NovelDataModel> novelDataList) onSuccess,
-    required void Function(String msg) onError,
-  }) async {
-    try {
-      final dir = Directory(rootPath);
-      if (!dir.existsSync()) return onSuccess([]);
-      List<NovelDataModel> dataList = [];
-
-      Future<void> scanPdfFile(Directory folder) async {
-        for (final file in folder.listSync()) {
-          String name = PathUtil.instance.getBasename(file.path);
-          if (name.startsWith('.') ||
-              name.startsWith('Android') ||
-              name.startsWith('android-studio') ||
-              name.startsWith('AndroidStudioProjects') ||
-              name.startsWith('AndroidIDEProjects') ||
-              name.startsWith('DCMI')) {
-            continue;
+            //add list
+            list.add(novelData);
           }
-          if (file.statSync().type == FileSystemEntityType.directory) {
-            scanPdfFile(Directory(file.path));
-          }
-          if (!file.path.endsWith('.$novelDataExtName')) continue;
-          //add
-          final novelData = NovelDataModel.fromPath(file.path);
-
-          //add list
-          dataList.add(novelData);
+        } catch (e) {
+          debugPrint(e.toString());
         }
       }
 
-      await scanPdfFile(dir);
+      for (var path in dirs) {
+        final dir = Directory(path);
+        if (!dir.existsSync()) continue;
+        scanDir(dir);
+      }
       //sort
-      dataList.sort((a, b) {
-        return a.date.compareTo(b.date) == 1 ? -1 : 1;
+      list.sort((a, b) {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        return 0;
       });
-      onSuccess(dataList);
-    } catch (e) {
-      onError(e.toString());
-      debugPrint('pdfScanner: ${e.toString()}');
-    }
+
+      return list;
+    });
   }
 
 //gen cover
-  Future<List<NovelDataModel>> genDataCover({
-    required List<NovelDataModel> novelDataList,
-    required String outDir,
-  }) async {
-    final receivePort = ReceivePort();
-    final completer = Completer<List<NovelDataModel>>();
+  Future<void> genCover({required List<NovelDataModel> list}) async {
+    await Isolate.run(() {
+      try {
+        for (final data in list) {
+          // Read the ZIP file
+          final zipFile = File(data.path);
+          if (!zipFile.existsSync()) continue;
+          final bytes = zipFile.readAsBytesSync();
 
-    await Isolate.spawn(_genNovelDataCoverIsolate,
-        [receivePort.sendPort, novelDataList, outDir]);
+          final archive = ZipDecoder().decodeBytes(bytes);
 
-    receivePort.listen((data) {
-      if (data is Map) {
-        String type = data['type'];
-        if (type == 'err') {
-          completer.completeError(data['msg']);
-          receivePort.close();
+          for (final file in archive) {
+            if (file.name.endsWith('cover.png')) {
+              final coverFile = File(data.coverPath);
+              if (!coverFile.existsSync()) {
+                coverFile.writeAsBytesSync(file.content);
+              }
+              break;
+            }
+          }
         }
-        if (type == 'succ') {
-          completer.complete(data['list']);
-          receivePort.close();
-        }
+      } catch (e) {
+        debugPrint(e.toString());
       }
     });
-    return completer.future;
-  }
-
-  void _genNovelDataCoverIsolate(List<Object> args) {
-    final sendPort = args[0] as SendPort;
-    try {
-      final novelDataList = args[1] as List<NovelDataModel>;
-      final outDir = args[2] as String;
-
-      PathUtil.instance.createDir(outDir);
-      int i = 0;
-      for (final data in novelDataList) {
-        // Read the ZIP file
-        final zipFile = File(data.path);
-        if (!zipFile.existsSync()) continue;
-        final bytes = zipFile.readAsBytesSync();
-
-        final archive = ZipDecoder().decodeBytes(bytes);
-
-        for (final file in archive) {
-          if (file.name.endsWith('cover.png')) {
-            final dirName = File(file.name).parent.path;
-            final coverFile = File('$outDir/$dirName.png');
-            if (!coverFile.existsSync()) {
-              coverFile.writeAsBytesSync(file.content);
-            }
-            novelDataList[i].coverPath = coverFile.path;
-            novelDataList[i].title = dirName;
-            break;
-          }
-        }
-        i++;
-      }
-
-      sendPort.send({'type': 'succ', 'list': novelDataList});
-    } catch (e) {
-      sendPort.send({'type': 'err', 'msg': e.toString()});
-    }
-  }
-
-  void _genDataCover({
-    required String filePath,
-    required String outDir,
-    required void Function(String coverPath) onSuccess,
-    required void Function(String err) onError,
-  }) {
-    try {
-      PathUtil.instance.createDir(outDir);
-      // Read the ZIP file
-      final zipFile = File(filePath);
-      if (!zipFile.existsSync()) throw Exception('မရှိပါ! path:$filePath');
-      final bytes = zipFile.readAsBytesSync();
-
-      final archive = ZipDecoder().decodeBytes(bytes);
-
-      for (final file in archive) {
-        if (file.name.endsWith('cover.png')) {
-          final dirName = File(file.name).parent.path;
-          final coverFile = File('$outDir/$dirName.png');
-          if (!coverFile.existsSync()) {
-            coverFile.writeAsBytesSync(file.content);
-          }
-          onSuccess(coverFile.path);
-          break;
-        }
-      }
-    } catch (e) {
-      onError(e.toString());
-      debugPrint('genNovelDataCover: ${e.toString()}');
-    }
   }
 
 //novel data check isAdult

@@ -27,6 +27,19 @@ class ChapterProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void update(ChapterModel chapter) {
+    final res = _list.map((ch) {
+      if (ch.number == chapter.number) {
+        return chapter;
+      }
+      return ch;
+    }).toList();
+    _list.clear();
+    _list.addAll(res);
+
+    notifyListeners();
+  }
+
   void delete(ChapterModel chapter) {
     final res = _list.where((ch) => ch.number == chapter.number).toList();
     _list.clear();

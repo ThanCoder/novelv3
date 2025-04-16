@@ -55,6 +55,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
     oldOffsetX = config.offsetDx;
     oldOffsetY = config.offsetDy;
     super.initState();
+    _initConfig();
   }
 
   //pdf loaded
@@ -75,7 +76,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
       setState(() {
         isLoading = false;
       });
-      _initConfig();
     } catch (e) {
       setState(() {
         isLoading = false;

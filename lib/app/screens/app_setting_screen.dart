@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
+import 'package:novel_v3/app/general_server/proxy_hosting_server/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/services/index.dart';
@@ -18,22 +19,28 @@ class AppSettingScreen extends StatefulWidget {
 }
 
 class _AppSettingScreenState extends State<AppSettingScreen> {
+  late AppConfigModel config;
+
   @override
   void initState() {
-    init();
+    config = appConfigNotifier.value;
     super.initState();
+    init();
   }
 
   bool isChanged = false;
-  late AppConfigModel config;
+
   bool isUsedCustomPath = false;
   bool isDarkTheme = false;
   bool isShowNovelContentCover = false;
   TextEditingController customPathTextController = TextEditingController();
+  TextEditingController forwardProxyController = TextEditingController();
+  TextEditingController browserProxyController = TextEditingController();
 
   void init() async {
     customPathTextController.text = '${getAppExternalRootPath()}/.$appName';
-    config = appConfigNotifier.value;
+    forwardProxyController.text = config.forwardProxy;
+    browserProxyController.text = config.browserProxy;
     setState(() {
       isUsedCustomPath = config.isUseCustomPath;
       customPathTextController.text = config.customPath.isEmpty
@@ -56,6 +63,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
       }
       //reset
       config.customPath = customPathTextController.text;
+      config.forwardProxy = forwardProxyController.text;
+      config.browserProxy = browserProxyController.text;
       config.isUseCustomPath = isUsedCustomPath;
       config.isDarkTheme = isDarkTheme;
       config.isShowNovelContentBgImage = isShowNovelContentCover;
@@ -112,53 +121,73 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         appBar: AppBar(
           title: const Text('Setting'),
         ),
-        body: ListView(
-          children: [
-            //custom path
-            ListTileWithDesc(
-              title: "custom path",
-              desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
-              trailing: Checkbox(
-                value: isUsedCustomPath,
-                onChanged: (value) {
-                  setState(() {
-                    isUsedCustomPath = value!;
-                    isChanged = true;
-                  });
-                },
+        body: SingleChildScrollView(
+          child: Column(
+            spacing: 7,
+            children: [
+              //custom path
+              ListTileWithDesc(
+                title: "custom path",
+                desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
+                trailing: Checkbox(
+                  value: isUsedCustomPath,
+                  onChanged: (value) {
+                    setState(() {
+                      isUsedCustomPath = value!;
+                      isChanged = true;
+                    });
+                  },
+                ),
               ),
-            ),
-            isUsedCustomPath
-                ? _MyListTile2(
-                    widget1: TextField(
-                      controller: customPathTextController,
-                    ),
-                    widget2: IconButton(
-                      onPressed: () {
-                        _saveConfig();
-                      },
-                      icon: const Icon(
-                        Icons.save,
+              isUsedCustomPath
+                  ? _MyListTile2(
+                      widget1: TextField(
+                        controller: customPathTextController,
                       ),
-                    ),
-                  )
-                : Container(),
-            //content image cover
-            ListTileWithDesc(
-              title: 'Novel Content Backgorund Cover',
-              trailing: Checkbox(
-                value: isShowNovelContentCover,
+                      widget2: IconButton(
+                        onPressed: () {
+                          _saveConfig();
+                        },
+                        icon: const Icon(
+                          Icons.save,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              //content image cover
+              ListTileWithDesc(
+                title: 'Novel Content Backgorund Cover',
+                trailing: Checkbox(
+                  value: isShowNovelContentCover,
+                  onChanged: (value) {
+                    setState(() {
+                      isShowNovelContentCover = value!;
+                      isChanged = true;
+                    });
+                  },
+                ),
+              ),
+              const Divider(),
+              //forward proxy server
+              ForwardProxyTTextField(
+                controller: forwardProxyController,
                 onChanged: (value) {
                   setState(() {
-                    isShowNovelContentCover = value!;
                     isChanged = true;
                   });
                 },
               ),
-            ),
-            const Divider(),
-            //
-          ],
+              //browser proxy server
+              BrowserProxyTTextField(
+                controller: browserProxyController,
+                onChanged: (value) {
+                  setState(() {
+                    isChanged = true;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
         floatingActionButton: isChanged
             ? FloatingActionButton(

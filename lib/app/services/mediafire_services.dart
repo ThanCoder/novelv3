@@ -12,10 +12,14 @@ class MediafireServicesResponse {
 
 class MediafireServices {
   static Future<MediafireServicesResponse> fetchDirectDownloadLink(
-      String url) async {
+    String url, {
+    bool isUsedProxy = false,
+    int delaySec = 5,
+  }) async {
     String title = '';
     String downloadUrl = '';
-    String resHtml = await DioServices.instance.getForwardProxyHtml(url);
+    String resHtml = await DioServices.instance
+        .getBrowsesrProxyHtml(url, delaySec: delaySec);
     final doc = html.Document.html(resHtml);
     //fetch
     title = getQuerySelectorText(doc, '.dl-btn-label');

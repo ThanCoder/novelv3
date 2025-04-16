@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/status_text.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/widgets/core/index.dart';
 
@@ -21,6 +22,7 @@ class NovelGridItem extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: Stack(
           children: [
+            // cover
             Column(
               children: [
                 Expanded(
@@ -32,6 +34,7 @@ class NovelGridItem extends StatelessWidget {
                 ),
               ],
             ),
+            // title
             Positioned(
               left: 0,
               bottom: 0,
@@ -56,6 +59,27 @@ class NovelGridItem extends StatelessWidget {
                 ),
               ),
             ),
+
+            Positioned(
+              left: 0,
+              top: 0,
+              child: StatusText(
+                bgColor: novel.isCompleted
+                    ? StatusText.completedColor
+                    : StatusText.onGoingColor,
+                text: novel.isCompleted ? 'Completed' : 'OnGoing',
+              ),
+            ),
+            novel.isAdult
+                ? Positioned(
+                    right: 0,
+                    top: 0,
+                    child: StatusText(
+                      text: 'Adult',
+                      bgColor: StatusText.adultColor,
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),

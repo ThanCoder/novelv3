@@ -4,6 +4,7 @@ import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/screens/novel_data_scanner.dart';
 import 'package:provider/provider.dart';
 
 class NovelHomeActionButton extends StatefulWidget {
@@ -56,6 +57,19 @@ class _NovelHomeActionButtonState extends State<NovelHomeActionButton> {
                 onTap: () {
                   Navigator.pop(context);
                   _newNovel();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.import_export),
+                title: const Text('Import Data'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NovelDataScanner(),
+                    ),
+                  );
                 },
               ),
             ],

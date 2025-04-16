@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
@@ -60,7 +61,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     }
   }
 
-  void _showMenu(PdfModel pdf) {
+  void _showContextMenu(PdfModel pdf) {
     showModalBottomSheet(
       context: context,
       builder: (context) => SingleChildScrollView(
@@ -105,18 +106,24 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
       contentPadding: 0,
       appBar: AppBar(
         title: const Text('PDF'),
+        actions: [
+          NovelContentPdfActionButton(),
+        ],
       ),
       body: isLoading
           ? TLoader()
-          : ListView.builder(
-              itemBuilder: (context, index) => PdfListItem(
-                pdf: list[index],
-                onClicked: (pdf) {
-                  goPdfReader(context, pdf);
-                },
-                onLongClicked: _showMenu,
+          : RefreshIndicator(
+              onRefresh: init,
+              child: ListView.builder(
+                itemBuilder: (context, index) => PdfListItem(
+                  pdf: list[index],
+                  onClicked: (pdf) {
+                    goPdfReader(context, pdf);
+                  },
+                  onLongClicked: _showContextMenu,
+                ),
+                itemCount: list.length,
               ),
-              itemCount: list.length,
             ),
     );
   }

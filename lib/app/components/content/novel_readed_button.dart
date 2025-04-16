@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/index.dart';
-import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/route_helper.dart';
 
 class NovelReadedButton extends StatefulWidget {

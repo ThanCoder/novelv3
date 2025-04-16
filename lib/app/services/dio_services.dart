@@ -25,9 +25,13 @@ class DioServices {
     }
   }
 
-  Future<String> getBrowsesrProxyHtml(String url) async {
+  Future<String> getBrowsesrProxyHtml(String url, {int? delaySec}) async {
     try {
-      final res = await getDio.get('$appBrowserProxyHostUrl?url=$url');
+      String delay = '';
+      if (delaySec != null) {
+        delay = 'delaySec=$delaySec&&';
+      }
+      final res = await getDio.get('$appBrowserProxyHostUrl?${delay}url=$url');
       return res.data.toString();
     } catch (e) {
       debugPrint('getBrowsesrProxyHtml: ${e.toString()}');
@@ -37,6 +41,10 @@ class DioServices {
 
   String getForwardProxyUrl(String targetUrl) {
     return '${appConfigNotifier.value.forwardProxy}?url=$targetUrl';
+  }
+
+  String getBrowserProxyUrl(String targetUrl) {
+    return '${appConfigNotifier.value.browserProxy}?url=$targetUrl';
   }
 
   Future<void> downloadCover({

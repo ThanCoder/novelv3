@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/screens/app_setting_screen.dart';
+import 'package:novel_v3/app/screens/novel_data_scanner.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
 
 import '../../components/index.dart';
@@ -62,6 +63,20 @@ class AppMorePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PdfScannerScreen(),
+                  ),
+                );
+              },
+            ),
+
+            //novel data scanner
+            ListTileWithDesc(
+              title: 'Data Scanner',
+              desc: 'Data Files အားလုံးကို Scan လုပ်ပေးသည်',
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NovelDataScanner(),
                   ),
                 );
               },
