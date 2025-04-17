@@ -73,10 +73,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
       }
 
       // pdfController.
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });

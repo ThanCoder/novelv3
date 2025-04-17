@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
+import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../widgets/core/index.dart';
@@ -146,61 +148,68 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      body: GestureDetector(
-        onLongPress: _showSetting,
-        onSecondaryTap: _showSetting,
-        onDoubleTap: _toggleFullScreen,
-        child: CustomScrollView(
-          controller: _controller,
-          slivers: [
-            SliverAppBar(
-              title: Text('${currentData.number}: ${currentData.title}'),
-              snap: true,
-              floating: true,
-              actions: [
-                bookmarkValue == null
-                    ? const SizedBox.shrink()
-                    : IconButton(
-                        color: bookmarkValue! ? Colors.red : Colors.teal,
-                        onPressed: _toggleBookMark,
-                        icon: Icon(bookmarkValue!
-                            ? Icons.bookmark_remove_rounded
-                            : Icons.bookmark_add_rounded),
-                      ),
-              ],
-            ),
-            // list
-            SliverList.builder(
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                final ch = list[index];
-                return Padding(
-                  padding: EdgeInsets.all(config.padding),
-                  child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 3,
-                    children: [
-                      const Divider(),
-                      Column(
-                        children: [
-                          Text('Chapter: ${ch.number}'),
-                        ],
-                      ),
-                      const Divider(),
-                      Text(
-                        ch.getContent(),
-                        style: TextStyle(
-                          fontSize: config.fontSize,
+    final novel = context.read<NovelProvider>().getCurrent;
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (novel == null) return;
+        novel.setRecenTextReader(currentData);
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        body: GestureDetector(
+          onLongPress: _showSetting,
+          onSecondaryTap: _showSetting,
+          onDoubleTap: _toggleFullScreen,
+          child: CustomScrollView(
+            controller: _controller,
+            slivers: [
+              SliverAppBar(
+                title: Text('${currentData.number}: ${currentData.title}'),
+                snap: true,
+                floating: true,
+                actions: [
+                  bookmarkValue == null
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          color: bookmarkValue! ? Colors.red : Colors.teal,
+                          onPressed: _toggleBookMark,
+                          icon: Icon(bookmarkValue!
+                              ? Icons.bookmark_remove_rounded
+                              : Icons.bookmark_add_rounded),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
+                ],
+              ),
+              // list
+              SliverList.builder(
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  final ch = list[index];
+                  return Padding(
+                    padding: EdgeInsets.all(config.padding),
+                    child: Column(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 3,
+                      children: [
+                        const Divider(),
+                        Column(
+                          children: [
+                            Text('Chapter: ${ch.number}'),
+                          ],
+                        ),
+                        const Divider(),
+                        Text(
+                          ch.getContent(),
+                          style: TextStyle(
+                            fontSize: config.fontSize,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

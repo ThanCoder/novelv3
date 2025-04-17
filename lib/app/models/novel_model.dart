@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/file_system_entity_extension.dart';
+import 'package:novel_v3/app/models/chapter_model.dart';
+import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 class NovelModel {
@@ -228,6 +230,32 @@ class NovelModel {
         await completedFile.delete();
       }
     }
+  }
+
+  void setRecentPdfReader(PdfModel pdf) {
+    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.pdf');
+    file.writeAsStringSync(pdf.path);
+  }
+
+  PdfModel? getRecentPdfReader() {
+    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.pdf');
+    if (!file.existsSync()) return null;
+    final _path = file.readAsStringSync();
+    if (!File(_path).existsSync()) return null;
+    return PdfModel.fromPath(_path);
+  }
+
+  void setRecenTextReader(ChapterModel chapter) {
+    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.text');
+    file.writeAsStringSync(chapter.number.toString());
+  }
+
+  ChapterModel? getRecentTextReader() {
+    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.text');
+    if (!file.existsSync()) return null;
+    final _path = '$path/${file.readAsStringSync()}';
+    if (!File(_path).existsSync()) return null;
+    return ChapterModel.fromPath(_path);
   }
 
   @override

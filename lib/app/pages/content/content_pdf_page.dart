@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
+import 'package:novel_v3/app/dialogs/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/pdf_provider.dart';
@@ -61,6 +62,19 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     }
   }
 
+  void _editConfig(PdfModel pdf) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => PdfConfigEditDialog(
+        config: pdf.getConfig(),
+        onApply: (config) {
+          pdf.setConfig(config);
+        },
+      ),
+    );
+  }
+
   void _showContextMenu(PdfModel pdf) {
     showModalBottomSheet(
       context: context,
@@ -71,6 +85,14 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           ),
           child: Column(
             children: [
+              ListTile(
+                leading: const Icon(Icons.edit_document),
+                title: const Text('Edit Config'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _editConfig(pdf);
+                },
+              ),
               ListTile(
                 iconColor: Colors.yellow,
                 leading: const Icon(Icons.restore),

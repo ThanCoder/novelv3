@@ -10,9 +10,11 @@ class TTextField extends StatefulWidget {
   TextInputType? textInputType;
   bool isSelectedAll;
   List<TextInputFormatter>? inputFormatters;
+  TextStyle? style;
   void Function(String value)? onChanged;
   void Function(String value)? onSubmitted;
   void Function()? onTap;
+
   TTextField({
     super.key,
     this.controller,
@@ -26,6 +28,7 @@ class TTextField extends StatefulWidget {
     this.onChanged,
     this.onTap,
     this.onSubmitted,
+    this.style,
   });
 
   @override
@@ -60,6 +63,7 @@ class _TTextFieldState extends State<TTextField> {
         border: const OutlineInputBorder(),
         errorText: widget.errorText,
       ),
+      style: widget.style,
       onChanged: widget.onChanged,
       onTap: () {
         _selectAll();

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
+import 'package:novel_v3/app/models/index.dart';
 
 class PdfModel {
   String title;
@@ -59,6 +60,14 @@ class PdfModel {
     if (configFile.existsSync()) {
       configFile.deleteSync();
     }
+  }
+
+  PdfConfigModel getConfig() {
+    return PdfConfigModel.fromPath(configPath);
+  }
+
+  void setConfig(PdfConfigModel config) {
+    config.savePath(configPath);
   }
 
   @override

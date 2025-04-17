@@ -50,6 +50,7 @@ void goChapterEditForm(BuildContext context) async {
 }
 
 void goPdfReader(BuildContext context, PdfModel pdf) async {
+  final novel = context.read<NovelProvider>().getCurrent;
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -59,6 +60,8 @@ void goPdfReader(BuildContext context, PdfModel pdf) async {
         sourcePath: pdf.path,
         saveConfig: (pdfConfig) {
           pdfConfig.savePath(pdf.configPath);
+          if (novel == null) return;
+          novel.setRecentPdfReader(pdf);
         },
       ),
     ),
@@ -79,6 +82,7 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
         onConfigChanged: (config) {
           config.savePath(chapter.getConfigPath);
         },
+        // book mark
         bookmarkValue: provider.isExists(chapter.number),
         onBookmarkChanged: (bookmarkValue) {
           //add book mark
