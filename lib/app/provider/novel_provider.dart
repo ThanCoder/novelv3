@@ -26,8 +26,8 @@ class NovelProvider with ChangeNotifier {
   }
 
   Future<void> setCurrent(NovelModel novel) async {
-    // _novel = novel;
-    _novel = NovelModel.fromPath(novel.path, isFullInfo: true);
+    _novel = novel;
+    // _novel = NovelModel.fromPath(novel.path, isFullInfo: true);
     notifyListeners();
   }
 

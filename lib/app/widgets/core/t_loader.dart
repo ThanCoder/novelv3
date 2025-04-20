@@ -4,13 +4,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../notifiers/app_notifier.dart';
 
 class TLoader extends StatelessWidget {
-  double size;
+  double? size;
   Color? color;
   bool isCustomTheme;
   bool isDarkMode;
   TLoader({
     super.key,
-    this.size = 50,
+    this.size,
     this.color,
     this.isCustomTheme = false,
     this.isDarkMode = false,
@@ -26,8 +26,18 @@ class TLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (size != null) {
+      return SizedBox(
+        width: size,
+        height: size,
+        child: SpinKitFadingCircle(
+          size: size ?? 50,
+          color: _getCurrentColor(),
+        ),
+      );
+    }
     return SpinKitFadingCircle(
-      size: size,
+      size: size ?? 50,
       color: _getCurrentColor(),
     );
   }

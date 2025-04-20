@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
+import 'package:novel_v3/app/dialogs/description_online_fetcher_dialog.dart';
 import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/route_helper.dart';
@@ -109,6 +110,27 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
                 onTap: () {
                   Navigator.pop(context);
                   _addPdfFromScanner();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.add),
+                title: const Text('Add Description From Online'),
+                onTap: () {
+                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => DescriptionOnlineFetcherDialog(
+                      onFetched: (text) {
+                        final provider = context.read<NovelProvider>();
+                        final novel = provider.getCurrent;
+                        if (novel == null) return;
+                        novel.content = text;
+                        novel.save();
+                        provider.setCurrent(novel);
+                      },
+                    ),
+                  );
                 },
               ),
               //delete

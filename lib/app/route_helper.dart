@@ -15,7 +15,8 @@ import 'package:novel_v3/app/text_reader/text_reader_screen.dart';
 import 'package:provider/provider.dart';
 
 void goNovelContentPage(BuildContext context, NovelModel novel) async {
-  await context.read<NovelProvider>().setCurrent(novel);
+  final res = NovelModel.fromPath(novel.path, isFullInfo: true);
+  await context.read<NovelProvider>().setCurrent(res);
   if (!context.mounted) return;
   Navigator.push(
     context,

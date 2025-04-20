@@ -115,6 +115,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
               TTextField(
                 controller: titleController,
                 label: const Text('Title'),
+                isSelectedAll: true,
                 maxLines: 1,
                 onChanged: (value) {
                   if (!isChanged) {
@@ -127,6 +128,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
               TTextField(
                 controller: authorController,
                 label: const Text('Author'),
+                isSelectedAll: true,
                 maxLines: 1,
                 onChanged: (value) {
                   if (!isChanged) {
@@ -139,6 +141,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
               TTextField(
                 controller: mcController,
                 label: const Text('MC'),
+                isSelectedAll: true,
                 maxLines: 1,
                 onChanged: (value) {
                   if (!isChanged) {
