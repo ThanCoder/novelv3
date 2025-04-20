@@ -7,6 +7,7 @@ import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/pdf_provider.dart';
 import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:provider/provider.dart';
 
@@ -85,6 +86,14 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           ),
           child: Column(
             children: [
+              ListTile(
+                leading: const Icon(Icons.copy_all),
+                title: const Text('Copy Name'),
+                onTap: () {
+                  Navigator.pop(context);
+                  copyText(pdf.title);
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.edit_document),
                 title: const Text('Edit Config'),

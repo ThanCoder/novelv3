@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_action_button.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
+import 'package:novel_v3/app/components/content/novel_chapter_start_button.dart';
 import 'package:novel_v3/app/components/content/novel_page_button.dart';
 import 'package:novel_v3/app/components/content/novel_readed_button.dart';
 import 'package:novel_v3/app/components/content/novel_readed_number_button.dart';
@@ -16,6 +17,7 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/recent_provider.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:novel_v3/app/widgets/t_list_tile.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +40,10 @@ class _ContentHomePageState extends State<ContentHomePage> {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
     context.read<RecentProvider>().add(novel);
+  }
+
+  void _copyTitleText(String text) {
+    copyText(text);
   }
 
   ImageProvider _getImage(String path) {
@@ -68,16 +74,20 @@ class _ContentHomePageState extends State<ContentHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // title
-              Row(
-                children: [
-                  const Icon(Icons.title),
-                  Expanded(
-                    child: Text(
-                      novel.title,
-                      overflow: TextOverflow.ellipsis,
+              GestureDetector(
+                onLongPress: () => _copyTitleText(novel.title),
+                onSecondaryTap: () => _copyTitleText(novel.title),
+                child: Row(
+                  children: [
+                    const Icon(Icons.title),
+                    Expanded(
+                      child: Text(
+                        novel.title,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               TListTile(
                 leading: const Icon(Icons.edit_document),
@@ -133,6 +143,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
           spacing: 5,
           children: [
             NovelPageButton(novel: novel),
+            NovelChapterStartButton(novel: novel),
             NovelReadedButton(novel: novel),
             NovelRecentPdfButton(novel: novel),
             NovelRecentTextButton(novel: novel),

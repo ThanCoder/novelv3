@@ -23,13 +23,11 @@ class RecentProvider with ChangeNotifier {
       return;
     }
     //ထပ်နေလား စစ်မယ်
-    //ရှိနေရင်
-    if (_list.isNotEmpty && _list.first.title != novel.title) {
-      _list.insert(0, novel);
-      await RecentServices.setList(list: _list);
-      notifyListeners();
-    }
-
-    //db
+    final res = _list.where((nv) => nv.title != novel.title).toList();
+    _list.clear();
+    _list.addAll(res);
+    _list.insert(0, novel);
+    await RecentServices.setList(list: _list);
+    notifyListeners();
   }
 }
