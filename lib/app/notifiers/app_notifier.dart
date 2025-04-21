@@ -16,4 +16,4 @@ ValueNotifier<bool> isShowHomeBottomBarNotifier = ValueNotifier(true);
 ValueNotifier<bool> isShowContentBottomBarNotifier = ValueNotifier(true);
 
 //wifi host
-ValueNotifier<String> wififHostAddressNotifier = ValueNotifier('');
+ValueNotifier<String> appWififHostAddressNotifier = ValueNotifier('');

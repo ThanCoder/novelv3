@@ -21,7 +21,7 @@ class _BrowserProxyTTextFieldState extends State<BrowserProxyTTextField> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Browser Proxy'),
+        title: const Text('Browser Proxy'),
         content: SingleChildScrollView(
           child: FutureBuilder(
             future: GeneralServices.instance.getProxyList(),
@@ -55,7 +55,7 @@ class _BrowserProxyTTextFieldState extends State<BrowserProxyTTextField> {
                   ),
                 );
               }
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             },
           ),
         ),
@@ -71,13 +71,13 @@ class _BrowserProxyTTextFieldState extends State<BrowserProxyTTextField> {
         Expanded(
           child: TTextField(
             controller: widget.controller,
-            label: Text('Browser Proxy'),
+            label: const Text('Browser Proxy'),
             onChanged: widget.onChanged,
           ),
         ),
         IconButton(
           onPressed: _onChooseOnline,
-          icon: Icon(Icons.cloud_download_rounded),
+          icon: const Icon(Icons.cloud_download_rounded),
         ),
       ],
     );

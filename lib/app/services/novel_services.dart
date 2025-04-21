@@ -10,7 +10,7 @@ class NovelServices {
   NovelServices._();
   factory NovelServices() => instance;
 
-  Future<List<NovelModel>> getList() async {
+  Future<List<NovelModel>> getList({bool isFullInfo = false}) async {
     final path = PathUtil.instance.getSourcePath();
     List<NovelModel> list = await Isolate.run<List<NovelModel>>(() async {
       try {
@@ -21,7 +21,7 @@ class NovelServices {
         for (var file in dir.listSync()) {
           //skiped not dir
           if (file.statSync().type != FileSystemEntityType.directory) continue;
-          final novel = NovelModel.fromPath(file.path);
+          final novel = NovelModel.fromPath(file.path, isFullInfo: isFullInfo);
           list.add(novel);
         }
         //sort

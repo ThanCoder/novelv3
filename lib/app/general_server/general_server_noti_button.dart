@@ -66,7 +66,7 @@ class _GeneralServerNotiButtonState extends State<GeneralServerNotiButton> {
       isLabelVisible: !isCurrentAppLatest,
       child: IconButton(
         onPressed: goPage,
-        icon: Icon(Icons.notifications),
+        icon: const Icon(Icons.notifications),
       ),
     );
   }

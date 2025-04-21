@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../../utils/app_util.dart';
 
-
 class DownloadDialog extends StatefulWidget {
   String title;
   String url;
@@ -43,15 +42,13 @@ class _DownloadDialogState extends State<DownloadDialog> {
     try {
       //download file
       await dio.download(
-        widget.url,
+        Uri.encodeFull(widget.url),
         widget.saveFullPath,
         cancelToken: cancelToken,
         onReceiveProgress: (count, total) {
           setState(() {
-            setState(() {
-              fileSize = total.toDouble();
-              downloadedSize = count.toDouble();
-            });
+            fileSize = total.toDouble();
+            downloadedSize = count.toDouble();
           });
         },
       );
@@ -72,6 +69,8 @@ class _DownloadDialogState extends State<DownloadDialog> {
       if (file.existsSync()) {
         file.deleteSync();
       }
+      if (!mounted) return;
+      Navigator.pop(context);
     } catch (e) {
       debugPrint(e.toString());
     }

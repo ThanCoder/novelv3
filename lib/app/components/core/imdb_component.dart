@@ -28,7 +28,7 @@ class ImdbComponent extends StatelessWidget {
     return Row(
       spacing: 10,
       children: [
-        Text('IMDB'),
+        const Text('IMDB'),
         DropdownButton<double>(
           value: value,
           items: _getMenuList(),

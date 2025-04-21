@@ -21,7 +21,7 @@ class _ForwardProxyTTextFieldState extends State<ForwardProxyTTextField> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Forward Proxy'),
+        title: const Text('Forward Proxy'),
         content: SingleChildScrollView(
           child: FutureBuilder(
             future: GeneralServices.instance.getProxyList(),
@@ -55,7 +55,7 @@ class _ForwardProxyTTextFieldState extends State<ForwardProxyTTextField> {
                   ),
                 );
               }
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             },
           ),
         ),
@@ -71,13 +71,13 @@ class _ForwardProxyTTextFieldState extends State<ForwardProxyTTextField> {
         Expanded(
           child: TTextField(
             controller: widget.controller,
-            label: Text('Forward Proxy'),
+            label: const Text('Forward Proxy'),
             onChanged: widget.onChanged,
           ),
         ),
         IconButton(
           onPressed: _onChooseOnline,
-          icon: Icon(Icons.cloud_download_rounded),
+          icon: const Icon(Icons.cloud_download_rounded),
         ),
       ],
     );

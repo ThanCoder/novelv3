@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/screens/app_setting_screen.dart';
 import 'package:novel_v3/app/screens/novel_data_scanner.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
+import 'package:novel_v3/app/share/share_home_screen.dart';
 
 import '../../components/index.dart';
 import '../../notifiers/app_notifier.dart';
@@ -77,6 +78,20 @@ class AppMorePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const NovelDataScanner(),
+                  ),
+                );
+              },
+            ),
+
+            //novel data Share
+            ListTileWithDesc(
+              title: 'Share',
+              desc: 'Data Files အားလုံးကို မျှဝေးပေးသည်',
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ShareHomeScreen(),
                   ),
                 );
               },

@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
-import 'package:novel_v3/app/services/chapter_services.dart';
-import 'package:novel_v3/app/services/dio_services.dart';
 import 'package:novel_v3/app/services/html_dom_services.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';

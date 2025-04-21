@@ -30,7 +30,7 @@ class RawPage extends StatelessWidget {
           return Markdown(data: snapshot.data ?? '');
         }
 
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }

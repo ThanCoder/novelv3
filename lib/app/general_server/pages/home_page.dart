@@ -82,8 +82,8 @@ class _HomePageState extends State<HomePage> {
             SliverToBoxAdapter(
                 child: Center(
               child: appList.isEmpty
-                  ? Text('Version မရှိပါ')
-                  : Text('Latest Version'),
+                  ? const Text('Version မရှိပါ')
+                  : const Text('Latest Version'),
             )),
             SliverToBoxAdapter(
               child: _getHeader(),
@@ -92,8 +92,8 @@ class _HomePageState extends State<HomePage> {
             // current platform
             SliverToBoxAdapter(
               child: appList.isEmpty
-                  ? SizedBox.shrink()
-                  : Center(
+                  ? const SizedBox.shrink()
+                  : const Center(
                       child: Text('Current Platform'),
                     ),
             ),
@@ -107,8 +107,8 @@ class _HomePageState extends State<HomePage> {
             // other platform
             SliverToBoxAdapter(
               child: appList.isEmpty
-                  ? SizedBox.shrink()
-                  : Center(
+                  ? const SizedBox.shrink()
+                  : const Center(
                       child: Text('Other Platform'),
                     ),
             ),

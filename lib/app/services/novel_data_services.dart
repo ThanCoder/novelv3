@@ -352,7 +352,9 @@ class NovelDataServices {
           break;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return res;
   }
 
@@ -370,7 +372,7 @@ class NovelDataServices {
           break;
         }
       }
-    } catch (e) {}
+    } catch (e) {debugPrint(e.toString());}
     return res;
   }
 
@@ -388,7 +390,7 @@ class NovelDataServices {
           break;
         }
       }
-    } catch (e) {}
+    } catch (e) {debugPrint(e.toString());}
     return res;
   }
 }

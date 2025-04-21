@@ -22,10 +22,10 @@ class HomeScreen extends StatelessWidget {
                   return Text('Current V: ${info.version}');
                 }
               }
-              return Text('Version');
+              return const Text('Version');
             },
           ),
-          bottom: TabBar(
+          bottom: const TabBar(
             isScrollable: true,
             tabs: [
               Tab(
@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
             RawPage(rawName: 'CHANGELOG.md', releaseApp: releaseApp),
             RawPage(rawName: 'README.md', releaseApp: releaseApp),
             RawPage(rawName: 'LICENSE', releaseApp: releaseApp),
-            ReleasePage(),
+            const ReleasePage(),
           ],
         ),
       ),
