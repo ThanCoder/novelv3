@@ -44,12 +44,14 @@ class _DescriptionOnlineFetcherDialogState
       final res = await DioServices.instance.getDio.get(urlController.text);
       final ele = HtmlDomServices.getHtmlEle(res.data.toString());
       if (ele == null) return;
-      final text = HtmlDomServices.getQuerySelectorText(
+      final html = HtmlDomServices.getQuerySelectorHtml(
         ele,
         queryController.text,
       );
+
       if (!mounted) return;
-      resultController.text = text;
+      resultController.text =
+          HtmlDomServices.getNewLine(html, replacer: '\n\n');
       setState(() {
         isLoading = false;
       });
@@ -73,10 +75,12 @@ class _DescriptionOnlineFetcherDialogState
           TTextField(
             controller: urlController,
             label: const Text('Website Url'),
+            isSelectedAll: true,
           ),
           TTextField(
             controller: queryController,
             label: const Text('Query'),
+            isSelectedAll: true,
           ),
           isLoading
               ? TLoader(

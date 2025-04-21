@@ -149,6 +149,12 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
                             isChanged = true;
                           });
                         }
+                        if (value.isEmpty) return;
+                        try {
+                          chapter = int.parse(value);
+                        } catch (e) {
+                          debugPrint(e.toString());
+                        }
                       },
                     ),
                     // row

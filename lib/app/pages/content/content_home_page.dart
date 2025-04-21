@@ -161,6 +161,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
       contentPadding: 0,
       body: Stack(
         children: [
+          // background cover
           Positioned.fill(
             child: AnimatedOpacity(
               opacity: 0.3,
@@ -170,73 +171,79 @@ class _ContentHomePageState extends State<ContentHomePage> {
                   : null,
             ),
           ),
-          CustomScrollView(
-            slivers: [
-              // app bar
-              SliverAppBar(
-                title: const Text('Content'),
-                snap: true,
-                floating: true,
-                actions: [
-                  NovelBookmarkButton(novel: novel),
-                  NovelContentActionButton(
-                    onBackpress: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+          RefreshIndicator(
+            onRefresh: () async {
+              context.read<NovelProvider>().refreshCurrent();
+            },
+            child: CustomScrollView(
+              slivers: [
+                // app bar
+                SliverAppBar(
+                  title: const Text('Content'),
+                  snap: true,
+                  floating: true,
+                  actions: [
+                    NovelBookmarkButton(novel: novel),
+                    NovelContentActionButton(
+                      onBackpress: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
 
-              // header
-              SliverToBoxAdapter(child: _header(novel)),
-              // chapter count
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(),
-                      ChapterCountView(
-                        title: 'Chapter Count: ',
-                        novelPath: novel.path,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          backgroundColor: Color.fromARGB(171, 0, 0, 0),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                // header
+                SliverToBoxAdapter(child: _header(novel)),
+                // chapter count
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Divider(),
+                        ChapterCountView(
+                          title: 'Chapter Count: ',
+                          novelPath: novel.path,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            backgroundColor: Color.fromARGB(171, 0, 0, 0),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              //bottom bar
-              SliverToBoxAdapter(child: _bottomBar(novel)),
+                //bottom bar
+                SliverToBoxAdapter(child: _bottomBar(novel)),
 
-              //content cover
-              SliverToBoxAdapter(
-                child: File(novel.contentCoverPath).existsSync()
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyImageFile(
-                          path: novel.contentCoverPath,
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ),
+                //content cover
+                SliverToBoxAdapter(
+                  child: File(novel.contentCoverPath).existsSync()
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyImageFile(
+                            path: novel.contentCoverPath,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
 
-              // content text
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(
-                    novel.content,
-                    style: const TextStyle(fontSize: 16),
+                // content text
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SelectableText(
+                      novel.content,
+                      style: const TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

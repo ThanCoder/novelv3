@@ -10,8 +10,10 @@ class ChapterProvider with ChangeNotifier {
   List<ChapterModel> get getList => _list;
   String get getNovelPath => _novelPath;
 
-  Future<void> initList(
-      {bool isReset = false, required String novelPath}) async {
+  Future<void> initList({
+    bool isReset = false,
+    required String novelPath,
+  }) async {
     if (!isReset && _list.isNotEmpty) {
       return;
     }
@@ -41,7 +43,7 @@ class ChapterProvider with ChangeNotifier {
   }
 
   void delete(ChapterModel chapter) {
-    final res = _list.where((ch) => ch.number == chapter.number).toList();
+    final res = _list.where((ch) => ch.number != chapter.number).toList();
     _list.clear();
     _list.addAll(res);
 
@@ -57,5 +59,10 @@ class ChapterProvider with ChangeNotifier {
     final res = _list.reversed.toList();
     _list.clear();
     _list.addAll(res);
+  }
+
+  void add(ChapterModel chapter) {
+    _list.add(chapter);
+    notifyListeners();
   }
 }

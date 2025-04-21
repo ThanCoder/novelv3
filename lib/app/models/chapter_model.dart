@@ -42,6 +42,12 @@ class ChapterModel extends TextReaderDataInterface {
     );
   }
 
+  static String getContentText(String path) {
+    final file = File(path);
+    if (!file.existsSync()) return '';
+    return file.readAsStringSync();
+  }
+
   @override
   String getContent() {
     final file = File(path);

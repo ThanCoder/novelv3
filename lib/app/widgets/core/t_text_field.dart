@@ -11,6 +11,7 @@ class TTextField extends StatefulWidget {
   bool isSelectedAll;
   List<TextInputFormatter>? inputFormatters;
   TextStyle? style;
+  FocusNode? focusNode;
   void Function(String value)? onChanged;
   void Function(String value)? onSubmitted;
   void Function()? onTap;
@@ -18,6 +19,7 @@ class TTextField extends StatefulWidget {
   TTextField({
     super.key,
     this.controller,
+    this.focusNode,
     this.label,
     this.hintText,
     this.maxLines = 1,
@@ -57,6 +59,7 @@ class _TTextFieldState extends State<TTextField> {
       inputFormatters: widget.inputFormatters,
       controller: widget.controller,
       maxLines: widget.maxLines,
+      focusNode: widget.focusNode,
       decoration: InputDecoration(
         label: widget.label,
         hintText: widget.hintText,

@@ -3,6 +3,7 @@ import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/pdf_config_edit_dialog.dart';
+import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/provider/pdf_provider.dart';
@@ -76,6 +77,29 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     );
   }
 
+  void _showInfo(PdfModel pdf) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SingleChildScrollView(
+          child: Column(
+            spacing: 5,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Title: ${pdf.title}'),
+              Text('Size: ${pdf.size.toDouble().toParseFileSize()}'),
+              Text(
+                  'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
+              Text(
+                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toTimeAgo()}'),
+              Text('Path: ${pdf.path}'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showContextMenu(PdfModel pdf) {
     showModalBottomSheet(
       context: context,
@@ -86,6 +110,15 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           ),
           child: Column(
             children: [
+              //info
+              ListTile(
+                leading: const Icon(Icons.info_outlined),
+                title: const Text('Infomation'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showInfo(pdf);
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.copy_all),
                 title: const Text('Copy Name'),

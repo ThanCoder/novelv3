@@ -44,6 +44,12 @@ class NovelProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshCurrent() {
+    if (_novel == null) return;
+    _novel = NovelModel.fromPath(_novel!.path, isFullInfo: true);
+    notifyListeners();
+  }
+
   void listClear() {
     _list.clear();
   }

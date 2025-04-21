@@ -25,12 +25,34 @@ class HtmlDomServices {
 
   static String getQuerySelectorText(html.Element ele, String selector) {
     var res = '';
+
     try {
       if (ele.querySelector(selector) == null) return '';
       res = ele.querySelector(selector)!.text;
     } catch (e) {
       debugPrint('$selector: ${e.toString()}');
     }
+    return res.trim();
+  }
+
+  static String getQuerySelectorHtml(html.Element ele, String selector) {
+    var res = '';
+
+    try {
+      if (ele.querySelector(selector) == null) return '';
+      res = ele.querySelector(selector)!.innerHtml;
+    } catch (e) {
+      debugPrint('$selector: ${e.toString()}');
+    }
+    return res.trim();
+  }
+
+  static String getNewLine(String html, {String replacer = '\n'}) {
+    var res = '';
+
+    res = html.replaceAll(RegExp(r'<[^/][^>]*>'), ''); // opening tag remove
+    res = res.replaceAll(RegExp(r'</[^>]+>'), replacer); // closing tag -> \n
+
     return res.trim();
   }
 }

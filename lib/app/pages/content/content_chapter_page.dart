@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/action_buttons/novel_content_chapter_action_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/components/core/index.dart';
@@ -128,6 +129,11 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
             icon: const Icon(
               Icons.sort_by_alpha_sharp,
             ),
+          ),
+          NovelContentChapterActionButton(
+            onBackpress: () {
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
