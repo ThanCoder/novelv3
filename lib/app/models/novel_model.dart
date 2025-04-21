@@ -258,6 +258,22 @@ class NovelModel {
     return ChapterModel.fromPath(_path);
   }
 
+  int get getReaded {
+    final file = File('$path/readed');
+    if (file.existsSync()) {
+      final res = file.readAsStringSync();
+      if (res.isEmpty) return 0;
+      if (int.tryParse(res) != null) return int.parse(res);
+    }
+    return 0;
+  }
+
+  void setReaded(int num) {
+    readed = num;
+    final file = File('$path/readed');
+    file.writeAsStringSync(num.toString());
+  }
+
   @override
   String toString() {
     return title;

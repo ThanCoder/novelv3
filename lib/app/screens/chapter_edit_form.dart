@@ -20,13 +20,22 @@ class ChapterEditForm extends StatefulWidget {
 }
 
 class _ChapterEditFormState extends State<ChapterEditForm> {
-  final TextEditingController chapterController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
   @override
   void initState() {
     super.initState();
     init();
   }
+
+  @override
+  void dispose() {
+    context
+        .read<ChapterProvider>()
+        .initList(novelPath: widget.novelPath, isReset: true);
+    super.dispose();
+  }
+
+  final TextEditingController chapterController = TextEditingController();
+  final TextEditingController contentController = TextEditingController();
 
   bool isLoading = false;
   bool isChanged = false;

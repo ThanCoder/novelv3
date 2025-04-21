@@ -63,6 +63,7 @@ void goPdfReader(BuildContext context, PdfModel pdf) async {
           pdfConfig.savePath(pdf.configPath);
           if (novel == null) return;
           novel.setRecentPdfReader(pdf);
+          context.read<NovelProvider>().refreshCurrent();
         },
       ),
     ),

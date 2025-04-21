@@ -62,25 +62,25 @@ class ChapterModel extends TextReaderDataInterface {
 
   @override
   bool isExistsNext() {
-    final file = File(path.replaceAll('$number', '${number + 1}'));
+    final file = File('$getNovelPath/${number + 1}');
     return file.existsSync();
   }
 
   @override
   bool isExistsPrev() {
-    final file = File(path.replaceAll('$number', '${number - 1}'));
+    final file = File('$getNovelPath/${number - 1}');
     return file.existsSync();
   }
 
   @override
   ChapterModel getNext() {
-    String _path = path.replaceAll('$number', '${number + 1}');
+    String _path = '$getNovelPath/${number + 1}';
     return ChapterModel.fromPath(_path);
   }
 
   @override
   ChapterModel getPrev() {
-    String _path = path.replaceAll('$number', '${number - 1}');
+    String _path = '$getNovelPath/${number - 1}';
     return ChapterModel.fromPath(_path);
   }
 

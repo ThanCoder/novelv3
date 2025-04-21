@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/core/index.dart';
+import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +40,9 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
   bool isGetTopData = true;
   bool? bookmarkValue;
   bool isFullScreen = false;
+  bool isCanGoBack = true;
+  double maxScroll = 0;
+  int readedChapter = 1;
 
   @override
   void initState() {
@@ -49,10 +54,24 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     init();
   }
 
+  @override
+  void dispose() {
+    _controller.removeListener(_onScroll);
+    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    if (Platform.isAndroid) {
+      ThanPkg.android.app.toggleKeepScreenOn(isKeep: false);
+    }
+    super.dispose();
+  }
+
   void init() async {
     list.add(widget.data);
     setState(() {});
     initConfig();
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    readedChapter = novel.getReaded;
+    _checkReadeConfirm();
   }
 
   void initConfig() {
@@ -61,7 +80,14 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     }
   }
 
-  double maxScroll = 0;
+  void _checkReadeConfirm() {
+    if (currentData.number > readedChapter) {
+      isCanGoBack = false;
+    } else {
+      isCanGoBack = true;
+    }
+    setState(() {});
+  }
 
   void _onScroll() {
     final max = _controller.position.maxScrollExtent;
@@ -72,7 +98,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
       }
     }
     if (maxScroll != max && pos == max) {
-      maxScroll = max;
+      // maxScroll = max;
       if (!isDataLoading) {
         _loadDownItem();
       }
@@ -89,6 +115,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     //   showMessage(context, '`${currentData.number + 1}` Chapter မရှိပါ ');
     // }
     isDataLoading = false;
+    _checkReadeConfirm();
     setState(() {});
   }
 
@@ -99,6 +126,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
       list.add(currentData);
       isDataLoading = false;
       setState(() {});
+      _checkReadeConfirm();
     } else {
       // showMessage(context, '`${currentData.number + 1}` Chapter မရှိပါ ');
     }
@@ -136,21 +164,49 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     setState(() {});
   }
 
-  @override
-  void dispose() {
-    _controller.removeListener(_onScroll);
-    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
-    if (Platform.isAndroid) {
-      ThanPkg.android.app.toggleKeepScreenOn(isKeep: false);
-    }
-    super.dispose();
+  void _goBackConfirm() {
+    showDialog(
+      context: context,
+      builder: (context) => ConfirmDialog(
+        cancelText: 'မသိမ်းဘူး',
+        submitText: 'သိမ်းမယ်',
+        contentText:
+            '`${currentData.number}` > Readed:`$readedChapter` ထက်ကြီးနေပါတယ်။\n`${currentData.number}` -> Readed ထဲသိမ်းဆည်းချင်ပါသလား?။',
+        onCancel: () {
+          setState(() {
+            isCanGoBack = true;
+          });
+          Navigator.pop(context);
+        },
+        onSubmit: () {
+          try {
+            readedChapter = currentData.number;
+            final novel = context.read<NovelProvider>().getCurrent;
+            if (novel == null) return;
+            novel.setReaded(readedChapter);
+            context.read<NovelProvider>().refreshCurrent();
+          } catch (e) {
+            showDialogMessage(context, e.toString());
+          }
+          setState(() {
+            isCanGoBack = true;
+          });
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final novel = context.read<NovelProvider>().getCurrent;
     return PopScope(
+      canPop: isCanGoBack,
       onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          _goBackConfirm();
+          return;
+        }
         if (novel == null) return;
         novel.setRecenTextReader(currentData);
       },
@@ -165,8 +221,8 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
             slivers: [
               SliverAppBar(
                 title: Text('${currentData.number}: ${currentData.title}'),
-                snap: true,
-                floating: true,
+                snap: !isFullScreen,
+                floating: !isFullScreen,
                 actions: [
                   bookmarkValue == null
                       ? const SizedBox.shrink()
