@@ -58,6 +58,7 @@ void goPdfReader(BuildContext context, PdfModel pdf) async {
       builder: (context) => PdfrxReaderScreen(
         title: pdf.title,
         pdfConfig: PdfConfigModel.fromPath(pdf.configPath),
+        bookmarkPath: pdf.bookMarkPath,
         sourcePath: pdf.path,
         saveConfig: (pdfConfig) {
           pdfConfig.savePath(pdf.configPath);

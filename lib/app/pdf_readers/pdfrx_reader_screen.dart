@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/app/pdf_readers/pdf_bookmark_drawer.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -19,12 +20,14 @@ class PdfrxReaderScreen extends StatefulWidget {
   String sourcePath;
   String title;
   void Function(PdfConfigModel pdfConfig)? saveConfig;
+  String? bookmarkPath;
   PdfrxReaderScreen({
     super.key,
     required this.pdfConfig,
     required this.sourcePath,
     this.saveConfig,
     this.title = 'PDF Reader',
+    this.bookmarkPath,
   });
 
   @override
@@ -46,9 +49,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
   int oldPage = 1;
   bool isCanGoBack = true;
 
+  late void Function(PdfConfigModel config) _saveConfigCallback;
+
   @override
   void initState() {
     windowManager.addListener(this);
+    _saveConfigCallback = widget.saveConfig ?? (config) {};
     config = widget.pdfConfig;
     oldPage = config.page;
     oldZoom = config.zoom;
@@ -106,22 +112,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
       });
     } catch (e) {
       debugPrint('_initConfig: ${e.toString()}');
-    }
-  }
-
-  //save config
-  void _saveConfig() {
-    try {
-      //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
-      if (isLoading) return;
-
-      config.page = currentPage;
-
-      if (widget.saveConfig != null) {
-        widget.saveConfig!(config);
-      }
-    } catch (e) {
-      debugPrint('saveConfig: ${e.toString()}');
     }
   }
 
@@ -404,6 +394,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
   }
 
   void _onBackpress() async {
+    _saveConfig();
     if (!isCanGoBack) {
       showDialog(
         context: context,
@@ -440,13 +431,15 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
                   ),
                 ),
               ),
-        // endDrawer: PdfBookMarkListDrawer(
-        //   pdfFile: widget.pdfFile,
-        //   currentPage: currentPage,
-        //   onClick: (pageIndex) {
-        //     goPage(pageIndex);
-        //   },
-        // ),
+        endDrawer: widget.bookmarkPath == null
+            ? null
+            : PdfBookmarkDrawer(
+                bookmarkPath: widget.bookmarkPath!,
+                currentPage: currentPage,
+                onClicked: (pageIndex) {
+                  goPage(pageIndex);
+                },
+              ),
         body: KeyboardListener(
           focusNode: FocusNode(),
           onKeyEvent: _onKeyboradPressed,
@@ -470,15 +463,26 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
     );
   }
 
+  //save config
+  void _saveConfig() {
+    try {
+      //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
+      if (isLoading) return;
+      config.page = currentPage;
+      _saveConfigCallback(config);
+    } catch (e) {
+      debugPrint('saveConfig: ${e.toString()}');
+    }
+  }
+
   void _close() async {
-    _saveConfig();
+    windowManager.removeListener(this);
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
     ThanPkg.platform.toggleKeepScreen(isKeep: false);
     if (Platform.isAndroid) {
       ThanPkg.android.app
           .requestOrientation(type: ScreenOrientationTypes.Portrait);
     }
-    windowManager.removeListener(this);
   }
 
   @override

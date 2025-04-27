@@ -6,10 +6,13 @@ import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/services/core/index.dart';
+import 'package:novel_v3/app/share/novel_all_download_dialog.dart';
 import 'package:novel_v3/app/share/share_file.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/core/index.dart';
+import 'package:provider/provider.dart';
 
 import 'share_file_type.dart';
 
@@ -76,30 +79,61 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
   Widget _getFilterWidget() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        spacing: 5,
         children: [
-          const Text('Filter Type'),
-          DropdownButton<ShareFileType>(
-            padding: const EdgeInsets.all(5),
-            borderRadius: BorderRadius.circular(3),
-            value: filterdType,
-            items: ShareFileType.values
-                .map(
-                  (type) => DropdownMenuItem<ShareFileType>(
-                    value: type,
-                    child: Text(type.name.toCaptalize()),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                filterdType = value!;
-              });
-              _filteredTypes();
-            },
+          // filter
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Filter Type'),
+              DropdownButton<ShareFileType>(
+                padding: const EdgeInsets.all(5),
+                borderRadius: BorderRadius.circular(3),
+                value: filterdType,
+                items: ShareFileType.values
+                    .map(
+                      (type) => DropdownMenuItem<ShareFileType>(
+                        value: type,
+                        child: Text(type.name.toCaptalize()),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    filterdType = value!;
+                  });
+                  _filteredTypes();
+                },
+              ),
+            ],
+          ),
+          //all download
+          TextButton(
+            onPressed: _allDownload,
+            child: const Text('All Download'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _allDownload() {
+    final urlList =
+        allList.map((sf) => '${widget.url}/download?path=${sf.path}').toList();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => NovelAllDownloadDialog(
+        novel: widget.novel,
+        downloadUrlList: urlList,
+        onClosed: (errorMsg) {
+          if (errorMsg.isNotEmpty) {
+            showDialogMessage(context, errorMsg);
+            return;
+          }
+          showMessage(context, 'Downloaded', oldStyle: true);
+        },
       ),
     );
   }
@@ -149,63 +183,68 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: AppBar(
-        title: const Text('Novel Content'),
-      ),
-      body: isLoading
-          ? TLoader()
-          : RefreshIndicator(
-              onRefresh: init,
-              child: CustomScrollView(
-                slivers: [
-                  // filter
-                  SliverToBoxAdapter(
-                    child: _getFilterWidget(),
-                  ),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        context.read<NovelProvider>().initList(isReset: true);
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        appBar: AppBar(
+          title: const Text('Novel Content'),
+        ),
+        body: isLoading
+            ? TLoader()
+            : RefreshIndicator(
+                onRefresh: init,
+                child: CustomScrollView(
+                  slivers: [
+                    // filter
+                    SliverToBoxAdapter(
+                      child: _getFilterWidget(),
+                    ),
 
-                  SliverList.separated(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      final file = list[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 3,
-                          children: [
-                            Text('Title: ${file.name.toCaptalize()}'),
-                            Text('Type: ${file.type.name.toCaptalize()}'),
-                            Text(
-                                'Size: ${file.size.toDouble().toParseFileSize()}'),
-                            Text(
-                                'Date: ${DateTime.fromMillisecondsSinceEpoch(file.date).toParseTime()}'),
-                            Text(
-                                'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toTimeAgo()}'),
-                            IconButton(
-                              onPressed: () {
-                                if (isExistsFile(file)) {
-                                  _downloadConfirm(file);
-                                } else {
-                                  _download(file);
-                                }
-                              },
-                              icon: Icon(
-                                isExistsFile(file)
-                                    ? Icons.download_done
-                                    : Icons.download,
+                    SliverList.separated(
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        final file = list[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 3,
+                            children: [
+                              Text('Title: ${file.name.toCaptalize()}'),
+                              Text('Type: ${file.type.name.toCaptalize()}'),
+                              Text(
+                                  'Size: ${file.size.toDouble().toParseFileSize()}'),
+                              Text(
+                                  'Date: ${DateTime.fromMillisecondsSinceEpoch(file.date).toParseTime()}'),
+                              Text(
+                                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toTimeAgo()}'),
+                              IconButton(
+                                onPressed: () {
+                                  if (isExistsFile(file)) {
+                                    _downloadConfirm(file);
+                                  } else {
+                                    _download(file);
+                                  }
+                                },
+                                icon: Icon(
+                                  isExistsFile(file)
+                                      ? Icons.download_done
+                                      : Icons.download,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
-                  ),
-                ],
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const Divider(),
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

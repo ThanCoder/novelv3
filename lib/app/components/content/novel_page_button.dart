@@ -28,12 +28,16 @@ class _NovelPageButtonState extends State<NovelPageButton> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    title: Text(url),
+                  GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       _openUrl(url);
                     },
+                    child: Text(
+                      url,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   const Divider(),
                 ],
