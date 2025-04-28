@@ -13,7 +13,7 @@ class SearchButton extends StatelessWidget {
       onPressed: () {
         showSearch(
           context: context,
-          delegate: NovelSearch(novelList: list),
+          delegate: NovelSearch(list: list),
         );
       },
       icon: const Icon(Icons.search),

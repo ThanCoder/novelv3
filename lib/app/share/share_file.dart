@@ -29,34 +29,20 @@ class ShareFile {
     final size = file.statSync().size;
     final date = file.statSync().modified.millisecondsSinceEpoch;
 
-    if (name.endsWith('.json')) {
+    if (name.endsWith('.json') ||
+        name.endsWith('mc') ||
+        name.endsWith('author') ||
+        name.endsWith('readed') ||
+        name.endsWith('link') ||
+        name.endsWith('content')) {
       type = ShareFileType.config;
-    }
-    if (name.endsWith('.png')) {
-      type = ShareFileType.png;
     }
 
     if (name.endsWith('.pdf')) {
       type = ShareFileType.pdf;
     }
-
-    if (name.endsWith('readed')) {
-      type = ShareFileType.readed;
-    }
-    if (name.endsWith('link')) {
-      type = ShareFileType.link;
-    }
-    if (name.endsWith('content')) {
-      type = ShareFileType.content;
-    }
-    if (name.endsWith('cover.png')) {
+    if (name.endsWith('png') || name.endsWith('cover.png')) {
       type = ShareFileType.cover;
-    }
-    if (name.endsWith('author')) {
-      type = ShareFileType.author;
-    }
-    if (name.endsWith('mc')) {
-      type = ShareFileType.mc;
     }
     // check chapter
     if (int.tryParse(name) != null) {

@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/author_wrap_view.dart';
-import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/share/novel_online_grid_item.dart';
 
-import '../components/novel_grid_item.dart';
+import '../components/author_wrap_view.dart';
+import '../models/novel_model.dart';
+import 'share_novel_content_screen.dart';
 
-class NovelSearch extends SearchDelegate {
-  List<NovelModel> list = [];
-  NovelSearch({required this.list});
+class ShareSearchDelegate extends SearchDelegate {
+  String url;
+  List<NovelModel> list;
+  ShareSearchDelegate({
+    required this.url,
+    required this.list,
+  });
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    return [
-      query.isNotEmpty
-          ? IconButton(
-              onPressed: () {
-                query = '';
-              },
-              icon: const Icon(Icons.clear_all_rounded),
-            )
-          : const SizedBox(),
-    ];
+    return [];
   }
 
   @override
@@ -48,7 +43,15 @@ class NovelSearch extends SearchDelegate {
               title: 'Author',
               list: list.map((nv) => nv.author).toSet().toList(),
               onClicked: (title) {
-                goSeeAllScreenWithAuthor(context, title);
+                final res = list.where((nv) => nv.author == title).toList();
+                final novel = res.first;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ShareNovelContentScreen(url: url, novel: novel),
+                  ),
+                );
               },
             ),
           ),
@@ -59,7 +62,15 @@ class NovelSearch extends SearchDelegate {
               title: 'MC',
               list: list.map((nv) => nv.mc).toSet().toList(),
               onClicked: (title) {
-                goSeeAllScreenWithMC(context, title);
+                final res = list.where((nv) => nv.mc == title).toList();
+                final novel = res.first;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ShareNovelContentScreen(url: url, novel: novel),
+                  ),
+                );
               },
             ),
           ),
@@ -98,12 +109,22 @@ class NovelSearch extends SearchDelegate {
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
       ),
-      itemBuilder: (context, index) => NovelGridItem(
-        novel: res[index],
-        onClicked: (novel) {
-          goNovelContentPage(context, novel);
-        },
-      ),
+      itemBuilder: (context, index) {
+        final novel = res[index];
+        return NovelOnlineGridItem(
+          url: url,
+          novel: novel,
+          onClicked: (novel) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ShareNovelContentScreen(url: url, novel: novel),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

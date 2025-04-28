@@ -48,7 +48,7 @@ class PdfProvider with ChangeNotifier {
 
   void restore(PdfModel pdf) {
     //del
-    final outPath = '${PathUtil.instance.getOutPath()}/${pdf.path.getName()}';
+    final outPath = '${PathUtil.getOutPath()}/${pdf.path.getName()}';
     final pdfFile = File(pdf.path);
     if (!pdfFile.existsSync()) return;
     if (File(outPath).existsSync()) {

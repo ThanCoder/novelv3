@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/extensions/index.dart';
@@ -7,6 +5,7 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/services/core/dio_services.dart';
 import 'package:novel_v3/app/share/novel_online_grid_item.dart';
 import 'package:novel_v3/app/share/share_novel_content_screen.dart';
+import 'package:novel_v3/app/share/share_search_delegate.dart';
 
 import '../widgets/core/index.dart';
 
@@ -34,7 +33,9 @@ class _ShareReceiveScreenState extends State<ShareReceiveScreen> {
         isLoading = true;
       });
       final res = await DioServices.instance.getDio.get(widget.url);
-      List<dynamic> resList = jsonDecode(res.data.toString());
+      // List<dynamic> resList = jsonDecode(res.data.toString());
+      List<dynamic> resList = res.data;
+
       list = resList.map((map) => NovelModel.fromMap(map)).toList();
 
       if (!mounted) return;
@@ -50,12 +51,23 @@ class _ShareReceiveScreenState extends State<ShareReceiveScreen> {
     }
   }
 
+  void _search() {
+    showSearch(
+      context: context,
+      delegate: ShareSearchDelegate(url: widget.url, list: list),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
       appBar: AppBar(
         title: const Text('Receive Screen'),
         actions: [
+          IconButton(
+            onPressed: _search,
+            icon: const Icon(Icons.search),
+          ),
           PlatformExtension.isDesktop()
               ? IconButton(
                   onPressed: () {

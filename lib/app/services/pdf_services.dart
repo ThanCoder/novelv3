@@ -33,7 +33,7 @@ class PdfServices {
     final dirs = await getScanDirPathList();
     final filterPaths = getScanFilteringPathList();
     //
-    final cachePath = PathUtil.instance.getCachePath();
+    final cachePath = PathUtil.getCachePath();
 
     final list = await Isolate.run<List<PdfModel>>(() async {
       List<PdfModel> list = [];

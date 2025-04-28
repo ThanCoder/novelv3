@@ -25,8 +25,7 @@ class ChapterServices {
           if (dir.existsSync()) {
             for (final file in dir.listSync()) {
               if (file.statSync().type == FileSystemEntityType.file) {
-                if (int.tryParse(PathUtil.instance.getBasename(file.path)) ==
-                    null) {
+                if (int.tryParse(PathUtil.getBasename(file.path)) == null) {
                   continue;
                 }
                 chapterList.add(ChapterModel.fromPath(file.path));

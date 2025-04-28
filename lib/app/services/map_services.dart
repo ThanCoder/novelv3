@@ -51,6 +51,7 @@ class MapServices {
       }
     }
     if (T == String && current is int) {
+      print(current);
       current = int.parse(current as String);
     }
     if (T == String && current is double) {
@@ -62,6 +63,7 @@ class MapServices {
     if (T == double && current is String) {
       current = double.parse(current);
     }
+
     return current is T ? current : defaultValue;
   }
 }

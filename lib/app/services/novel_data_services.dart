@@ -193,7 +193,7 @@ class NovelDataServices {
 
       // Create an archive object
       final archive = Archive();
-      final String novelTitle = PathUtil.instance.getBasename(folderPath);
+      final String novelTitle = PathUtil.getBasename(folderPath);
 
       // Recursively add files and subfolders to the archive
       Future<void> addFolderToArchive(
@@ -205,7 +205,7 @@ class NovelDataServices {
           if (entity is File) {
             //progress
             onProgress(res.length, i,
-                "${PathUtil.instance.getBasename(entity.path)} ထည့်သွင်းနေပါတယ်...");
+                "${PathUtil.getBasename(entity.path)} ထည့်သွင်းနေပါတယ်...");
             //delay
             // await Future.delayed(const Duration(milliseconds: 300));
 
@@ -215,7 +215,7 @@ class NovelDataServices {
             // Get relative path for the file (to preserve folder structure)
             // final relativePath = entity.path.substring(basePath.length + 1);
             final relativePath =
-                '$novelTitle/${PathUtil.instance.getBasename(entity.path)}';
+                '$novelTitle/${PathUtil.getBasename(entity.path)}';
 
             //add novel directory title
             final novelFolderArchive = ArchiveFile.directory(novelTitle);
@@ -257,7 +257,7 @@ class NovelDataServices {
     final dirs = await getScanDirPathList();
     final filterPaths = getScanFilteringPathList();
     //
-    final cachePath = PathUtil.instance.getCachePath();
+    final cachePath = PathUtil.getCachePath();
 
     return await Isolate.run<List<NovelDataModel>>(() async {
       List<NovelDataModel> list = [];
@@ -372,7 +372,9 @@ class NovelDataServices {
           break;
         }
       }
-    } catch (e) {debugPrint(e.toString());}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return res;
   }
 
@@ -390,7 +392,9 @@ class NovelDataServices {
           break;
         }
       }
-    } catch (e) {debugPrint(e.toString());}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return res;
   }
 }

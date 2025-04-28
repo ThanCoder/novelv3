@@ -109,7 +109,7 @@ class NovelModel {
     }
 
     return NovelModel(
-      title: PathUtil.instance.getBasename(dir.path),
+      title: PathUtil.getBasename(dir.path),
       path: dir.path,
       isCompleted: isCompleted,
       isAdult: isAdult,
@@ -141,7 +141,7 @@ class NovelModel {
   }
 
   factory NovelModel.create(String title) {
-    final dir = Directory('${PathUtil.instance.getSourcePath()}/$title');
+    final dir = Directory('${PathUtil.getSourcePath()}/$title');
     if (!dir.existsSync()) {
       dir.createSync();
     }
@@ -174,14 +174,14 @@ class NovelModel {
   }
 
   Future<void> delete() async {
-    final dir = Directory('${PathUtil.instance.getSourcePath()}/$title');
+    final dir = Directory('${PathUtil.getSourcePath()}/$title');
     if (await dir.exists()) {
       await dir.delete(recursive: true);
     }
   }
 
   Future<NovelModel> changeTitle(String newTitle) async {
-    final newDir = Directory('${PathUtil.instance.getSourcePath()}/$newTitle');
+    final newDir = Directory('${PathUtil.getSourcePath()}/$newTitle');
     final oldDir = Directory(path);
     if (await newDir.exists()) {
       throw Exception('newTitle is already exists');
@@ -233,12 +233,12 @@ class NovelModel {
   }
 
   void setRecentPdfReader(PdfModel pdf) {
-    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.pdf');
+    final file = File('${PathUtil.getCachePath()}/$title.recent.pdf');
     file.writeAsStringSync(pdf.path);
   }
 
   PdfModel? getRecentPdfReader() {
-    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.pdf');
+    final file = File('${PathUtil.getCachePath()}/$title.recent.pdf');
     if (!file.existsSync()) return null;
     final _path = file.readAsStringSync();
     if (!File(_path).existsSync()) return null;
@@ -246,12 +246,12 @@ class NovelModel {
   }
 
   void setRecenTextReader(ChapterModel chapter) {
-    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.text');
+    final file = File('${PathUtil.getCachePath()}/$title.recent.text');
     file.writeAsStringSync(chapter.number.toString());
   }
 
   ChapterModel? getRecentTextReader() {
-    final file = File('${PathUtil.instance.getCachePath()}/$title.recent.text');
+    final file = File('${PathUtil.getCachePath()}/$title.recent.text');
     if (!file.existsSync()) return null;
     final _path = '$path/${file.readAsStringSync()}';
     if (!File(_path).existsSync()) return null;

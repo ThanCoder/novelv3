@@ -12,7 +12,7 @@ class CacheServices {
   int getCacheCount() {
     int res = 0;
     try {
-      final dir = Directory(PathUtil.instance.getCachePath());
+      final dir = Directory(PathUtil.getCachePath());
       final files = dir.listSync(recursive: true);
       res = files.length;
     } catch (e) {
@@ -24,7 +24,7 @@ class CacheServices {
   int getCacheSize() {
     int res = 0;
     try {
-      final dir = Directory(PathUtil.instance.getCachePath());
+      final dir = Directory(PathUtil.getCachePath());
       final files = dir.listSync(recursive: true);
       for (var file in files) {
         // if (file.statSync().type == FileSystemEntityType.directory) continue;
@@ -38,7 +38,7 @@ class CacheServices {
 
   Future<void> cleanCache() async {
     try {
-      final dir = Directory(PathUtil.instance.getCachePath());
+      final dir = Directory(PathUtil.getCachePath());
       final files = dir.list(recursive: true);
       await for (var file in files) {
         if (file.statSync().type == FileSystemEntityType.directory) {

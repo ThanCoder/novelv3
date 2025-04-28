@@ -11,7 +11,7 @@ class NovelServices {
   factory NovelServices() => instance;
 
   Future<List<NovelModel>> getList({bool isFullInfo = false}) async {
-    final path = PathUtil.instance.getSourcePath();
+    final path = PathUtil.getSourcePath();
     List<NovelModel> list = await Isolate.run<List<NovelModel>>(() async {
       try {
         List<NovelModel> list = [];

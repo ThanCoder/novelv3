@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/extensions/index.dart';
 
 import '../../dialogs/core/index.dart';
 import '../../services/core/index.dart';
-import '../../utils/app_util.dart';
 import '../../widgets/index.dart';
 import '../index.dart';
 
@@ -38,7 +38,7 @@ class _CacheComponentState extends State<CacheComponent> {
       leading: const Icon(Icons.delete_forever),
       title: 'Clean Cache',
       desc:
-          'Cache - Count:${CacheServices.instance.getCacheCount()} - Size:${AppUtil.instance.getParseFileSize(CacheServices.instance.getCacheSize().toDouble())} ',
+          'Cache - Count:${CacheServices.instance.getCacheCount()} - Size:${CacheServices.instance.getCacheSize().toDouble().toParseFileSize()} ',
     );
   }
 }

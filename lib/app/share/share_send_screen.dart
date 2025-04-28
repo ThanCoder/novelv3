@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/constants.dart';
+import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/share/share_file.dart';
+import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:t_server/t_server.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -82,6 +84,34 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
     }
   }
 
+  Future<String> _getThumbnailPath(String path) async {
+    var thumbnailPath = defaultIconAssetsPath;
+    final file = File(path);
+    if (file.existsSync()) {
+      thumbnailPath = await PathUtil.getAssetRealPathPath('file.png');
+    }
+    //check config
+    if (file.getName().endsWith('.json') ||
+        file.getName().startsWith('author') ||
+        file.getName().startsWith('content') ||
+        file.getName().startsWith('link') ||
+        file.getName().startsWith('readed') ||
+        file.getName().startsWith('mc')) {
+      return await PathUtil.getAssetRealPathPath('config.png');
+    }
+
+    if (file.getName().endsWith('.json')) {
+      return await PathUtil.getAssetRealPathPath('fav.png');
+    }
+    if (file.getName().endsWith('.pdf')) {
+      return await PathUtil.getAssetRealPathPath('pdf.png');
+    }
+    if (file.getName().endsWith('.cover') || file.getName().endsWith('.png')) {
+      return file.path;
+    }
+    return thumbnailPath;
+  }
+
   void _sendData() async {
     try {
       final list = await NovelServices.instance.getList(isFullInfo: true);
@@ -144,6 +174,19 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
           ..set(HttpHeaders.contentLengthHeader, file.lengthSync());
         await file.openRead().pipe(req.response);
       });
+      //send thumbnail
+      TServer.instance.get('/thumbnail', (req) async {
+        final path = req.uri.queryParameters['path'] ?? '';
+        var thumbnailPath = await _getThumbnailPath(path);
+
+        final thumbnail = File(thumbnailPath);
+        // send thumbnail
+        req.response.headers
+          ..set(HttpHeaders.contentTypeHeader, 'image/png')
+          ..set(HttpHeaders.contentLengthHeader, thumbnail.lengthSync());
+        //send file
+        await thumbnail.openRead().pipe(req.response);
+      });
 
       //send files list
       TServer.instance.get('/files', (req) {
@@ -188,6 +231,9 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
   void _showHostFields() async {
     try {
       wifiList = await ThanPkg.platform.getWifiAddressList();
+      if (wifiList.isNotEmpty) {
+        hostController.text = wifiList.first;
+      }
       if (!mounted) return;
       setState(() {});
     } catch (e) {

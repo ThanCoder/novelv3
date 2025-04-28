@@ -14,9 +14,14 @@ class PdfBookmarkModel {
   });
 
   factory PdfBookmarkModel.fromMap(Map<String, dynamic> map) {
+    var page = MapServices.get<int>(map, ['page_index'], defaultValue: 0);
+    if (map['page_index'] == null) {
+      page = MapServices.get<int>(map, ['page'], defaultValue: 0);
+    }
+
     return PdfBookmarkModel(
       title: MapServices.get<String>(map, ['title'], defaultValue: 'Untitled'),
-      page: MapServices.get<int>(map, ['page'], defaultValue: 0),
+      page: page,
     );
   }
 

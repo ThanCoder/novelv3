@@ -19,7 +19,7 @@ class BookmarkServices {
       List<dynamic> resList = jsonDecode(await file.readAsString());
       return resList
           .map((name) =>
-              NovelModel.fromPath('${PathUtil.instance.getSourcePath()}/$name'))
+              NovelModel.fromPath('${PathUtil.getSourcePath()}/$name'))
           .where((novel) => Directory(novel.path).existsSync())
           .toList();
     } catch (e) {
@@ -73,8 +73,7 @@ class BookmarkServices {
     }
   }
 
-  String get getNovelDBPath =>
-      '${PathUtil.instance.getLibaryPath()}/$novelBookListName';
+  String get getNovelDBPath => '${PathUtil.getLibaryPath()}/$novelBookListName';
 
   String getChapterDBPath(String novelPath) =>
       '$novelPath/$chapterBookMarkListName';

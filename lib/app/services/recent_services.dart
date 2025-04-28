@@ -14,10 +14,10 @@ class RecentServices {
       List<dynamic> resList = jsonDecode(await file.readAsString());
       return resList
           .where((name) =>
-              Directory('${PathUtil.instance.getSourcePath()}/$name')
+              Directory('${PathUtil.getSourcePath()}/$name')
                   .existsSync())
           .map((name) =>
-              NovelModel.fromPath('${PathUtil.instance.getSourcePath()}/$name'))
+              NovelModel.fromPath('${PathUtil.getSourcePath()}/$name'))
           .toList();
     } catch (e) {
       debugPrint(e.toString());
@@ -37,5 +37,5 @@ class RecentServices {
   }
 
   static String get getDBPath =>
-      '${PathUtil.instance.getCachePath()}/$novelRecentDBName';
+      '${PathUtil.getCachePath()}/$novelRecentDBName';
 }

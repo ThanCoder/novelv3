@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/services/core/index.dart';
 import 'package:novel_v3/app/share/novel_all_download_dialog.dart';
 import 'package:novel_v3/app/share/share_file.dart';
+import 'package:novel_v3/app/share/share_novel_list_item.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/core/index.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +49,8 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
       });
       final res = await DioServices.instance.getDio
           .get('${widget.url}/files?path=${widget.novel.path}');
-      List<dynamic> resList = jsonDecode(res.data.toString());
+      // List<dynamic> resList = jsonDecode(res.data.toString());
+      List<dynamic> resList = res.data;
       allList = resList.map((map) => ShareFile.fromMap(map)).toList();
       list = allList;
       if (!mounted) return;
@@ -150,14 +151,14 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
   }
 
   void _download(ShareFile file) async {
-    final dir = Directory(
-        '${PathUtil.instance.getSourcePath()}/${file.getParentName()}');
+    final dir =
+        Directory('${PathUtil.getSourcePath()}/${file.getParentName()}');
     if (!dir.existsSync()) {
       dir.createSync();
     }
     final url = '${widget.url}/download?path=${file.path}';
     final savePath =
-        '${PathUtil.instance.getSourcePath()}/${file.getParentName()}/${file.name}';
+        '${PathUtil.getSourcePath()}/${file.getParentName()}/${file.name}';
     showDialog(
       context: context,
       builder: (context) => DownloadDialog(
@@ -177,12 +178,13 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
 
   bool isExistsFile(ShareFile file) {
     final path =
-        '${PathUtil.instance.getSourcePath()}/${file.getParentName()}/${file.name}';
+        '${PathUtil.getSourcePath()}/${file.getParentName()}/${file.name}';
     return File(path).existsSync();
   }
 
   @override
   Widget build(BuildContext context) {
+    // print(allList.first.type);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         context.read<NovelProvider>().initList(isReset: true);
@@ -190,7 +192,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
       child: MyScaffold(
         contentPadding: 0,
         appBar: AppBar(
-          title: const Text('Novel Content'),
+          title: Text(widget.novel.title),
         ),
         body: isLoading
             ? TLoader()
@@ -207,36 +209,17 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
                       itemCount: list.length,
                       itemBuilder: (context, index) {
                         final file = list[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 3,
-                            children: [
-                              Text('Title: ${file.name.toCaptalize()}'),
-                              Text('Type: ${file.type.name.toCaptalize()}'),
-                              Text(
-                                  'Size: ${file.size.toDouble().toParseFileSize()}'),
-                              Text(
-                                  'Date: ${DateTime.fromMillisecondsSinceEpoch(file.date).toParseTime()}'),
-                              Text(
-                                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toTimeAgo()}'),
-                              IconButton(
-                                onPressed: () {
-                                  if (isExistsFile(file)) {
-                                    _downloadConfirm(file);
-                                  } else {
-                                    _download(file);
-                                  }
-                                },
-                                icon: Icon(
-                                  isExistsFile(file)
-                                      ? Icons.download_done
-                                      : Icons.download,
-                                ),
-                              ),
-                            ],
-                          ),
+                        return ShareNovelListItem(
+                          url: widget.url,
+                          file: file,
+                          isFileExists: isExistsFile(file),
+                          onDownloadClicked: (file) {
+                            if (isExistsFile(file)) {
+                              _downloadConfirm(file);
+                            } else {
+                              _download(file);
+                            }
+                          },
                         );
                       },
                       separatorBuilder: (context, index) => const Divider(),

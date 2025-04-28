@@ -41,7 +41,7 @@ class _NovelAllDownloadDialogState extends State<NovelAllDownloadDialog> {
 
   void init() async {
     final dir =
-        Directory('${PathUtil.instance.getSourcePath()}/${widget.novel.title}');
+        Directory('${PathUtil.getSourcePath()}/${widget.novel.title}');
     if (!await dir.exists()) {
       await dir.create();
     }
