@@ -225,11 +225,9 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
                         final list = novel.getPageLinkList;
                         list.insert(0, text);
                         novel.setPageLinkList(list);
-                        if (!isChanged) {
-                          setState(() {
-                            isChanged = true;
-                          });
-                        }
+                        setState(() {
+                          isChanged = true;
+                        });
                       },
                     ),
                   );
@@ -238,11 +236,9 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
                   final res =
                       novel.getPageLinkList.where((n) => n != value).toList();
                   novel.setPageLinkList(res);
-                  if (!isChanged) {
-                    setState(() {
-                      isChanged = true;
-                    });
-                  }
+                  setState(() {
+                    isChanged = true;
+                  });
                 },
                 onClicked: (value) {
                   copyText(value);
