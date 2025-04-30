@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
+import 'package:novel_v3/app/fetcher/fetcher_chooser.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/services/html_dom_services.dart';
@@ -89,7 +90,7 @@ class _ChapterOnlineFetcherScreenState
       final res = await DioServices.instance.getDio.get(urlController.text);
       final ele = HtmlDomServices.getHtmlEle(res.data.toString());
       if (ele == null) return;
-      final result = HtmlDomServices.getQuerySelectorHtml(
+      final content = HtmlDomServices.getQuerySelectorHtml(
         ele,
         queryController.text,
       );
@@ -97,13 +98,13 @@ class _ChapterOnlineFetcherScreenState
         ele,
         queryTitleController.text,
       );
+      // print(content);
       if (!mounted) return;
       if (title.isNotEmpty) {
         resultController.text =
-            '$title \n\n ${HtmlDomServices.getNewLine(result, replacer: '\n\n')}';
+            '$title \n\n ${HtmlDomServices.getNewLine(content)}';
       } else {
-        resultController.text =
-            HtmlDomServices.getNewLine(result, replacer: '\n\n');
+        resultController.text = HtmlDomServices.getNewLine(content);
       }
 
       setState(() {
@@ -149,107 +150,127 @@ class _ChapterOnlineFetcherScreenState
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
+      contentPadding: 0,
       appBar: AppBar(
         title: const Text('Chapter Fetcher'),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          spacing: 8,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              spacing: 10,
-              children: [
-                Expanded(
-                  child: TTextField(
-                    controller: urlController,
-                    label: const Text('Website Url'),
-                    isSelectedAll: true,
-                    focusNode: focusNodeUrl,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //fetcher
+              Row(
+                spacing: 5,
+                children: [
+                  const Text('Fetcher'),
+                  Expanded(
+                    child: FetcherChooser(
+                      onChoosed: (fetcher) {
+                        queryController.text = fetcher.contentQuery.query;
+                        urlController.text = fetcher.testUrl;
+                        queryTitleController.text = fetcher.titleQuery.query;
+                      },
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    final text = await pasteFromClipboard();
-                    if (text.isEmpty) return;
-                    urlController.text = text;
-                    _fetch();
-                  },
-                  icon: const Icon(Icons.paste),
-                ),
-                // const SizedBox(width: 10),
-              ],
-            ),
-            TTextField(
-              controller: queryTitleController,
-              label: const Text('Title Query'),
-              isSelectedAll: true,
-              focusNode: focusNodeQueryTitle,
-            ),
-            TTextField(
-              controller: queryController,
-              label: const Text('Query'),
-              isSelectedAll: true,
-              focusNode: focusNodeQuery,
-            ),
-            isLoading
-                ? TLoader(
-                    size: 30,
-                  )
-                : IconButton(
-                    onPressed: _fetch,
-                    icon: const Icon(Icons.download),
+                ],
+              ),
+              Row(
+                spacing: 10,
+                children: [
+                  Expanded(
+                    child: TTextField(
+                      controller: urlController,
+                      label: const Text('Website Url'),
+                      isSelectedAll: true,
+                      focusNode: focusNodeUrl,
+                    ),
                   ),
-            const Divider(),
-            // chapter form
-            Row(
-              spacing: 5,
-              children: [
-                Expanded(
-                  child: TTextField(
-                    controller: chapterController,
-                    label: const Text('Chapter'),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    textInputType: TextInputType.number,
-                    isSelectedAll: true,
-                    focusNode: focusNodeChapter,
+                  IconButton(
+                    onPressed: () async {
+                      final text = await pasteFromClipboard();
+                      if (text.isEmpty) return;
+                      urlController.text = text;
+                      _fetch();
+                    },
+                    icon: const Icon(Icons.paste),
                   ),
-                ),
-                const SizedBox(width: 30),
-                IconButton(
-                  color: Colors.red,
-                  onPressed: () {
-                    if (chapterController.text.isEmpty) return;
-                    int num = int.parse(chapterController.text);
-                    if (num == 1) return;
-                    chapterController.text = '${num - 1}';
-                    _showResultOfflineContentText();
-                  },
-                  icon: const Icon(Icons.remove_circle),
-                ),
-                IconButton(
-                  color: Colors.green,
-                  onPressed: () {
-                    if (chapterController.text.isEmpty) return;
-                    int num = int.parse(chapterController.text);
-                    chapterController.text = '${num + 1}';
-                    _showResultOfflineContentText();
-                  },
-                  icon: const Icon(Icons.add_circle),
-                ),
-                const SizedBox(width: 30),
-              ],
-            ),
+                  // const SizedBox(width: 10),
+                ],
+              ),
+              TTextField(
+                controller: queryTitleController,
+                label: const Text('Title Query'),
+                isSelectedAll: true,
+                focusNode: focusNodeQueryTitle,
+              ),
+              TTextField(
+                controller: queryController,
+                label: const Text('Content Query'),
+                isSelectedAll: true,
+                focusNode: focusNodeQuery,
+              ),
+              isLoading
+                  ? TLoader(
+                      size: 30,
+                    )
+                  : IconButton(
+                      onPressed: _fetch,
+                      icon: const Icon(Icons.download),
+                    ),
+              const Divider(),
+              // chapter form
+              Row(
+                spacing: 5,
+                children: [
+                  Expanded(
+                    child: TTextField(
+                      controller: chapterController,
+                      label: const Text('Chapter'),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      textInputType: TextInputType.number,
+                      isSelectedAll: true,
+                      focusNode: focusNodeChapter,
+                    ),
+                  ),
+                  const SizedBox(width: 30),
+                  IconButton(
+                    color: Colors.red,
+                    onPressed: () {
+                      if (chapterController.text.isEmpty) return;
+                      int num = int.parse(chapterController.text);
+                      if (num == 1) return;
+                      chapterController.text = '${num - 1}';
+                      _showResultOfflineContentText();
+                    },
+                    icon: const Icon(Icons.remove_circle),
+                  ),
+                  IconButton(
+                    color: Colors.green,
+                    onPressed: () {
+                      if (chapterController.text.isEmpty) return;
+                      int num = int.parse(chapterController.text);
+                      chapterController.text = '${num + 1}';
+                      _showResultOfflineContentText();
+                    },
+                    icon: const Icon(Icons.add_circle),
+                  ),
+                  const SizedBox(width: 30),
+                ],
+              ),
 
-            resultController.text.isEmpty
-                ? const SizedBox.shrink()
-                : TTextField(
-                    controller: resultController,
-                    maxLines: null,
-                    focusNode: focusNodeResult,
-                    label: const Text('Result'),
-                  ),
-          ],
+              resultController.text.isEmpty
+                  ? const SizedBox.shrink()
+                  : TTextField(
+                      controller: resultController,
+                      maxLines: null,
+                      focusNode: focusNodeResult,
+                      label: const Text('Result'),
+                    ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: isLoading

@@ -17,11 +17,11 @@ class NovelEditFormScreen extends StatefulWidget {
 }
 
 class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController authorController = TextEditingController();
-  final TextEditingController mcController = TextEditingController();
-  final TextEditingController tagsController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
+  final titleController = TextEditingController();
+  final authorController = TextEditingController();
+  final mcController = TextEditingController();
+  final tagsController = TextEditingController();
+  final contentController = TextEditingController();
 
   late NovelModel novel;
   bool isChanged = false;
@@ -31,6 +31,16 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
     novel = widget.novel;
     super.initState();
     init();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    authorController.dispose();
+    mcController.dispose();
+    tagsController.dispose();
+    contentController.dispose();
+    super.dispose();
   }
 
   void init() {
@@ -215,7 +225,11 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
                         final list = novel.getPageLinkList;
                         list.insert(0, text);
                         novel.setPageLinkList(list);
-                        setState(() {});
+                        if (!isChanged) {
+                          setState(() {
+                            isChanged = true;
+                          });
+                        }
                       },
                     ),
                   );
@@ -224,7 +238,11 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
                   final res =
                       novel.getPageLinkList.where((n) => n != value).toList();
                   novel.setPageLinkList(res);
-                  setState(() {});
+                  if (!isChanged) {
+                    setState(() {
+                      isChanged = true;
+                    });
+                  }
                 },
                 onClicked: (value) {
                   copyText(value);

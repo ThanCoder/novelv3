@@ -284,53 +284,66 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
     );
   }
 
+  void _backpress() async {
+    if (widget.novel == null) return;
+    context
+        .read<PdfProvider>()
+        .initList(novelPath: widget.novel!.path, isReset: true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: AppBar(
-        title: const Text('PDF Scanner'),
-        actions: [
-          PlatformExtension.isDesktop()
-              ? IconButton(
-                  onPressed: init,
-                  icon: const Icon(Icons.refresh),
-                )
-              : SizedBox.fromSize(),
-          IconButton(
-            onPressed: () {
-              final res = list.reversed.toList();
-              list = res;
-              isSorted = !isSorted;
-              setState(() {});
-            },
-            icon: const Icon(
-              Icons.sort_by_alpha_sharp,
-            ),
-          ),
-        ],
-      ),
-      body: isLoading
-          ? TLoader()
-          : RefreshIndicator(
-              onRefresh: init,
-              child: ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, index) => PdfListItem(
-                  // isShowPathLabel: true,
-                  pdf: list[index],
-                  onClicked: (pdf) {
-                    if (widget.novel == null) {
-                      goPdfReader(context, pdf);
-                      return;
-                    }
-                    //novel ရှိနေရင်
-                    _showMenu(pdf);
-                  },
-                  onLongClicked: _showMenu,
-                ),
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        _backpress();
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        appBar: AppBar(
+          title: const Text('PDF Scanner'),
+          actions: [
+            PlatformExtension.isDesktop()
+                ? IconButton(
+                    onPressed: init,
+                    icon: const Icon(Icons.refresh),
+                  )
+                : SizedBox.fromSize(),
+            IconButton(
+              onPressed: () {
+                final res = list.reversed.toList();
+                list = res;
+                isSorted = !isSorted;
+                setState(() {});
+              },
+              icon: const Icon(
+                Icons.sort_by_alpha_sharp,
               ),
             ),
+          ],
+        ),
+        body: isLoading
+            ? TLoader()
+            : RefreshIndicator(
+                onRefresh: init,
+                child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) => PdfListItem(
+                    // isShowPathLabel: true,
+                    pdf: list[index],
+                    onClicked: (pdf) {
+                      if (widget.novel == null) {
+                        goPdfReader(context, pdf);
+                        return;
+                      }
+                      //novel ရှိနေရင်
+                      _showMenu(pdf);
+                    },
+                    onLongClicked: _showMenu,
+                  ),
+                ),
+              ),
+      ),
     );
   }
 }

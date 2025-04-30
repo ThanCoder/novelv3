@@ -28,14 +28,20 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
 
   @override
   void dispose() {
-    context
-        .read<ChapterProvider>()
-        .initList(novelPath: widget.novelPath, isReset: true);
+    chapterController.dispose();
+    contentController.dispose();
+
+    chapterFocusNode.dispose();
+    contentFocusNode.dispose();
+
     super.dispose();
   }
 
-  final TextEditingController chapterController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
+  final chapterController = TextEditingController();
+  final contentController = TextEditingController();
+
+  final chapterFocusNode = FocusNode();
+  final contentFocusNode = FocusNode();
 
   bool isLoading = false;
   bool isChanged = false;
@@ -83,6 +89,7 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     final res = await pasteFromClipboard();
     if (res.isEmpty) return;
     contentController.text = res;
+    _unFocusAll();
     setState(() {
       isChanged = true;
     });
@@ -95,6 +102,7 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     if (isShowSubmit) {
       isChanged = true;
     }
+    _unFocusAll();
     setState(() {});
   }
 
@@ -106,6 +114,7 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     if (isShowSubmit) {
       isChanged = true;
     }
+    _unFocusAll();
     setState(() {});
   }
 
@@ -130,117 +139,136 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
     }
   }
 
+  void _unFocusAll() {
+    chapterFocusNode.unfocus();
+    contentFocusNode.unfocus();
+  }
+
+  void _backpress() {
+    context
+        .read<ChapterProvider>()
+        .initList(novelPath: widget.novelPath, isReset: true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: AppBar(
-        title: const Text('Chapter Form'),
-      ),
-      body: isLoading
-          ? TLoader()
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  spacing: 14,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // chapter
-                    TTextField(
-                      label: const Text('Chapter Number'),
-                      controller: chapterController,
-                      textInputType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onChanged: (value) {
-                        if (!isChanged) {
-                          setState(() {
-                            isChanged = true;
-                          });
-                        }
-                        if (value.isEmpty) return;
-                        try {
-                          chapter = int.parse(value);
-                        } catch (e) {
-                          debugPrint(e.toString());
-                        }
-                      },
-                    ),
-                    // row
-                    Row(
-                      spacing: 5,
-                      children: [
-                        // auto
-                        Row(
-                          spacing: 4,
-                          children: [
-                            Text(isAutoIncrement
-                                ? 'Auto Increment'
-                                : 'Auto Decrement'),
-                            Switch(
-                              value: isAutoIncrement,
-                              onChanged: (value) {
-                                isAutoIncrement = value;
-                                setState(() {});
-                              },
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        _backpress();
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        appBar: AppBar(
+          title: const Text('Chapter Form'),
+        ),
+        body: isLoading
+            ? TLoader()
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    spacing: 14,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // chapter
+                      TTextField(
+                        label: const Text('Chapter Number'),
+                        controller: chapterController,
+                        textInputType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (value) {
+                          if (!isChanged) {
+                            setState(() {
+                              isChanged = true;
+                            });
+                          }
+                          if (value.isEmpty) return;
+                          try {
+                            chapter = int.parse(value);
+                          } catch (e) {
+                            debugPrint(e.toString());
+                          }
+                        },
+                      ),
+                      // row
+                      Row(
+                        spacing: 5,
+                        children: [
+                          // auto
+                          Row(
+                            spacing: 4,
+                            children: [
+                              Text(isAutoIncrement
+                                  ? 'Auto Increment'
+                                  : 'Auto Decrement'),
+                              Switch(
+                                value: isAutoIncrement,
+                                onChanged: (value) {
+                                  isAutoIncrement = value;
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(width: 10),
+                          //decre
+                          IconButton(
+                            onPressed: _decre,
+                            icon: const Icon(
+                              Icons.remove_circle_outlined,
+                              color: Colors.red,
                             ),
-                          ],
-                        ),
-
-                        const SizedBox(width: 10),
-                        //decre
-                        IconButton(
-                          onPressed: _decre,
-                          icon: const Icon(
-                            Icons.remove_circle_outlined,
-                            color: Colors.red,
                           ),
-                        ),
-                        // const SizedBox(width: 10),
-                        //incre
-                        IconButton(
-                          onPressed: _incre,
-                          icon: const Icon(
-                            Icons.add_circle_outlined,
-                            color: Colors.green,
+                          // const SizedBox(width: 10),
+                          //incre
+                          IconButton(
+                            onPressed: _incre,
+                            icon: const Icon(
+                              Icons.add_circle_outlined,
+                              color: Colors.green,
+                            ),
                           ),
-                        ),
 
-                        const Spacer(),
-                        //paste
-                        IconButton(
-                          onPressed: _paste,
-                          icon: const Icon(Icons.paste_rounded),
-                        ),
-                      ],
-                    ),
-                    //content
-                    TTextField(
-                      label: const Text('Content'),
-                      controller: contentController,
-                      maxLines: null,
-                      onChanged: (value) {
-                        if (!isChanged) {
-                          setState(() {
-                            isChanged = true;
-                          });
-                        }
-                      },
-                    ),
-                  ],
+                          const Spacer(),
+                          //paste
+                          IconButton(
+                            onPressed: _paste,
+                            icon: const Icon(Icons.paste_rounded),
+                          ),
+                        ],
+                      ),
+                      //content
+                      TTextField(
+                        label: const Text('Content'),
+                        controller: contentController,
+                        maxLines: null,
+                        onChanged: (value) {
+                          if (!isChanged) {
+                            setState(() {
+                              isChanged = true;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-      floatingActionButton: isChanged
-          ? FloatingActionButton(
-              onPressed: _save,
-              child: Icon(
-                _isContentFileExists
-                    ? Icons.save_as_rounded
-                    : Icons.add_circle_outlined,
-              ),
-            )
-          : null,
+        floatingActionButton: isChanged
+            ? FloatingActionButton(
+                onPressed: _save,
+                child: Icon(
+                  _isContentFileExists
+                      ? Icons.save_as_rounded
+                      : Icons.add_circle_outlined,
+                ),
+              )
+            : null,
+      ),
     );
   }
 }

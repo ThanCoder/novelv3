@@ -12,7 +12,8 @@ class HtmlDomServices {
   }
 
   static String getQuerySelectorAttr(
-      html.Element ele, String selector, String attr) {
+      html.Element? ele, String selector, String attr) {
+    if (ele == null || selector.isEmpty) return '';
     var res = '';
     try {
       if (ele.querySelector(selector) == null) return '';
@@ -23,7 +24,8 @@ class HtmlDomServices {
     return res.trim();
   }
 
-  static String getQuerySelectorText(html.Element ele, String selector) {
+  static String getQuerySelectorText(html.Element? ele, String selector) {
+    if (ele == null || selector.isEmpty) return '';
     var res = '';
 
     try {
@@ -35,7 +37,8 @@ class HtmlDomServices {
     return res.trim();
   }
 
-  static String getQuerySelectorHtml(html.Element ele, String selector) {
+  static String getQuerySelectorHtml(html.Element? ele, String selector) {
+    if (ele == null || selector.isEmpty) return '';
     var res = '';
 
     try {
@@ -47,10 +50,11 @@ class HtmlDomServices {
     return res.trim();
   }
 
-  static String getNewLine(String html, {String replacer = '\n'}) {
+  static String getNewLine(String html, {String replacer = '\n\n'}) {
     var res = '';
 
-    res = html.replaceAll(RegExp(r'<[^/][^>]*>'), ''); // opening tag remove
+    res =
+        html.replaceAll(RegExp(r'<[^/][^>]*>'), replacer); // opening tag remove
     res = res.replaceAll(RegExp(r'</[^>]+>'), replacer); // closing tag -> \n
 
     return res.trim();

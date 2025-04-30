@@ -1,0 +1,4 @@
+enum FetcherQueryTypes {
+  text,
+  attr;
+}
