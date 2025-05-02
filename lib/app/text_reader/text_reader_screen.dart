@@ -43,6 +43,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
   bool isCanGoBack = true;
   double maxScroll = 0;
   int readedChapter = 1;
+  bool isShowPrevChapterConfirmBox = false;
 
   @override
   void initState() {
@@ -108,8 +109,9 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
   void _loadTopItem() {
     isDataLoading = true;
     if (currentData.isExistsPrev()) {
-      currentData = currentData.getPrev();
-      list.insert(0, currentData);
+      // currentData = currentData.getPrev();
+      // list.insert(0, currentData);
+      isShowPrevChapterConfirmBox = true;
     }
     // else {
     //   showMessage(context, '`${currentData.number + 1}` Chapter မရှိပါ ');
@@ -197,6 +199,33 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     );
   }
 
+  Widget _showPreChapterWidget() {
+    if (!isShowPrevChapterConfirmBox) {
+      return const SizedBox.shrink();
+    }
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Go Chapter: ${currentData.number - 1}'),
+            IconButton(
+              onPressed: () {
+                currentData = currentData.getPrev();
+                list.insert(0, currentData);
+                isShowPrevChapterConfirmBox = false;
+                setState(() {});
+              },
+              iconSize: 40,
+              icon: const Icon(Icons.upload),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final novel = context.read<NovelProvider>().getCurrent;
@@ -235,6 +264,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
                         ),
                 ],
               ),
+              SliverToBoxAdapter(child: _showPreChapterWidget()),
               // list
               SliverList.builder(
                 itemCount: list.length,
@@ -249,7 +279,13 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
                         const Divider(),
                         Column(
                           children: [
-                            Text('Chapter: ${ch.number}'),
+                            Text(
+                              'Chapter: ${ch.number}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         const Divider(),

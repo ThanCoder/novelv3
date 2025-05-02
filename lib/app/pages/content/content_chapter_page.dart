@@ -24,7 +24,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => init(isReset: true));
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   bool isSorted = true;
