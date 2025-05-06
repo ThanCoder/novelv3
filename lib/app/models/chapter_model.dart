@@ -91,6 +91,17 @@ class ChapterModel extends TextReaderDataInterface {
     }
   }
 
+  String getTitle({int readLine = 0}) {
+    final file = File(path);
+    if (!file.existsSync()) return title;
+
+    final lines = file.readAsLinesSync();
+    if (lines.length > readLine) {
+      return lines[readLine];
+    }
+    return title;
+  }
+
   String get getConfigPath => '${File(path).parent.path}/$textReaderConfigName';
   String get getNovelPath => File(path).parent.path;
 

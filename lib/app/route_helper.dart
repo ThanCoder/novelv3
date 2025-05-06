@@ -5,6 +5,7 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader_screen.dart';
 import 'package:novel_v3/app/provider/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/provider/chapter_provider.dart';
 import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/novel_content_screen.dart';
@@ -17,6 +18,7 @@ import 'package:provider/provider.dart';
 void goNovelContentPage(BuildContext context, NovelModel novel) async {
   final res = NovelModel.fromPath(novel.path, isFullInfo: true);
   await context.read<NovelProvider>().setCurrent(res);
+  context.read<ChapterProvider>().listClear();
   if (!context.mounted) return;
   Navigator.push(
     context,
@@ -95,8 +97,7 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
               context: context,
               builder: (context) => RenameDialog(
                 title: 'BM Title ထည့်ခြင်း',
-                text: chapter.title,
-                onCancel: () {},
+                text: chapter.getTitle(),
                 onSubmit: (title) {
                   provider.add(
                     chapter.getNovelPath,

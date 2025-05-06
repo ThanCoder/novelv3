@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_chapter_action_button.dart';
-import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
@@ -111,7 +110,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     return MyScaffold(
       appBar: AppBar(
         title: list.isNotEmpty
-            ? ChapterCountView(novelPath: list.first.getNovelPath)
+            ? Text('Count: ${list.length}')
             : const Text('Chapter'),
         actions: [
           PlatformExtension.isDesktop()
