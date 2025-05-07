@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/dialogs/index.dart';
+import 'package:novel_v3/app/dialogs/add_bookmark_title_dialog.dart';
 import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
@@ -73,6 +73,8 @@ void goPdfReader(BuildContext context, PdfModel pdf) async {
   );
 }
 
+int globalReadLine = 0;
+
 void goTextReader(BuildContext context, ChapterModel chapter) async {
   final provider = context.read<ChapterBookmarkProvider>();
   await provider.initList(chapter.getNovelPath);
@@ -89,17 +91,27 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
         },
         // book mark
         bookmarkValue: provider.isExists(chapter.number),
-        onBookmarkChanged: (bookmarkValue) {
-          //add book mark
+        onBookmarkChanged: (currentChapter, bookmarkValue) async {
           if (bookmarkValue) {
-            showDialog(
-              barrierDismissible: false,
+            //remove
+            await provider.toggle(
+              chapter.getNovelPath,
+              ChapterBookmarkModel(
+                title: chapter.title,
+                chapter: chapter.number,
+              ),
+            );
+          } else {
+            // add book
+            final res = await showDialog<bool>(
               context: context,
-              builder: (context) => RenameDialog(
-                title: 'BM Title ထည့်ခြင်း',
-                text: chapter.getTitle(),
-                onSubmit: (title) {
-                  provider.add(
+              barrierDismissible: false,
+              builder: (context) => AddBookmarkTitleDialog(
+                chapter: currentChapter,
+                readLine: globalReadLine,
+                onSubmit: (title, readLine) async {
+                  globalReadLine = readLine;
+                  await provider.toggle(
                     chapter.getNovelPath,
                     ChapterBookmarkModel(
                       title: title,
@@ -109,15 +121,9 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
                 },
               ),
             );
-          } else {
-            provider.toggle(
-              chapter.getNovelPath,
-              ChapterBookmarkModel(
-                title: chapter.title,
-                chapter: chapter.number,
-              ),
-            );
+            return res ?? false;
           }
+          return false;
         },
       ),
     ),

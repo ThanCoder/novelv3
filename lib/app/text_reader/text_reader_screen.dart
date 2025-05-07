@@ -15,7 +15,8 @@ class TextReaderScreen extends StatefulWidget {
   ChapterModel data;
   TextReaderConfigModel config;
   bool? bookmarkValue;
-  void Function(bool bookmarkValue)? onBookmarkChanged;
+  Future<bool> Function(ChapterModel data, bool bookmarkValue)?
+      onBookmarkChanged;
   void Function(TextReaderConfigModel config)? onConfigChanged;
   TextReaderScreen({
     super.key,
@@ -134,11 +135,12 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     }
   }
 
-  void _toggleBookMark() {
-    bookmarkValue = !bookmarkValue!;
+  void _toggleBookMark() async {
     if (widget.onBookmarkChanged != null) {
-      widget.onBookmarkChanged!(bookmarkValue!);
+      bookmarkValue =
+          await widget.onBookmarkChanged!(currentData, bookmarkValue!);
     }
+    if (!mounted) return;
     setState(() {});
   }
 
