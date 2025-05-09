@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/models/index.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/tag_components/tags_wrap_view.dart';
 import 'package:novel_v3/app/widgets/index.dart';
-import 'package:provider/provider.dart';
 
-class NovelEditFormScreen extends StatefulWidget {
+class NovelEditFormScreen extends ConsumerStatefulWidget {
   NovelModel novel;
   NovelEditFormScreen({super.key, required this.novel});
 
   @override
-  State<NovelEditFormScreen> createState() => _NovelEditFormScreenState();
+  ConsumerState<NovelEditFormScreen> createState() =>
+      _NovelEditFormScreenState();
 }
 
-class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
+class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
   final titleController = TextEditingController();
   final authorController = TextEditingController();
   final mcController = TextEditingController();
@@ -63,7 +64,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
       //save
       await novel.save();
       if (!mounted) return;
-      context.read<NovelProvider>().setCurrent(novel);
+      ref.read(novelNotifierProvider.notifier).setCurrent(novel);
 
       Navigator.of(context).pop();
     } catch (e) {

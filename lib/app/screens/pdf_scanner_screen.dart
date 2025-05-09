@@ -1,22 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
-import 'package:novel_v3/app/provider/pdf_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/services/pdf_services.dart';
 import 'package:novel_v3/app/widgets/index.dart';
-import 'package:provider/provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
 
-class PdfScannerScreen extends StatefulWidget {
+class PdfScannerScreen extends ConsumerStatefulWidget {
   NovelModel? novel;
   void Function(PdfModel pdf)? onChoosed;
   PdfScannerScreen({
@@ -26,10 +26,10 @@ class PdfScannerScreen extends StatefulWidget {
   });
 
   @override
-  State<PdfScannerScreen> createState() => _PdfScannerScreenState();
+  ConsumerState<PdfScannerScreen> createState() => _PdfScannerScreenState();
 }
 
-class _PdfScannerScreenState extends State<PdfScannerScreen> {
+class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
   @override
   void initState() {
     super.initState();
@@ -147,7 +147,9 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
         isLoading = false;
       });
       if (widget.novel != null) {
-        context.read<PdfProvider>().initList(novelPath: widget.novel!.path);
+        ref
+            .read(pdfNotifierProvider.notifier)
+            .initList(novelPath: widget.novel!.path);
       }
       showMessage(context, 'PDF Copied', oldStyle: true);
     } catch (e) {
@@ -264,7 +266,7 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
                       title: const Text('Open'),
                       onTap: () {
                         Navigator.pop(context);
-                        goPdfReader(context, pdf);
+                        goPdfReader(context, ref, pdf);
                       },
                     ),
               //delete
@@ -286,8 +288,8 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
 
   void _backpress() async {
     if (widget.novel == null) return;
-    context
-        .read<PdfProvider>()
+    ref
+        .read(pdfNotifierProvider.notifier)
         .initList(novelPath: widget.novel!.path, isReset: true);
   }
 
@@ -333,7 +335,7 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
                     pdf: list[index],
                     onClicked: (pdf) {
                       if (widget.novel == null) {
-                        goPdfReader(context, pdf);
+                        goPdfReader(context, ref, pdf);
                         return;
                       }
                       //novel ရှိနေရင်

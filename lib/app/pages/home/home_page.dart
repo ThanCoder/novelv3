@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_home_action_button.dart';
 import 'package:novel_v3/app/action_buttons/search_button.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/general_server/general_server_noti_button.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:novel_v3/app/provider/recent_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
-import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 import '../../widgets/index.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -30,9 +28,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> init({bool isReset = false}) async {
-    context.read<NovelProvider>().initList(isReset: isReset);
-    context.read<NovelBookmarkProvider>().initList();
-    context.read<RecentProvider>().initList();
+    await ref.read(novelNotifierProvider.notifier).initList(isReset: isReset);
+    await ref.read(bookmarkNotifierProvider.notifier).initList();
+    await ref.read(recentNotifierProvider.notifier).initList();
   }
 
   void _goShowAllScreen(String title, List<NovelModel> list) {
@@ -45,15 +43,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _goContentScreen(NovelModel novel) {
-    goNovelContentPage(context, novel);
+    goNovelContentPage(context, ref, novel);
   }
 
   Widget _getListWidget(List<NovelModel> list) {
     final randomList = List.of(list);
     randomList.shuffle();
 
-    final bookList = context.watch<NovelBookmarkProvider>().getList;
-    final recentList = context.watch<RecentProvider>().getList;
+    List<NovelModel> bookList = ref.watch(bookmarkNotifierProvider).list;
+    List<NovelModel> recentList = ref.watch(recentNotifierProvider).list;
 
     return CustomScrollView(
       slivers: [
@@ -158,9 +156,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<NovelProvider>();
+    final provider = ref.watch(novelNotifierProvider);
     final isLoading = provider.isLoading;
-    final list = provider.getList;
+    List<NovelModel> list = provider.list;
+
     return MyScaffold(
       contentPadding: 0,
       body: isLoading

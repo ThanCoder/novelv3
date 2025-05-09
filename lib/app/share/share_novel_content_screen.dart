@@ -1,22 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/core/index.dart';
 import 'package:novel_v3/app/share/novel_all_download_dialog.dart';
 import 'package:novel_v3/app/share/share_file.dart';
 import 'package:novel_v3/app/share/share_novel_list_item.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/app/widgets/core/index.dart';
-import 'package:provider/provider.dart';
 
 import 'share_file_type.dart';
 
-class ShareNovelContentScreen extends StatefulWidget {
+class ShareNovelContentScreen extends ConsumerStatefulWidget {
   String url;
   NovelModel novel;
   ShareNovelContentScreen({
@@ -26,11 +26,12 @@ class ShareNovelContentScreen extends StatefulWidget {
   });
 
   @override
-  State<ShareNovelContentScreen> createState() =>
+  ConsumerState<ShareNovelContentScreen> createState() =>
       _ShareNovelContentScreenState();
 }
 
-class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
+class _ShareNovelContentScreenState
+    extends ConsumerState<ShareNovelContentScreen> {
   @override
   void initState() {
     super.initState();
@@ -187,7 +188,7 @@ class _ShareNovelContentScreenState extends State<ShareNovelContentScreen> {
     // print(allList.first.type);
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        context.read<NovelProvider>().initList(isReset: true);
+        ref.read(novelNotifierProvider.notifier).initList(isReset: true);
       },
       child: MyScaffold(
         contentPadding: 0,

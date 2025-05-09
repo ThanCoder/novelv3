@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:novel_v3/app/provider/pdf_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';
-import 'package:provider/provider.dart';
 
 import '../../components/core/index.dart';
 
-class ContentPdfPage extends StatefulWidget {
+class ContentPdfPage extends ConsumerStatefulWidget {
   const ContentPdfPage({super.key});
 
   @override
-  State<ContentPdfPage> createState() => _ContentPdfPageState();
+  ConsumerState<ContentPdfPage> createState() => _ContentPdfPageState();
 }
 
-class _ContentPdfPageState extends State<ContentPdfPage> {
+class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
   @override
   void initState() {
     super.initState();
@@ -29,10 +28,12 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
   }
 
   Future<void> init() async {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
     if (!mounted) return;
-    context.read<PdfProvider>().initList(novelPath: novel.path, isReset: true);
+    ref
+        .read(pdfNotifierProvider.notifier)
+        .initList(novelPath: novel.path, isReset: true);
   }
 
   void _deleteConfirm(PdfModel pdf) {
@@ -45,7 +46,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
         onSubmit: () async {
           try {
             //ui
-            context.read<PdfProvider>().delete(pdf);
+            ref.read(pdfNotifierProvider.notifier).delete(pdf);
           } catch (e) {
             if (!mounted) return;
             showDialogMessage(context, e.toString());
@@ -57,7 +58,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
 
   void _restorePath(PdfModel pdf) {
     try {
-      context.read<PdfProvider>().restore(pdf);
+      ref.read(pdfNotifierProvider.notifier).restore(pdf);
     } catch (e) {
       if (!mounted) return;
       showDialogMessage(context, e.toString());
@@ -163,9 +164,9 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<PdfProvider>();
+    final provider = ref.watch(pdfNotifierProvider);
     final isLoading = provider.isLoading;
-    final list = provider.getList;
+    final list = provider.list;
     return MyScaffold(
       contentPadding: 0,
       appBar: AppBar(
@@ -182,7 +183,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
                 itemBuilder: (context, index) => PdfListItem(
                   pdf: list[index],
                   onClicked: (pdf) {
-                    goPdfReader(context, pdf);
+                    goPdfReader(context,ref, pdf);
                   },
                   onLongClicked: _showContextMenu,
                 ),

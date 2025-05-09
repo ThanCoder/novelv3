@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_action_button.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
@@ -15,21 +16,19 @@ import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:novel_v3/app/provider/recent_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 import 'package:novel_v3/app/widgets/t_list_tile.dart';
-import 'package:provider/provider.dart';
 
-class ContentHomePage extends StatefulWidget {
+class ContentHomePage extends ConsumerStatefulWidget {
   const ContentHomePage({super.key});
 
   @override
-  State<ContentHomePage> createState() => _ContentHomePageState();
+  ConsumerState<ContentHomePage> createState() => _ContentHomePageState();
 }
 
-class _ContentHomePageState extends State<ContentHomePage> {
+class _ContentHomePageState extends ConsumerState<ContentHomePage> {
   @override
   void initState() {
     super.initState();
@@ -37,9 +36,9 @@ class _ContentHomePageState extends State<ContentHomePage> {
   }
 
   void init() {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
-    context.read<RecentProvider>().add(novel);
+    ref.read(recentNotifierProvider.notifier).add(novel);
   }
 
   void _copyTitleText(String text) {
@@ -155,7 +154,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final novel = context.watch<NovelProvider>().getCurrent;
+    final novel = ref.watch(novelNotifierProvider).novel;
     if (novel == null) return const Text('novel is null');
     return MyScaffold(
       contentPadding: 0,
@@ -174,7 +173,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
           RefreshIndicator(
             onRefresh: () async {
-              context.read<NovelProvider>().refreshCurrent();
+              ref.read(novelNotifierProvider.notifier).refreshCurrent();
             },
             child: CustomScrollView(
               slivers: [

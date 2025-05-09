@@ -22,10 +22,10 @@ dependencies:
   intl: ^0.20.2
   mime: ^2.0.0
   pdfrx: ^1.1.12
-  provider: ^6.1.2
   than_pkg: ^1.6.7
   timeago: ^3.2.2
   t_server: ^1.0.3
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   change_app_package_name: ^1.4.0

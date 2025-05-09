@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/route_helper.dart';
 
-class NovelReadedButton extends StatefulWidget {
+class NovelReadedButton extends ConsumerStatefulWidget {
   NovelModel novel;
   NovelReadedButton({super.key, required this.novel});
 
   @override
-  State<NovelReadedButton> createState() => _NovelReadedButtonState();
+  ConsumerState<NovelReadedButton> createState() => _NovelReadedButtonState();
 }
 
-class _NovelReadedButtonState extends State<NovelReadedButton> {
+class _NovelReadedButtonState extends ConsumerState<NovelReadedButton> {
   void _getReader() {
     goTextReader(
       context,
+      ref,
       ChapterModel.fromPath('${widget.novel.path}/${widget.novel.readed}'),
     );
   }

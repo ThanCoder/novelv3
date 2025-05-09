@@ -2,24 +2,24 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
-import 'package:novel_v3/app/provider/chapter_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/chapter_services.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/widgets/index.dart';
-import 'package:provider/provider.dart';
 
-class ChapterEditForm extends StatefulWidget {
+class ChapterEditForm extends ConsumerStatefulWidget {
   String novelPath;
   ChapterModel? chapter;
   ChapterEditForm({super.key, required this.novelPath, this.chapter});
 
   @override
-  State<ChapterEditForm> createState() => _ChapterEditFormState();
+  ConsumerState<ChapterEditForm> createState() => _ChapterEditFormState();
 }
 
-class _ChapterEditFormState extends State<ChapterEditForm> {
+class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
   @override
   void initState() {
     super.initState();
@@ -124,7 +124,7 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
       final ch = ChapterModel(
           title: '', number: chapter, path: '${widget.novelPath}/$chapter');
       ch.setContent(contentController.text);
-      context.read<ChapterProvider>().update(ch.refreshData());
+      ref.read(chapterNotifierProvider.notifier).update(ch.refreshData());
 
       isChanged = false;
       setState(() {});
@@ -145,8 +145,7 @@ class _ChapterEditFormState extends State<ChapterEditForm> {
   }
 
   void _backpress() {
-    context
-        .read<ChapterProvider>()
+    ref.read(chapterNotifierProvider.notifier)
         .initList(novelPath: widget.novelPath, isReset: true);
   }
 

@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../widgets/core/index.dart';
 import 'text_reader_config_model.dart';
 import 'text_reader_setting_dialog.dart';
 
-class TextReaderScreen extends StatefulWidget {
+class TextReaderScreen extends ConsumerStatefulWidget {
   ChapterModel data;
   TextReaderConfigModel config;
   bool? bookmarkValue;
@@ -28,10 +28,10 @@ class TextReaderScreen extends StatefulWidget {
   });
 
   @override
-  State<TextReaderScreen> createState() => _TextReaderScreenState();
+  ConsumerState<TextReaderScreen> createState() => _TextReaderScreenState();
 }
 
-class _TextReaderScreenState extends State<TextReaderScreen> {
+class _TextReaderScreenState extends ConsumerState<TextReaderScreen> {
   final ScrollController _controller = ScrollController();
 
   List<ChapterModel> list = [];
@@ -70,7 +70,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
     list.add(widget.data);
     setState(() {});
     initConfig();
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
     readedChapter = novel.getReaded;
     _checkReadeConfirm();
@@ -185,10 +185,10 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
         onSubmit: () {
           try {
             readedChapter = currentData.number;
-            final novel = context.read<NovelProvider>().getCurrent;
+            final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
             if (novel == null) return;
             novel.setReaded(readedChapter);
-            context.read<NovelProvider>().refreshCurrent();
+            ref.read(novelNotifierProvider.notifier).refreshCurrent();
           } catch (e) {
             showDialogMessage(context, e.toString());
           }
@@ -230,7 +230,7 @@ class _TextReaderScreenState extends State<TextReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     return PopScope(
       canPop: isCanGoBack,
       onPopInvokedWithResult: (didPop, result) {

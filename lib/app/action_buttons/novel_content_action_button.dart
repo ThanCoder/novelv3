@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/dialogs/description_online_fetcher_dialog.dart';
-import 'package:novel_v3/app/provider/novel_bookmark_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
-import 'package:provider/provider.dart';
 
-class NovelContentActionButton extends StatefulWidget {
+class NovelContentActionButton extends ConsumerStatefulWidget {
   VoidCallback? onBackpress;
   NovelContentActionButton({super.key, this.onBackpress});
 
   @override
-  State<NovelContentActionButton> createState() =>
+  ConsumerState<NovelContentActionButton> createState() =>
       _NovelContentActionButtonState();
 }
 
-class _NovelContentActionButtonState extends State<NovelContentActionButton> {
+class _NovelContentActionButtonState
+    extends ConsumerState<NovelContentActionButton> {
   void _goEditScreen() {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
     Navigator.push(
       context,
@@ -31,7 +31,7 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
   }
 
   void _deleteConfirm() {
-    final provider = context.read<NovelProvider>();
+    final provider = ref.read(novelNotifierProvider.notifier);
     final novel = provider.getCurrent;
     if (novel == null) return;
 
@@ -47,9 +47,9 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
             provider.removeUI(novel);
 
             //remove db
-            await novel.delete();
+            /////    await novel.delete();
             await Future.delayed(const Duration(seconds: 1));
-            context.read<NovelBookmarkProvider>().initList();
+            ref.read(bookmarkNotifierProvider.notifier).initList();
 
             if (widget.onBackpress != null) {
               widget.onBackpress!();
@@ -64,7 +64,7 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
   }
 
   void _addPdfFromScanner() {
-    final provider = context.read<NovelProvider>();
+    final provider = ref.read(novelNotifierProvider.notifier);
     final novel = provider.getCurrent;
     if (novel == null) return;
 
@@ -76,6 +76,20 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
         ),
       ),
     );
+  }
+
+  void _exportDataFile() {
+    final provider = ref.read(novelNotifierProvider.notifier);
+    final novel = provider.getCurrent;
+    if (novel == null) return;
+
+    // NovelDataServices.instance.exportData(
+    //   folderPath: folderPath,
+    //   outDirPath: outDirPath,
+    //   onProgress: onProgress,
+    //   onSuccess: onSuccess,
+    //   onError: onError,
+    // );
   }
 
   void _showMenu() {
@@ -101,7 +115,7 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
                 title: const Text('Add Chapter'),
                 onTap: () {
                   Navigator.pop(context);
-                  goChapterEditForm(context);
+                  goChapterEditForm(context, ref);
                 },
               ),
               ListTile(
@@ -122,7 +136,8 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
                     barrierDismissible: false,
                     builder: (context) => DescriptionOnlineFetcherDialog(
                       onFetched: (text) {
-                        final provider = context.read<NovelProvider>();
+                        final provider =
+                            ref.read(novelNotifierProvider.notifier);
                         final novel = provider.getCurrent;
                         if (novel == null) return;
                         novel.content = text;
@@ -133,6 +148,14 @@ class _NovelContentActionButtonState extends State<NovelContentActionButton> {
                   );
                 },
               ),
+              // ListTile(
+              //   leading: const Icon(Icons.import_export_rounded),
+              //   title: const Text('Date ထုတ်မယ်'),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     _exportDataFile();
+              //   },
+              // ),
               //delete
               ListTile(
                 iconColor: Colors.red,

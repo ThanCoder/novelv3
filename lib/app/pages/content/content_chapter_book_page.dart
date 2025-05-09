@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/chapter_book_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
-import 'package:novel_v3/app/provider/chapter_bookmark_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/widgets/index.dart';
-import 'package:provider/provider.dart';
 
-class ContentChapterBookPage extends StatefulWidget {
+class ContentChapterBookPage extends ConsumerStatefulWidget {
   const ContentChapterBookPage({super.key});
 
   @override
-  State<ContentChapterBookPage> createState() => _ContentChapterBookPageState();
+  ConsumerState<ContentChapterBookPage> createState() =>
+      _ContentChapterBookPageState();
 }
 
-class _ContentChapterBookPageState extends State<ContentChapterBookPage> {
+class _ContentChapterBookPageState
+    extends ConsumerState<ContentChapterBookPage> {
   @override
   void initState() {
     super.initState();
@@ -23,13 +24,13 @@ class _ContentChapterBookPageState extends State<ContentChapterBookPage> {
   }
 
   Future<void> init() async {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
-    context.read<ChapterBookmarkProvider>().initList(novel.path);
+    ref.read(chapterBookmarkNotifierProvider.notifier).initList(novel.path);
   }
 
   void _showEdit(ChapterBookmarkModel bookmark) {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
     showDialog(
       context: context,
@@ -39,16 +40,20 @@ class _ContentChapterBookPageState extends State<ContentChapterBookPage> {
         onSubmit: (text) {
           if (text.isEmpty) return;
           bookmark.title = text;
-          context.read<ChapterBookmarkProvider>().update(novel.path, bookmark);
+          ref
+              .read(chapterBookmarkNotifierProvider.notifier)
+              .update(novel.path, bookmark);
         },
       ),
     );
   }
 
   void _delete(ChapterBookmarkModel bookmark) {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
-    context.read<ChapterBookmarkProvider>().remove(novel.path, bookmark);
+    ref
+        .read(chapterBookmarkNotifierProvider.notifier)
+        .remove(novel.path, bookmark);
   }
 
   void _showMenu(ChapterBookmarkModel bookmark) {
@@ -85,9 +90,9 @@ class _ContentChapterBookPageState extends State<ContentChapterBookPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<ChapterBookmarkProvider>();
+    final provider = ref.watch(chapterBookmarkNotifierProvider);
     final isLoading = provider.isLoading;
-    final list = provider.getList;
+    final list = provider.list;
     return MyScaffold(
       appBar: AppBar(
         title: const Text('Book Mark'),
@@ -100,9 +105,10 @@ class _ContentChapterBookPageState extends State<ContentChapterBookPage> {
               itemBuilder: (context, index) => ChapterBookListItem(
                 book: list[index],
                 onClicked: (book) {
-                  final novel = context.read<NovelProvider>().getCurrent;
+                  final novel =
+                      ref.read(novelNotifierProvider.notifier).getCurrent;
                   if (novel == null) return;
-                  goTextReader(context, book.toChapter(novel.path));
+                  goTextReader(context, ref, book.toChapter(novel.path));
                 },
                 onLongClicked: _showMenu,
               ),

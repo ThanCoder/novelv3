@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/screens/chapter_online_fetcher_screen.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
-import 'package:provider/provider.dart';
 
-class NovelContentChapterActionButton extends StatefulWidget {
+class NovelContentChapterActionButton extends ConsumerStatefulWidget {
   VoidCallback? onBackpress;
   NovelContentChapterActionButton({super.key, this.onBackpress});
 
   @override
-  State<NovelContentChapterActionButton> createState() =>
+  ConsumerState<NovelContentChapterActionButton> createState() =>
       _NovelContentChapterActionButtonState();
 }
 
 class _NovelContentChapterActionButtonState
-    extends State<NovelContentChapterActionButton> {
+    extends ConsumerState<NovelContentChapterActionButton> {
   void _addChapterFromOnline() async {
-    final provider = context.read<NovelProvider>();
+    final provider = ref.read(novelNotifierProvider.notifier);
     final novel = provider.getCurrent;
     if (novel == null) return;
     if (!context.mounted) return;
@@ -32,7 +32,7 @@ class _NovelContentChapterActionButtonState
   }
 
   void goChapterEditForm(BuildContext context) async {
-    final provider = context.read<NovelProvider>();
+    final provider = ref.read(novelNotifierProvider.notifier);
     final novel = provider.getCurrent;
     if (novel == null) return;
     if (!context.mounted) return;

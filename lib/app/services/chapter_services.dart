@@ -16,34 +16,27 @@ class ChapterServices {
   factory ChapterServices() => instance;
 //chapter
   Future<List<ChapterModel>> getList({required String novelPath}) async {
-    final completer = Completer<List<ChapterModel>>();
-    try {
-      final list = await Isolate.run<List<ChapterModel>>(() {
-        List<ChapterModel> chapterList = [];
-        final dir = Directory(novelPath);
-        try {
-          if (dir.existsSync()) {
-            for (final file in dir.listSync()) {
-              if (file.statSync().type == FileSystemEntityType.file) {
-                if (int.tryParse(PathUtil.getBasename(file.path)) == null) {
-                  continue;
-                }
-                chapterList.add(ChapterModel.fromPath(file.path));
+    return await Isolate.run<List<ChapterModel>>(() {
+      List<ChapterModel> chapterList = [];
+      final dir = Directory(novelPath);
+      try {
+        if (dir.existsSync()) {
+          for (final file in dir.listSync()) {
+            if (file.statSync().type == FileSystemEntityType.file) {
+              if (int.tryParse(PathUtil.getBasename(file.path)) == null) {
+                continue;
               }
+              chapterList.add(ChapterModel.fromPath(file.path));
             }
           }
-          //sort
-          chapterList.sort((a, b) => a.number.compareTo(b.number));
-        } catch (e) {
-          debugPrint('getList: ${e.toString()}');
         }
-        return chapterList;
-      });
-      completer.complete(list);
-    } catch (e) {
-      completer.completeError(e);
-    }
-    return completer.future;
+        //sort
+        chapterList.sort((a, b) => a.number.compareTo(b.number));
+      } catch (e) {
+        debugPrint('getList: ${e.toString()}');
+      }
+      return chapterList;
+    });
   }
 
   Future<ChapterModel?> getLastChapter({required String novelPath}) async {

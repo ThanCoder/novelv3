@@ -23,8 +23,11 @@ class NovelDataServices {
     required void Function(Object err) onError,
   }) async {
     final receivePort = ReceivePort();
-    await Isolate.spawn(_exportNovelDataIsolate,
-        [receivePort.sendPort, folderPath, outDirPath]);
+    await Isolate.spawn(_exportNovelDataIsolate, [
+      receivePort.sendPort,
+      folderPath,
+      outDirPath,
+    ]);
 
     receivePort.listen((data) {
       if (data is Map) {

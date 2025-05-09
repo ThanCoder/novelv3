@@ -7,10 +7,8 @@ import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/general_server/proxy_hosting_server/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/provider/chapter_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:provider/provider.dart';
+
 
 import '../widgets/index.dart';
 
@@ -81,8 +79,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
       //init config
       await initAppConfigService();
       //init
-      context.read<NovelProvider>().listClear();
-      context.read<ChapterProvider>().listClear();
+      // context.read<NovelProvider>().listClear();
+      // context.read<ChapterProvider>().listClear();
       if (!mounted) return;
       showMessage(context, 'Config ကိုသိမ်းဆည်းပြီးပါပြီ');
       setState(() {

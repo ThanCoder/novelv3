@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 
-class NovelReadedNumberButton extends StatefulWidget {
+class NovelReadedNumberButton extends ConsumerStatefulWidget {
   NovelModel novel;
   NovelReadedNumberButton({super.key, required this.novel});
 
   @override
-  State<NovelReadedNumberButton> createState() =>
+  ConsumerState<NovelReadedNumberButton> createState() =>
       _NovelReadedNumberButtonState();
 }
 
-class _NovelReadedNumberButtonState extends State<NovelReadedNumberButton> {
+class _NovelReadedNumberButtonState
+    extends ConsumerState<NovelReadedNumberButton> {
   void _showEdit() {
     showDialog(
       context: context,
@@ -32,7 +33,7 @@ class _NovelReadedNumberButtonState extends State<NovelReadedNumberButton> {
             widget.novel.readed = num;
             await widget.novel.save();
             if (!mounted) return;
-            context.read<NovelProvider>().setCurrent(widget.novel);
+            ref.read(novelNotifierProvider.notifier).setCurrent(widget.novel);
           } catch (e) {
             if (!mounted) return;
             showDialogMessage(context, e.toString());

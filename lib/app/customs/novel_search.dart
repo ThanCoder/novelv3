@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/author_wrap_view.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/route_helper.dart';
@@ -7,7 +8,11 @@ import '../components/novel_grid_item.dart';
 
 class NovelSearch extends SearchDelegate {
   List<NovelModel> list = [];
-  NovelSearch({required this.list});
+  WidgetRef ref;
+  NovelSearch({
+    required this.list,
+    required this.ref,
+  });
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -48,7 +53,7 @@ class NovelSearch extends SearchDelegate {
               title: 'Author',
               list: list.map((nv) => nv.author).toSet().toList(),
               onClicked: (title) {
-                goSeeAllScreenWithAuthor(context, title);
+                goSeeAllScreenWithAuthor(context, ref, title);
               },
             ),
           ),
@@ -59,7 +64,7 @@ class NovelSearch extends SearchDelegate {
               title: 'MC',
               list: list.map((nv) => nv.mc).toSet().toList(),
               onClicked: (title) {
-                goSeeAllScreenWithMC(context, title);
+                goSeeAllScreenWithMC(context, ref, title);
               },
             ),
           ),
@@ -101,7 +106,7 @@ class NovelSearch extends SearchDelegate {
       itemBuilder: (context, index) => NovelGridItem(
         novel: res[index],
         onClicked: (novel) {
-          goNovelContentPage(context, novel);
+          goNovelContentPage(context, ref, novel);
         },
       ),
     );

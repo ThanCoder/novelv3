@@ -1,55 +1,47 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
+import 'package:novel_v3/app/riverpods/states/chapter_bookmark_state.dart';
 import 'package:novel_v3/app/services/bookmark_services.dart';
 
-class ChapterBookmarkProvider with ChangeNotifier {
-  final List<ChapterBookmarkModel> _list = [];
-  bool isLoading = false;
-
-  //get
-  List<ChapterBookmarkModel> get getList => _list;
+class ChapterBookmarkNotifier extends StateNotifier<ChapterBookmarkState> {
+  ChapterBookmarkNotifier() : super(ChapterBookmarkState.init());
 
   Future<void> initList(String novelPath) async {
-    _list.clear();
+    state = state.copyWith(isLoading: true);
     final res =
         await BookmarkServices.instance.getChapterBookmarkList(novelPath);
-    _list.addAll(res);
-    notifyListeners();
+    state = state.copyWith(list: res,isLoading: false);
   }
 
   Future<void> add(String novelPath, ChapterBookmarkModel book) async {
-    _list.insert(0, book);
+    state.list.insert(0, book);
+    state = state.copyWith(list: state.list);
     //db
     await BookmarkServices.instance
-        .setChapterBookmarkList(novelPath, list: _list);
-    notifyListeners();
+        .setChapterBookmarkList(novelPath, list: state.list);
   }
 
   Future<void> remove(String novelPath, ChapterBookmarkModel book) async {
-    final res = _list.where((bm) => bm.chapter != book.chapter).toList();
-    _list.clear();
-    _list.addAll(res);
+    final res = state.list.where((bm) => bm.chapter != book.chapter).toList();
+    state = state.copyWith(list: res);
     //db
     await BookmarkServices.instance
-        .setChapterBookmarkList(novelPath, list: _list);
+        .setChapterBookmarkList(novelPath, list: state.list);
 
-    notifyListeners();
   }
 
   Future<void> update(String novelPath, ChapterBookmarkModel book) async {
-    final res = _list.map((bm) {
+    final res = state.list.map((bm) {
       if (bm.chapter == book.chapter) {
         return book;
       }
       return bm;
     }).toList();
-    _list.clear();
-    _list.addAll(res);
+    state = state.copyWith(list: res);
     //db
     await BookmarkServices.instance
-        .setChapterBookmarkList(novelPath, list: _list);
+        .setChapterBookmarkList(novelPath, list: state.list);
 
-    notifyListeners();
   }
 
   Future<void> toggle(String novelPath, ChapterBookmarkModel book) async {
@@ -61,7 +53,7 @@ class ChapterBookmarkProvider with ChangeNotifier {
   }
 
   bool isExists(int chapterNumber) {
-    final res = _list.where((book) => book.chapter == chapterNumber);
+    final res = state.list.where((book) => book.chapter == chapterNumber);
     if (res.isNotEmpty) return true;
     return false;
   }

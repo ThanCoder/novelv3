@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/dialogs/add_bookmark_title_dialog.dart';
 import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/pdf_readers/pdfrx_reader_screen.dart';
-import 'package:novel_v3/app/provider/chapter_bookmark_provider.dart';
-import 'package:novel_v3/app/provider/chapter_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/app/text_reader/text_reader_config_model.dart';
 import 'package:novel_v3/app/text_reader/text_reader_screen.dart';
-import 'package:provider/provider.dart';
 
-void goNovelContentPage(BuildContext context, NovelModel novel) async {
-  final res = NovelModel.fromPath(novel.path, isFullInfo: true);
-  await context.read<NovelProvider>().setCurrent(res);
-  context.read<ChapterProvider>().listClear();
+void goNovelContentPage(
+  BuildContext context,
+  WidgetRef ref,
+  NovelModel novel,
+) async {
+  ref.read(novelNotifierProvider.notifier).setCurrent(novel);
+  ref.read(chapterNotifierProvider.notifier).listClear();
+
   if (!context.mounted) return;
   Navigator.push(
     context,
@@ -28,8 +30,12 @@ void goNovelContentPage(BuildContext context, NovelModel novel) async {
   );
 }
 
-void goNovelEditForm(BuildContext context, NovelModel novel) async {
-  await context.read<NovelProvider>().setCurrent(novel);
+void goNovelEditForm(
+  BuildContext context,
+  WidgetRef ref,
+  NovelModel novel,
+) async {
+  await ref.read(novelNotifierProvider.notifier).setCurrent(novel);
   if (!context.mounted) return;
   Navigator.push(
     context,
@@ -39,9 +45,8 @@ void goNovelEditForm(BuildContext context, NovelModel novel) async {
   );
 }
 
-void goChapterEditForm(BuildContext context) async {
-  final provider = context.read<NovelProvider>();
-  final novel = provider.getCurrent;
+void goChapterEditForm(BuildContext context, WidgetRef ref) async {
+  final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
   if (novel == null) return;
   if (!context.mounted) return;
   Navigator.push(
@@ -52,8 +57,9 @@ void goChapterEditForm(BuildContext context) async {
   );
 }
 
-void goPdfReader(BuildContext context, PdfModel pdf) async {
-  final novel = context.read<NovelProvider>().getCurrent;
+void goPdfReader(BuildContext context, WidgetRef ref, PdfModel pdf) async {
+  final provider = ref.read(novelNotifierProvider.notifier);
+  final novel = provider.getCurrent;
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -66,7 +72,7 @@ void goPdfReader(BuildContext context, PdfModel pdf) async {
           pdfConfig.savePath(pdf.configPath);
           if (novel == null) return;
           novel.setRecentPdfReader(pdf);
-          context.read<NovelProvider>().refreshCurrent();
+          provider.refreshCurrent();
         },
       ),
     ),
@@ -75,8 +81,12 @@ void goPdfReader(BuildContext context, PdfModel pdf) async {
 
 int globalReadLine = 0;
 
-void goTextReader(BuildContext context, ChapterModel chapter) async {
-  final provider = context.read<ChapterBookmarkProvider>();
+void goTextReader(
+  BuildContext context,
+  WidgetRef ref,
+  ChapterModel chapter,
+) async {
+  final provider = ref.read(chapterBookmarkNotifierProvider.notifier);
   await provider.initList(chapter.getNovelPath);
 
   if (!context.mounted) return;
@@ -130,8 +140,12 @@ void goTextReader(BuildContext context, ChapterModel chapter) async {
   );
 }
 
-void goSeeAllScreenWithAuthor(BuildContext context, String author) {
-  final list = context.read<NovelProvider>().getList;
+void goSeeAllScreenWithAuthor(
+  BuildContext context,
+  WidgetRef ref,
+  String author,
+) {
+  final list = ref.read(novelNotifierProvider.notifier).getList;
   final res = list.where((nv) => nv.author == author).toList();
   Navigator.push(
     context,
@@ -141,8 +155,12 @@ void goSeeAllScreenWithAuthor(BuildContext context, String author) {
   );
 }
 
-void goSeeAllScreenWithMC(BuildContext context, String mc) {
-  final list = context.read<NovelProvider>().getList;
+void goSeeAllScreenWithMC(
+  BuildContext context,
+  WidgetRef ref,
+  String mc,
+) {
+  final list = ref.read(novelNotifierProvider.notifier).getList;
   final res = list.where((nv) => nv.mc == mc).toList();
   Navigator.push(
     context,

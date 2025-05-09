@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_chapter_action_button.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
-import 'package:novel_v3/app/provider/chapter_provider.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/widgets/index.dart';
-import 'package:provider/provider.dart';
 
-class ContentChapterPage extends StatefulWidget {
+class ContentChapterPage extends ConsumerStatefulWidget {
   const ContentChapterPage({super.key});
 
   @override
-  State<ContentChapterPage> createState() => _ContentChapterPageState();
+  ConsumerState<ContentChapterPage> createState() => _ContentChapterPageState();
 }
 
-class _ContentChapterPageState extends State<ContentChapterPage> {
+class _ContentChapterPageState extends ConsumerState<ContentChapterPage> {
   @override
   void initState() {
     super.initState();
@@ -29,10 +28,11 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
   bool isSorted = true;
 
   Future<void> init({bool isReset = false}) async {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
+
     if (novel == null) return;
-    context
-        .read<ChapterProvider>()
+    ref
+        .read(chapterNotifierProvider.notifier)
         .initList(novelPath: novel.path, isReset: isReset);
   }
 
@@ -46,7 +46,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
         onSubmit: () async {
           try {
             //ui
-            context.read<ChapterProvider>().delete(chapter);
+            ref.read(chapterNotifierProvider.notifier).delete(chapter);
           } catch (e) {
             if (!mounted) return;
             showDialogMessage(context, e.toString());
@@ -104,9 +104,9 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<ChapterProvider>();
+    final provider = ref.watch(chapterNotifierProvider);
     final isLoading = provider.isLoading;
-    final list = provider.getList;
+    final list = provider.list;
     return MyScaffold(
       appBar: AppBar(
         title: list.isNotEmpty
@@ -121,7 +121,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
               : const SizedBox.shrink(),
           IconButton(
             onPressed: () {
-              provider.reversedList();
+              ref.read(chapterNotifierProvider.notifier).reversedList();
               isSorted = !isSorted;
               setState(() {});
             },
@@ -146,7 +146,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
                 itemBuilder: (context, index) => ChapterListItem(
                   chapter: list[index],
                   onClicked: (chapter) {
-                    goTextReader(context, chapter);
+                    goTextReader(context, ref, chapter);
                   },
                   onLongClicked: _showMenu,
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/widgets/core/t_text_field.dart';
 
@@ -56,6 +57,8 @@ class _AddBookmarkTitleDialogState extends State<AddBookmarkTitleDialog> {
             label: const Text('Read Line Number'),
             controller: lineController,
             maxLines: 1,
+            textInputType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (value) {
               fetch();
             },

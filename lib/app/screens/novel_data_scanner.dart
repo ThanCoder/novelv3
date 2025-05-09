@@ -1,21 +1,23 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/novel_data_list_item.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/novel_data_services.dart';
 import 'package:novel_v3/app/widgets/core/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-class NovelDataScanner extends StatefulWidget {
+class NovelDataScanner extends ConsumerStatefulWidget {
   const NovelDataScanner({super.key});
 
   @override
-  State<NovelDataScanner> createState() => _NovelDataScannerState();
+  ConsumerState<NovelDataScanner> createState() => _NovelDataScannerState();
 }
 
-class _NovelDataScannerState extends State<NovelDataScanner> {
+class _NovelDataScannerState extends ConsumerState<NovelDataScanner> {
   @override
   void initState() {
     super.initState();
@@ -83,6 +85,11 @@ class _NovelDataScannerState extends State<NovelDataScanner> {
                     itemCount: list.length,
                     itemBuilder: (context, index) => NovelDataListItem(
                       novelData: list[index],
+                      isAlreadyInstalled: (novelData) {
+                        return ref
+                            .read(novelNotifierProvider.notifier)
+                            .isExists(novelData.title);
+                      },
                       onClicked: (novelData) {},
                     ),
                   ),

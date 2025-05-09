@@ -10,6 +10,7 @@ class NovelDataListItem extends StatelessWidget {
   NovelDataModel novelData;
   void Function(NovelDataModel novelData) onClicked;
   void Function(NovelDataModel novelData)? onLongClicked;
+  bool Function(NovelDataModel novelData)? isAlreadyInstalled;
   bool isShowPathLabel;
   NovelDataListItem({
     super.key,
@@ -17,6 +18,7 @@ class NovelDataListItem extends StatelessWidget {
     required this.onClicked,
     this.onLongClicked,
     this.isShowPathLabel = false,
+    this.isAlreadyInstalled,
   });
 
   @override
@@ -35,64 +37,80 @@ class NovelDataListItem extends StatelessWidget {
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Card(
-          child: Row(
-            spacing: 7,
-            children: [
-              SizedBox(
-                width: 130,
-                height: 140,
-                child: Container(
-                  color:
-                      isDarkThemeNotifier.value ? Colors.white : Colors.black,
-                  child: MyImageFile(path: novelData.coverPath),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Row(
+              spacing: 7,
+              children: [
+                SizedBox(
+                  width: 130,
+                  height: 140,
+                  child: Container(
+                    color:
+                        isDarkThemeNotifier.value ? Colors.white : Colors.black,
+                    child: MyImageFile(path: novelData.coverPath),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  spacing: 2,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      novelData.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                        'Size: ${novelData.size.toDouble().toParseFileSize()}'),
-                    // status
-                    Wrap(
-                      spacing: 5,
-                      runSpacing: 5,
-                      children: [
-                        StatusText(
-                          bgColor: novelData.isCompleted
-                              ? StatusText.completedColor
-                              : StatusText.onGoingColor,
-                          text: novelData.isCompleted ? 'Completed' : 'OnGoing',
-                        ),
-                        novelData.isAdult
-                            ? StatusText(
-                                text: 'Adult',
-                                bgColor: StatusText.adultColor,
-                              )
-                            : const SizedBox.shrink(),
-                      ],
-                    ),
-                    Text(
-                        'Date: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toParseTime()}'),
-                    Text(
-                        'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toTimeAgo()}'),
-                    isShowPathLabel
-                        ? Text(
-                            'Path: ${novelData.path}',
-                            style: const TextStyle(fontSize: 12),
-                          )
-                        : const SizedBox.shrink(),
-                  ],
+                Expanded(
+                  child: Column(
+                    spacing: 2,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        novelData.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                          'Size: ${novelData.size.toDouble().toParseFileSize()}'),
+                      // status
+                      Wrap(
+                        spacing: 5,
+                        runSpacing: 5,
+                        children: [
+                          StatusText(
+                            bgColor: novelData.isCompleted
+                                ? StatusText.completedColor
+                                : StatusText.onGoingColor,
+                            text:
+                                novelData.isCompleted ? 'Completed' : 'OnGoing',
+                          ),
+                          novelData.isAdult
+                              ? StatusText(
+                                  text: 'Adult',
+                                  bgColor: StatusText.adultColor,
+                                )
+                              : const SizedBox.shrink(),
+                        ],
+                      ),
+                      Text(
+                          'Date: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toParseTime()}'),
+                      Text(
+                          'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toTimeAgo()}'),
+                      isShowPathLabel
+                          ? Text(
+                              'Path: ${novelData.path}',
+                              style: const TextStyle(fontSize: 12),
+                            )
+                          : const SizedBox.shrink(),
+                      isAlreadyInstalled == null
+                          ? const SizedBox.shrink()
+                          : Text(
+                              isAlreadyInstalled!(novelData)
+                                  ? 'ရှိနေပြီးသားပါ'
+                                  : 'မသွင်းရသေးပါ',
+                              style: TextStyle(
+                                color: isAlreadyInstalled!(novelData)
+                                    ? Colors.red
+                                    : Colors.green,
+                              ),
+                            ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

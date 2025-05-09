@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_data_scanner.dart';
-import 'package:provider/provider.dart';
 
-class NovelHomeActionButton extends StatefulWidget {
+class NovelHomeActionButton extends ConsumerStatefulWidget {
   const NovelHomeActionButton({super.key});
 
   @override
-  State<NovelHomeActionButton> createState() => _NovelHomeActionButtonState();
+  ConsumerState<NovelHomeActionButton> createState() =>
+      _NovelHomeActionButtonState();
 }
 
-class _NovelHomeActionButtonState extends State<NovelHomeActionButton> {
+class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
   void _newNovel() {
-    final provider = context.read<NovelProvider>();
+    final provider = ref.read(novelNotifierProvider.notifier);
     final list = provider.getList;
     showDialog(
       context: context,
@@ -34,7 +35,7 @@ class _NovelHomeActionButtonState extends State<NovelHomeActionButton> {
           try {
             final novel = NovelModel.create(title.trim());
             provider.insertUI(novel);
-            goNovelEditForm(context, novel);
+            goNovelEditForm(context,ref, novel);
           } catch (e) {
             showDialogMessage(context, e.toString());
           }

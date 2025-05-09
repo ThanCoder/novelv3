@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/mediafire_downloader_dialog.dart';
-import 'package:novel_v3/app/provider/novel_provider.dart';
-import 'package:novel_v3/app/provider/pdf_provider.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
-import 'package:provider/provider.dart';
 
-class NovelContentPdfActionButton extends StatefulWidget {
+class NovelContentPdfActionButton extends ConsumerStatefulWidget {
   VoidCallback? onBackpress;
   NovelContentPdfActionButton({super.key, this.onBackpress});
 
   @override
-  State<NovelContentPdfActionButton> createState() =>
+  ConsumerState<NovelContentPdfActionButton> createState() =>
       _NovelContentPdfActionButtonState();
 }
 
 class _NovelContentPdfActionButtonState
-    extends State<NovelContentPdfActionButton> {
+    extends ConsumerState<NovelContentPdfActionButton> {
   void _downloadPdf() {
-    final novel = context.read<NovelProvider>().getCurrent;
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
     showDialog(
       context: context,
@@ -28,14 +27,16 @@ class _NovelContentPdfActionButtonState
           showDialogMessage(context, msg);
         },
         onSuccess: (filePath) {
-          context.read<PdfProvider>().initList(novelPath: novel.path);
+          ref
+              .read(pdfNotifierProvider.notifier)
+              .initList(novelPath: novel.path);
         },
       ),
     );
   }
 
   void _addPdfFromScanner() {
-    final provider = context.read<NovelProvider>();
+    final provider = ref.read(novelNotifierProvider.notifier);
     final novel = provider.getCurrent;
     if (novel == null) return;
 
