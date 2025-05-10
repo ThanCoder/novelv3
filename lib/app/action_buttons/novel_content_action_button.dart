@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/dialogs/description_online_fetcher_dialog.dart';
+import 'package:novel_v3/app/novel_data/data_export_dialog.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
@@ -47,9 +48,11 @@ class _NovelContentActionButtonState
             provider.removeUI(novel);
 
             //remove db
-            /////    await novel.delete();
+            await novel.delete();
+
             await Future.delayed(const Duration(seconds: 1));
-            ref.read(bookmarkNotifierProvider.notifier).initList();
+            await ref.read(bookmarkNotifierProvider.notifier).initList();
+            await ref.read(recentNotifierProvider.notifier).initList();
 
             if (widget.onBackpress != null) {
               widget.onBackpress!();
@@ -83,13 +86,16 @@ class _NovelContentActionButtonState
     final novel = provider.getCurrent;
     if (novel == null) return;
 
-    // NovelDataServices.instance.exportData(
-    //   folderPath: folderPath,
-    //   outDirPath: outDirPath,
-    //   onProgress: onProgress,
-    //   onSuccess: onSuccess,
-    //   onError: onError,
-    // );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DataExportDialog(
+        novelPath: novel.path,
+        onDone: (savedPath) {
+          showDialogMessage(context, '`$savedPath` Exported');
+        },
+      ),
+    );
   }
 
   void _showMenu() {
@@ -148,14 +154,14 @@ class _NovelContentActionButtonState
                   );
                 },
               ),
-              // ListTile(
-              //   leading: const Icon(Icons.import_export_rounded),
-              //   title: const Text('Date ထုတ်မယ်'),
-              //   onTap: () {
-              //     Navigator.pop(context);
-              //     _exportDataFile();
-              //   },
-              // ),
+              ListTile(
+                leading: const Icon(Icons.import_export_rounded),
+                title: const Text('Data ထုတ်မယ်'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _exportDataFile();
+                },
+              ),
               //delete
               ListTile(
                 iconColor: Colors.red,

@@ -2,7 +2,7 @@ export 'core/android_app_services.dart';
 export 'core/app_config_services.dart';
 export 'core/app_path_services.dart';
 export 'core/app_services.dart';
-export './novel_data_services.dart';
+export '../novel_data/novel_data_services.dart';
 export './chapter_services.dart';
 export 'core/recent_db_services.dart';
 export 'core/cache_services.dart';

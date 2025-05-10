@@ -30,6 +30,13 @@ class MyImageFile extends StatelessWidget {
         fit: fit,
         width: width,
         height: height,
+        errorBuilder: (context, error, stackTrace) {
+          // file.deleteSync();
+          return Image.asset(
+            defaultAssetsPath,
+            fit: fit,
+          );
+        },
       );
     } else {
       return Image.asset(

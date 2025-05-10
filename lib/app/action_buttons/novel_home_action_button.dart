@@ -5,7 +5,7 @@ import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
-import 'package:novel_v3/app/screens/novel_data_scanner.dart';
+import 'package:novel_v3/app/novel_data/novel_data_scanner.dart';
 
 class NovelHomeActionButton extends ConsumerStatefulWidget {
   const NovelHomeActionButton({super.key});

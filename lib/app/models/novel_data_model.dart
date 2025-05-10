@@ -38,6 +38,13 @@ class NovelDataModel {
     );
   }
 
+  void delete() {
+    final file = File(path);
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
+  }
+
   @override
   String toString() {
     return '\ntitle => $title\npath => $path\nsize => $size\ncoverPath => $coverPath\n';

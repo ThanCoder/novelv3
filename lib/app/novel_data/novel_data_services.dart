@@ -5,7 +5,7 @@ import 'dart:isolate';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/extensions/string_extension.dart';
+import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_data_model.dart';
 import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
@@ -15,188 +15,185 @@ class NovelDataServices {
   NovelDataServices._();
   factory NovelDataServices() => instance;
 
-  void exportData({
-    required String folderPath,
-    required String outDirPath,
-    required void Function(int max, int progress, String title) onProgress,
-    required void Function(String filePath) onSuccess,
-    required void Function(Object err) onError,
+  // import
+  static Future<Isolate> importIsolate(
+    String path, {
+    bool isAlreadyExistsOverride = false,
+    bool isConfigFilesAdd = false,
+    required void Function(double progress, String message) onProgress,
+    required void Function() onDone,
+    required void Function(String msg) onError,
   }) async {
     final receivePort = ReceivePort();
-    await Isolate.spawn(_exportNovelDataIsolate, [
+    final sourcePath = PathUtil.getSourcePath();
+
+    final isolate = await Isolate.spawn(_import, [
       receivePort.sendPort,
-      folderPath,
-      outDirPath,
+      path,
+      sourcePath,
+      isAlreadyExistsOverride,
+      isConfigFilesAdd,
     ]);
-
     receivePort.listen((data) {
       if (data is Map) {
-        String type = data['type'];
-        if (type == 'err') {
-          onError(data['msg']);
-          receivePort.close();
-        }
-        if (type == 'succ') {
-          onSuccess(data['path']);
-          receivePort.close();
-        }
+        // is progress
+        final type = data['type'] ?? '';
         if (type == 'progress') {
-          String title = data['title'];
-          int max = data['max'];
-          int progress = data['progress'];
-          onProgress(max, progress, title);
+          onProgress(data['progress'] as double, data['message'] as String);
+        }
+        if (type == 'success') {
+          receivePort.close();
+          onDone();
+        }
+        if (type == 'error') {
+          receivePort.close();
+          onError(data['message']);
         }
       }
     });
+    return isolate;
   }
 
-  void importData({
-    required String filePath,
-    required String outDirPath,
-    required void Function(String novelPath) onSuccess,
-    required void Function(int max, int progress, String title) onProgress,
-    required void Function(String err) onError,
+  // export
+  static Future<Isolate> exportIsolate(
+    String novelPath, {
+    required void Function(double progress, String message) onProgress,
+    required void Function(String savedPath) onDone,
+    required void Function(String msg) onError,
   }) async {
     final receivePort = ReceivePort();
-    await Isolate.spawn(
-        _importNovelDataIsolate, [receivePort.sendPort, filePath, outDirPath]);
+    final outPath = PathUtil.getOutPath();
 
+    final isolate = await Isolate.spawn(_export, [
+      receivePort.sendPort,
+      novelPath,
+      outPath,
+    ]);
     receivePort.listen((data) {
       if (data is Map) {
-        String type = data['type'];
-        if (type == 'err') {
-          onError(data['msg']);
-          receivePort.close();
-        }
-        if (type == 'succ') {
-          onSuccess(data['path']);
-          receivePort.close();
-        }
+        // is progress
+        final type = data['type'] ?? '';
         if (type == 'progress') {
-          String title = data['title'];
-          int max = data['max'];
-          int progress = data['progress'];
-          onProgress(max, progress, title);
+          onProgress(data['progress'] as double, data['message'] as String);
+        }
+        if (type == 'success') {
+          receivePort.close();
+          onDone(data['message']);
+        }
+        if (type == 'error') {
+          receivePort.close();
+          onError(data['message']);
         }
       }
     });
+    return isolate;
   }
 
-//isolate private
-  void _exportNovelDataIsolate(List<Object> args) {
+  static void _import(List<Object> args) async {
     final sendPort = args[0] as SendPort;
-    final folderPath = args[1] as String;
-    final outDirPath = args[2] as String;
 
-    _exportNovelData(
-      folderPath: folderPath,
-      outDirPath: outDirPath,
-      onSuccess: (filePath) {
-        sendPort.send({'type': 'succ', 'path': filePath});
-      },
-      onProgress: (max, progress, title) {
-        sendPort.send({
-          'type': 'progress',
-          'max': max,
-          'progress': progress,
-          'title': title,
-        });
-      },
-      onError: (err) {
-        sendPort.send({'type': 'err', 'msg': err});
-      },
-    );
-  }
-
-  void _importNovelDataIsolate(List<Object> args) {
-    final sendPort = args[0] as SendPort;
-    final filePath = args[1] as String;
-    final outDirPath = args[2] as String;
-
-    _importNovelData(
-      filePath: filePath,
-      outDirPath: outDirPath,
-      onSuccess: (novelPath) {
-        sendPort.send({'type': 'succ', 'path': novelPath});
-      },
-      onProgress: (max, progress, title) {
-        sendPort.send({
-          'type': 'progress',
-          'max': max,
-          'progress': progress,
-          'title': title,
-        });
-      },
-      onError: (err) {
-        sendPort.send({'type': 'err', 'msg': err});
-      },
-    );
-  }
-
-  void _importNovelData({
-    required String filePath,
-    required String outDirPath,
-    required void Function(String novelPath) onSuccess,
-    required void Function(int max, int progress, String title) onProgress,
-    required void Function(String err) onError,
-  }) {
     try {
+      final filePath = args[1] as String;
+      final sourcePath = args[2] as String;
+      final isAlreadyExistsOverride = args[3] as bool;
+      final isConfigFilesAdd = args[4] as bool;
+
       // Read the ZIP file
       final zipFile = File(filePath);
-      if (!zipFile.existsSync()) throw Exception('မရှိပါ! path:$filePath');
-      final bytes = zipFile.readAsBytesSync();
+      if (!zipFile.existsSync()) {
+        sendPort.send({'message': 'path:`$filePath` မရှိပါ!', 'type': 'error'});
+        return;
+      }
+      final bytes = await zipFile.readAsBytes();
       String novelDir = '';
 
       // Decode the archive
       final archive = ZipDecoder().decodeBytes(bytes);
 
       //progress
-      onProgress(archive.files.length, 0, "Preparing...");
+      // onProgress(archive.files.length, 0, "Preparing...");
+      sendPort.send({
+        'type': 'progress',
+        'progress': 0.0,
+        'message': 'Preparing...',
+      });
 
       // Extract the files
       int i = 1;
       for (final file in archive) {
-        final filePath = '$outDirPath/${file.name}';
+        final filePath = '$sourcePath/${file.name}';
+        final name = file.name.getName();
 
         //progress
-        onProgress(archive.files.length, i, "${file.name} ထည့်သွင်းနေပါတယ်...");
+        // onProgress(archive.files.length, i, "${file.name} ထည့်သွင်းနေပါတယ်...");
+        sendPort.send({
+          'type': 'progress',
+          'progress': (i / archive.files.length).toDouble(),
+          'message': name,
+        });
 
         if (file.isFile) {
           // Write the file content
-          final outFile = File(filePath)..createSync(recursive: true);
-          outFile.writeAsBytesSync(file.content as List<int>);
+          final outFile = File(filePath);
+          //is skip
+          if (!isAlreadyExistsOverride && outFile.existsSync()) {
+            continue;
+          }
+          //config file skip
+          if (!isConfigFilesAdd) {
+            if (name.endsWith('.json') || name == 'readed') {
+              continue;
+            }
+          }
+
+          await outFile.writeAsBytes(file.content as List<int>);
         } else {
           // Create the directory
           Directory(filePath).createSync(recursive: true);
-          novelDir = '$outDirPath/$filePath';
+          novelDir = '$sourcePath/$filePath';
         }
 
         i++;
+        // await Future.delayed(const Duration(milliseconds: 400));
       }
-      onSuccess(novelDir);
+
+      //done
+      sendPort.send({
+        'type': 'success',
+        'message': novelDir,
+      });
     } catch (e) {
-      onError(e.toString());
-      debugPrint('importNovelData: ${e.toString()}');
+      sendPort.send({
+        'type': 'error',
+        'message': e.toString(),
+      });
     }
   }
 
-  void _exportNovelData({
-    required String folderPath,
-    required String outDirPath,
-    required void Function(int max, int progress, String title) onProgress,
-    required void Function(String filePath) onSuccess,
-    required void Function(Object err) onError,
-  }) async {
+  static void _export(List<Object> args) async {
+    final sendPort = args[0] as SendPort;
     try {
-      if (!Directory(folderPath).existsSync()) {
-        throw Exception('မရှိပါ! : path:$folderPath');
+      final novelPath = args[1] as String;
+      final outPath = args[2] as String;
+
+      if (!Directory(novelPath).existsSync()) {
+        sendPort.send({
+          'type': 'error',
+          'message': 'မရှိပါ! : path:$novelPath',
+        });
+        return;
       }
       //progress
-      onProgress(0, 0, "Preparing...");
+      // onProgress(0, 0, "Preparing...");
+      sendPort.send({
+        'type': 'progress',
+        'progress': 0.0,
+        'message': 'Preparing...',
+      });
 
       // Create an archive object
       final archive = Archive();
-      final String novelTitle = PathUtil.getBasename(folderPath);
+      final String novelTitle = novelPath.getName();
 
       // Recursively add files and subfolders to the archive
       Future<void> addFolderToArchive(
@@ -207,8 +204,11 @@ class NovelDataServices {
         for (final entity in res) {
           if (entity is File) {
             //progress
-            onProgress(res.length, i,
-                "${PathUtil.getBasename(entity.path)} ထည့်သွင်းနေပါတယ်...");
+            sendPort.send({
+              'type': 'progress',
+              'progress': (i / res.length).toDouble(),
+              'message': '${entity.getName()}...',
+            });
             //delay
             // await Future.delayed(const Duration(milliseconds: 300));
 
@@ -235,7 +235,7 @@ class NovelDataServices {
       }
 
       // Start adding from the folder
-      await addFolderToArchive(folderPath, folderPath);
+      await addFolderToArchive(novelPath, novelPath);
 
       // Encode the archive as a ZIP file
       final zipEncoder = ZipEncoder();
@@ -245,13 +245,19 @@ class NovelDataServices {
       archive.add(ArchiveFile.directory(novelTitle));
 
       // Write the ZIP file
-      final outputFile = File('$outDirPath/$novelTitle.$novelDataExtName');
+      final outputFile = File('$outPath/$novelTitle.$novelDataExtName');
       outputFile.writeAsBytesSync(zipData);
 
-      onSuccess(outputFile.path);
+      //done
+      sendPort.send({
+        'type': 'success',
+        'message': outputFile.path,
+      });
     } catch (e) {
-      onError(e);
-      debugPrint('exportNovelData: ${e.toString()}');
+      sendPort.send({
+        'type': 'error',
+        'message': e.toString(),
+      });
     }
   }
 
