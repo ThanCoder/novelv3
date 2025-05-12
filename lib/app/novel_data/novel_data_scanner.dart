@@ -6,7 +6,6 @@ import 'package:novel_v3/app/components/novel_data_list_item.dart';
 import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
-import 'package:novel_v3/app/novel_data/novel_data_services.dart';
 import 'package:novel_v3/app/widgets/core/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 

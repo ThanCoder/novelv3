@@ -50,7 +50,7 @@ class HtmlDomServices {
     return res.trim();
   }
 
-  static String getNewLine(String html, {String replacer = '\n\n'}) {
+  static String getNewLine(String html, {String replacer = '\n'}) {
     var res = '';
 
     res =

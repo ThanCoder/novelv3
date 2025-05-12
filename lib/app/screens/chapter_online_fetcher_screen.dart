@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/fetcher/fetcher_chooser.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
+import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/html_dom_services.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 
-class ChapterOnlineFetcherScreen extends StatefulWidget {
+class ChapterOnlineFetcherScreen extends ConsumerStatefulWidget {
   String novelPath;
   ChapterOnlineFetcherScreen({
     super.key,
@@ -15,12 +17,12 @@ class ChapterOnlineFetcherScreen extends StatefulWidget {
   });
 
   @override
-  State<ChapterOnlineFetcherScreen> createState() =>
+  ConsumerState<ChapterOnlineFetcherScreen> createState() =>
       _ChapterOnlineFetcherScreenState();
 }
 
 class _ChapterOnlineFetcherScreenState
-    extends State<ChapterOnlineFetcherScreen> {
+    extends ConsumerState<ChapterOnlineFetcherScreen> {
   final urlController = TextEditingController();
   final queryController = TextEditingController();
   final queryTitleController = TextEditingController();
@@ -125,158 +127,166 @@ class _ChapterOnlineFetcherScreenState
   }
 
   void _addChapter() {
-    // try {
-    //   final chapter = ChapterModel(
-    //     title: 'Untitled',
-    //     number: int.parse(chapterController.text),
-    //     path: '${widget.novelPath}/${chapterController.text}',
-    //   );
-    //   chapter.setContent(resultController.text);
-    //   context
-    //       .read<ChapterProvider>()
-    //       .initList(novelPath: widget.novelPath, isReset: true);
-    //   //auto crement
-    //   if (chapterController.text.isEmpty) return;
-    //   int num = int.parse(chapterController.text);
-    //   chapterController.text = '${num + 1}';
-    //   _showResultOfflineContentText();
-    // } catch (e) {
-    //   showDialogMessage(context, e.toString());
-    // }
+    try {
+      final chapter = ChapterModel(
+        title: 'Untitled',
+        number: int.parse(chapterController.text),
+        path: '${widget.novelPath}/${chapterController.text}',
+      );
+      chapter.setContent(resultController.text);
+
+      //auto crement
+      if (chapterController.text.isEmpty) return;
+      int num = int.parse(chapterController.text);
+      chapterController.text = '${num + 1}';
+      _showResultOfflineContentText();
+    } catch (e) {
+      showDialogMessage(context, e.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: AppBar(
-        title: const Text('Chapter Fetcher'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            spacing: 8,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //fetcher
-              Row(
-                spacing: 5,
-                children: [
-                  const Text('Fetcher'),
-                  Expanded(
-                    child: FetcherChooser(
-                      onChoosed: (fetcher) {
-                        queryController.text = fetcher.contentQuery.query;
-                        urlController.text = fetcher.testUrl;
-                        queryTitleController.text = fetcher.titleQuery.query;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        ref
+            .read(chapterNotifierProvider.notifier)
+            .initList(novelPath: widget.novelPath, isReset: true);
+      },
+      child: MyScaffold(
+        contentPadding: 0,
+        appBar: AppBar(
+          title: const Text('Chapter Fetcher'),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //fetcher
+                Row(
+                  spacing: 5,
+                  children: [
+                    const Text('Fetcher'),
+                    Expanded(
+                      child: FetcherChooser(
+                        onChoosed: (fetcher) {
+                          queryController.text = fetcher.contentQuery.query;
+                          urlController.text = fetcher.testUrl;
+                          queryTitleController.text = fetcher.titleQuery.query;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  spacing: 10,
+                  children: [
+                    Expanded(
+                      child: TTextField(
+                        controller: urlController,
+                        label: const Text('Website Url'),
+                        isSelectedAll: true,
+                        focusNode: focusNodeUrl,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        final text = await pasteFromClipboard();
+                        if (text.isEmpty) return;
+                        urlController.text = text;
+                        _fetch();
                       },
+                      icon: const Icon(Icons.paste),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                spacing: 10,
-                children: [
-                  Expanded(
-                    child: TTextField(
-                      controller: urlController,
-                      label: const Text('Website Url'),
-                      isSelectedAll: true,
-                      focusNode: focusNodeUrl,
+                    // const SizedBox(width: 10),
+                  ],
+                ),
+                TTextField(
+                  controller: queryTitleController,
+                  label: const Text('Title Query'),
+                  isSelectedAll: true,
+                  focusNode: focusNodeQueryTitle,
+                ),
+                TTextField(
+                  controller: queryController,
+                  label: const Text('Content Query'),
+                  isSelectedAll: true,
+                  focusNode: focusNodeQuery,
+                ),
+                isLoading
+                    ? TLoader(
+                        size: 30,
+                      )
+                    : IconButton(
+                        onPressed: _fetch,
+                        icon: const Icon(Icons.download),
+                      ),
+                const Divider(),
+                // chapter form
+                Row(
+                  spacing: 5,
+                  children: [
+                    Expanded(
+                      child: TTextField(
+                        controller: chapterController,
+                        label: const Text('Chapter'),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        textInputType: TextInputType.number,
+                        isSelectedAll: true,
+                        focusNode: focusNodeChapter,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      final text = await pasteFromClipboard();
-                      if (text.isEmpty) return;
-                      urlController.text = text;
-                      _fetch();
-                    },
-                    icon: const Icon(Icons.paste),
-                  ),
-                  // const SizedBox(width: 10),
-                ],
-              ),
-              TTextField(
-                controller: queryTitleController,
-                label: const Text('Title Query'),
-                isSelectedAll: true,
-                focusNode: focusNodeQueryTitle,
-              ),
-              TTextField(
-                controller: queryController,
-                label: const Text('Content Query'),
-                isSelectedAll: true,
-                focusNode: focusNodeQuery,
-              ),
-              isLoading
-                  ? TLoader(
-                      size: 30,
-                    )
-                  : IconButton(
-                      onPressed: _fetch,
-                      icon: const Icon(Icons.download),
+                    const SizedBox(width: 30),
+                    IconButton(
+                      color: Colors.red,
+                      onPressed: () {
+                        if (chapterController.text.isEmpty) return;
+                        int num = int.parse(chapterController.text);
+                        if (num == 1) return;
+                        chapterController.text = '${num - 1}';
+                        _showResultOfflineContentText();
+                      },
+                      icon: const Icon(Icons.remove_circle),
                     ),
-              const Divider(),
-              // chapter form
-              Row(
-                spacing: 5,
-                children: [
-                  Expanded(
-                    child: TTextField(
-                      controller: chapterController,
-                      label: const Text('Chapter'),
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      textInputType: TextInputType.number,
-                      isSelectedAll: true,
-                      focusNode: focusNodeChapter,
+                    IconButton(
+                      color: Colors.green,
+                      onPressed: () {
+                        if (chapterController.text.isEmpty) return;
+                        int num = int.parse(chapterController.text);
+                        chapterController.text = '${num + 1}';
+                        _showResultOfflineContentText();
+                      },
+                      icon: const Icon(Icons.add_circle),
                     ),
-                  ),
-                  const SizedBox(width: 30),
-                  IconButton(
-                    color: Colors.red,
-                    onPressed: () {
-                      if (chapterController.text.isEmpty) return;
-                      int num = int.parse(chapterController.text);
-                      if (num == 1) return;
-                      chapterController.text = '${num - 1}';
-                      _showResultOfflineContentText();
-                    },
-                    icon: const Icon(Icons.remove_circle),
-                  ),
-                  IconButton(
-                    color: Colors.green,
-                    onPressed: () {
-                      if (chapterController.text.isEmpty) return;
-                      int num = int.parse(chapterController.text);
-                      chapterController.text = '${num + 1}';
-                      _showResultOfflineContentText();
-                    },
-                    icon: const Icon(Icons.add_circle),
-                  ),
-                  const SizedBox(width: 30),
-                ],
-              ),
+                    const SizedBox(width: 30),
+                  ],
+                ),
 
-              resultController.text.isEmpty
-                  ? const SizedBox.shrink()
-                  : TTextField(
-                      controller: resultController,
-                      maxLines: null,
-                      focusNode: focusNodeResult,
-                      label: const Text('Result'),
-                    ),
-            ],
+                resultController.text.isEmpty
+                    ? const SizedBox.shrink()
+                    : TTextField(
+                        controller: resultController,
+                        maxLines: null,
+                        focusNode: focusNodeResult,
+                        label: const Text('Result'),
+                      ),
+              ],
+            ),
           ),
         ),
+        floatingActionButton: isLoading
+            ? null
+            : FloatingActionButton(
+                onPressed: _addChapter,
+                child: const Icon(Icons.save),
+              ),
       ),
-      floatingActionButton: isLoading
-          ? null
-          : FloatingActionButton(
-              onPressed: _addChapter,
-              child: const Icon(Icons.save),
-            ),
     );
   }
 }

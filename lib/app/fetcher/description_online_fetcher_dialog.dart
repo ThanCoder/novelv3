@@ -50,8 +50,7 @@ class _DescriptionOnlineFetcherDialogState
       );
 
       if (!mounted) return;
-      resultController.text =
-          HtmlDomServices.getNewLine(html, replacer: '\n\n');
+      resultController.text = HtmlDomServices.getNewLine(html, replacer: '\n');
       setState(() {
         isLoading = false;
       });

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
-import 'package:novel_v3/app/dialogs/description_online_fetcher_dialog.dart';
+import 'package:novel_v3/app/fetcher/description_online_fetcher_dialog.dart';
 import 'package:novel_v3/app/novel_data/data_export_dialog.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';

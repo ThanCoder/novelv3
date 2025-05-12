@@ -18,7 +18,7 @@ class FetcherConfigServices {
             'https://telegra.ph/%E1%81%81%E1%81%81%E1%81%84%E1%81%87-04-29',
         titleQuery: FetcherQuery(query: ''),
         // titleQuery: FetcherQuery(query: '.tl_article_header h1'),
-        contentQuery: FetcherQuery(query: '#_tl_editor p'),
+        contentQuery: FetcherQuery(query: '#_tl_editor'),
       ),
     ];
   }

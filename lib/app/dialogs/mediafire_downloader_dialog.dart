@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
-import 'package:novel_v3/app/services/mediafire_services.dart';
 import 'package:novel_v3/app/widgets/index.dart';
 
 class MediafireDownloaderDialog extends StatefulWidget {
@@ -45,12 +44,10 @@ class _MediafireDownloaderDialogState extends State<MediafireDownloaderDialog> {
       setState(() {
         isLoading = true;
       });
-      final res = await MediafireServices.fetchDirectDownloadLink(
-        urlController.text,
-        isUsedProxy: isUsedProxyServer,
-      );
-      print(res.title);
-      print(res.downloadUrl);
+      // final res = await MediafireServices.fetchDirectDownloadLink(
+      //   urlController.text,
+      //   isUsedProxy: isUsedProxyServer,
+      // );
       // final html = await DioServices.instance
       //     .getBrowsesrProxyHtml(urlController.text, delaySec: 3);
       // File('res.html').writeAsStringSync(html);
