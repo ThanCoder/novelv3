@@ -25,7 +25,7 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
   final contentController = TextEditingController();
 
   late NovelModel novel;
-  bool isChanged = false;
+  bool isChanged = true;
 
   @override
   void initState() {

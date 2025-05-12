@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
@@ -101,6 +103,23 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
     );
   }
 
+  void _setCover(PdfModel pdf) async {
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
+    if (novel == null) return;
+
+    final file = File(pdf.coverPath);
+    if (!await file.exists()) return;
+    // if (widget.novel == null) return;
+    final coverPath = novel.coverPath;
+
+    if (coverPath.isEmpty) return;
+    await file.copy(coverPath);
+    await clearAndRefreshImage();
+
+    if (!mounted) return;
+    showMessage(context, 'Cover Added');
+  }
+
   void _showContextMenu(PdfModel pdf) {
     showModalBottomSheet(
       context: context,
@@ -120,6 +139,15 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
                   _showInfo(pdf);
                 },
               ),
+
+              ListTile(
+                leading: const Icon(Icons.edit_document),
+                title: const Text('Edit Config'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _editConfig(pdf);
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.copy_all),
                 title: const Text('Copy Name'),
@@ -129,11 +157,11 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.edit_document),
-                title: const Text('Edit Config'),
+                leading: const Icon(Icons.image),
+                title: const Text('Set Cover'),
                 onTap: () {
                   Navigator.pop(context);
-                  _editConfig(pdf);
+                  _setCover(pdf);
                 },
               ),
               ListTile(
@@ -183,7 +211,7 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
                 itemBuilder: (context, index) => PdfListItem(
                   pdf: list[index],
                   onClicked: (pdf) {
-                    goPdfReader(context,ref, pdf);
+                    goPdfReader(context, ref, pdf);
                   },
                   onLongClicked: _showContextMenu,
                 ),
