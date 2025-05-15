@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/my_libs/general_server/current_version_component.dart';
 import 'package:novel_v3/app/screens/app_setting_screen.dart';
 import 'package:novel_v3/app/my_libs/novel_data/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
@@ -52,6 +53,8 @@ class AppMorePage extends StatelessWidget {
                 );
               },
             ),
+            // version
+            const CurrentVersionComponent(),
             //Clean Cache
             const CacheComponent(),
             const Divider(),

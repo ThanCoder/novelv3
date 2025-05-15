@@ -108,8 +108,9 @@ class _TextReaderScreenState extends ConsumerState<TextReaderScreen> {
   }
 
   void _loadTopItem() {
+    if (list.isEmpty) return;
     isDataLoading = true;
-    if (currentData.isExistsPrev()) {
+    if (list.first.isExistsPrev()) {
       // currentData = currentData.getPrev();
       // list.insert(0, currentData);
       isShowPrevChapterConfirmBox = true;
@@ -123,9 +124,10 @@ class _TextReaderScreenState extends ConsumerState<TextReaderScreen> {
   }
 
   void _loadDownItem() {
-    if (currentData.isExistsNext()) {
+    if (list.isEmpty) return;
+    if (list.last.isExistsNext()) {
       isDataLoading = true;
-      currentData = currentData.getNext();
+      currentData = list.last.getNext();
       list.add(currentData);
       isDataLoading = false;
       setState(() {});
@@ -201,6 +203,7 @@ class _TextReaderScreenState extends ConsumerState<TextReaderScreen> {
     );
   }
 
+  //get prev chapter
   Widget _showPreChapterWidget() {
     if (!isShowPrevChapterConfirmBox) {
       return const SizedBox.shrink();
@@ -211,10 +214,10 @@ class _TextReaderScreenState extends ConsumerState<TextReaderScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Go Chapter: ${currentData.number - 1}'),
+            Text('Go Chapter: ${list.first.number - 1}'),
             IconButton(
               onPressed: () {
-                currentData = currentData.getPrev();
+                currentData = list.first.getPrev();
                 list.insert(0, currentData);
                 isShowPrevChapterConfirmBox = false;
                 setState(() {});

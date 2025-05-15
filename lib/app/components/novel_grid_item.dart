@@ -22,18 +22,15 @@ class NovelGridItem extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: Stack(
           children: [
-            // cover
-            Column(
-              children: [
-                Expanded(
-                  child: MyImageFile(
-                    path: novel.coverPath,
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                  ),
-                ),
-              ],
+            Positioned.fill(
+              child: MyImageFile(
+                path: novel.coverPath,
+                fit: BoxFit.fill,
+                width: double.infinity,
+              ),
             ),
+            // cover
+
             // title
             Positioned(
               left: 0,

@@ -1,3 +1,14 @@
+## 2.0.1
+
+## Fixed
+- novel data installer error
+- text reader next,prev scroll error
+
+## 2.0.0
+
+## Changed
+- provider -> riverpop 
+
 ## 1.9.0
 - changed ui
 
