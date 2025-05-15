@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/extensions/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class DownloadDialog extends StatefulWidget {
   String title;
@@ -92,7 +92,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
             fileSize == 0
                 ? const SizedBox.shrink()
                 : Text(
-                    '${downloadedSize.toDouble().toParseFileSize()} / ${fileSize.toDouble().toParseFileSize()}'),
+                    '${downloadedSize.toDouble().toFileSizeLabel()} / ${fileSize.toDouble().toFileSizeLabel()}'),
           ],
         ),
       ),

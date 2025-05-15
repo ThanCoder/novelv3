@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:novel_v3/app/extensions/string_extension.dart';
 import 'package:novel_v3/app/services/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class NovelDataModel {
   String title;

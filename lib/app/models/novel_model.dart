@@ -2,10 +2,10 @@
 import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/extensions/file_system_entity_extension.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class NovelModel {
   String title;

@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_home_action_button.dart';
 import 'package:novel_v3/app/action_buttons/search_button.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
-import 'package:novel_v3/app/extensions/index.dart';
-import 'package:novel_v3/app/general_server/general_server_noti_button.dart';
+import 'package:novel_v3/app/my_libs/general_server/general_server_noti_button.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 import '../../constants.dart';
 import '../../widgets/index.dart';
@@ -52,7 +52,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     List<NovelModel> bookList = ref.watch(bookmarkNotifierProvider).list;
     List<NovelModel> recentList = ref.watch(recentNotifierProvider).list;
-
     return CustomScrollView(
       slivers: [
         SliverAppBar(

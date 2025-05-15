@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../extensions/string_extension.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 import '../constants.dart';
 import '../notifiers/app_notifier.dart';

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/extensions/datetime_extension.dart';
-import 'package:novel_v3/app/extensions/double_extension.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfListItem extends StatelessWidget {
   PdfModel pdf;
@@ -57,7 +56,7 @@ class PdfListItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text('Size: ${pdf.size.toDouble().toParseFileSize()}'),
+                    Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
                     Text(
                         'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
                     Text(

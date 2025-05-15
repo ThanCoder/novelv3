@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/status_text.dart';
-import 'package:novel_v3/app/extensions/datetime_extension.dart';
-import 'package:novel_v3/app/extensions/double_extension.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class NovelDataListItem extends StatelessWidget {
   NovelDataModel novelData;
@@ -63,7 +62,7 @@ class NovelDataListItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                          'Size: ${novelData.size.toDouble().toParseFileSize()}'),
+                          'Size: ${novelData.size.toDouble().toFileSizeLabel()}'),
                       // status
                       Wrap(
                         spacing: 5,

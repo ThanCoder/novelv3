@@ -5,7 +5,7 @@ import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
-import 'package:novel_v3/app/novel_data/novel_data_scanner.dart';
+import 'package:novel_v3/app/my_libs/novel_data/novel_data_scanner_screen.dart';
 
 class NovelHomeActionButton extends ConsumerStatefulWidget {
   const NovelHomeActionButton({super.key});
@@ -35,7 +35,7 @@ class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
           try {
             final novel = NovelModel.create(title.trim());
             provider.insertUI(novel);
-            goNovelEditForm(context,ref, novel);
+            goNovelEditForm(context, ref, novel);
           } catch (e) {
             showDialogMessage(context, e.toString());
           }
@@ -68,7 +68,7 @@ class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const NovelDataScanner(),
+                      builder: (context) => const NovelDataScannerScreen(),
                     ),
                   );
                 },

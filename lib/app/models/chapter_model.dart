@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/extensions/index.dart';
-import 'package:novel_v3/app/text_reader/text_reader_data_interface.dart';
+import 'package:novel_v3/app/my_libs/text_reader/text_reader_data_interface.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ChapterModel extends TextReaderDataInterface {
   String title;

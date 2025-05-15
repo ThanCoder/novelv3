@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/riverpods/states/pdf_state.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';

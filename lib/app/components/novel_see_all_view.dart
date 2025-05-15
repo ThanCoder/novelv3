@@ -28,6 +28,8 @@ class NovelSeeAllView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print('${list.length} > $showCount');
+
     final showList = list.take(showCount).toList();
     if (showList.isEmpty) return const SizedBox.shrink();
     int _showLines = 1;
@@ -36,6 +38,7 @@ class NovelSeeAllView extends StatelessWidget {
     } else {
       _showLines = showLines ?? 1;
     }
+
     return Container(
       padding: EdgeInsets.all(padding),
       margin: margin,
@@ -48,16 +51,18 @@ class NovelSeeAllView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(title),
-                GestureDetector(
-                  onTap: () => onSeeAllClicked(title, list),
-                  child: const MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Text(
-                      'See All',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
+                list.length > showCount
+                    ? GestureDetector(
+                        onTap: () => onSeeAllClicked(title, list),
+                        child: const MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text(
+                            'See All',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ],
             ),
             Expanded(
@@ -65,7 +70,7 @@ class NovelSeeAllView extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: showList.length,
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 150,
+                  maxCrossAxisExtent: 170,
                   mainAxisExtent: 130,
                   mainAxisSpacing: 5,
                   crossAxisSpacing: 5,

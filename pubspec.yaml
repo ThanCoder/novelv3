@@ -19,11 +19,8 @@ dependencies:
   flutter_spinkit: ^5.2.1
   getwidget: ^5.0.0
   html: ^0.15.5
-  intl: ^0.20.2
-  mime: ^2.0.0
   pdfrx: ^1.1.12
-  than_pkg: ^1.6.7
-  timeago: ^3.2.2
+  than_pkg: ^2.1.0
   t_server: ^1.0.3
   flutter_riverpod: ^2.6.1
 

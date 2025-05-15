@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
-import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
@@ -94,7 +93,7 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Title: ${pdf.title}'),
-              Text('Size: ${pdf.size.toDouble().toParseFileSize()}'),
+              Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
               Text(
                   'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
               Text(

@@ -2,8 +2,8 @@
 import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfModel {
   String title;

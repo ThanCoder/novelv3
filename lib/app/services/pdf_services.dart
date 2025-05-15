@@ -2,12 +2,11 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
-import 'package:mime/mime.dart';
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/extensions/string_extension.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfServices {
   static final PdfServices instance = PdfServices._();

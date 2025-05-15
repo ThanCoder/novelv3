@@ -4,12 +4,12 @@ import 'package:novel_v3/app/action_buttons/novel_content_chapter_action_button.
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/components/core/index.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
-import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ContentChapterPage extends ConsumerStatefulWidget {
   const ContentChapterPage({super.key});

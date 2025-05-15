@@ -6,12 +6,12 @@ import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/dialogs/pdf_config_edit_dialog.dart';
-import 'package:novel_v3/app/extensions/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 import '../../components/core/index.dart';
 
@@ -90,7 +90,7 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Title: ${pdf.title}'),
-              Text('Size: ${pdf.size.toDouble().toParseFileSize()}'),
+              Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
               Text(
                   'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
               Text(
