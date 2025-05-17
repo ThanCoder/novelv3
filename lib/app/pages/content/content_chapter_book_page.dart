@@ -6,6 +6,7 @@ import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ContentChapterBookPage extends ConsumerStatefulWidget {
   const ContentChapterBookPage({super.key});
@@ -88,6 +89,12 @@ class _ContentChapterBookPageState
     );
   }
 
+  Future<void> _refersh() async {
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
+    if (novel == null) return;
+    ref.read(chapterBookmarkNotifierProvider.notifier).initList(novel.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(chapterBookmarkNotifierProvider);
@@ -96,21 +103,32 @@ class _ContentChapterBookPageState
     return MyScaffold(
       appBar: AppBar(
         title: const Text('Book Mark'),
+        actions: [
+          PlatformExtension.isDesktop()
+              ? IconButton(
+                  onPressed: _refersh,
+                  icon: const Icon(Icons.refresh),
+                )
+              : const SizedBox.shrink(),
+        ],
       ),
       body: isLoading
           ? TLoader()
-          : ListView.separated(
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: list.length,
-              itemBuilder: (context, index) => ChapterBookListItem(
-                book: list[index],
-                onClicked: (book) {
-                  final novel =
-                      ref.read(novelNotifierProvider.notifier).getCurrent;
-                  if (novel == null) return;
-                  goTextReader(context, ref, book.toChapter(novel.path));
-                },
-                onLongClicked: _showMenu,
+          : RefreshIndicator.noSpinner(
+              onRefresh: _refersh,
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: list.length,
+                itemBuilder: (context, index) => ChapterBookListItem(
+                  book: list[index],
+                  onClicked: (book) {
+                    final novel =
+                        ref.read(novelNotifierProvider.notifier).getCurrent;
+                    if (novel == null) return;
+                    goTextReader(context, ref, book.toChapter(novel.path));
+                  },
+                  onLongClicked: _showMenu,
+                ),
               ),
             ),
     );

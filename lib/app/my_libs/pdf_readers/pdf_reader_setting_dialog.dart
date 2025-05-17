@@ -22,7 +22,8 @@ class PdfReaderSettingDialog extends StatefulWidget {
 }
 
 class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
-  TextEditingController mouseScrollWheelController = TextEditingController();
+  final mouseScrollWheelController = TextEditingController();
+  final scrollByArrowKeyController = TextEditingController();
   late PdfConfigModel config;
 
   @override
@@ -34,9 +35,11 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
 
   void init() {
     mouseScrollWheelController.text = config.scrollByMouseWheel.toString();
+    scrollByArrowKeyController.text = config.scrollByArrowKey.toString();
   }
 
   void _onApply() {
+    Navigator.pop(context);
     widget.onApply(config);
   }
 
@@ -50,6 +53,18 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // dart mode
+              ListTileWithDesc(
+                title: 'Dark Mode',
+                trailing: Switch(
+                  value: config.isDarkMode,
+                  onChanged: (value) {
+                    setState(() {
+                      config.isDarkMode = value;
+                    });
+                  },
+                ),
+              ),
               //text selection
               ListTileWithDesc(
                 title: 'Text Selection',
@@ -138,6 +153,33 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                         debugPrint(e.toString());
                       }
                     },
+                    onSubmitted: (v) => _onApply(),
+                  ),
+                ),
+              ),
+              //mouse wheel
+              ListTileWithDesc(
+                title: 'Keyboard Scroll Speed',
+                trailing: Expanded(
+                  child: TTextField(
+                    controller: scrollByArrowKeyController,
+                    hintText: '50',
+                    textInputType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d*\.?\d*$'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value.isEmpty) return;
+                      try {
+                        config.scrollByArrowKey = double.parse(value);
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
+                    },
+                    onSubmitted: (v) => _onApply(),
                   ),
                 ),
               ),
@@ -154,7 +196,6 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
             _onApply();
           },
           child: const Text('Apply'),

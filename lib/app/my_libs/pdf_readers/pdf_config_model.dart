@@ -16,6 +16,7 @@ class PdfConfigModel {
   bool isTextSelection;
   double scrollByMouseWheel;
   String screenOrientation = ScreenOrientationTypes.Portrait.name;
+  double scrollByArrowKey;
   bool isOnBackpressConfirm;
   PdfConfigModel({
     this.page = 1,
@@ -29,6 +30,7 @@ class PdfConfigModel {
     this.isTextSelection = false,
     this.scrollByMouseWheel = 1.2,
     this.isOnBackpressConfirm = false,
+    this.scrollByArrowKey = 50,
   });
 
   factory PdfConfigModel.fromPath(String configPath) {
@@ -54,6 +56,7 @@ class PdfConfigModel {
       isTextSelection: map['is_text_selection'] ?? false,
       scrollByMouseWheel: map['scroll_by_mouse_wheel'] ?? 1.2,
       isOnBackpressConfirm: map['is_on_back_press_confirm'] ?? false,
+      scrollByArrowKey: map['scrollByArrowKey'] ?? 50.0,
     );
     config.screenOrientation =
         map['screen_orientation'] ?? ScreenOrientationTypes.Portrait.name;
@@ -73,6 +76,7 @@ class PdfConfigModel {
         'scroll_by_mouse_wheel': scrollByMouseWheel,
         'is_on_back_press_confirm': isOnBackpressConfirm,
         'screen_orientation': screenOrientation,
+        'scrollByArrowKey': scrollByArrowKey,
       };
 
   void savePath(String configPath) {

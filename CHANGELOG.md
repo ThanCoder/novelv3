@@ -1,6 +1,7 @@
 ## 2.0.1
 
 ## Fixed
+- pdf reader backpress error
 - novel data installer error
 - text reader next,prev scroll error
 

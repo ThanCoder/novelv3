@@ -87,7 +87,7 @@ void goTextReader(
   ChapterModel chapter,
 ) async {
   final provider = ref.read(chapterBookmarkNotifierProvider.notifier);
-  await provider.initList(chapter.getNovelPath);
+  // await provider.initList(chapter.getNovelPath);
 
   if (!context.mounted) return;
   Navigator.push(

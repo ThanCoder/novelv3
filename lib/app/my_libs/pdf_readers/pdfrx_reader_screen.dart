@@ -33,9 +33,9 @@ class PdfrxReaderScreen extends StatefulWidget {
   State<PdfrxReaderScreen> createState() => _PdfrxReaderScreenState();
 }
 
-class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
-    with WindowListener {
+class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   PdfViewerController pdfController = PdfViewerController();
+  final keyboardListenerFocus = FocusNode();
   bool isLoading = true;
   int currentPage = 1;
   int pageCount = 0;
@@ -52,7 +52,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
 
   @override
   void initState() {
-    windowManager.addListener(this);
+    keyboardListenerFocus.requestFocus();
     _saveConfigCallback = widget.saveConfig ?? (config) {};
     config = widget.pdfConfig;
     oldPage = config.page;
@@ -111,44 +111,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
       });
     } catch (e) {
       debugPrint('_initConfig: ${e.toString()}');
-    }
-  }
-
-  @override
-  void onWindowClose() {
-    _saveConfig();
-    super.onWindowClose();
-  }
-
-  void _onKeyboradPressed(KeyEvent ev) {
-    if (ev is KeyDownEvent) {
-      String? keyName = ev.logicalKey.debugName;
-      if (keyName != null && keyName.isNotEmpty) {
-        _keySwitch(keyName);
-      }
-    }
-  }
-
-  void _keySwitch(String kName) {
-    switch (kName) {
-      case 'Arrow Right':
-        if (currentPage <= pageCount) {
-          goPage(currentPage + 1);
-        }
-        break;
-      case 'Arrow Left':
-        if (currentPage > 0) {
-          goPage(currentPage - 1);
-        }
-        break;
-      case 'Key F':
-        _toggleFullScreen(!isFullScreen);
-
-        break;
-      case 'Arrow Up':
-        break;
-      case 'Arrow Down':
-        break;
     }
   }
 
@@ -220,6 +182,19 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
         enableTextSelection: config.isTextSelection,
         pageDropShadow: null,
         useAlternativeFitScaleAsMinScale: false,
+        scrollByArrowKey: config.scrollByArrowKey,
+        enableKeyboardNavigation: true,
+        onKey: (params, key, isRealKeyPress) {
+          if (key.keyLabel == 'F') {
+            _toggleFullScreen(!isFullScreen);
+            return true;
+          }
+          return null;
+        },
+        //error
+        errorBannerBuilder: (context, error, stackTrace, documentRef) {
+          return const Center(child: Text('pdf error'));
+        },
         //loading
         loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
           return Center(
@@ -404,6 +379,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
           onCancel: () {},
           onSubmit: () {
             isCanGoBack = true;
+            setState(() {});
             Navigator.pop(context);
           },
         ),
@@ -439,23 +415,19 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
                   goPage(pageIndex);
                 },
               ),
-        body: KeyboardListener(
-          focusNode: FocusNode(),
-          onKeyEvent: _onKeyboradPressed,
-          child: GestureDetector(
-            onDoubleTap: () => _toggleFullScreen(!isFullScreen),
-            onSecondaryTap: _showSetting,
-            child: Stack(
-              children: [
-                _getColorFilteredPdfReader(),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: _getHeaderWidgets(),
-                ),
-              ],
-            ),
+        body: GestureDetector(
+          onDoubleTap: () => _toggleFullScreen(!isFullScreen),
+          onSecondaryTap: _showSetting,
+          child: Stack(
+            children: [
+              _getColorFilteredPdfReader(),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: _getHeaderWidgets(),
+              ),
+            ],
           ),
         ),
       ),
@@ -475,7 +447,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
   }
 
   void _close() async {
-    windowManager.removeListener(this);
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
     ThanPkg.platform.toggleKeepScreen(isKeep: false);
     if (Platform.isAndroid) {
@@ -486,6 +457,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen>
 
   @override
   void dispose() {
+    keyboardListenerFocus.dispose();
     _close();
     super.dispose();
   }
