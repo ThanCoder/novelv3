@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/index.dart';
-import 'package:novel_v3/app/pages/content/content_chapter_book_page.dart';
-import 'package:novel_v3/app/pages/content/content_chapter_page.dart';
-import 'package:novel_v3/app/pages/content/content_home_page.dart';
-import 'package:novel_v3/app/pages/content/content_pdf_page.dart';
+import 'package:novel_v3/app/screens/content/pages/content_chapter_book_page.dart';
+import 'package:novel_v3/app/screens/content/pages/content_chapter_page.dart';
+import 'package:novel_v3/app/screens/content/pages/content_home_page.dart';
+import 'package:novel_v3/app/screens/content/pages/content_pdf_page.dart';
 
 class NovelContentScreen extends StatefulWidget {
   NovelModel novel;

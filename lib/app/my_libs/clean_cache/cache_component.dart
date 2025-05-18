@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../../dialogs/core/index.dart';
 import '../../services/core/index.dart';
-import '../../widgets/index.dart';
 import '../../components/index.dart';
 
 class CacheComponent extends StatefulWidget {
@@ -19,7 +19,7 @@ class _CacheComponentState extends State<CacheComponent> {
     if (CacheServices.getCount() == 0) {
       return const SizedBox.shrink();
     }
-    return ListTileWithDesc(
+    return TListTileWithDesc(
       onClick: () {
         showDialog(
           context: context,

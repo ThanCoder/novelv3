@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/status_text.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/widgets/core/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovelOnlineGridItem extends StatelessWidget {
   String url;
@@ -28,7 +28,7 @@ class NovelOnlineGridItem extends StatelessWidget {
             Column(
               children: [
                 Expanded(
-                  child: MyImageUrl(
+                  child: TImageUrl(
                     url: '$url/download?path=${novel.coverPath}',
                     fit: BoxFit.fill,
                     width: double.infinity,

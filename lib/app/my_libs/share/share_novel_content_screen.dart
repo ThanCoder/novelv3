@@ -11,7 +11,8 @@ import 'package:novel_v3/app/my_libs/share/novel_all_download_dialog.dart';
 import 'package:novel_v3/app/my_libs/share/share_file.dart';
 import 'package:novel_v3/app/my_libs/share/share_novel_list_item.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
-import 'package:novel_v3/app/widgets/core/index.dart';
+import 'package:t_widgets/t_widgets.dart';
+
 import 'package:than_pkg/than_pkg.dart';
 
 import 'share_file_type.dart';
@@ -190,8 +191,7 @@ class _ShareNovelContentScreenState
       onPopInvokedWithResult: (didPop, result) {
         ref.read(novelNotifierProvider.notifier).initList(isReset: true);
       },
-      child: MyScaffold(
-        contentPadding: 0,
+      child: Scaffold(
         appBar: AppBar(
           title: Text(widget.novel.title),
         ),

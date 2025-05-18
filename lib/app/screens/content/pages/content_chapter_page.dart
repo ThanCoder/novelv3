@@ -8,7 +8,8 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/chapter_edit_form.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:novel_v3/app/screens/content/background_scaffold.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ContentChapterPage extends ConsumerStatefulWidget {
@@ -107,53 +108,82 @@ class _ContentChapterPageState extends ConsumerState<ContentChapterPage> {
     final provider = ref.watch(chapterNotifierProvider);
     final isLoading = provider.isLoading;
     final list = provider.list;
-    return MyScaffold(
-      appBar: AppBar(
-        title: list.isNotEmpty
-            ? Text('Count: ${list.length}')
-            : const Text('Chapter'),
-        actions: [
-          PlatformExtension.isDesktop()
-              ? IconButton(
-                  onPressed: () => init(isReset: true),
-                  icon: const Icon(Icons.refresh),
-                )
-              : const SizedBox.shrink(),
-          IconButton(
-            onPressed: () {
-              ref.read(chapterNotifierProvider.notifier).reversedList();
-              isSorted = !isSorted;
-              setState(() {});
-            },
-            icon: const Icon(
-              Icons.sort_by_alpha_sharp,
-            ),
-          ),
-          NovelContentChapterActionButton(
-            onBackpress: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-      body: isLoading
-          ? TLoader()
-          : RefreshIndicator(
-              onRefresh: () async {
-                await init(isReset: true);
-              },
-              child: ListView.separated(
-                itemBuilder: (context, index) => ChapterListItem(
-                  chapter: list[index],
-                  onClicked: (chapter) {
-                    goTextReader(context, ref, chapter);
-                  },
-                  onLongClicked: _showMenu,
+    return BackgroundScaffold(
+      stackChildren: [
+        isLoading
+            ? TLoader()
+            : RefreshIndicator(
+                onRefresh: () async {
+                  await init(isReset: true);
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      backgroundColor: const Color.fromARGB(0, 97, 97, 97),
+                      title: list.isNotEmpty
+                          ? Text('Count: ${list.length}')
+                          : const Text('Chapter'),
+                      actions: [
+                        PlatformExtension.isDesktop()
+                            ? IconButton(
+                                onPressed: () => init(isReset: true),
+                                icon: const Icon(Icons.refresh),
+                              )
+                            : const SizedBox.shrink(),
+                        IconButton(
+                          onPressed: () {
+                            ref
+                                .read(chapterNotifierProvider.notifier)
+                                .reversedList();
+                            isSorted = !isSorted;
+                            setState(() {});
+                            // showCupertinoDialog(
+                            //   context: context,
+                            //   builder: (context) => TSortDialog(
+                            //     list: [
+                            //       ...TSort.getDefaultList,
+                            //     ],
+                            //     value:
+                            //         // TSort(title: 'Title', choose: ['Z to A']),
+                            //         TSort(
+                            //       title: 'Date',
+                            //       choose: [
+                            //         'Newest',
+                            //       ],
+                            //     ),
+                            //     onChoosed: (title, choose) {
+                            //       print(title);
+                            //       print(choose);
+                            //     },
+                            //   ),
+                            // );
+                          },
+                          icon: const Icon(
+                            Icons.sort_by_alpha_sharp,
+                          ),
+                        ),
+                        NovelContentChapterActionButton(
+                          onBackpress: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                    SliverList.separated(
+                      itemBuilder: (context, index) => ChapterListItem(
+                        chapter: list[index],
+                        onClicked: (chapter) {
+                          goTextReader(context, ref, chapter);
+                        },
+                        onLongClicked: _showMenu,
+                      ),
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemCount: list.length,
+                    )
+                  ],
                 ),
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: list.length,
               ),
-            ),
+      ],
     );
   }
 }

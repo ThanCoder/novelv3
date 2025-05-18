@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../../widgets/core/index.dart';
 import '../index.dart';
 import 'package:flutter/material.dart';
 
@@ -143,7 +143,7 @@ class ReleaseAppListItem extends StatelessWidget {
           spacing: 5,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 100, height: 100, child: MyImageUrl(url: '')),
+            SizedBox(width: 100, height: 100, child: TImageUrl(url: '')),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +156,7 @@ class ReleaseAppListItem extends StatelessWidget {
                       ? const SizedBox.shrink()
                       : Text('Desc: ${app.description}'),
                   Text('Date: ${DateTime.parse(app.date).toParseTime()}'),
-                  Text('Ago: ${DateTime.parse(app.date).toTimeAgo()}'),
+                  Text('Ago: ${DateTime.parse(app.date).toAutoParseTime()}'),
                   app.url.isEmpty
                       ? const SizedBox.shrink()
                       : IconButton(

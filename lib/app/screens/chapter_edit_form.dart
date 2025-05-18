@@ -8,7 +8,7 @@ import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/chapter_services.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class ChapterEditForm extends ConsumerStatefulWidget {
   String novelPath;
@@ -145,7 +145,8 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
   }
 
   void _backpress() {
-    ref.read(chapterNotifierProvider.notifier)
+    ref
+        .read(chapterNotifierProvider.notifier)
         .initList(novelPath: widget.novelPath, isReset: true);
   }
 
@@ -156,8 +157,7 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
       onPopInvokedWithResult: (didPop, result) {
         _backpress();
       },
-      child: MyScaffold(
-        contentPadding: 0,
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('Chapter Form'),
         ),

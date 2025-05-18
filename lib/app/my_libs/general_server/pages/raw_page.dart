@@ -1,6 +1,6 @@
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:t_widgets/t_widgets.dart';
 
-import '../../../widgets/core/t_loader.dart';
 import '../index.dart';
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/models/chapter_model.dart';
-import 'package:novel_v3/app/widgets/core/t_text_field.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class AddBookmarkTitleDialog extends StatefulWidget {
   ChapterModel chapter;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class AuthorWrapView extends StatelessWidget {
   String title;
@@ -26,7 +26,7 @@ class AuthorWrapView extends StatelessWidget {
             (index) {
               final title = list[index];
               return TChip(
-                title: '#$title',
+                title: Text('#$title'),
                 onClick: () => onClicked(title),
               );
             },

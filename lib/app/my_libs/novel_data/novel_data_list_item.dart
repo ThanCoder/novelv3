@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/status_text.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class NovelDataListItem extends StatelessWidget {
@@ -36,9 +36,9 @@ class NovelDataListItem extends StatelessWidget {
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               spacing: 7,
               children: [
@@ -48,7 +48,7 @@ class NovelDataListItem extends StatelessWidget {
                   child: Container(
                     color:
                         isDarkThemeNotifier.value ? Colors.white : Colors.black,
-                    child: MyImageFile(path: novelData.coverPath),
+                    child: TImageFile(path: novelData.coverPath),
                   ),
                 ),
                 Expanded(
@@ -83,10 +83,7 @@ class NovelDataListItem extends StatelessWidget {
                               : const SizedBox.shrink(),
                         ],
                       ),
-                      Text(
-                          'Date: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toParseTime()}'),
-                      Text(
-                          'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toTimeAgo()}'),
+
                       isShowPathLabel
                           ? Text(
                               'Path: ${novelData.path}',
@@ -105,6 +102,10 @@ class NovelDataListItem extends StatelessWidget {
                                     : Colors.green,
                               ),
                             ),
+                      Text(
+                          'Date: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toParseTime()}'),
+                      // Text(
+                      //     'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toAutoParseTime()}'),
                     ],
                   ),
                 ),

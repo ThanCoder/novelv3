@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:t_widgets/t_widgets.dart';
 
-import '../../../widgets/core/index.dart';
 import '../index.dart';
 
 class ForwardProxyTTextField extends StatefulWidget {

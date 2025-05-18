@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 import '../../dialogs/core/index.dart';
 import '../../services/core/app_services.dart';
-import '../../widgets/index.dart';
 import '../index.dart';
 
 class CoverComponents extends StatefulWidget {
@@ -182,7 +182,7 @@ class _CoverComponentsState extends State<CoverComponents> {
           height: 150,
           child: isLoading
               ? TLoader()
-              : MyImageFile(
+              : TImageFile(
                   path: imagePath,
                   borderRadius: 5,
                 ),

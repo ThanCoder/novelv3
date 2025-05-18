@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,7 @@ class NovelReadedNumberButton extends ConsumerStatefulWidget {
 class _NovelReadedNumberButtonState
     extends ConsumerState<NovelReadedNumberButton> {
   void _showEdit() {
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (context) => RenameDialog(
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],

@@ -11,7 +11,7 @@ import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/services/pdf_services.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
 
@@ -97,7 +97,7 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
               Text(
                   'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
               Text(
-                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toTimeAgo()}'),
+                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toAutoParseTime()}'),
               Text('Path: ${pdf.path}'),
             ],
           ),
@@ -299,8 +299,7 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
       onPopInvokedWithResult: (didPop, result) {
         _backpress();
       },
-      child: MyScaffold(
-        contentPadding: 0,
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('PDF Scanner'),
           actions: [

@@ -5,7 +5,8 @@ import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:novel_v3/app/screens/content/background_scaffold.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ContentChapterBookPage extends ConsumerStatefulWidget {
@@ -100,37 +101,46 @@ class _ContentChapterBookPageState
     final provider = ref.watch(chapterBookmarkNotifierProvider);
     final isLoading = provider.isLoading;
     final list = provider.list;
-    return MyScaffold(
-      appBar: AppBar(
-        title: const Text('Book Mark'),
-        actions: [
-          PlatformExtension.isDesktop()
-              ? IconButton(
-                  onPressed: _refersh,
-                  icon: const Icon(Icons.refresh),
-                )
-              : const SizedBox.shrink(),
-        ],
-      ),
-      body: isLoading
-          ? TLoader()
-          : RefreshIndicator.noSpinner(
-              onRefresh: _refersh,
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: list.length,
-                itemBuilder: (context, index) => ChapterBookListItem(
-                  book: list[index],
-                  onClicked: (book) {
-                    final novel =
-                        ref.read(novelNotifierProvider.notifier).getCurrent;
-                    if (novel == null) return;
-                    goTextReader(context, ref, book.toChapter(novel.path));
-                  },
-                  onLongClicked: _showMenu,
+    return BackgroundScaffold(
+      stackChildren: [
+        isLoading
+            ? TLoader()
+            : RefreshIndicator(
+                onRefresh: init,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      backgroundColor: const Color.fromARGB(0, 97, 97, 97),
+                      title: const Text('Book Mark'),
+                      actions: [
+                        PlatformExtension.isDesktop()
+                            ? IconButton(
+                                onPressed: _refersh,
+                                icon: const Icon(Icons.refresh),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
+                    SliverList.separated(
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemCount: list.length,
+                      itemBuilder: (context, index) => ChapterBookListItem(
+                        book: list[index],
+                        onClicked: (book) {
+                          final novel = ref
+                              .read(novelNotifierProvider.notifier)
+                              .getCurrent;
+                          if (novel == null) return;
+                          goTextReader(
+                              context, ref, book.toChapter(novel.path));
+                        },
+                        onLongClicked: _showMenu,
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ),
+      ],
     );
   }
 }

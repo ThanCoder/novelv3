@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/screens/home_screen.dart';
+import 'package:novel_v3/app/screens/home/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

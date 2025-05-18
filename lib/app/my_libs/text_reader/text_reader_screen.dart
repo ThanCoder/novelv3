@@ -7,7 +7,7 @@ import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../widgets/core/index.dart';
+
 import 'text_reader_config_model.dart';
 import 'text_reader_setting_dialog.dart';
 
@@ -244,8 +244,7 @@ class _TextReaderScreenState extends ConsumerState<TextReaderScreen> {
         if (novel == null) return;
         novel.setRecenTextReader(currentData);
       },
-      child: MyScaffold(
-        contentPadding: 0,
+      child: Scaffold(
         body: GestureDetector(
           onLongPress: _showSetting,
           onSecondaryTap: _showSetting,

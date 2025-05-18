@@ -1,7 +1,7 @@
+import 'package:t_widgets/t_widgets.dart';
+
 import '../index.dart';
 import 'package:flutter/material.dart';
-
-import '../../../widgets/core/index.dart';
 
 class BrowserProxyTTextField extends StatefulWidget {
   TextEditingController controller;

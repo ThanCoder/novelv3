@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import '../index.dart';
-import '../../../widgets/core/index.dart';
 
 class ReleasePage extends StatelessWidget {
   const ReleasePage({super.key});
@@ -54,7 +54,7 @@ class ReleaseListItem extends StatelessWidget {
         SizedBox(
           width: 100,
           height: 100,
-          child: MyImageUrl(url: '$serverProxyUrl?url=${release.coverUrl}'),
+          child: TImageUrl(url: '$serverProxyUrl?url=${release.coverUrl}'),
         ),
         Expanded(
           child: Column(
@@ -64,10 +64,10 @@ class ReleaseListItem extends StatelessWidget {
               Text(release.title),
               // Text(release.packageName),
               release.description.isEmpty
-                  ?const  SizedBox.shrink()
+                  ? const SizedBox.shrink()
                   : Text(release.description),
               Text('Date: ${DateTime.parse(release.date).toParseTime()}'),
-              Text('Ago: ${DateTime.parse(release.date).toTimeAgo()}'),
+              Text('Ago: ${DateTime.parse(release.date).toAutoParseTime()}'),
               IconButton(
                 onPressed: () => onDownloadClicked(release),
                 icon: const Icon(Icons.download),

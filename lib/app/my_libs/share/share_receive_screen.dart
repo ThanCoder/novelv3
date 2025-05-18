@@ -5,9 +5,10 @@ import 'package:novel_v3/app/services/core/dio_services.dart';
 import 'package:novel_v3/app/my_libs/share/novel_online_grid_item.dart';
 import 'package:novel_v3/app/my_libs/share/share_novel_content_screen.dart';
 import 'package:novel_v3/app/my_libs/share/share_search_delegate.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../widgets/core/index.dart';
+
 
 class ShareReceiveScreen extends StatefulWidget {
   String url;
@@ -60,7 +61,7 @@ class _ShareReceiveScreenState extends State<ShareReceiveScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Receive Screen'),
         actions: [

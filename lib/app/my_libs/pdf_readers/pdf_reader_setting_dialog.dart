@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:t_widgets/t_widgets.dart';
 
-import '../../widgets/core/index.dart';
 import 'android_screen_orientation_chooser.dart';
 import 'pdf_config_model.dart';
 
@@ -54,7 +54,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
           child: Column(
             children: [
               // dart mode
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Dark Mode',
                 trailing: Switch(
                   value: config.isDarkMode,
@@ -66,7 +66,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 ),
               ),
               //text selection
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Text Selection',
                 desc: 'PDF Text ကို ကူးယူနိုင်ခြင်း',
                 trailing: Switch(
@@ -79,7 +79,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 ),
               ),
               //scroll thumb
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Scroll Thumbnail',
                 desc: 'ဘေးဘက်ခြမ်းက Scroll Thumb',
                 trailing: Switch(
@@ -92,7 +92,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 ),
               ),
               //keep screen
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Keep Screen',
                 desc: 'Screen ကိုအမြဲတမ်းဖွင့်ထားခြင်း',
                 trailing: Switch(
@@ -106,7 +106,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               ),
               //on backpress confirm
               Platform.isAndroid
-                  ? ListTileWithDesc(
+                  ? TListTileWithDesc(
                       title: 'Screen Orientation',
                       desc: 'Portrait,Landscape',
                       trailing: AndroidScreenOrientationChooser(
@@ -118,7 +118,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                     )
                   : const SizedBox.shrink(),
               //on backpress confirm
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'On Backpress Confirm',
                 desc: 'Reader ထဲက ထွက်ရင် အတည်ပြုခြင်း',
                 trailing: Switch(
@@ -131,8 +131,22 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 ),
               ),
 
+              // optional
+              const Divider(),
+              TListTileWithDesc(
+                title: config.isPanLocked ? 'Locked' : 'Lock',
+                trailing: Switch.adaptive(
+                  value: config.isPanLocked,
+                  onChanged: (value) {
+                    setState(() {
+                      config.isPanLocked = value;
+                    });
+                  },
+                ),
+              ),
+
               //mouse wheel
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Mouse Scroll',
                 trailing: Expanded(
                   child: TTextField(
@@ -158,7 +172,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 ),
               ),
               //mouse wheel
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Keyboard Scroll Speed',
                 trailing: Expanded(
                   child: TTextField(

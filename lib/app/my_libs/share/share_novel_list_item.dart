@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import 'share_file.dart';
@@ -28,7 +28,7 @@ class ShareNovelListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-              width: 130, height: 150, child: MyImageUrl(url: thumbnailUrl)),
+              width: 130, height: 150, child: TImageUrl(url: thumbnailUrl)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +40,7 @@ class ShareNovelListItem extends StatelessWidget {
                 Text(
                     'Date: ${DateTime.fromMillisecondsSinceEpoch(file.date).toParseTime()}'),
                 Text(
-                    'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toTimeAgo()}'),
+                    'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toAutoParseTime()}'),
                 IconButton(
                   onPressed: () => onDownloadClicked(file),
                   icon: Icon(

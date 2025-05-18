@@ -10,9 +10,10 @@ import 'package:novel_v3/app/services/novel_services.dart';
 import 'package:novel_v3/app/my_libs/share/share_file.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:t_server/t_server.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../widgets/core/index.dart';
+
 
 class ShareSendScreen extends StatefulWidget {
   const ShareSendScreen({super.key});
@@ -242,7 +243,7 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Send Screen'),
       ),

@@ -9,11 +9,12 @@ import 'package:novel_v3/app/dialogs/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/screens/content/background_scaffold.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../components/core/index.dart';
+import '../../../components/core/index.dart';
 
 class ContentPdfPage extends ConsumerStatefulWidget {
   const ContentPdfPage({super.key});
@@ -94,7 +95,7 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
               Text(
                   'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
               Text(
-                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toTimeAgo()}'),
+                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toAutoParseTime()}'),
               Text('Path: ${pdf.path}'),
             ],
           ),
@@ -195,29 +196,35 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
     final provider = ref.watch(pdfNotifierProvider);
     final isLoading = provider.isLoading;
     final list = provider.list;
-    return MyScaffold(
-      contentPadding: 0,
-      appBar: AppBar(
-        title: const Text('PDF'),
-        actions: [
-          NovelContentPdfActionButton(),
-        ],
-      ),
-      body: isLoading
-          ? TLoader()
-          : RefreshIndicator(
-              onRefresh: init,
-              child: ListView.builder(
-                itemBuilder: (context, index) => PdfListItem(
-                  pdf: list[index],
-                  onClicked: (pdf) {
-                    goPdfReader(context, ref, pdf);
-                  },
-                  onLongClicked: _showContextMenu,
+    return BackgroundScaffold(
+      stackChildren: [
+        isLoading
+            ? TLoader()
+            : RefreshIndicator(
+                onRefresh: init,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      backgroundColor: const Color.fromARGB(0, 97, 97, 97),
+                      title: const Text('PDF'),
+                      actions: [
+                        NovelContentPdfActionButton(),
+                      ],
+                    ),
+                    SliverList.builder(
+                      itemBuilder: (context, index) => PdfListItem(
+                        pdf: list[index],
+                        onClicked: (pdf) {
+                          goPdfReader(context, ref, pdf);
+                        },
+                        onLongClicked: _showContextMenu,
+                      ),
+                      itemCount: list.length,
+                    )
+                  ],
                 ),
-                itemCount: list.length,
               ),
-            ),
+      ],
     );
   }
 }

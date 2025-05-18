@@ -8,10 +8,10 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../constants.dart';
-import '../../widgets/index.dart';
+import '../../../constants.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -159,8 +159,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final isLoading = provider.isLoading;
     List<NovelModel> list = provider.list;
 
-    return MyScaffold(
-      contentPadding: 0,
+    return Scaffold(
       body: isLoading
           ? TLoader()
           : RefreshIndicator(

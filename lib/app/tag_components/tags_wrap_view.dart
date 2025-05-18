@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class TagsWrapView extends StatelessWidget {
   String title;
@@ -28,7 +28,7 @@ class TagsWrapView extends StatelessWidget {
       (index) {
         final name = _getList[index];
         return TChip(
-          title: name,
+          title: Text(name),
           onDelete: onDeleted != null ? () => onDeleted!(name) : null,
           onClick: onClicked != null ? () => onClicked!(name) : null,
         );

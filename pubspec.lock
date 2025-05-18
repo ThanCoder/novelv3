@@ -629,6 +629,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  t_widgets:
+    dependency: "direct main"
+    description:
+      name: t_widgets
+      sha256: "559410905a051bcaad5196720e416c614face93ff2b57d0bccd1f10d13a9c147"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   term_glyph:
     dependency: transitive
     description:
@@ -649,10 +657,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: "539ef25038c3ce4fef0984ab2304b32c242b730ca209df16a0a8bd5404fca0b9"
+      sha256: e62b4abb9701a1b339dbfa894c10deebb7542c7bc814ab8f22ae0f8add2407ce
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   timeago:
     dependency: transitive
     description:

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/status_text.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/widgets/core/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovelGridItem extends StatelessWidget {
   NovelModel novel;
@@ -23,7 +23,7 @@ class NovelGridItem extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: MyImageFile(
+              child: TImageFile(
                 path: novel.coverPath,
                 fit: BoxFit.fill,
                 width: double.infinity,

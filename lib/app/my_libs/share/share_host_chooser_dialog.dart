@@ -4,7 +4,7 @@ import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ShareHostChooserDialog extends StatefulWidget {

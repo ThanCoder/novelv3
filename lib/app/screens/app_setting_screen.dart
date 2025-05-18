@@ -8,9 +8,7 @@ import 'package:novel_v3/app/my_libs/general_server/proxy_hosting_server/index.d
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
 import 'package:novel_v3/app/services/index.dart';
-
-
-import '../widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class AppSettingScreen extends StatefulWidget {
   const AppSettingScreen({super.key});
@@ -121,7 +119,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
       onPopInvokedWithResult: (didPop, result) {
         _onBackpress();
       },
-      child: MyScaffold(
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('Setting'),
         ),
@@ -130,7 +128,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
             spacing: 7,
             children: [
               //custom path
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: "custom path",
                 desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
                 trailing: Checkbox(
@@ -159,7 +157,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                     )
                   : const SizedBox.shrink(),
               //content image cover
-              ListTileWithDesc(
+              TListTileWithDesc(
                 title: 'Novel Content Backgorund Cover',
                 trailing: Checkbox(
                   value: isShowNovelContentCover,

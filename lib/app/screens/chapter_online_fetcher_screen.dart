@@ -7,7 +7,7 @@ import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/html_dom_services.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class ChapterOnlineFetcherScreen extends ConsumerStatefulWidget {
   String novelPath;
@@ -154,8 +154,7 @@ class _ChapterOnlineFetcherScreenState
             .read(chapterNotifierProvider.notifier)
             .initList(novelPath: widget.novelPath, isReset: true);
       },
-      child: MyScaffold(
-        contentPadding: 0,
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('Chapter Fetcher'),
         ),

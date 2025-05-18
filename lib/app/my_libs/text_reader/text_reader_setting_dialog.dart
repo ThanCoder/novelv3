@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:t_widgets/t_widgets.dart';
 
-import '../../widgets/core/index.dart';
 import 'text_reader_config_model.dart';
 
 class TextReaderSettingDialog extends StatefulWidget {
@@ -57,9 +57,9 @@ class _TextReaderSettingDialogState extends State<TextReaderSettingDialog> {
         child: Column(
           children: [
             // isKeepScreen
-            ListTileWithDescWidget(
-              widget1: const Text('Is Keep Screen'),
-              widget2: Switch(
+            TListTileWithDesc(
+              title: 'Is Keep Screen',
+              leading: Switch(
                 value: config.isKeepScreen,
                 onChanged: (value) {
                   setState(() {
@@ -69,9 +69,9 @@ class _TextReaderSettingDialogState extends State<TextReaderSettingDialog> {
               ),
             ),
             // Padding
-            ListTileWithDescWidget(
-              widget1: const Text('Padding'),
-              widget2: SizedBox(
+            TListTileWithDesc(
+              title: 'Padding',
+              leading: SizedBox(
                 width: 80,
                 child: TTextField(
                   controller: paddingController,
@@ -81,9 +81,9 @@ class _TextReaderSettingDialogState extends State<TextReaderSettingDialog> {
               ),
             ),
             //Font Size
-            ListTileWithDescWidget(
-              widget1: const Text('Font Size'),
-              widget2: SizedBox(
+            TListTileWithDesc(
+              title: 'Font Size',
+              leading: SizedBox(
                 width: 80,
                 child: TTextField(
                   controller: fontSizeController,

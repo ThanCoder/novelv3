@@ -1,5 +1,6 @@
+import 'package:t_widgets/t_widgets.dart';
+
 import 'index.dart';
-import '../../widgets/index.dart';
 import 'package:flutter/material.dart';
 
 class GeneralServerNotiButton extends StatefulWidget {

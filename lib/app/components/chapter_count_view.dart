@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/services/chapter_services.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class ChapterCountView extends StatelessWidget {
   String title;
@@ -28,9 +28,16 @@ class ChapterCountView extends StatelessWidget {
         if (snapshot.hasData) {
           final list = snapshot.data ?? [];
           if (list.isEmpty) return const SizedBox.shrink();
-          return Text(
-            '$title${list.length}',
-            style: style,
+          return Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: const Color.fromARGB(228, 22, 22, 22),
+            ),
+            child: Text(
+              '$title${list.length}',
+              style: const TextStyle(color: Colors.white),
+            ),
           );
         }
         return const SizedBox.shrink();

@@ -6,7 +6,7 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/tag_components/tags_wrap_view.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovelEditFormScreen extends ConsumerStatefulWidget {
   NovelModel novel;
@@ -75,7 +75,7 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text('Form `${novel.title}`'),
       ),

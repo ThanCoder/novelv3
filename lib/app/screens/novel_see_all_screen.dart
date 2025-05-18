@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/novel_grid_item.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/route_helper.dart';
-import 'package:novel_v3/app/widgets/core/my_scaffold.dart';
 
 class NovelSeeAllScreen extends ConsumerWidget {
   String title;
@@ -12,7 +11,7 @@ class NovelSeeAllScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    return MyScaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),

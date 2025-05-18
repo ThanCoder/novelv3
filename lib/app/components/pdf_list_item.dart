@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class PdfListItem extends StatelessWidget {
@@ -34,43 +34,44 @@ class PdfListItem extends StatelessWidget {
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
-          child: Row(
-            spacing: 7,
-            children: [
-              SizedBox(
-                width: 130,
-                height: 140,
-                child: Container(
-                  color:
-                      isDarkThemeNotifier.value ? Colors.white : Colors.black,
-                  child: MyImageFile(path: pdf.coverPath),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              spacing: 7,
+              children: [
+                SizedBox(
+                  width: 130,
+                  height: 140,
+                  child: Container(
+                    color:
+                        isDarkThemeNotifier.value ? Colors.white : Colors.black,
+                    child: TImageFile(path: pdf.coverPath),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  spacing: 2,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pdf.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
-                    Text(
-                        'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
-                    Text(
-                        'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toTimeAgo()}'),
-                    isShowPathLabel
-                        ? Text(
-                            'Path: ${pdf.path}',
-                            style: const TextStyle(fontSize: 12),
-                          )
-                        : const SizedBox.shrink(),
-                  ],
+                Expanded(
+                  child: Column(
+                    spacing: 2,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        pdf.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
+                      Text(
+                          'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toAutoParseTime()}'),
+                      isShowPathLabel
+                          ? Text(
+                              'Path: ${pdf.path}',
+                              style: const TextStyle(fontSize: 12),
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class CurrentVersionComponent extends StatelessWidget {
@@ -15,7 +15,7 @@ class CurrentVersionComponent extends StatelessWidget {
         }
         if (snapshot.data == null) return const SizedBox.shrink();
         final version = snapshot.data!.version;
-        return ListTileWithDesc(
+        return TListTileWithDesc(
           title: 'Current Version: $version',
         );
       },

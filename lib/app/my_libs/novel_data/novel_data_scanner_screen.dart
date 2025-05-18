@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/components/novel_data_list_item.dart';
+import 'package:novel_v3/app/my_libs/novel_data/novel_data_list_item.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
-import 'package:novel_v3/app/widgets/core/index.dart';
+import 'package:t_widgets/t_widgets.dart';
+
 import 'package:than_pkg/than_pkg.dart';
 
 import '../../components/index.dart';
@@ -55,8 +56,6 @@ class _NovelDataScannerScreenState
   }
 
   void _installData(NovelDataModel novelData) async {
-    
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -110,7 +109,7 @@ class _NovelDataScannerScreenState
               Text(
                   'Date: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toParseTime()}'),
               Text(
-                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toTimeAgo()}'),
+                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toAutoParseTime()}'),
               Text('Path: ${novelData.path}'),
             ],
           ),
@@ -177,8 +176,7 @@ class _NovelDataScannerScreenState
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      contentPadding: 0,
+    return Scaffold(
       body: isLoading
           ? TLoader()
           : RefreshIndicator(
