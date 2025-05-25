@@ -287,7 +287,7 @@ class NovelDataServices {
             // final mime = lookupMimeType(file.path) ?? '';
             // if (!mime.startsWith('application/zip')) continue;
             //add pdf
-            if (!file.path.endsWith('.$novelDataExtName')) continue;
+            if (!isNovelData(file.path)) continue;
             //add
             final name = file.path.getName(withExt: false);
             final novelData = NovelDataModel.fromPath(
@@ -317,6 +317,10 @@ class NovelDataServices {
 
       return list;
     });
+  }
+
+  static bool isNovelData(String path) {
+    return path.endsWith('.$novelDataExtName');
   }
 
   //get dir name

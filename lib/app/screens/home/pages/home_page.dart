@@ -1,13 +1,17 @@
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_home_action_button.dart';
 import 'package:novel_v3/app/action_buttons/search_button.dart';
+import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/my_libs/general_server/general_server_noti_button.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/my_libs/novel_data/data_import_dialog.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
+import 'package:novel_v3/app/services/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -20,11 +24,33 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomePageState extends ConsumerState<HomePage>
+    with WidgetsBindingObserver {
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  bool isCanDrop = true;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        setState(() {
+          isCanDrop = true;
+        });
+        break;
+      default:
+    }
   }
 
   Future<void> init({bool isReset = false}) async {
@@ -159,15 +185,36 @@ class _HomePageState extends ConsumerState<HomePage> {
     final isLoading = provider.isLoading;
     List<NovelModel> list = provider.list;
 
-    return Scaffold(
-      body: isLoading
-          ? TLoader()
-          : RefreshIndicator(
-              onRefresh: () async {
-                init(isReset: true);
-              },
-              child: _getListWidget(list),
-            ),
+    return DropTarget(
+      enable: isCanDrop,
+      onDragDone: (details) {
+        if (details.files.isEmpty) return;
+        final path = details.files.first.path;
+        if (!NovelDataServices.isNovelData(path)) {
+          showDialogMessage(context, 'Novel Data is required!');
+          return;
+        }
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => DataImportDialog(
+            path: path,
+            onDone: () {
+              init(isReset: true);
+            },
+          ),
+        );
+      },
+      child: Scaffold(
+        body: isLoading
+            ? TLoader()
+            : RefreshIndicator(
+                onRefresh: () async {
+                  init(isReset: true);
+                },
+                child: _getListWidget(list),
+              ),
+      ),
     );
   }
 }
