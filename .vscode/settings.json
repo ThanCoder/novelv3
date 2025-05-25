@@ -1,4 +1,5 @@
 {
   "postman.settings.dotenv-detection-notification-visibility": false,
-  "cmake.sourceDirectory": "/home/thancoder/projects/flutter_projects/novel_v3/linux"
+  "cmake.sourceDirectory": "/home/thancoder/projects/flutter_projects/novel_v3/linux",
+  "deno.enable": true
 }

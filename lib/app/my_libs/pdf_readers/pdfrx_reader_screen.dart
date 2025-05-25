@@ -158,6 +158,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   }
 
   void _setFullScreen(bool isFull) async {
+    if (isLoading) return;
+    if (config.isFullscreen == isFull) return;
     config.isFullscreen = isFull;
     double oldZoom = pdfController.currentZoom;
     Offset oldOffset = pdfController.centerPosition;
@@ -319,6 +321,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             //full screen
             IconButton(
               onPressed: () {
+                if (isLoading) return;
                 if (!config.isFullscreen) {
                   CherryToast.info(
                     inheritThemeColors: true,
