@@ -7,7 +7,7 @@ import 'package:novel_v3/app/components/core/app_components.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
-import 'package:novel_v3/app/my_libs/share/share_file.dart';
+import 'package:novel_v3/my_libs/share/share_file.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';

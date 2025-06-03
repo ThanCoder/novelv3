@@ -2,7 +2,7 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
-import 'package:novel_v3/app/my_libs/novel_data/novel_data_services.dart';
+import 'package:novel_v3/my_libs/novel_data/novel_data_services.dart';
 
 class DataExportDialog extends StatefulWidget {
   String novelPath;

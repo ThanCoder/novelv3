@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 
-import '../../utils/path_util.dart';
+import '../../app/utils/path_util.dart';
 
 class CacheServices {
   static List<FileSystemEntity> getList() {

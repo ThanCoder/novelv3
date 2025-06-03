@@ -42,11 +42,23 @@ class _PdfConfigEditDialogState extends State<PdfConfigEditDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 5,
         children: [
+          // error text
+          errorText != null
+              ? Text(
+                  errorText ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: null,
+                  style: const TextStyle(color: Colors.red),
+                )
+              : const SizedBox.shrink(),
+          // config
           TTextField(
             label: const Text('Config'),
             controller: textController,
             maxLines: null,
-            errorText: errorText,
+            style:
+                TextStyle(color: errorText == null ? Colors.green : Colors.red),
+            // errorText: errorText,
             onChanged: (value) {
               try {
                 jsonDecode(value);
@@ -54,7 +66,7 @@ class _PdfConfigEditDialogState extends State<PdfConfigEditDialog> {
                 errorDesc = null;
               } catch (e) {
                 debugPrint(e.toString());
-                errorText = 'error ရှိနေပါတယ်။';
+                // errorText = 'error ရှိနေပါတယ်။';
                 errorText = e.toString();
               }
               setState(() {});

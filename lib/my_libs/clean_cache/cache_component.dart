@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../dialogs/core/index.dart';
-import '../../services/core/index.dart';
-import '../../components/index.dart';
+import '../../app/dialogs/core/index.dart';
+import '../../app/services/core/index.dart';
+import '../../app/components/index.dart';
 
 class CacheComponent extends StatefulWidget {
   const CacheComponent({super.key});

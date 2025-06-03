@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/my_libs/share/novel_online_grid_item.dart';
+import 'package:novel_v3/my_libs/share/novel_online_grid_item.dart';
 
-import '../../components/author_wrap_view.dart';
-import '../../models/novel_model.dart';
+import '../../app/components/author_wrap_view.dart';
+import '../../app/models/novel_model.dart';
 import 'share_novel_content_screen.dart';
 
 class ShareSearchDelegate extends SearchDelegate {

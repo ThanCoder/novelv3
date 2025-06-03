@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/my_libs/novel_data/novel_data_list_item.dart';
+import 'package:novel_v3/my_libs/novel_data/novel_data_list_item.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../components/index.dart';
-import '../../dialogs/index.dart';
-import '../../services/index.dart';
+import '../../app/components/index.dart';
+import '../../app/dialogs/index.dart';
+import '../../app/services/index.dart';
 import 'data_import_dialog.dart';
 
 class NovelDataScannerScreen extends ConsumerStatefulWidget {

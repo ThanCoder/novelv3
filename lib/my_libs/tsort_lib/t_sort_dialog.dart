@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/my_libs/tsort_lib/t_sort.dart';
+import 'package:novel_v3/my_libs/tsort_lib/t_sort.dart';
 
 class TSortDialog extends StatefulWidget {
   List<TSort> list;

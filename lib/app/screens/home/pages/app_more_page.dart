@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/my_libs/general_server/current_version_component.dart';
+import 'package:novel_v3/my_libs/general_server/current_version_component.dart';
 import 'package:novel_v3/app/screens/app_setting_screen.dart';
-import 'package:novel_v3/app/my_libs/novel_data/novel_data_scanner_screen.dart';
+import 'package:novel_v3/my_libs/novel_data/novel_data_scanner_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
-import 'package:novel_v3/app/my_libs/share/share_home_screen.dart';
+import 'package:novel_v3/my_libs/share/share_home_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 import '../../../components/index.dart';

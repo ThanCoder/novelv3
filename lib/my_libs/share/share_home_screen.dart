@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/my_libs/share/share_host_chooser_dialog.dart';
-import 'package:novel_v3/app/my_libs/share/share_receive_screen.dart';
-import 'package:novel_v3/app/my_libs/share/share_send_screen.dart';
+import 'package:novel_v3/my_libs/share/share_host_chooser_dialog.dart';
+import 'package:novel_v3/my_libs/share/share_receive_screen.dart';
+import 'package:novel_v3/my_libs/share/share_send_screen.dart';
 
 class ShareHomeScreen extends StatefulWidget {
   const ShareHomeScreen({super.key});

@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:novel_v3/app/my_libs/share/share_file_type.dart';
+import 'package:novel_v3/my_libs/share/share_file_type.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ShareFile {

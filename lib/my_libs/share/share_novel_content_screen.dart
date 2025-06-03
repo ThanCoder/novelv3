@@ -7,9 +7,9 @@ import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/core/index.dart';
-import 'package:novel_v3/app/my_libs/share/novel_all_download_dialog.dart';
-import 'package:novel_v3/app/my_libs/share/share_file.dart';
-import 'package:novel_v3/app/my_libs/share/share_novel_list_item.dart';
+import 'package:novel_v3/my_libs/share/novel_all_download_dialog.dart';
+import 'package:novel_v3/my_libs/share/share_file.dart';
+import 'package:novel_v3/my_libs/share/share_novel_list_item.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
 

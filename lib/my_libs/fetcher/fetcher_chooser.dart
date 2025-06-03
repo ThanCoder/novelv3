@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/my_libs/fetcher/fetcher_config_services.dart';
-import 'package:novel_v3/app/my_libs/fetcher/types/fetcher.dart';
+import 'package:novel_v3/my_libs/fetcher/fetcher_config_services.dart';
+import 'package:novel_v3/my_libs/fetcher/types/fetcher.dart';
 
 class FetcherChooser extends StatefulWidget {
   Fetcher? fetcher;

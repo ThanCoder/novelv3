@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/services/core/dio_services.dart';
-import 'package:novel_v3/app/my_libs/share/novel_online_grid_item.dart';
-import 'package:novel_v3/app/my_libs/share/share_novel_content_screen.dart';
-import 'package:novel_v3/app/my_libs/share/share_search_delegate.dart';
+import 'package:novel_v3/my_libs/share/novel_online_grid_item.dart';
+import 'package:novel_v3/my_libs/share/share_novel_content_screen.dart';
+import 'package:novel_v3/my_libs/share/share_search_delegate.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

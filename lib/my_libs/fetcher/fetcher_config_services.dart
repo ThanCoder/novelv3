@@ -1,5 +1,5 @@
-import 'package:novel_v3/app/my_libs/fetcher/fetcher_query.dart';
-import 'package:novel_v3/app/my_libs/fetcher/types/fetcher.dart';
+import 'package:novel_v3/my_libs/fetcher/fetcher_query.dart';
+import 'package:novel_v3/my_libs/fetcher/types/fetcher.dart';
 
 class FetcherConfigServices {
   static Future<List<Fetcher>> getList() async {

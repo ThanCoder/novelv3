@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
-import 'package:novel_v3/app/dialogs/pdf_config_edit_dialog.dart';
+import 'package:novel_v3/app/screens/content/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
@@ -116,6 +116,8 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
     if (coverPath.isEmpty) return;
     await file.copy(coverPath);
     await clearAndRefreshImage();
+
+    ref.read(novelNotifierProvider.notifier).setCurrent(novel);
 
     if (!mounted) return;
     showMessage(context, 'Cover Added');
