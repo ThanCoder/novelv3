@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
@@ -193,40 +194,74 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
     );
   }
 
+  void _fileDrops(List<String> pathList) async {
+    final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
+    if (novel == null) return;
+    //copy
+    for (var path in pathList) {
+      final file = File(path);
+      //မရှိရင် , file မဟုတ်ရင် ကျော်မယ်
+      if (!await file.exists() ||
+          file.statSync().type != FileSystemEntityType.file) {
+        continue;
+      }
+      //move
+      final newPath = '${novel.path}/${file.getName()}';
+      await file.rename(newPath);
+    }
+    //refresh
+    ref
+        .read(pdfNotifierProvider.notifier)
+        .initList(novelPath: novel.path, isReset: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(pdfNotifierProvider);
     final isLoading = provider.isLoading;
     final list = provider.list;
-    return BackgroundScaffold(
-      stackChildren: [
-        isLoading
-            ? TLoader()
-            : RefreshIndicator(
-                onRefresh: init,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      backgroundColor: const Color.fromARGB(0, 97, 97, 97),
-                      title: const Text('PDF'),
-                      actions: [
-                        NovelContentPdfActionButton(),
-                      ],
-                    ),
-                    SliverList.builder(
-                      itemBuilder: (context, index) => PdfListItem(
-                        pdf: list[index],
-                        onClicked: (pdf) {
-                          goPdfReader(context, ref, pdf);
-                        },
-                        onLongClicked: _showContextMenu,
+    return DropTarget(
+      enable: true,
+      onDragDone: (details) {
+        if (details.files.isEmpty) return;
+        final files = details.files.map((e) => e.path).toList();
+        // ရှိပြီးသားကို စစ်ထုတ်မယ်
+        final alreadyFiles = list.map((e) => e.title).toSet();
+        final filterFiles = files
+            .where((e) => !alreadyFiles.contains(e.getName(withExt: false)))
+            .toList();
+        _fileDrops(filterFiles);
+      },
+      child: BackgroundScaffold(
+        stackChildren: [
+          isLoading
+              ? TLoader()
+              : RefreshIndicator(
+                  onRefresh: init,
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        backgroundColor: const Color.fromARGB(0, 97, 97, 97),
+                        title: const Text('PDF'),
+                        actions: [
+                          NovelContentPdfActionButton(),
+                        ],
                       ),
-                      itemCount: list.length,
-                    )
-                  ],
+                      SliverList.builder(
+                        itemBuilder: (context, index) => PdfListItem(
+                          pdf: list[index],
+                          onClicked: (pdf) {
+                            goPdfReader(context, ref, pdf);
+                          },
+                          onLongClicked: _showContextMenu,
+                        ),
+                        itemCount: list.length,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-      ],
+        ],
+      ),
     );
   }
 }

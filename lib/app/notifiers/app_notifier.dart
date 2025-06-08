@@ -17,3 +17,6 @@ ValueNotifier<bool> isShowContentBottomBarNotifier = ValueNotifier(true);
 
 //wifi host
 ValueNotifier<String> appWififHostAddressNotifier = ValueNotifier('');
+
+//file drop
+ValueNotifier<bool> isFileDropHomePageNotifier = ValueNotifier(true);
