@@ -20,11 +20,11 @@ class HomeScreen extends StatelessWidget {
         bottomNavigationBar: TabBar(
           tabs: [
             Tab(
-              text: 'Home',
+              // text: 'Home',
               icon: Icon(Icons.home),
             ),
             Tab(
-              text: 'More',
+              // text: 'More',
               icon: Icon(Icons.grid_view_rounded),
             ),
           ],

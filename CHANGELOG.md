@@ -1,10 +1,12 @@
 ## 2.0.1
 
 ## Fixed
++ add pdf file drop (for desktop)
 - pdf reader config onload error
 - pdf reader backpress error
 - novel data installer error
 - text reader next,prev scroll error
+
 
 ## 2.0.0
 

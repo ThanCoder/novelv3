@@ -82,7 +82,8 @@ class _ContentHomePageState extends ConsumerState<ContentHomePage> {
                     Expanded(
                       child: Text(
                         novel.title,
-                        overflow: TextOverflow.ellipsis,
+                        // overflow: TextOverflow.ellipsis,
+                        maxLines: null,
                       ),
                     ),
                   ],
@@ -104,8 +105,8 @@ class _ContentHomePageState extends ConsumerState<ContentHomePage> {
               // ),
               TListTile(
                 leading: const Icon(Icons.access_time_filled),
-                title: Text(DateTime.fromMillisecondsSinceEpoch(novel.date)
-                    .toAutoParseTime()),
+                title: Text(
+                    '${DateTime.fromMillisecondsSinceEpoch(novel.date).toParseTime()}\n${DateTime.fromMillisecondsSinceEpoch(novel.date).toTimeAgo()}'),
               ),
               // status
               Wrap(

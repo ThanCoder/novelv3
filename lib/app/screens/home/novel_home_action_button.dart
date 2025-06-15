@@ -5,6 +5,7 @@ import 'package:novel_v3/app/dialogs/core/index.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/screens/tables/novel_table_screen.dart';
 import 'package:novel_v3/my_libs/novel_data/novel_data_scanner_screen.dart';
 
 class NovelHomeActionButton extends ConsumerStatefulWidget {
@@ -69,6 +70,19 @@ class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const NovelDataScannerScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.table_chart_outlined),
+                title: const Text('Table Style'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NovelTableScreen(),
                     ),
                   );
                 },
