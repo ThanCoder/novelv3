@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/core/app_components.dart';
@@ -6,7 +8,9 @@ import 'package:novel_v3/app/extensions/novel_extension.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/services/core/android_app_services.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
+import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/my_libs/novel_data/data_export_dialog.dart';
 import 'package:novel_v3/my_libs/sort_dialog_v1.0.0/sort_component.dart';
 import 'package:novel_v3/my_libs/sort_dialog_v1.0.0/sort_type.dart';
@@ -68,14 +72,14 @@ class _NovelTableScreenState extends ConsumerState<NovelTableScreen> {
                 Text(e.title),
                 onLongPress: () => _showMenu(e),
                 onTap: () {
-                  goNovelContentPage(context, ref, e);
+                  goNovelContentPage(context, e);
                 },
               ),
               DataCell(Text(e.author)),
               DataCell(Text(e.mc)),
               DataCell(Text(e.readed.toString())),
-              DataCell(Text(e.isCompleted.toString())),
-              DataCell(Text(e.isAdult.toString())),
+              DataCell(Text(e.isCompleted.toString().toCaptalize())),
+              DataCell(Text(e.isAdult.toString().toCaptalize())),
               DataCell(Text(
                   '${DateTime.fromMillisecondsSinceEpoch(e.date).toParseTime()}\n${DateTime.fromMillisecondsSinceEpoch(e.date).toTimeAgo()}')),
             ],
@@ -146,6 +150,15 @@ class _NovelTableScreenState extends ConsumerState<NovelTableScreen> {
     );
   }
 
+  Future<void> _exportDataConfig() async {
+    final provider = ref.read(novelNotifierProvider.notifier);
+    final novel = provider.getCurrent;
+    if (novel == null) return;
+    if (!await checkStoragePermission()) return;
+    novel.exportConfig(Directory(PathUtil.getOutPath()));
+    showMessage(context, 'Exported', oldStyle: true);
+  }
+
   void _showMenu(NovelModel novel) {
     showModalBottomSheet(
       context: context,
@@ -164,6 +177,14 @@ class _NovelTableScreenState extends ConsumerState<NovelTableScreen> {
                 onTap: () {
                   Navigator.pop(context);
                   _exportDataFile(novel);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.import_export_rounded),
+                title: const Text('Data Config ထုတ်မယ်'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _exportDataConfig();
                 },
               ),
               ListTile(

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
+import 'package:novel_v3/app/services/core/index.dart';
+import 'package:novel_v3/app/utils/path_util.dart';
 import 'package:novel_v3/my_libs/fetcher/description_online_fetcher_dialog.dart';
 import 'package:novel_v3/my_libs/novel_data/data_export_dialog.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
@@ -98,6 +102,15 @@ class _NovelContentActionButtonState
     );
   }
 
+  Future<void> _exportDataConfig() async {
+    final provider = ref.read(novelNotifierProvider.notifier);
+    final novel = provider.getCurrent;
+    if (novel == null) return;
+    if (!await checkStoragePermission()) return;
+    novel.exportConfig(Directory(PathUtil.getOutPath()));
+    showMessage(context, 'Exported', oldStyle: true);
+  }
+
   void _showMenu() {
     showModalBottomSheet(
       context: context,
@@ -160,6 +173,14 @@ class _NovelContentActionButtonState
                 onTap: () {
                   Navigator.pop(context);
                   _exportDataFile();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.import_export_rounded),
+                title: const Text('Data Config ထုတ်မယ်'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _exportDataConfig();
                 },
               ),
               //delete

@@ -16,19 +16,23 @@ import 'package:novel_v3/my_libs/text_reader/text_reader_screen.dart';
 
 void goNovelContentPage(
   BuildContext context,
-  WidgetRef ref,
   NovelModel novel,
 ) async {
-  ref.read(novelNotifierProvider.notifier).setCurrent(novel);
-  ref.read(chapterNotifierProvider.notifier).listClear();
   //close
   isFileDropHomePageNotifier.value = false;
 
   if (!context.mounted) return;
+
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => NovelContentScreen(novel: novel),
+      builder: (context) => Consumer(
+        builder: (context, ref, child) {
+          ref.read(novelNotifierProvider.notifier).setCurrent(novel);
+          ref.read(chapterNotifierProvider.notifier).listClear();
+          return NovelContentScreen(novel: novel);
+        },
+      ),
     ),
   );
 }

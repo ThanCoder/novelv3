@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
@@ -272,6 +273,18 @@ class NovelModel {
     readed = num;
     final file = File('$path/readed');
     file.writeAsStringSync(num.toString());
+  }
+
+  void exportConfig(Directory saveDir) {
+    if (!saveDir.existsSync()) return;
+    final coverFile = File(coverPath);
+    if (coverFile.existsSync()) {
+      coverFile.copySync('${saveDir.path}/$title.png');
+    }
+    //config
+    final configFile = File('${saveDir.path}/$title.config.json');
+    configFile
+        .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(toMap()));
   }
 
   @override

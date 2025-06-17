@@ -92,7 +92,7 @@ class NovelSearch extends SearchDelegate {
     if (query.isEmpty) return completer.future;
 
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 700), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       // filter
       final res = list.where((nv) {
         if (nv.title.toLowerCase().contains(query.toLowerCase())) {
@@ -135,7 +135,7 @@ class NovelSearch extends SearchDelegate {
       itemBuilder: (context, index) => NovelGridItem(
         novel: list[index],
         onClicked: (novel) {
-          goNovelContentPage(context, ref, novel);
+          goNovelContentPage(context, novel);
         },
       ),
     );
