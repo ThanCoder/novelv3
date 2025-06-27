@@ -12,6 +12,7 @@ import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/content/background_scaffold.dart';
 import 'package:novel_v3/app/services/index.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -51,6 +52,12 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
           try {
             //ui
             ref.read(pdfNotifierProvider.notifier).delete(pdf);
+            //set history
+            THistoryServices.instance.add(THistoryRecord.create(
+              title: pdf.title,
+              method: TMethods.delete,
+              desc: 'PDF Deleted',
+            ));
           } catch (e) {
             if (!mounted) return;
             showDialogMessage(context, e.toString());

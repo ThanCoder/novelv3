@@ -49,6 +49,11 @@ class NovelSearch extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final authorList = list.map((nv) => nv.author).toSet().toList();
+    final mcList = list.map((nv) => nv.mc).toSet().toList();
+    // sort
+    authorList.sort((a, b) => a.compareTo(b));
+    mcList.sort((a, b) => a.compareTo(b));
     if (query.isNotEmpty) {
       return FutureBuilder(
           future: _getResult(),
@@ -65,7 +70,7 @@ class NovelSearch extends SearchDelegate {
           SliverToBoxAdapter(
             child: AuthorWrapView(
               title: 'Author',
-              list: list.map((nv) => nv.author).toSet().toList(),
+              list: authorList,
               onClicked: (title) {
                 goSeeAllScreenWithAuthor(context, ref, title);
               },
@@ -76,7 +81,7 @@ class NovelSearch extends SearchDelegate {
           SliverToBoxAdapter(
             child: AuthorWrapView(
               title: 'MC',
-              list: list.map((nv) => nv.mc).toSet().toList(),
+              list: mcList,
               onClicked: (title) {
                 goSeeAllScreenWithMC(context, ref, title);
               },
@@ -111,6 +116,9 @@ class NovelSearch extends SearchDelegate {
         }
         return false;
       }).toList();
+      // sort
+      res.sort((a, b) => a.title.compareTo(b.title));
+
       completer.complete(res);
     });
     return completer.future;
@@ -135,7 +143,7 @@ class NovelSearch extends SearchDelegate {
       itemBuilder: (context, index) => NovelGridItem(
         novel: list[index],
         onClicked: (novel) {
-          goNovelContentPage(context, novel);
+          goNovelContentPage(context, ref, novel);
         },
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/riverpods/states/novel_state.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
@@ -26,11 +27,15 @@ class NovelNotifier extends StateNotifier<NovelState> {
   }
 
   Future<void> setCurrent(NovelModel novel, {bool isFullInfo = true}) async {
-    if (isFullInfo) {
-      state = state.copyWith(
-          novel: NovelModel.fromPath(novel.path, isFullInfo: true));
-    } else {
-      state = state.copyWith(novel: novel);
+    try {
+      if (isFullInfo) {
+        state = state.copyWith(
+            novel: NovelModel.fromPath(novel.path, isFullInfo: true));
+      } else {
+        state = state.copyWith(novel: novel);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 

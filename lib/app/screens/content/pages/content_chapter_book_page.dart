@@ -6,6 +6,7 @@ import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/content/background_scaffold.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -56,6 +57,12 @@ class _ContentChapterBookPageState
     ref
         .read(chapterBookmarkNotifierProvider.notifier)
         .remove(novel.path, bookmark);
+    //set history
+    THistoryServices.instance.add(THistoryRecord.create(
+      title: bookmark.title,
+      method: TMethods.delete,
+      desc: 'BookMark Deleted',
+    ));
   }
 
   void _showMenu(ChapterBookmarkModel bookmark) {

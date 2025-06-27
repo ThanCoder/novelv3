@@ -48,7 +48,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   void _goContentScreen(NovelModel novel) {
-    goNovelContentPage(context, novel);
+    goNovelContentPage(context,ref, novel);
   }
 
   Widget _getListWidget(List<NovelModel> list) {

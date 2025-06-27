@@ -7,6 +7,9 @@ import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/tables/novel_table_screen.dart';
 import 'package:novel_v3/my_libs/novel_data/novel_data_scanner_screen.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_record.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_screen.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_services.dart';
 
 class NovelHomeActionButton extends ConsumerStatefulWidget {
   const NovelHomeActionButton({super.key});
@@ -37,6 +40,11 @@ class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
             final novel = NovelModel.create(title.trim());
             provider.insertUI(novel);
             goNovelEditForm(context, ref, novel);
+            //set record
+            THistoryServices.instance.add(THistoryRecord.create(
+              title: title,
+              desc: 'Novel အသစ်ဖန်တီးခြင်း',
+            ));
           } catch (e) {
             showDialogMessage(context, e.toString());
           }
@@ -83,6 +91,19 @@ class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const NovelTableScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.list),
+                title: const Text('History Record'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const THistoryScreen(),
                     ),
                   );
                 },

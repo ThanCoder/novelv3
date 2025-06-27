@@ -8,6 +8,8 @@ import 'package:novel_v3/app/models/chapter_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/chapter_services.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
+import 'package:t_widgets/extensions/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterEditForm extends ConsumerStatefulWidget {
@@ -20,6 +22,12 @@ class ChapterEditForm extends ConsumerStatefulWidget {
 }
 
 class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
+  final chapterController = TextEditingController();
+  final contentController = TextEditingController();
+
+  final chapterFocusNode = FocusNode();
+  final contentFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -36,12 +44,6 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
 
     super.dispose();
   }
-
-  final chapterController = TextEditingController();
-  final contentController = TextEditingController();
-
-  final chapterFocusNode = FocusNode();
-  final contentFocusNode = FocusNode();
 
   bool isLoading = false;
   bool isChanged = false;
@@ -126,8 +128,15 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
       ch.setContent(contentController.text);
       ref.read(chapterNotifierProvider.notifier).update(ch.refreshData());
 
+      //set record
+      THistoryServices.instance.add(THistoryRecord.create(
+        title: ch.getNovelPath.getName(),
+        desc: 'Add Chapter `${ch.number}`',
+      ));
+
       isChanged = false;
       setState(() {});
+      _unFocusAll();
 
       if (isAutoIncrement) {
         _incre(isShowSubmit: false);
@@ -173,6 +182,7 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
                       // chapter
                       TTextField(
                         label: const Text('Chapter Number'),
+                        focusNode: chapterFocusNode,
                         controller: chapterController,
                         textInputType: TextInputType.number,
                         inputFormatters: [
@@ -245,6 +255,7 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
                         label: const Text('Content'),
                         controller: contentController,
                         maxLines: null,
+                        focusNode: contentFocusNode,
                         onChanged: (value) {
                           if (!isChanged) {
                             setState(() {

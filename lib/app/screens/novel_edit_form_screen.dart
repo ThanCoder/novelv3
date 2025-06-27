@@ -6,6 +6,9 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/tag_components/tags_wrap_view.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_record.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_services.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/t_methods.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class NovelEditFormScreen extends ConsumerStatefulWidget {
@@ -67,6 +70,10 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
       ref.read(novelNotifierProvider.notifier).setCurrent(novel);
 
       Navigator.of(context).pop();
+      THistoryServices.instance.add(THistoryRecord.create(
+        title: novel.title,
+        method: TMethods.update,
+      ));
     } catch (e) {
       if (!mounted) return;
       showDialogMessage(context, e.toString());

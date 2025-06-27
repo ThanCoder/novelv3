@@ -26,7 +26,7 @@ class NovelSeeAllScreen extends ConsumerWidget {
         itemBuilder: (context, index) => NovelGridItem(
           novel: list[index],
           onClicked: (novel) {
-            goNovelContentPage(context, novel);
+            goNovelContentPage(context,ref, novel);
           },
         ),
       ),

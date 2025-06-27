@@ -13,6 +13,8 @@ import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/pdf_scanner_screen.dart';
 
+import '../../../my_libs/t_history_v1.0.0/index.dart';
+
 class NovelContentActionButton extends ConsumerStatefulWidget {
   VoidCallback? onBackpress;
   NovelContentActionButton({super.key, this.onBackpress});
@@ -57,6 +59,11 @@ class _NovelContentActionButtonState
             await Future.delayed(const Duration(seconds: 1));
             await ref.read(bookmarkNotifierProvider.notifier).initList();
             await ref.read(recentNotifierProvider.notifier).initList();
+            //set history
+            THistoryServices.instance.add(THistoryRecord.create(
+                title: novel.title,
+                method: TMethods.delete,
+                desc: 'Novel Deleted'));
 
             if (widget.onBackpress != null) {
               widget.onBackpress!();
@@ -96,6 +103,12 @@ class _NovelContentActionButtonState
       builder: (context) => DataExportDialog(
         novelPath: novel.path,
         onDone: (savedPath) {
+          //set record
+          THistoryServices.instance.add(THistoryRecord.create(
+            title: novel.title,
+            method: TMethods.export,
+            desc: 'Date Exportd path:`$savedPath`',
+          ));
           showDialogMessage(context, '`$savedPath` Exported');
         },
       ),

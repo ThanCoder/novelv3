@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/action_buttons/novel_content_action_button.dart';
+import 'package:novel_v3/app/screens/content/novel_content_action_button.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/screens/content/buttons/novel_chapter_start_button.dart';

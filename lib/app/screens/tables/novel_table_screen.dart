@@ -72,7 +72,7 @@ class _NovelTableScreenState extends ConsumerState<NovelTableScreen> {
                 Text(e.title),
                 onLongPress: () => _showMenu(e),
                 onTap: () {
-                  goNovelContentPage(context, e);
+                  goNovelContentPage(context, ref, e);
                 },
               ),
               DataCell(Text(e.author)),

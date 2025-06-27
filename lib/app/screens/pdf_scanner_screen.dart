@@ -11,6 +11,7 @@ import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/services/pdf_services.dart';
+import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
@@ -177,6 +178,9 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
 
       await file.rename(newPath);
       list = list.where((pf) => pf.title != pdf.title).toList();
+      //set history
+      THistoryServices.instance.add(THistoryRecord.create(
+          title: pdf.title, method: TMethods.delete, desc: 'PDF Deleted'));
       if (!mounted) return;
       setState(() {});
       showMessage(context, 'PDF Moved');

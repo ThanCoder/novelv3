@@ -29,6 +29,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+        // floatingActionButton: FloatingActionButton(onPressed: () {
+        //   THistoryServices.instance.add(THistoryRecord.create());
+        // }),
       ),
     );
   }
