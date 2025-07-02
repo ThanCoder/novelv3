@@ -74,8 +74,12 @@ class PdfServices {
       }
       //sort
       list.sort((a, b) {
-        if (a.date > b.date) return -1;
-        if (a.date < b.date) return 1;
+        if (a.date.millisecondsSinceEpoch > b.date.millisecondsSinceEpoch) {
+          return -1;
+        }
+        if (a.date.millisecondsSinceEpoch < b.date.millisecondsSinceEpoch) {
+          return 1;
+        }
         return 0;
       });
 

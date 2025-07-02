@@ -55,12 +55,12 @@ class PdfListItem extends StatelessWidget {
                     children: [
                       Text(
                         pdf.title,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
-                      Text(
-                          'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toAutoParseTime()}'),
+                      Text('Ago: ${pdf.date.toTimeAgo()}'),
+                      Text('Date: ${pdf.date.toParseTime()}'),
                       isShowPathLabel
                           ? Text(
                               'Path: ${pdf.path}',

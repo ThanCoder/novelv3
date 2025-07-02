@@ -10,7 +10,7 @@ class PdfModel {
   String path;
   String coverPath;
   int size;
-  int date;
+  DateTime date;
   String configPath;
   String bookMarkPath;
   PdfModel({
@@ -41,7 +41,7 @@ class PdfModel {
       path: path,
       coverPath: cp,
       size: file.statSync().size,
-      date: file.statSync().modified.millisecondsSinceEpoch,
+      date: file.statSync().modified,
       configPath: config,
       bookMarkPath: bookmark,
     );

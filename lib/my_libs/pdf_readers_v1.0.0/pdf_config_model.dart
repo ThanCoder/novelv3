@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:than_pkg/enums/screen_orientation_types.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfConfigModel {
   int page;
@@ -35,13 +36,17 @@ class PdfConfigModel {
     this.isFullscreen = false,
   });
 
+  factory PdfConfigModel.create() {
+    return PdfConfigModel(isShowScrollThumb: PlatformExtension.isDesktop());
+  }
+
   factory PdfConfigModel.fromPath(String configPath) {
     final file = File(configPath);
     if (file.existsSync()) {
       final map = jsonDecode(file.readAsStringSync());
       return PdfConfigModel.fromMap(map);
     } else {
-      return PdfConfigModel();
+      return PdfConfigModel.create();
     }
   }
 

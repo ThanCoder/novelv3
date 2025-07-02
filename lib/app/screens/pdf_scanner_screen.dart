@@ -95,10 +95,8 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
             children: [
               Text('Title: ${pdf.title}'),
               Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
-              Text(
-                  'Date: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toParseTime()}'),
-              Text(
-                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(pdf.date).toAutoParseTime()}'),
+              Text('Date: ${pdf.date.toParseTime()}'),
+              Text('Ago: ${pdf.date.toAutoParseTime()}'),
               Text('Path: ${pdf.path}'),
             ],
           ),
