@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/index.dart';
-import 'package:novel_v3/app/notifiers/app_notifier.dart';
+import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:novel_v3/app/screens/content/pages/content_chapter_book_page.dart';
 import 'package:novel_v3/app/screens/content/pages/content_chapter_page.dart';
 import 'package:novel_v3/app/screens/content/pages/content_home_page.dart';

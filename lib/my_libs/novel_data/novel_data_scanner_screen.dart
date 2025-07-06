@@ -109,7 +109,7 @@ class _NovelDataScannerScreenState
               Text(
                   'Date: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toParseTime()}'),
               Text(
-                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toAutoParseTime()}'),
+                  'Ago: ${DateTime.fromMillisecondsSinceEpoch(novelData.date).toTimeAgo()}'),
               Text('Path: ${novelData.path}'),
             ],
           ),

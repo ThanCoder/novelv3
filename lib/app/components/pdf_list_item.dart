@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
-import 'package:novel_v3/app/notifiers/app_notifier.dart';
+import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

@@ -40,7 +40,7 @@ class ShareNovelListItem extends StatelessWidget {
                 Text(
                     'Date: ${DateTime.fromMillisecondsSinceEpoch(file.date).toParseTime()}'),
                 Text(
-                    'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toAutoParseTime()}'),
+                    'Ago: ${DateTime.fromMillisecondsSinceEpoch(file.date).toTimeAgo()}'),
                 IconButton(
                   onPressed: () => onDownloadClicked(file),
                   icon: Icon(

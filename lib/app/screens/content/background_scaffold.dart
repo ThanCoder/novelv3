@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/notifiers/app_notifier.dart';
+import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:t_widgets/t_widgets.dart';
 

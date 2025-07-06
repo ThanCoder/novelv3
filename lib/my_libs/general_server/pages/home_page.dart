@@ -156,7 +156,7 @@ class ReleaseAppListItem extends StatelessWidget {
                       ? const SizedBox.shrink()
                       : Text('Desc: ${app.description}'),
                   Text('Date: ${DateTime.parse(app.date).toParseTime()}'),
-                  Text('Ago: ${DateTime.parse(app.date).toAutoParseTime()}'),
+                  Text('Ago: ${DateTime.parse(app.date).toTimeAgo()}'),
                   app.url.isEmpty
                       ? const SizedBox.shrink()
                       : IconButton(

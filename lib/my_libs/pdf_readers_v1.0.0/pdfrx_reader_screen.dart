@@ -10,7 +10,7 @@ import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../../app/dialogs/index.dart';
-import '../../app/notifiers/app_notifier.dart';
+import '../../app/setting/app_notifier.dart';
 import 'pdf_config_model.dart';
 import 'pdf_reader_setting_dialog.dart';
 

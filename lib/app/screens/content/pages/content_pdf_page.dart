@@ -101,7 +101,7 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
               Text('Title: ${pdf.title}'),
               Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
               Text('Date: ${pdf.date.toParseTime()}'),
-              Text('Ago: ${pdf.date.toAutoParseTime()}'),
+              Text('Ago: ${pdf.date.toTimeAgo()}'),
               Text('Path: ${pdf.path}'),
             ],
           ),

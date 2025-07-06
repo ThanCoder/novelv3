@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/models/core/app_config_model.dart';
+import 'package:novel_v3/app/setting/app_config_model.dart';
 
 //path
 ValueNotifier<String> appRootPathNotifier = ValueNotifier('');
@@ -9,7 +9,7 @@ ValueNotifier<String> appConfigPathNotifier = ValueNotifier('');
 ValueNotifier<bool> isDarkThemeNotifier = ValueNotifier(false);
 //config
 ValueNotifier<AppConfigModel> appConfigNotifier =
-    ValueNotifier(AppConfigModel());
+    ValueNotifier(AppConfigModel.create());
 
 //home bottom bar
 ValueNotifier<bool> isShowHomeBottomBarNotifier = ValueNotifier(true);

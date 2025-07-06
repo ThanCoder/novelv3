@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/utils/path_util.dart';
 
 import '../constants.dart';
-import '../notifiers/app_notifier.dart';
+import '../setting/app_notifier.dart';
 
 class DioServices {
   static final DioServices instance = DioServices._();

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../constants.dart';
-import '../notifiers/app_notifier.dart';
+import '../setting/app_notifier.dart';
 
 class PathUtil {
   static Future<String> getAssetRealPathPath(String rootPath) async {

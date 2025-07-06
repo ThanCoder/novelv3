@@ -18,6 +18,7 @@ class SearchField extends StatefulWidget {
 class _SearchFieldState extends State<SearchField> {
   final controller = TextEditingController();
   final focus = FocusNode();
+  bool showClearBtn = false;
 
   @override
   void dispose() {
@@ -34,14 +35,19 @@ class _SearchFieldState extends State<SearchField> {
       decoration: InputDecoration(
         hintText: 'Search...',
         prefixIcon: const Icon(Icons.search),
-        suffixIcon: IconButton(
-            onPressed: () {
-              controller.text = '';
-              if (widget.onCleared != null) {
-                widget.onCleared!();
-              }
-            },
-            icon: const Icon(Icons.clear_all_rounded)),
+        suffixIcon: showClearBtn
+            ? IconButton(
+                onPressed: () {
+                  controller.text = '';
+                  showClearBtn = false;
+                  setState(() {});
+                  if (widget.onCleared != null) {
+                    widget.onCleared!();
+                  }
+                },
+                icon: const Icon(Icons.clear_all_rounded),
+              )
+            : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: BorderSide.none,
@@ -51,7 +57,24 @@ class _SearchFieldState extends State<SearchField> {
         contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
       ),
       autofocus: true,
-      onChanged: widget.onChanged,
+      onChanged: (text) {
+        if (widget.onChanged != null) {
+          widget.onChanged!(text);
+        }
+        //text ရှိိနေရင်
+        if (text.isNotEmpty && !showClearBtn) {
+          setState(() {
+            showClearBtn = true;
+          });
+          return;
+        }
+        //text ရှိိနေရင်
+        if (text.isEmpty && showClearBtn) {
+          setState(() {
+            showClearBtn = false;
+          });
+        }
+      },
       onSubmitted: widget.onSubmitted,
       maxLines: 1,
     );

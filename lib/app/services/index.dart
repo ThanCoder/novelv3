@@ -1,5 +1,5 @@
 export 'core/android_app_services.dart';
-export 'core/app_config_services.dart';
+export '../setting/app_config_services.dart';
 export 'core/app_path_services.dart';
 export 'core/app_services.dart';
 export '../../my_libs/novel_data/novel_data_services.dart';

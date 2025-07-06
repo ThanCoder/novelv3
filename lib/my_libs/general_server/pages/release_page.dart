@@ -67,7 +67,7 @@ class ReleaseListItem extends StatelessWidget {
                   ? const SizedBox.shrink()
                   : Text(release.description),
               Text('Date: ${DateTime.parse(release.date).toParseTime()}'),
-              Text('Ago: ${DateTime.parse(release.date).toAutoParseTime()}'),
+              Text('Ago: ${DateTime.parse(release.date).toTimeAgo()}'),
               IconButton(
                 onPressed: () => onDownloadClicked(release),
                 icon: const Icon(Icons.download),

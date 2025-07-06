@@ -1,4 +1,4 @@
-import '../../notifiers/app_notifier.dart';
+import '../../setting/app_notifier.dart';
 
 //external path ကိုဆိုလိုတာ
 String getAppExternalRootPath() {
