@@ -2,7 +2,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/screens/home/novel_home_action_button.dart';
-import 'package:novel_v3/app/action_buttons/search_button.dart';
+import 'package:novel_v3/app/screens/home/search_button.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/notifiers/app_notifier.dart';
@@ -48,7 +48,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   void _goContentScreen(NovelModel novel) {
-    goNovelContentPage(context,ref, novel);
+    goNovelContentPage(context, ref, novel);
   }
 
   Widget _getListWidget(List<NovelModel> list) {

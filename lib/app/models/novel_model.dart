@@ -287,6 +287,20 @@ class NovelModel {
         .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(toMap()));
   }
 
+  DateTime get getDate => DateTime.fromMillisecondsSinceEpoch(date);
+
+  double get getSize {
+    double allSize = 0;
+    final dir = Directory(path);
+    if (!dir.existsSync()) return allSize;
+
+    for (var file in dir.listSync()) {
+      if (file.isDirectory()) continue;
+      allSize += file.statSync().size;
+    }
+    return allSize;
+  }
+
   @override
   String toString() {
     return title;
