@@ -13,6 +13,9 @@ class SearchResultList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    if (list.isEmpty) {
+      return const Center(child: Text('မရှိပါ....'));
+    }
     return ListView.separated(
       itemBuilder: (context, index) => NovelListItem(
         novel: list[index],

@@ -1,13 +1,9 @@
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/screens/home/novel_home_action_button.dart';
-import 'package:novel_v3/app/screens/home/search_button.dart';
 import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/components/novel_see_all_view.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
-import 'package:novel_v3/my_libs/general_server/general_server_noti_button.dart';
 import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/my_libs/novel_data/data_import_dialog.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
@@ -15,10 +11,13 @@ import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelHomeListPage extends ConsumerStatefulWidget {
-  const NovelHomeListPage({super.key});
+  AppBar? appBar;
+  NovelHomeListPage({
+    super.key,
+    this.appBar,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -59,25 +58,25 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
     List<NovelModel> recentList = ref.watch(recentNotifierProvider).list;
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          title: const Text(appTitle),
-          snap: true,
-          floating: true,
-          actions: [
-            const GeneralServerNotiButton(),
-            const SearchButton(),
-            PlatformExtension.isDesktop()
-                ? IconButton(
-                    onPressed: () {
-                      init(isReset: true);
-                    },
-                    icon: const Icon(Icons.refresh),
-                  )
-                : const SizedBox.shrink(),
-            //menu
-            const NovelHomeActionButton(),
-          ],
-        ),
+        // SliverAppBar(
+        //   title: const Text(appTitle),
+        //   snap: true,
+        //   floating: true,
+        //   actions: [
+        //     const GeneralServerNotiButton(),
+        //     const SearchButton(),
+        //     PlatformExtension.isDesktop()
+        //         ? IconButton(
+        //             onPressed: () {
+        //               init(isReset: true);
+        //             },
+        //             icon: const Icon(Icons.refresh),
+        //           )
+        //         : const SizedBox.shrink(),
+        //     //menu
+        //     const NovelHomeActionButton(),
+        //   ],
+        // ),
 
         // Recent
         SliverToBoxAdapter(
@@ -188,6 +187,7 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
               );
             },
             child: Scaffold(
+              appBar: widget.appBar,
               body: isLoading
                   ? TLoader()
                   : RefreshIndicator(

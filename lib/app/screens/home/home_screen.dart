@@ -8,16 +8,21 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 2,
       child: Scaffold(
-        body: TabBarView(
-          children: [
-            HomePage(),
-            AppMorePage(),
-          ],
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: const TabBarView(
+              children: [
+                HomePage(),
+                AppMorePage(),
+              ],
+            ),
+          ),
         ),
-        bottomNavigationBar: TabBar(
+        bottomNavigationBar: const TabBar(
           tabs: [
             Tab(
               // text: 'Home',
