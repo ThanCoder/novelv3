@@ -71,27 +71,22 @@ class PdfConfigModel {
     return config;
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'page': page,
-      'dark_mode': isDarkMode,
-      'pan_locked': isPanLocked,
-      'show_scroll_thumb': isShowScrollThumb,
-      'offset_dx': offsetDx,
-      'offset_dy': offsetDy,
-      'zoom': zoom,
-      'is_keep_screen': isKeepScreen,
-      'is_text_selection': isTextSelection,
-      'scroll_by_mouse_wheel': scrollByMouseWheel,
-      'is_on_back_press_confirm': isOnBackpressConfirm,
-      'screen_orientation': screenOrientation,
-      'scrollByArrowKey': scrollByArrowKey,
-      'isFullscreen': isFullscreen,
-    };
-  }
-
-  String get getMapPrettier =>
-      const JsonEncoder.withIndent(' ').convert(toMap());
+  Map<String, dynamic> toMap() => {
+        'page': page,
+        'dark_mode': isDarkMode,
+        'pan_locked': isPanLocked,
+        'show_scroll_thumb': isShowScrollThumb,
+        'offset_dx': offsetDx,
+        'offset_dy': offsetDy,
+        'zoom': zoom,
+        'is_keep_screen': isKeepScreen,
+        'is_text_selection': isTextSelection,
+        'scroll_by_mouse_wheel': scrollByMouseWheel,
+        'is_on_back_press_confirm': isOnBackpressConfirm,
+        'screen_orientation': screenOrientation,
+        'scrollByArrowKey': scrollByArrowKey,
+        'isFullscreen': isFullscreen,
+      };
 
   void savePath(String configPath) {
     final file = File(configPath);

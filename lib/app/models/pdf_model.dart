@@ -2,7 +2,7 @@
 import 'dart:io';
 
 import 'package:novel_v3/app/constants.dart';
-import 'package:novel_v3/app/models/index.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_config_model.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class PdfModel {

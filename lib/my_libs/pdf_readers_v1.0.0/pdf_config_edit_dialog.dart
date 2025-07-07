@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/widgets/number_field.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_model.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_config_model.dart';
 
 class PdfConfigEditDialog extends StatefulWidget {
   PdfConfigModel value;
