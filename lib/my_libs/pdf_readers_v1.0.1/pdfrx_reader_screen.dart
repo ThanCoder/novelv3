@@ -62,19 +62,24 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   //pdf loaded
   void onPdfLoaded() async {
     try {
-      //set offset
+      await Future.delayed(const Duration(milliseconds: 800));
 
-      if (oldZoom != 0 && oldOffsetX != 0) {
+      //set offset
+      // config အတိုင်း ရယူ
+      if (oldZoom > 0 && oldOffsetX > 0 && oldOffsetY > 0) {
+        final newOffset = Offset(oldOffsetX, oldOffsetY);
+        await pdfController.setZoom(newOffset, oldZoom);
+        // print('set 1');
+      }
+      // config page changed
+      else if (oldZoom > 0 && oldOffsetX > 0 && oldOffsetY == 0) {
         await pdfController.goToPage(pageNumber: oldPage);
         // offset ပြန်ရယူ
         final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
-        pdfController.setZoom(newOffset, oldZoom);
+        await pdfController.setZoom(newOffset, oldZoom);
+        // print('set 2');
       }
-      // config အတိုင်း ရယူ
-      else if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
-        final newOffset = Offset(oldOffsetX, oldOffsetY);
-        pdfController.setZoom(newOffset, oldZoom);
-      }
+
       // config မရှိရင်
       else {
         await pdfController.goToPage(pageNumber: oldPage);
@@ -223,13 +228,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             config.zoom = pdfController.currentZoom;
             config.offsetDx = offset.dx;
             config.offsetDy = offset.dy;
-            // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
             setState(() {
               currentPage = pageNumber ?? 1;
               pageCount = pdfController.pageCount;
             });
           } catch (e) {
-            debugPrint('onPageChanged: ${e.toString()}');
+            debugPrint('onPageChanged error: ${e.toString()}');
           }
         },
         //pdf ready

@@ -63,6 +63,7 @@ void goChapterEditForm(BuildContext context, WidgetRef ref) async {
 void goPdfReader(BuildContext context, WidgetRef ref, PdfModel pdf) async {
   final provider = ref.read(novelNotifierProvider.notifier);
   final novel = provider.getCurrent;
+
   Navigator.push(
     context,
     MaterialPageRoute(

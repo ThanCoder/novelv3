@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdfrx/pdfrx.dart';
+import 'package:t_widgets/widgets/t_loader.dart';
 
 import 'pdf_config_model.dart';
 
@@ -27,10 +28,33 @@ class _PdfrxSinglePageReaderScreenState
     extends State<PdfrxSinglePageReaderScreen> {
   late PdfConfigModel config;
 
+  bool isLoading = false;
+  PdfDocument? document;
+
   @override
   void initState() {
     config = widget.pdfConfig;
+    init();
     super.initState();
+  }
+
+  Future<void> init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      document = await _getPdfDocument();
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -38,47 +62,54 @@ class _PdfrxSinglePageReaderScreenState
     super.dispose();
   }
 
-  Widget _getPdfItem(PdfDocument? document) {
-    return ListView.builder(
-      itemCount: document?.pages.length ?? 0,
-      itemBuilder: (context, index) {
-        return Container(
+  Widget _getPdfItem() {
+    if (document == null) {
+      return const Center(child: Text('pdf document is null!'));
+    }
+    // final page = document.pages[config.page - 1];
+    print(config.page);
+    return Stack(
+      children: [
+        Container(
           margin: const EdgeInsets.all(8),
-          height: 240,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 220,
-                child: PdfPageView(
-                  document: document,
-                  pageNumber: index + 1,
-                  alignment: Alignment.center,
-                ),
-              ),
-              Text(
-                '${index + 1}',
-              ),
-            ],
+          // height: page.height,
+          // width: page.width,
+          child: PdfPageView(
+            document: document,
+            pageNumber: config.page,
+            alignment: Alignment.center,
           ),
-        );
-      },
+        ),
+
+        // nav
+        Positioned(
+          right: 10,
+          bottom: 10,
+          child: IconButton(
+            onPressed: () {
+              config.page = config.page + 1;
+              setState(() {});
+            },
+            icon: const Icon(Icons.arrow_forward),
+          ),
+        ),
+      ],
     );
+  }
+
+  Future<PdfDocument> _getPdfDocument() async {
+    if (widget.sourcePath.startsWith('http')) {
+      //is online
+      return await PdfDocument.openUri(Uri.parse(widget.sourcePath));
+    } else {
+      return await PdfDocument.openFile(widget.sourcePath);
+    }
   }
 
   Widget _getCurrentPdfReader() {
     if (widget.sourcePath.isEmpty) return const SizedBox.shrink();
-    if (widget.sourcePath.startsWith('http')) {
-      //is online
-      return PdfDocumentViewBuilder.uri(
-        Uri.parse(widget.sourcePath),
-        builder: (context, document) => _getPdfItem(document),
-      );
-    } else {
-      return PdfDocumentViewBuilder.file(
-        widget.sourcePath,
-        builder: (context, document) => _getPdfItem(document),
-      );
-    }
+    if (isLoading) return TLoader();
+    return _getPdfItem();
   }
 
   Widget _getColorFilteredPdfReader() {
@@ -100,6 +131,11 @@ class _PdfrxSinglePageReaderScreenState
 
   @override
   Widget build(BuildContext context) {
-    return _getCurrentPdfReader();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: _getCurrentPdfReader(),
+    );
   }
 }
