@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/action_buttons/novel_content_pdf_action_button.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
-import 'package:novel_v3/app/screens/content/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/content/background_scaffold.dart';
 import 'package:novel_v3/app/services/index.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -81,7 +81,7 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => PdfConfigEditDialog(
-        config: pdf.getConfig(),
+        value: pdf.getConfig(),
         onApply: (config) {
           pdf.setConfig(config);
         },

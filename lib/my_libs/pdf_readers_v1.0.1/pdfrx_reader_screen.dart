@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_bookmark_drawer.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_bookmark_drawer.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/widgets/t_loader.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
@@ -64,16 +64,19 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     try {
       //set offset
 
-      if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
+      if (oldZoom != 0 && oldOffsetX != 0) {
         await pdfController.goToPage(pageNumber: oldPage);
-        //delay
-
-        // await Future.delayed(const Duration(milliseconds: 500));
-
+        // offset ပြန်ရယူ
         final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
-
         pdfController.setZoom(newOffset, oldZoom);
-      } else {
+      }
+      // config အတိုင်း ရယူ
+      else if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
+        final newOffset = Offset(oldOffsetX, oldOffsetY);
+        pdfController.setZoom(newOffset, oldZoom);
+      }
+      // config မရှိရင်
+      else {
         await pdfController.goToPage(pageNumber: oldPage);
       }
 
@@ -85,16 +88,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       setState(() {
         isLoading = false;
       });
-      // WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //   await Future.delayed(const Duration(milliseconds: 300));
-      //   await pdfController.setZoom(newOffset, zoom);
-      // });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         isLoading = false;
       });
-      debugPrint('onPdfLoaded: ${e.toString()}');
+      debugPrint('onPdfLoaded error: ${e.toString()}');
     }
   }
 

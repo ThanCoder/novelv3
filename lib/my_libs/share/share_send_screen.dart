@@ -13,8 +13,6 @@ import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-
-
 class ShareSendScreen extends StatefulWidget {
   const ShareSendScreen({super.key});
 
