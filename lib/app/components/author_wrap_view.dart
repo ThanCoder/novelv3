@@ -15,7 +15,7 @@ class AuthorWrapView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 5,
+      spacing: 8,
       children: [
         Text(title),
         Wrap(

@@ -5,6 +5,7 @@ import 'package:novel_v3/app/models/index.dart';
 class NovelSeeAllView extends StatelessWidget {
   List<NovelModel> list;
   String title;
+  String moreTitle;
   int showCount;
   int? showLines;
   double fontSize;
@@ -13,18 +14,18 @@ class NovelSeeAllView extends StatelessWidget {
   EdgeInsetsGeometry? margin;
   double padding;
 
-  NovelSeeAllView({
-    super.key,
-    required this.title,
-    required this.list,
-    required this.onSeeAllClicked,
-    required this.onClicked,
-    this.showCount = 8,
-    this.margin,
-    this.showLines,
-    this.fontSize = 11,
-    this.padding = 6,
-  });
+  NovelSeeAllView(
+      {super.key,
+      required this.title,
+      required this.list,
+      required this.onSeeAllClicked,
+      required this.onClicked,
+      this.showCount = 8,
+      this.margin,
+      this.showLines,
+      this.fontSize = 11,
+      this.padding = 6,
+      this.moreTitle = 'More'});
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +53,15 @@ class NovelSeeAllView extends StatelessWidget {
               children: [
                 Text(title),
                 list.length > showCount
-                    ? GestureDetector(
-                        onTap: () => onSeeAllClicked(title, list),
-                        child: const MouseRegion(
-                          cursor: SystemMouseCursors.click,
+                    ? Container(
+                        margin: const EdgeInsets.only(right: 5),
+                        child: TextButton(
+                          onPressed: () => onSeeAllClicked(title, list),
                           child: Text(
-                            'See All',
-                            style: TextStyle(color: Colors.blue),
+                            moreTitle,
+                            style: const TextStyle(color: Colors.blue),
                           ),
-                        ),
-                      )
+                        ))
                     : const SizedBox.shrink(),
               ],
             ),

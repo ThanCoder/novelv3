@@ -6,6 +6,7 @@ import 'package:novel_v3/app/screens/search/search_result_list.dart';
 import 'package:novel_v3/app/widgets/search_field.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 import '../../models/index.dart';
 
@@ -18,9 +19,16 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   bool isShowResult = false;
+  bool isLoading = false;
   List<NovelModel> resultList = [];
 
   Future<void> _searchText(String query) async {
+    setState(() {
+      isLoading = true;
+      isShowResult = false;
+    });
+    // await Future.delayed(const Duration(seconds: 2));
+
     List<NovelModel> list = ref.watch(novelNotifierProvider).list;
     // filter
     final res = list.where((nv) {
@@ -44,8 +52,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     res.sort((a, b) => a.title.compareTo(b.title));
 
     resultList = res;
+    if (!mounted) return;
     setState(() {
       isShowResult = true;
+      isLoading = false;
     });
   }
 
@@ -59,13 +69,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onCleared: () {
             setState(() {
               isShowResult = false;
+              isLoading = false;
             });
           },
         ),
       ),
-      body: isShowResult
-          ? SearchResultList(list: resultList)
-          : SearchHome(list: list),
+      body: isLoading
+          ? TLoader()
+          : isShowResult
+              ? SearchResultList(list: resultList)
+              : SearchHome(list: list),
     );
   }
 }

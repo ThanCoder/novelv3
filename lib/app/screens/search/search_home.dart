@@ -26,7 +26,7 @@ class SearchHome extends StatelessWidget {
             // author
             SliverToBoxAdapter(
               child: AuthorWrapView(
-                title: 'ရေးသားသူ',
+                title: 'ရေးသားသူများ',
                 list: authorList,
                 onClicked: (title) {
                   goSeeAllScreenWithAuthor(context, ref, title);
@@ -37,7 +37,7 @@ class SearchHome extends StatelessWidget {
             //mc
             SliverToBoxAdapter(
               child: AuthorWrapView(
-                title: 'အထိက ဇောတ်ကောင်',
+                title: 'အထိက ဇောတ်ကောင်များ',
                 list: mcList,
                 onClicked: (title) {
                   goSeeAllScreenWithMC(context, ref, title);
