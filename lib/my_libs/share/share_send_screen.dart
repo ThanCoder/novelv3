@@ -231,6 +231,10 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
       wifiList = await ThanPkg.platform.getWifiAddressList();
       if (wifiList.isNotEmpty) {
         hostController.text = wifiList.first;
+        if(Platform.isLinux && wifiList.length > 2){
+        hostController.text = wifiList[1];
+
+        }
       }
       if (!mounted) return;
       setState(() {});
@@ -256,7 +260,7 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
                 controller: hostController,
                 label: const Text('Host Address'),
                 maxLines: 1,
-                isSelectedAll: true,
+                enabled: false,
               ),
               TTextField(
                 controller: portController,
@@ -289,7 +293,9 @@ class _ShareSendScreenState extends State<ShareSendScreen> {
                       children: List.generate(
                         wifiList.length,
                         (index) {
+                          final ip = wifiList[index];
                           return ListTile(
+                            tileColor: ip == hostController.text ? Colors.teal:null,
                             title: Text(wifiList[index]),
                             onLongPress: () {
                               copyText(wifiList[index]);
