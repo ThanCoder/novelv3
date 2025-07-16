@@ -3,8 +3,9 @@ import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 
-class PdfListItem extends StatelessWidget {
+class PdfListItem extends StatefulWidget {
   PdfModel pdf;
   void Function(PdfModel pdf) onClicked;
   void Function(PdfModel pdf)? onLongClicked;
@@ -18,17 +19,58 @@ class PdfListItem extends StatelessWidget {
   });
 
   @override
+  State<PdfListItem> createState() => _PdfListItemState();
+}
+
+class _PdfListItemState extends State<PdfListItem> {
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  bool isLoading = false;
+
+  Future<void> init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      // await Future.delayed(Duration(seconds: 3));
+
+      //gen cover
+      await ThanPkg.platform.genPdfThumbnail(
+        pathList: [
+          SrcDistType(
+            src: widget.pdf.path,
+            dist: widget.pdf.coverPath,
+          ),
+        ],
+      );
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onClicked(pdf),
+      onTap: () => widget.onClicked(widget.pdf),
       onLongPress: () {
-        if (onLongClicked != null) {
-          onLongClicked!(pdf);
+        if (widget.onLongClicked != null) {
+          widget.onLongClicked!(widget.pdf);
         }
       },
       onSecondaryTap: () {
-        if (onLongClicked != null) {
-          onLongClicked!(pdf);
+        if (widget.onLongClicked != null) {
+          widget.onLongClicked!(widget.pdf);
         }
       },
       child: MouseRegion(
@@ -37,33 +79,35 @@ class PdfListItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              spacing: 7,
+              spacing: 9,
               children: [
-                SizedBox(
+                 SizedBox(
                   width: 130,
                   height: 140,
-                  child: Container(
+                  child:isLoading ? TLoader(): Container(
                     color:
                         isDarkThemeNotifier.value ? Colors.white : Colors.black,
-                    child: TImageFile(path: pdf.coverPath),
+                    child: TImageFile(path: widget.pdf.coverPath),
                   ),
                 ),
+                // text content
                 Expanded(
                   child: Column(
                     spacing: 2,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        pdf.title,
+                        widget.pdf.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      Text('Size: ${pdf.size.toDouble().toFileSizeLabel()}'),
-                      Text('Ago: ${pdf.date.toTimeAgo()}'),
-                      Text('Date: ${pdf.date.toParseTime()}'),
-                      isShowPathLabel
+                      Text(
+                          'Size: ${widget.pdf.size.toDouble().toFileSizeLabel()}'),
+                      Text('Ago: ${widget.pdf.date.toTimeAgo()}'),
+                      Text('Date: ${widget.pdf.date.toParseTime()}'),
+                      widget.isShowPathLabel
                           ? Text(
-                              'Path: ${pdf.path}',
+                              'Path: ${widget.pdf.path}',
                               style: const TextStyle(fontSize: 12),
                             )
                           : const SizedBox.shrink(),

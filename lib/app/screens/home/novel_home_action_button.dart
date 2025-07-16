@@ -82,7 +82,10 @@ class _NovelHomeActionButtonState extends ConsumerState<NovelHomeActionButton> {
               await pdf.copyCover('${novelDir.path}/cover.png');
 
               final novel = NovelModel.fromPath(novelDir.path);
+              // set ui
               provider.insertUI(novel);
+              // go edit screen
+              goNovelEditForm(context, ref, novel);
               //set record
               THistoryServices.instance.add(THistoryRecord.create(
                 title: novel.title,

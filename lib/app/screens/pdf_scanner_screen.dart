@@ -14,7 +14,6 @@ import 'package:novel_v3/app/services/pdf_services.dart';
 import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:than_pkg/types/src_dist_type.dart';
 
 class PdfScannerScreen extends ConsumerStatefulWidget {
   NovelModel? novel;
@@ -46,15 +45,15 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
     });
     list = await PdfServices.instance.pdfScanner();
     //gen cover
-    await ThanPkg.platform.genPdfThumbnail(
-        pathList: list
-            .map(
-              (pdf) => SrcDistType(
-                src: pdf.path,
-                dist: pdf.coverPath,
-              ),
-            )
-            .toList());
+    // await ThanPkg.platform.genPdfThumbnail(
+    //     pathList: list
+    //         .map(
+    //           (pdf) => SrcDistType(
+    //             src: pdf.path,
+    //             dist: pdf.coverPath,
+    //           ),
+    //         )
+    //         .toList());
     if (!mounted) return;
     setState(() {
       isLoading = false;
@@ -201,7 +200,7 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
                 child: Text(
                   pdf.title,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  maxLines: 2,
                 ),
               ),
               const Divider(),
@@ -261,7 +260,7 @@ class _PdfScannerScreenState extends ConsumerState<PdfScannerScreen> {
                     ),
               //open
               widget.novel == null
-                  ? const SizedBox.shrink()
+                  ? const SizedBox()
                   : ListTile(
                       leading: const Icon(Icons.open_in_browser_rounded),
                       title: const Text('Open'),

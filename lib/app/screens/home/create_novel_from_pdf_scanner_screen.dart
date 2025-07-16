@@ -5,7 +5,6 @@ import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/services/pdf_services.dart';
 import 'package:t_widgets/widgets/t_loader.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:than_pkg/types/src_dist_type.dart';
 
 class CreateNovelFromPdfScannerScreen extends StatefulWidget {
   void Function(PdfModel pdf) onChoosed;
@@ -43,16 +42,17 @@ class _CreateNovelFromPdfScannerScreenState
       isLoading = true;
     });
     list = await PdfServices.instance.pdfScanner();
+    
     //gen cover
-    await ThanPkg.platform.genPdfThumbnail(
-        pathList: list
-            .map(
-              (pdf) => SrcDistType(
-                src: pdf.path,
-                dist: pdf.coverPath,
-              ),
-            )
-            .toList());
+    // await ThanPkg.platform.genPdfThumbnail(
+    //     pathList: list
+    //         .map(
+    //           (pdf) => SrcDistType(
+    //             src: pdf.path,
+    //             dist: pdf.coverPath,
+    //           ),
+    //         )
+    //         .toList());
     if (!mounted) return;
     setState(() {
       isLoading = false;
