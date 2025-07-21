@@ -29,13 +29,13 @@ class _PdfListItemState extends State<PdfListItem> {
     init();
   }
 
-  bool isLoading = false;
+  bool isLoading = true;
 
   Future<void> init() async {
     try {
-      setState(() {
-        isLoading = true;
-      });
+      // setState(() {
+      //   isLoading = true;
+      // });
       // await Future.delayed(Duration(seconds: 3));
 
       //gen cover

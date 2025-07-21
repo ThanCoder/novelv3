@@ -79,6 +79,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
           await PdfBookmarkModel.setBookmarkListFromPath(
               widget.bookmarkPath, list);
           setState(() {});
+          Navigator.pop(context);
         },
       ),
     );
@@ -92,6 +93,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
     list.sort((a, b) => a.page.compareTo(b.page));
     await PdfBookmarkModel.setBookmarkListFromPath(widget.bookmarkPath, list);
     setState(() {});
+    Navigator.pop(context);
   }
 
   void _removePage(int page) async {

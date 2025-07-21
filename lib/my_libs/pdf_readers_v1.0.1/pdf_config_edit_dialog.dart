@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/widgets/number_field.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_config_model.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_model.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
 
 class PdfConfigEditDialog extends StatefulWidget {
   PdfConfigModel value;
@@ -35,6 +36,8 @@ class _PdfConfigEditDialogState extends State<PdfConfigEditDialog> {
       if (pageNumber != config.page) {
         config.page = pageNumber;
         config.offsetDy = 0;
+        // set orientation
+        config.screenOrientation = ScreenOrientationTypes.Portrait.name;
       }
 
       error = null;

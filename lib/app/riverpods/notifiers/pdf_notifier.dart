@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/riverpods/states/pdf_state.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:than_pkg/types/src_dist_type.dart';
 
 import '../../models/pdf_model.dart';
 import '../../services/pdf_services.dart';
@@ -21,17 +20,9 @@ class PdfNotifier extends StateNotifier<PdfState> {
     }
 
     state = state.copyWith(list: [], isLoading: true);
+    await Future.delayed(const Duration(milliseconds: 300));
 
     final res = await PdfServices.instance.getList(novelPath: novelPath);
-
-    //gen pdf cover
-    final genList = res
-        .map((pdf) => SrcDistType(
-              src: pdf.path,
-              dist: pdf.path.replaceAll('.pdf', '.png'),
-            ))
-        .toList();
-    await ThanPkg.platform.genPdfThumbnail(pathList: genList);
 
     state = state.copyWith(list: res, isLoading: false);
   }

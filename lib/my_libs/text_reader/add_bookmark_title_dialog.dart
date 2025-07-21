@@ -7,11 +7,15 @@ class AddBookmarkTitleDialog extends StatefulWidget {
   ChapterModel chapter;
   void Function(String title, int readLine) onSubmit;
   int readLine;
+  String submitText;
+  String cancelText;
   AddBookmarkTitleDialog({
     super.key,
     required this.chapter,
     required this.onSubmit,
     this.readLine = 0,
+    this.submitText='Submit',
+    this.cancelText='Cancel'
   });
 
   @override
@@ -45,6 +49,11 @@ class _AddBookmarkTitleDialogState extends State<AddBookmarkTitleDialog> {
     if (int.tryParse(lineController.text) == null) return widget.readLine;
     return int.parse(lineController.text);
   }
+  void _submit(){
+    Navigator.of(context).pop(true);
+
+    widget.onSubmit(titleController.text, _getReadLine);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +71,13 @@ class _AddBookmarkTitleDialogState extends State<AddBookmarkTitleDialog> {
             onChanged: (value) {
               fetch();
             },
+            onSubmitted: (value) => _submit,
           ),
           TTextField(
             label: const Text('Title'),
             controller: titleController,
             maxLines: 1,
+            onSubmitted: (value) => _submit,
           ),
         ],
       ),
@@ -75,14 +86,11 @@ class _AddBookmarkTitleDialogState extends State<AddBookmarkTitleDialog> {
           onPressed: () {
             Navigator.of(context).pop(false);
           },
-          child: const Text('Cancel'),
+          child: Text(widget.cancelText),
         ),
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(true);
-            widget.onSubmit(titleController.text, _getReadLine);
-          },
-          child: const Text('Add'),
+          onPressed: _submit,
+          child: Text(widget.submitText),
         ),
       ],
     );

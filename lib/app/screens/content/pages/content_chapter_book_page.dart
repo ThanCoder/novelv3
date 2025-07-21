@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/components/chapter_book_list_item.dart';
-import 'package:novel_v3/app/dialogs/core/index.dart';
-import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
+import 'package:novel_v3/my_libs/text_reader/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/content/background_scaffold.dart';
 import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
+import 'package:novel_v3/my_libs/text_reader/add_bookmark_title_dialog.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -35,20 +35,38 @@ class _ContentChapterBookPageState
   void _showEdit(ChapterBookmarkModel bookmark) {
     final novel = ref.read(novelNotifierProvider.notifier).getCurrent;
     if (novel == null) return;
+    final currentChapter = bookmark.toChapter(novel.path);
+
     showDialog(
       context: context,
-      builder: (context) => RenameDialog(
-        title: 'Edit Title',
-        text: bookmark.title,
-        onSubmit: (text) {
-          if (text.isEmpty) return;
-          bookmark.title = text;
+      barrierDismissible: false,
+      builder: (context) => AddBookmarkTitleDialog(
+        submitText: 'ပြောင်းလဲ',
+        chapter: currentChapter,
+        readLine: globalReadLine,
+        onSubmit: (title, readLine) async {
+          globalReadLine = readLine;
+          bookmark.title = title;
           ref
               .read(chapterBookmarkNotifierProvider.notifier)
               .update(novel.path, bookmark);
         },
       ),
     );
+    // showDialog(
+    //   context: context,
+    //   builder: (context) => RenameDialog(
+    //     title: 'Edit Title',
+    //     text: bookmark.title,
+    //     onSubmit: (text) {
+    //       if (text.isEmpty) return;
+    //       bookmark.title = text;
+    //       ref
+    //           .read(chapterBookmarkNotifierProvider.notifier)
+    //           .update(novel.path, bookmark);
+    //     },
+    //   ),
+    // );
   }
 
   void _delete(ChapterBookmarkModel bookmark) {

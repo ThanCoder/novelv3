@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
+import 'package:novel_v3/my_libs/text_reader/chapter_bookmark_model.dart';
 
 class ChapterBookListItem extends StatelessWidget {
   ChapterBookmarkModel book;

@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
+import 'package:novel_v3/my_libs/text_reader/chapter_bookmark_model.dart';
 
 class ChapterBookmarkState {
   List<ChapterBookmarkModel> list;

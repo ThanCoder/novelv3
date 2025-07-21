@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/dialogs/add_bookmark_title_dialog.dart';
-import 'package:novel_v3/app/models/chapter_bookmark_model.dart';
+import 'package:novel_v3/my_libs/text_reader/add_bookmark_title_dialog.dart';
+import 'package:novel_v3/my_libs/text_reader/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
@@ -10,8 +10,8 @@ import 'package:novel_v3/app/screens/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/content/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_config_model.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdfrx_reader_screen.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_model.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdfrx_reader_screen.dart';
 import 'package:novel_v3/my_libs/text_reader/text_reader_config_model.dart';
 import 'package:novel_v3/my_libs/text_reader/text_reader_screen.dart';
 

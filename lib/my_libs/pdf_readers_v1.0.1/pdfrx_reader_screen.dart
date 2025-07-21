@@ -4,7 +4,7 @@ import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.0/pdf_bookmark_drawer.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_bookmark_drawer.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/widgets/t_loader.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
@@ -46,6 +46,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   double oldOffsetY = 0;
   int oldPage = 1;
   bool isCanGoBack = true;
+  int delayMiliSec = 200;
 
   @override
   void initState() {
@@ -59,10 +60,19 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     _initConfig();
   }
 
+  @override
+  void dispose() {
+    keyboardListenerFocus.dispose();
+    _close();
+    super.dispose();
+  }
+
   //pdf loaded
   void onPdfLoaded() async {
     try {
       //set offset
+      await Future.delayed(const Duration(milliseconds: 1200));
+      print('loaded');
 
       if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
         await pdfController.goToPage(pageNumber: oldPage);
@@ -78,7 +88,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         await pdfController.setZoom(newOffset, oldZoom);
         // print('set 2');
       } else {
-        await pdfController.goToPage(pageNumber: oldPage);
+        // await pdfController.goToPage(pageNumber: oldPage);
+        await goPage(oldPage);
       }
 
       await ThanPkg.platform
@@ -89,16 +100,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       setState(() {
         isLoading = false;
       });
-      // WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //   await Future.delayed(const Duration(milliseconds: 300));
-      //   await pdfController.setZoom(newOffset, zoom);
-      // });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         isLoading = false;
       });
-      debugPrint('onPdfLoaded: ${e.toString()}');
+      debugPrint('onPdfLoaded error: ${e.toString()}');
     }
   }
 
@@ -126,9 +133,15 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   }
 
   //go page
-  void goPage(int pageNum) async {
+  Future<void> goPage(int pageNum) async {
     try {
+      double oldZoom = pdfController.currentZoom;
+
       await pdfController.goToPage(pageNumber: pageNum);
+      Offset oldOffset = pdfController.centerPosition;
+      // delay
+      await Future.delayed(Duration(milliseconds: delayMiliSec));
+      await pdfController.setZoom(oldOffset, oldZoom);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -173,7 +186,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     setState(() {});
     await ThanPkg.platform.toggleFullScreen(isFullScreen: isFull);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(Duration(milliseconds: delayMiliSec));
       await pdfController.setZoom(oldOffset, oldZoom);
     });
   }
@@ -238,9 +251,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           }
         },
         //pdf ready
-        onViewerReady: (document, controller) {
-          onPdfLoaded();
-        },
+        onViewerReady: (document, controller) => onPdfLoaded(),
+
         viewerOverlayBuilder: config.isShowScrollThumb
             ? (context, size, handleLinkTap) => [
                   // Add vertical scroll thumb on viewer's right side
@@ -352,7 +364,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   }
 
   Widget _getCurrentPdfReader() {
-    if (widget.sourcePath.isEmpty) return const SizedBox.shrink();
+    if (widget.sourcePath.isEmpty) {
+      return const Center(child: Text('Path Not Found!'));
+    }
     if (widget.sourcePath.startsWith('http')) {
       //is online
       return PdfViewer.uri(
@@ -406,6 +420,29 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     }
   }
 
+  //save config
+  void _saveConfig() {
+    try {
+      //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
+      if (isLoading) return;
+      config.page = currentPage;
+      if (widget.saveConfig != null) {
+        widget.saveConfig!(config);
+      }
+    } catch (e) {
+      debugPrint('saveConfig: ${e.toString()}');
+    }
+  }
+
+  void _close() async {
+    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    ThanPkg.platform.toggleKeepScreen(isKeep: false);
+    if (Platform.isAndroid) {
+      ThanPkg.android.app
+          .requestOrientation(type: ScreenOrientationTypes.Portrait);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -433,7 +470,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
                   goPage(pageIndex);
                 },
               ),
-        body: GestureDetector(
+        body:GestureDetector(
           onDoubleTap: () => _setFullScreen(!config.isFullscreen),
           onSecondaryTap: _showSetting,
           onLongPress: config.isTextSelection ? null : () => _showSetting(),
@@ -451,35 +488,5 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         ),
       ),
     );
-  }
-
-  //save config
-  void _saveConfig() {
-    try {
-      //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
-      if (isLoading) return;
-      config.page = currentPage;
-      if (widget.saveConfig != null) {
-        widget.saveConfig!(config);
-      }
-    } catch (e) {
-      debugPrint('saveConfig: ${e.toString()}');
-    }
-  }
-
-  void _close() async {
-    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
-    ThanPkg.platform.toggleKeepScreen(isKeep: false);
-    if (Platform.isAndroid) {
-      ThanPkg.android.app
-          .requestOrientation(type: ScreenOrientationTypes.Portrait);
-    }
-  }
-
-  @override
-  void dispose() {
-    keyboardListenerFocus.dispose();
-    _close();
-    super.dispose();
   }
 }
