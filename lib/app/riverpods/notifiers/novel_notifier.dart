@@ -26,14 +26,15 @@ class NovelNotifier extends StateNotifier<NovelState> {
     state = state.copyWith(isLoading: false, list: res);
   }
 
+
   Future<void> setCurrent(NovelModel novel, {bool isFullInfo = true}) async {
     try {
       if (isFullInfo) {
+        novel = NovelModel.fromPath(novel.path, isFullInfo: true);
         state = state.copyWith(
-            novel: NovelModel.fromPath(novel.path, isFullInfo: true));
-      } else {
-        state = state.copyWith(novel: novel);
+            novel: novel);
       }
+      // change index
     } catch (e) {
       debugPrint(e.toString());
     }

@@ -7,10 +7,12 @@ class NovelGridItem extends StatelessWidget {
   NovelModel novel;
   double fontSize;
   void Function(NovelModel novel) onClicked;
+  void Function(NovelModel novel)? onLongClicked;
   NovelGridItem({
     super.key,
     required this.novel,
     required this.onClicked,
+    this.onLongClicked,
     this.fontSize = 12,
   });
 
@@ -18,6 +20,14 @@ class NovelGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onClicked(novel),
+      onLongPress: () {
+       if(onLongClicked == null) return;
+        onLongClicked!(novel);
+      },
+      onSecondaryTap:(){
+        if(onLongClicked == null) return;
+        onLongClicked!(novel);
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Stack(

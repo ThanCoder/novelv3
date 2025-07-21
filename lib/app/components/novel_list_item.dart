@@ -6,10 +6,12 @@ import 'package:than_pkg/than_pkg.dart';
 class NovelListItem extends StatelessWidget {
   NovelModel novel;
   void Function(NovelModel novel) onClicked;
+  void Function(NovelModel novel)? onLongClicked;
   NovelListItem({
     super.key,
     required this.novel,
     required this.onClicked,
+    this.onLongClicked,
   });
 
   @override
@@ -18,6 +20,14 @@ class NovelListItem extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () => onClicked(novel),
+        onLongPress: () {
+          if (onLongClicked == null) return;
+          onLongClicked!(novel);
+        },
+        onSecondaryTap: () {
+          if (onLongClicked == null) return;
+          onLongClicked!(novel);
+        },
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(8.0),

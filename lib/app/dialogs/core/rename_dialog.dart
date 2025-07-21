@@ -15,6 +15,7 @@ class RenameDialog extends StatefulWidget {
   TextInputType? textInputType;
   List<TextInputFormatter>? inputFormatters;
   String? Function(String text)? onCheckIsError;
+  bool autofocus;
 
   RenameDialog({
     super.key,
@@ -29,6 +30,7 @@ class RenameDialog extends StatefulWidget {
     this.inputFormatters,
     this.textInputType,
     this.onCheckIsError,
+    this.autofocus=false,
   });
 
   @override
@@ -82,6 +84,7 @@ class _RenameDialogState extends State<RenameDialog> {
           textInputType: widget.textInputType,
           label: widget.renameLabelText,
           errorText: errorText,
+          autofocus: widget.autofocus,
           onChanged: (value) {
             _checkError(value);
             if (widget.onChanged != null) {

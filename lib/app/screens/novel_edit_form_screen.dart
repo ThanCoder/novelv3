@@ -6,9 +6,6 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/tag_components/tags_wrap_view.dart';
-import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_record.dart';
-import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_services.dart';
-import 'package:novel_v3/my_libs/t_history_v1.0.0/t_methods.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class NovelEditFormScreen extends ConsumerStatefulWidget {
@@ -29,6 +26,9 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
 
   late NovelModel novel;
   bool isChanged = true;
+  bool isCompleted = false;
+  bool isAdult = false;
+  bool isSaving = false;
 
   @override
   void initState() {
@@ -52,30 +52,53 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
     authorController.text = novel.author;
     mcController.text = novel.mc;
     contentController.text = novel.getContent;
+    isCompleted = novel.isCompleted;
+    isAdult = novel.isAdult;
   }
 
   void _saveNovel() async {
     try {
+      setState(() {
+        isSaving = true;
+      });
+      // change title
       if (novel.title != titleController.text) {
         //change dir
         novel = await novel.changeTitle(titleController.text);
+        // delay
+        // await Future.delayed(const Duration(milliseconds: 500));
       }
+
       novel.title = titleController.text;
       novel.author = authorController.text;
       novel.mc = mcController.text;
       novel.content = contentController.text;
+      novel.isAdult = isAdult;
+      novel.isCompleted = isCompleted;
+
       //save
       await novel.save();
+
       if (!mounted) return;
-      ref.read(novelNotifierProvider.notifier).setCurrent(novel);
+      final provider = ref.read(novelNotifierProvider.notifier);
+      provider.setCurrent(novel);
+      // init
+      provider.initList(isReset: true);
+
+      setState(() {
+        isSaving = false;
+      });
 
       Navigator.of(context).pop();
-      THistoryServices.instance.add(THistoryRecord.create(
-        title: novel.title,
-        method: TMethods.update,
-      ));
+      // THistoryServices.instance.add(THistoryRecord.create(
+      //   title: novel.title,
+      //   method: TMethods.update,
+      // ));
     } catch (e) {
       if (!mounted) return;
+      setState(() {
+        isSaving = false;
+      });
       showDialogMessage(context, e.toString());
     }
   }
@@ -177,9 +200,9 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
                     children: [
                       const Text('Adult'),
                       Switch(
-                        value: novel.isAdult,
+                        value: isAdult,
                         onChanged: (value) {
-                          novel.isAdult = value;
+                          isAdult = value;
                           if (!isChanged) {
                             isChanged = true;
                           }
@@ -192,9 +215,9 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
                     children: [
                       const Text('Completed'),
                       Switch(
-                        value: novel.isCompleted,
+                        value: isCompleted,
                         onChanged: (value) {
-                          novel.isCompleted = value;
+                          isCompleted = value;
                           if (!isChanged) {
                             isChanged = true;
                           }
@@ -214,6 +237,7 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
                   showDialog(
                     context: context,
                     builder: (context) => RenameDialog(
+                      autofocus: true,
                       title: 'Url ထည့်သွင်ခြင်း',
                       text: '',
                       onCheckIsError: (text) {
@@ -270,10 +294,12 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
         ),
       ),
       floatingActionButton: isChanged
-          ? FloatingActionButton(
-              onPressed: _saveNovel,
-              child: const Icon(Icons.save_as_rounded),
-            )
+          ? isSaving
+              ? const Text('Saving...')
+              : FloatingActionButton(
+                  onPressed: isSaving ? null : _saveNovel,
+                  child: const Icon(Icons.save_as_rounded),
+                )
           : null,
     );
   }

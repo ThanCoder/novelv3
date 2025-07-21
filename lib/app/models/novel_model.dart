@@ -203,6 +203,7 @@ class NovelModel {
   }
 
   Future<void> save() async {
+
     final readedFile = File('$path/readed');
     final mcFile = File('$path/mc');
     final authorFile = File('$path/author');
@@ -220,15 +221,15 @@ class NovelModel {
     if (isAdult) {
       await adultFile.writeAsString('');
     } else {
-      if (await adultFile.exists()) {
-        await adultFile.delete();
+      if (adultFile.existsSync()) {
+        adultFile.deleteSync();
       }
     }
     if (isCompleted) {
       await completedFile.writeAsString('');
     } else {
-      if (await completedFile.exists()) {
-        await completedFile.delete();
+      if (completedFile.existsSync()) {
+        completedFile.deleteSync();
       }
     }
   }
