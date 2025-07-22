@@ -71,8 +71,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   void onPdfLoaded() async {
     try {
       //set offset
-      await Future.delayed(const Duration(milliseconds: 1200));
-      print('loaded');
+      // await Future.delayed(const Duration(milliseconds: 1200));
 
       if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
         await pdfController.goToPage(pageNumber: oldPage);
@@ -100,6 +99,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       setState(() {
         isLoading = false;
       });
+        pageCount = pdfController.pageCount;
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -470,7 +470,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
                   goPage(pageIndex);
                 },
               ),
-        body:GestureDetector(
+        body: GestureDetector(
           onDoubleTap: () => _setFullScreen(!config.isFullscreen),
           onSecondaryTap: _showSetting,
           onLongPress: config.isTextSelection ? null : () => _showSetting(),

@@ -6,9 +6,9 @@ import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
-import 'package:novel_v3/app/screens/chapter_edit_form.dart';
+import 'package:novel_v3/app/screens/forms/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/content/novel_content_screen.dart';
-import 'package:novel_v3/app/screens/novel_edit_form_screen.dart';
+import 'package:novel_v3/app/screens/forms/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_model.dart';
 import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdfrx_reader_screen.dart';
@@ -145,6 +145,19 @@ void goTextReader(
   );
 }
 
+// go see all screen
+void goSeeAllScreen(BuildContext context,String title, List<NovelModel> list) {
+    novelSeeAllScreenNotifier.value = list;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NovelSeeAllScreen(
+          title: title,
+        ),
+      ),
+    );
+  }
+
 void goSeeAllScreenWithAuthor(
   BuildContext context,
   WidgetRef ref,
@@ -152,10 +165,11 @@ void goSeeAllScreenWithAuthor(
 ) {
   final list = ref.read(novelNotifierProvider.notifier).getList;
   final res = list.where((nv) => nv.author == author).toList();
+  novelSeeAllScreenNotifier.value = res;
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => NovelSeeAllScreen(title: author, list: res),
+      builder: (context) => NovelSeeAllScreen(title: author),
     ),
   );
 }
@@ -167,10 +181,11 @@ void goSeeAllScreenWithMC(
 ) {
   final list = ref.read(novelNotifierProvider.notifier).getList;
   final res = list.where((nv) => nv.mc == mc).toList();
+  novelSeeAllScreenNotifier.value = res;
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => NovelSeeAllScreen(title: mc, list: res),
+      builder: (context) => NovelSeeAllScreen(title: mc),
     ),
   );
 }

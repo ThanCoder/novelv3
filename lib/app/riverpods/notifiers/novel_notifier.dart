@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/riverpods/states/novel_state.dart';
+import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/app/services/novel_services.dart';
 
 import '../../models/index.dart';
@@ -26,15 +27,13 @@ class NovelNotifier extends StateNotifier<NovelState> {
     state = state.copyWith(isLoading: false, list: res);
   }
 
-
   Future<void> setCurrent(NovelModel novel, {bool isFullInfo = true}) async {
     try {
       if (isFullInfo) {
         novel = NovelModel.fromPath(novel.path, isFullInfo: true);
-        state = state.copyWith(
-            novel: novel);
+        state = state.copyWith(novel: novel);
       }
-      // change index
+      
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -45,10 +44,14 @@ class NovelNotifier extends StateNotifier<NovelState> {
     state = state.copyWith(list: state.list);
   }
 
-  void removeUI(NovelModel novel) {
+  Future<void> removeUI(NovelModel novel) async{
     state = state.copyWith(
       list: state.list.where((nv) => nv.title != novel.title).toList(),
     );
+    // remove see all screen
+    final seeAllList = novelSeeAllScreenNotifier.value;
+    novelSeeAllScreenNotifier.value =
+        seeAllList.where((nv) => nv.title != novel.title).toList();
   }
 
   void refreshCurrent() {

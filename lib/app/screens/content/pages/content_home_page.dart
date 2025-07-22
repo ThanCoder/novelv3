@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/screens/content/novel_content_action_button.dart';
+import 'package:novel_v3/app/screens/content/actions/novel_content_action_bottom_sheet.dart';
 import 'package:novel_v3/app/action_buttons/novel_bookmark_button.dart';
 import 'package:novel_v3/app/components/chapter_count_view.dart';
 import 'package:novel_v3/app/screens/content/buttons/novel_chapter_start_button.dart';
@@ -29,6 +29,8 @@ class ContentHomePage extends ConsumerStatefulWidget {
 }
 
 class _ContentHomePageState extends ConsumerState<ContentHomePage> {
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -158,29 +160,38 @@ class _ContentHomePageState extends ConsumerState<ContentHomePage> {
     final novel = ref.watch(novelNotifierProvider).novel;
     if (novel == null) return const Text('novel is null');
     return BackgroundScaffold(
-      stackChildren: [
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(0, 97, 97, 97),
+        title: const Text('Content'),
+        actions: [
+          NovelBookmarkButton(novel: novel),
+          IconButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => NovelContentActionBottomSheet(
+                  onLoading: (isLoading) {
+                    setState(() {
+                      this.isLoading = isLoading;
+                    });
+                  },
+                  onBackpress: () {
+                    Navigator.pop(this.context);
+                  },
+                ),
+              );
+            },
+            icon: const Icon(Icons.more_vert),
+          )
+        ],
+      ),
+      stackChildren:  [
         RefreshIndicator(
           onRefresh: () async {
             ref.read(novelNotifierProvider.notifier).refreshCurrent();
           },
-          child: CustomScrollView(
+          child: isLoading ? TLoader() : CustomScrollView(
             slivers: [
-              // app bar
-              SliverAppBar(
-                backgroundColor: const Color.fromARGB(0, 97, 97, 97),
-                title: const Text('Content'),
-                snap: true,
-                floating: true,
-                actions: [
-                  NovelBookmarkButton(novel: novel),
-                  NovelContentActionButton(
-                    onBackpress: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
               // header

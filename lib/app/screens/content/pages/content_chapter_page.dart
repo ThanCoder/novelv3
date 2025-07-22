@@ -7,7 +7,7 @@ import 'package:novel_v3/app/dialogs/core/confirm_dialog.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
-import 'package:novel_v3/app/screens/chapter_edit_form.dart';
+import 'package:novel_v3/app/screens/forms/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/content/background_scaffold.dart';
 import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';

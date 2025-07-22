@@ -8,7 +8,6 @@ import 'package:novel_v3/app/models/novel_model.dart';
 import 'package:novel_v3/my_libs/novel_data/data_import_dialog.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
-import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/app/services/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -37,15 +36,6 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
     await ref.read(recentNotifierProvider.notifier).initList();
   }
 
-  void _goShowAllScreen(String title, List<NovelModel> list) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NovelSeeAllScreen(title: title, list: list),
-      ),
-    );
-  }
-
   void _goContentScreen(NovelModel novel) {
     goNovelContentPage(context, ref, novel);
   }
@@ -58,26 +48,6 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
     List<NovelModel> recentList = ref.watch(recentNotifierProvider).list;
     return CustomScrollView(
       slivers: [
-        // SliverAppBar(
-        //   title: const Text(appTitle),
-        //   snap: true,
-        //   floating: true,
-        //   actions: [
-        //     const GeneralServerNotiButton(),
-        //     const SearchButton(),
-        //     PlatformExtension.isDesktop()
-        //         ? IconButton(
-        //             onPressed: () {
-        //               init(isReset: true);
-        //             },
-        //             icon: const Icon(Icons.refresh),
-        //           )
-        //         : const SizedBox.shrink(),
-        //     //menu
-        //     const NovelHomeActionButton(),
-        //   ],
-        // ),
-
         // Recent
         SliverToBoxAdapter(
           child: NovelSeeAllView(
@@ -85,7 +55,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'မကြာခင်က',
             list: recentList,
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),
@@ -96,7 +67,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'နောက်ဆုံး',
             list: list,
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),
@@ -106,7 +78,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'ပြီးဆုံး စာစဥ်များ',
             list: list.where((nv) => nv.isCompleted).toList(),
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),
@@ -116,7 +89,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'ဆက်သွားနေဆဲ စာစဥ်များ',
             list: list.where((nv) => !nv.isCompleted).toList(),
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),
@@ -126,7 +100,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'Adult စာစဥ်များ',
             list: list.where((nv) => nv.isAdult).toList(),
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),
@@ -138,7 +113,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'Book Mark',
             list: bookList,
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),
@@ -149,7 +125,8 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             margin: const EdgeInsets.only(bottom: 20),
             title: 'ကျပန်း စာစဥ်များ',
             list: randomList,
-            onSeeAllClicked: _goShowAllScreen,
+            onSeeAllClicked: (title, list) =>
+                goSeeAllScreen(context, title, list),
             onClicked: _goContentScreen,
           ),
         ),

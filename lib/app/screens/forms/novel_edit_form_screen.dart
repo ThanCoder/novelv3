@@ -4,6 +4,7 @@ import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
+import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
 import 'package:novel_v3/app/services/core/app_services.dart';
 import 'package:novel_v3/app/tag_components/tags_wrap_view.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -63,10 +64,10 @@ class _NovelEditFormScreenState extends ConsumerState<NovelEditFormScreen> {
       });
       // change title
       if (novel.title != titleController.text) {
+        // change novel see all screen
+        novelSeeAllScreenTitleChanged(oldTitle: novel.title, newTitle: titleController.text);
         //change dir
         novel = await novel.changeTitle(titleController.text);
-        // delay
-        // await Future.delayed(const Duration(milliseconds: 500));
       }
 
       novel.title = titleController.text;

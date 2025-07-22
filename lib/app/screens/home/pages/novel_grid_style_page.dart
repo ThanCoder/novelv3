@@ -39,7 +39,6 @@ class NovelGridStylePage extends ConsumerWidget {
                   goNovelContentPage(context, ref, novel);
                 },
                 onLongClicked: (novel) {
-                  print('long');
                   goNovelEditForm(context, ref, novel);
                 },
               ),

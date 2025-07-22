@@ -68,6 +68,10 @@ class NovelModel {
     file.writeAsStringSync(text);
   }
 
+  factory NovelModel.fromTitle(String title, {bool isFullInfo = false}) {
+    return NovelModel.fromPath('${PathUtil.getSourcePath()}/$title');
+  }
+
   factory NovelModel.fromPath(String path, {bool isFullInfo = false}) {
     final dir = Directory(path);
     bool isAdult = File('${dir.path}/is-adult').existsSync();
@@ -203,7 +207,6 @@ class NovelModel {
   }
 
   Future<void> save() async {
-
     final readedFile = File('$path/readed');
     final mcFile = File('$path/mc');
     final authorFile = File('$path/author');

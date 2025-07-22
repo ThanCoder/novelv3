@@ -6,9 +6,11 @@ import 'package:t_widgets/t_widgets.dart';
 
 class BackgroundScaffold extends StatelessWidget {
   List<Widget> stackChildren;
+  PreferredSizeWidget? appBar;
   BackgroundScaffold({
     super.key,
     required this.stackChildren,
+    this.appBar,
   });
 
   @override
@@ -17,6 +19,7 @@ class BackgroundScaffold extends StatelessWidget {
       final novel = ref.watch(novelNotifierProvider).novel;
       if (novel == null) return const Text('novel is null');
       return Scaffold(
+        appBar: appBar,
         body: Stack(
           children: [
             // background cover

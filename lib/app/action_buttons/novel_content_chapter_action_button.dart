@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:novel_v3/app/riverpods/providers.dart';
-import 'package:novel_v3/app/screens/chapter_online_fetcher_screen.dart';
-import 'package:novel_v3/app/screens/chapter_edit_form.dart';
+import 'package:novel_v3/app/screens/forms/chapter_online_fetcher_screen.dart';
+import 'package:novel_v3/app/screens/forms/chapter_edit_form.dart';
 
 class NovelContentChapterActionButton extends ConsumerStatefulWidget {
   VoidCallback? onBackpress;

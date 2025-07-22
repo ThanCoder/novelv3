@@ -44,7 +44,7 @@ class NovelSeeAllView extends StatelessWidget {
       padding: EdgeInsets.all(padding),
       margin: margin,
       child: SizedBox(
-        height: _showLines * 160,
+        height: _showLines * 170,
         child: Column(
           spacing: 5,
           children: [
