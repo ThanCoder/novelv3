@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/my_libs/app_helpers/app_help_button.dart';
 import '../models/uploader_novel.dart';
 import 'pages/home_page.dart';
 import 'pages/uploader_file_page.dart';
@@ -10,7 +11,12 @@ class NovelContentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Content Page')),
+      appBar: AppBar(
+        title: Text('Content Page'),
+        actions: const [
+          AppHelpButton(),
+        ],
+      ),
       body: DefaultTabController(
         length: 2,
         child: Scaffold(

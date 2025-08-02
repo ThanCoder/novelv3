@@ -4,6 +4,7 @@ import 'package:than_pkg/extensions/datetime_extension.dart';
 
 import '../../setting/path_util.dart';
 import '../models/uploader_novel.dart';
+import 'status_text.dart';
 
 class OnlineNovelListItem extends StatelessWidget {
   UploaderNovel novel;
@@ -28,8 +29,8 @@ class OnlineNovelListItem extends StatelessWidget {
               spacing: 8,
               children: [
                 SizedBox(
-                  width: 180,
-                  height: 220,
+                  width: 140,
+                  height: 160,
                   child: TCacheImage(
                     url: novel.coverUrl,
                     cachePath: PathUtil.getCachePath(),
@@ -45,26 +46,24 @@ class OnlineNovelListItem extends StatelessWidget {
                       Text('Author: ${novel.author}'),
                       Text('ဘာသာပြန်: ${novel.translator}'),
                       Text('MC: ${novel.mc}'),
-                      // Text('Tags: ${novel.tags}'),
                       TTagsWrapView(values: novel.getTags),
-                      // Text('isAdult: ${novel.isAdult.toString()}'),
-                      // Text('isCompleted: ${novel.isCompleted.toString()}'),
-                      TChip(
-                        title: Text(
-                          novel.isCompleted ? 'isCompleted' : 'OnGoing',
-                          style: TextStyle(
-                            color: novel.isCompleted ? Colors.teal : Colors.grey,
+                      Wrap(
+                        spacing: 5,
+                        children: [
+                          StatusText(
+                            bgColor: novel.isCompleted
+                                ? StatusText.completedColor
+                                : StatusText.onGoingColor,
+                            text: novel.isCompleted ? 'Completed' : 'OnGoing',
                           ),
-                        ),
+                          novel.isAdult
+                              ? StatusText(
+                                  text: 'Adult',
+                                  bgColor: StatusText.adultColor,
+                                )
+                              : const SizedBox.shrink(),
+                        ],
                       ),
-                      novel.isAdult
-                          ? TChip(
-                              title: Text(
-                                'isAdult',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            )
-                          : SizedBox.shrink(),
                       Text('ရက်စွဲ: ${novel.date.toParseTime()}'),
                     ],
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/my_libs/app_helpers/app_help_button.dart';
 import 'package:t_widgets/widgets/index.dart';
 
 import '../components/index.dart';
@@ -190,6 +191,7 @@ class _OnlineNovelHomeScreenState extends State<OnlineNovelHomeScreen> {
       appBar: AppBar(
         title: const Text('Static Server'),
         actions: [
+          AppHelpButton(),
           IconButton(
             onPressed: _goSearchScreen,
             icon: const Icon(Icons.search),
