@@ -279,7 +279,7 @@ class NovelModel {
     file.writeAsStringSync(num.toString());
   }
 
-  void exportConfig(Directory saveDir) {
+  Future<void> exportConfig(Directory saveDir) async {
     if (!saveDir.existsSync()) return;
     final coverFile = File(coverPath);
     if (coverFile.existsSync()) {
