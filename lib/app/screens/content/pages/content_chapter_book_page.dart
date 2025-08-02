@@ -53,20 +53,7 @@ class _ContentChapterBookPageState
         },
       ),
     );
-    // showDialog(
-    //   context: context,
-    //   builder: (context) => RenameDialog(
-    //     title: 'Edit Title',
-    //     text: bookmark.title,
-    //     onSubmit: (text) {
-    //       if (text.isEmpty) return;
-    //       bookmark.title = text;
-    //       ref
-    //           .read(chapterBookmarkNotifierProvider.notifier)
-    //           .update(novel.path, bookmark);
-    //     },
-    //   ),
-    // );
+
   }
 
   void _delete(ChapterBookmarkModel bookmark) {
@@ -129,7 +116,7 @@ class _ContentChapterBookPageState
     return BackgroundScaffold(
       stackChildren: [
         isLoading
-            ? TLoader()
+            ? Center(child: TLoaderRandom())
             : RefreshIndicator(
                 onRefresh: init,
                 child: CustomScrollView(

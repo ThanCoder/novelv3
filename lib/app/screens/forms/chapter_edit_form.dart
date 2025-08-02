@@ -171,7 +171,7 @@ class _ChapterEditFormState extends ConsumerState<ChapterEditForm> {
           title: const Text('Chapter Form'),
         ),
         body: isLoading
-            ? TLoader()
+            ? Center(child: TLoaderRandom())
             : SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

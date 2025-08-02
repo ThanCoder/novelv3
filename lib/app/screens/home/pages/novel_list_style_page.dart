@@ -21,7 +21,7 @@ class NovelListStylePage extends ConsumerWidget {
     return Scaffold(
       appBar: appBar,
       body: isLoading
-          ? TLoader()
+          ? Center(child: TLoaderRandom())
           : ListView.separated(
               itemBuilder: (context, index) => NovelListItem(
                 novel: list[index],

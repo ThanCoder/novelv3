@@ -118,7 +118,7 @@ class _ContentChapterPageState extends ConsumerState<ContentChapterPage> {
     return BackgroundScaffold(
       stackChildren: [
         isLoading
-            ? TLoader()
+            ? Center(child: TLoaderRandom())
             : RefreshIndicator(
                 onRefresh: () async {
                   await init(isReset: true);
@@ -144,26 +144,7 @@ class _ContentChapterPageState extends ConsumerState<ContentChapterPage> {
                                 .reversedList();
                             isSorted = !isSorted;
                             setState(() {});
-                            // showCupertinoDialog(
-                            //   context: context,
-                            //   builder: (context) => TSortDialog(
-                            //     list: [
-                            //       ...TSort.getDefaultList,
-                            //     ],
-                            //     value:
-                            //         // TSort(title: 'Title', choose: ['Z to A']),
-                            //         TSort(
-                            //       title: 'Date',
-                            //       choose: [
-                            //         'Newest',
-                            //       ],
-                            //     ),
-                            //     onChoosed: (title, choose) {
-                            //       print(title);
-                            //       print(choose);
-                            //     },
-                            //   ),
-                            // );
+
                           },
                           icon: const Icon(
                             Icons.sort_by_alpha_sharp,

@@ -190,7 +190,7 @@ class _ContentHomePageState extends ConsumerState<ContentHomePage> {
           onRefresh: () async {
             ref.read(novelNotifierProvider.notifier).refreshCurrent();
           },
-          child: isLoading ? TLoader() : CustomScrollView(
+          child: isLoading ? Center(child: TLoaderRandom()) : CustomScrollView(
             slivers: [
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 

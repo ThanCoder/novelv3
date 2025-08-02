@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/my_libs/novel_v3_uploader/screens/online_novel_home_screen.dart';
 
 import 'pages/app_more_page.dart';
 import 'pages/home_page.dart';
@@ -9,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         body: Center(
           child: ConstrainedBox(
@@ -17,6 +18,7 @@ class HomeScreen extends StatelessWidget {
             child: const TabBarView(
               children: [
                 HomePage(),
+                OnlineNovelHomeScreen(),
                 AppMorePage(),
               ],
             ),
@@ -25,11 +27,12 @@ class HomeScreen extends StatelessWidget {
         bottomNavigationBar: const TabBar(
           tabs: [
             Tab(
-              // text: 'Home',
               icon: Icon(Icons.home),
             ),
             Tab(
-              // text: 'More',
+              icon: Icon(Icons.cloud_download_outlined),
+            ),
+            Tab(
               icon: Icon(Icons.grid_view_rounded),
             ),
           ],

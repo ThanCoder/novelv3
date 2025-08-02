@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,9 +41,12 @@ class _NovelDataConfigExporterDialogState
         });
         throw Exception('Storage Permission Denied');
       }
-      for (var nv in novelSeeAllScreenNotifier.value) {
-        await nv.exportConfig(Directory(PathUtil.getOutPath()));
-      }
+      await Isolate.run(() async {
+        for (var nv in novelSeeAllScreenNotifier.value) {
+          await nv.exportConfig(Directory(PathUtil.getOutPath()));
+        }
+      });
+
       // await Future.delayed(Duration(seconds: 2));
       if (!mounted) return;
       setState(() {

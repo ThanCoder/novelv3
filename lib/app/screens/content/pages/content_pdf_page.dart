@@ -240,7 +240,7 @@ class _ContentPdfPageState extends ConsumerState<ContentPdfPage> {
       child: BackgroundScaffold(
         stackChildren: [
           isLoading
-              ? TLoader()
+              ? Center(child: TLoaderRandom())
               : RefreshIndicator(
                   onRefresh: init,
                   child: CustomScrollView(

@@ -3,7 +3,7 @@ import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/components/pdf_list_item.dart';
 import 'package:novel_v3/app/models/pdf_model.dart';
 import 'package:novel_v3/app/services/pdf_services.dart';
-import 'package:t_widgets/widgets/t_loader.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class CreateNovelFromPdfScannerScreen extends StatefulWidget {
@@ -68,7 +68,7 @@ class _CreateNovelFromPdfScannerScreenState
 
   Widget _getList() {
     if (isLoading) {
-      return TLoader();
+      return Center(child: TLoaderRandom());
     }
     if (list.isEmpty) {
       return const Center(child: Text('PDF ရှာမတွေ့ပါ!'));

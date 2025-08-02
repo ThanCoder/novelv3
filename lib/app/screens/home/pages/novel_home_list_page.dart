@@ -166,7 +166,7 @@ class _NovelHomeListPageState extends ConsumerState<NovelHomeListPage> {
             child: Scaffold(
               appBar: widget.appBar,
               body: isLoading
-                  ? TLoader()
+                  ? Center(child: TLoaderRandom())
                   : RefreshIndicator(
                       onRefresh: () async {
                         init(isReset: true);

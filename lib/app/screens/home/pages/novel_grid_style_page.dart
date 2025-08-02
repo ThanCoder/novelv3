@@ -24,7 +24,7 @@ class NovelGridStylePage extends ConsumerWidget {
     return Scaffold(
       appBar: appBar,
       body: isLoading
-          ? TLoader()
+          ? Center(child: TLoaderRandom())
           : GridView.builder(
               itemCount: list.length,
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
