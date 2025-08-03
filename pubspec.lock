@@ -665,10 +665,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: ea3fa8db209be36daaa4e6a94071d5f2e8daff9e6480a84bb8de7405726c8324
+      sha256: a766a32b6cd83abaf7dfc3d353e77c79801372cf497d591829645222133381c1
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.5.3"
   term_glyph:
     dependency: transitive
     description:

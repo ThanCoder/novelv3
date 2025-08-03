@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/my_libs/app_helpers/app_help_button.dart';
-import '../models/uploader_novel.dart';
+import '../novel_v3_uploader.dart';
 import 'pages/home_page.dart';
 import 'pages/uploader_file_page.dart';
 
@@ -13,17 +12,17 @@ class NovelContentScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Content Page'),
-        actions: const [
-          AppHelpButton(),
-        ],
+        actions: [...NovelV3Uploader.instance.appBarActions],
       ),
       body: DefaultTabController(
         length: 2,
         child: Scaffold(
-          body: TabBarView(children: [
-            HomePage(novel: novel),
-            UploaderFilePage(novel: novel),
-          ]),
+          body: TabBarView(
+            children: [
+              HomePage(novel: novel),
+              UploaderFilePage(novel: novel),
+            ],
+          ),
           bottomNavigationBar: TabBar(
             tabs: const [
               Tab(icon: Icon(Icons.home)),

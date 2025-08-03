@@ -1,3 +1,8 @@
+## 2.5.1
+
+- Some Error Fixed
+- Some Function Added
+
 ## 2.5.0
 
 ## Added

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:t_widgets/t_widgets.dart';
 
-import '../models/uploader_novel.dart';
-import 'status_text.dart';
+import '../novel_v3_uploader.dart';
 
 class OnlineNovelGridItem extends StatelessWidget {
   UploaderNovel novel;
@@ -22,10 +22,11 @@ class OnlineNovelGridItem extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: TImageUrl(
+              child: TCacheImage(
                 url: novel.coverUrl,
                 fit: BoxFit.fill,
                 width: double.infinity,
+                cachePath: NovelV3Uploader.instance.imageCachePath,
               ),
             ),
             // cover

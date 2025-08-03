@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../components/online_file_list_item.dart';
-import '../../models/uploader_file.dart';
-import '../../models/uploader_novel.dart';
-import '../../services/online_novel_services.dart';
+import '../../novel_v3_uploader.dart';
 
 class UploaderFilePage extends StatefulWidget {
   UploaderNovel novel;
@@ -29,9 +26,7 @@ class _UploaderFilePageState extends State<UploaderFilePage> {
     setState(() {
       isLoading = true;
     });
-    list = await OnlineNovelServices.instance.getFilesList(
-      novelId: widget.novel.id,
-    );
+    list = await OnlineNovelServices.getFilesList(novelId: widget.novel.id);
     if (!mounted) return;
     setState(() {
       isLoading = false;

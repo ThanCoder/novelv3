@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/datetime_extension.dart';
 
-import '../../setting/path_util.dart';
-import '../models/uploader_novel.dart';
-import 'status_text.dart';
+import '../novel_v3_uploader.dart';
 
 class OnlineNovelListItem extends StatelessWidget {
   UploaderNovel novel;
@@ -33,7 +31,7 @@ class OnlineNovelListItem extends StatelessWidget {
                   height: 160,
                   child: TCacheImage(
                     url: novel.coverUrl,
-                    cachePath: PathUtil.getCachePath(),
+                    cachePath: NovelV3Uploader.instance.imageCachePath,
                   ),
                 ),
                 Expanded(

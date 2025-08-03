@@ -37,6 +37,10 @@ class _UploaderNovelSearchScreenState extends State<UploaderNovelSearchScreen> {
     final authorList = widget.list.map((e) => e.author).toSet().toList();
     final transList = widget.list.map((e) => e.translator).toSet().toList();
     final mcList = widget.list.map((e) => e.mc).toSet().toList();
+    final tagsList = widget.list
+        .expand((e) => e.getTags)
+        .toSet()
+        .toList();
     return CustomScrollView(
       slivers: [
         // author
@@ -58,6 +62,19 @@ class _UploaderNovelSearchScreenState extends State<UploaderNovelSearchScreen> {
             onClicked: (name) {
               final res = widget.list
                   .where((e) => e.translator == name)
+                  .toList();
+              widget.onClicked(name, res);
+            },
+          ),
+        ),
+        // tags
+        SliverToBoxAdapter(
+          child: WrapListTile(
+            title: Text('Tags'),
+            list: tagsList,
+            onClicked: (name) {
+              final res = widget.list
+                  .where((e) => e.getTags.contains(name))
                   .toList();
               widget.onClicked(name, res);
             },

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/my_libs/app_helpers/app_help_button.dart';
 import 'package:t_widgets/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
-import '../components/index.dart';
-import '../models/index.dart';
-import '../services/index.dart';
+import '../novel_v3_uploader.dart';
 import 'helper_content_screen.dart';
 import 'novel_content_screen.dart';
 import 'see_all_screen.dart';
 import 'uploader_novel_search_screen.dart';
 
-class OnlineNovelHomeScreen extends StatefulWidget {
-  const OnlineNovelHomeScreen({super.key});
+class NovelV3UploaderHomeScreen extends StatefulWidget {
+  const NovelV3UploaderHomeScreen({super.key});
 
   @override
-  State<OnlineNovelHomeScreen> createState() => _OnlineNovelHomeScreenState();
+  State<NovelV3UploaderHomeScreen> createState() =>
+      _NovelV3UploaderHomeScreenState();
 }
 
-class _OnlineNovelHomeScreenState extends State<OnlineNovelHomeScreen> {
+class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((e) => init());
@@ -29,12 +28,12 @@ class _OnlineNovelHomeScreenState extends State<OnlineNovelHomeScreen> {
   List<UploaderNovel> list = [];
   List<HelperFile> helperList = [];
 
-  void init() async {
+  Future<void> init() async {
     try {
       setState(() {
         isLoading = true;
       });
-      list = await OnlineNovelServices.instance.getNovelList();
+      list = await OnlineNovelServices.getNovelList();
       helperList = await HelperServices.getOnlineList();
       if (!mounted) return;
       setState(() {
@@ -185,13 +184,21 @@ class _OnlineNovelHomeScreenState extends State<OnlineNovelHomeScreen> {
     );
   }
 
+  Widget _onListStyleChanger() {
+    if (isListView) {
+      return _getListWidget();
+    }
+    return _getGridWidget();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Static Server'),
         actions: [
-          AppHelpButton(),
+          // config app bar
+          ...NovelV3Uploader.instance.appBarActions,
           IconButton(
             onPressed: _goSearchScreen,
             icon: const Icon(Icons.search),
@@ -203,13 +210,18 @@ class _OnlineNovelHomeScreenState extends State<OnlineNovelHomeScreen> {
             },
             icon: Icon(isListView ? Icons.list : Icons.grid_on_sharp),
           ),
+          // for desktop
+          PlatformExtension.isDesktop()
+              ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
+              : SizedBox.shrink(),
         ],
       ),
       body: isLoading
           ? Center(child: TLoaderRandom())
-          : isListView
-          ? _getListWidget()
-          : _getGridWidget(),
+          : RefreshIndicator.adaptive(
+              onRefresh: init,
+              child: _onListStyleChanger(),
+            ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:t_widgets/extensions/string_extension.dart';
 import 'package:than_pkg/services/map_services.dart';
 import 'package:uuid/uuid.dart';
 
@@ -73,7 +74,10 @@ class UploaderNovel {
   factory UploaderNovel.fromV3ConfigFile(String path) {
     final file = File(path);
     final map = jsonDecode(file.readAsStringSync());
-    return UploaderNovel.fromV3Map(map);
+    final config = UploaderNovel.fromV3Map(map);
+    config.coverPath =
+        '${file.parent.path}/${path.getName().replaceAll('.config.json', '.png')}';
+    return config;
   }
 
   factory UploaderNovel.fromV3Map(Map<String, dynamic> map) {
@@ -170,5 +174,10 @@ class UploaderNovel {
     if (dbFile.existsSync()) {
       dbFile.deleteSync();
     }
+  }
+
+  @override
+  String toString() {
+    return title;
   }
 }

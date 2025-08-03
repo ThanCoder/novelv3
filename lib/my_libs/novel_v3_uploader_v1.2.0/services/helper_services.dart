@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'index.dart';
-import '../models/index.dart';
+import '../novel_v3_uploader.dart';
 
 class HelperServices extends ChangeNotifier {
   final List<HelperFile> _list = [];
@@ -46,7 +45,6 @@ class HelperServices extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
-
       _list.insert(0, helper);
 
       await HelperServices.setLocalList(_list);
@@ -116,7 +114,7 @@ class HelperServices extends ChangeNotifier {
       final jsonStr = JsonEncoder.withIndent(' ').convert(mapList);
       await file.writeAsString(jsonStr);
     } catch (e) {
-      OnlineNovelServices.instance.showLog(e.toString());
+      NovelV3Uploader.instance.showLog(e.toString());
     }
   }
 
@@ -130,7 +128,7 @@ class HelperServices extends ChangeNotifier {
       List<dynamic> resList = jsonDecode(file.readAsStringSync());
       list = resList.map((map) => HelperFile.fromMap(map)).toList();
     } catch (e) {
-      OnlineNovelServices.instance.showLog(e.toString());
+      NovelV3Uploader.instance.showLog(e.toString());
     }
     return list;
   }
@@ -139,11 +137,11 @@ class HelperServices extends ChangeNotifier {
     List<HelperFile> list = [];
     try {
       final url = ServerFileServices.getHelperDBUrl('v3.main.db.json');
-      final json = await OnlineNovelServices.instance.onDownloadJson!(url);
+      final json = await NovelV3Uploader.instance.onDownloadJson!(url);
       List<dynamic> resList = jsonDecode(json);
       list = resList.map((map) => HelperFile.fromMap(map)).toList();
     } catch (e) {
-      OnlineNovelServices.instance.showLog(e.toString());
+      NovelV3Uploader.instance.showLog(e.toString());
     }
     return list;
   }

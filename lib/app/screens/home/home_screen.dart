@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/my_libs/novel_v3_uploader/screens/online_novel_home_screen.dart';
+import 'package:novel_v3/my_libs/novel_v3_uploader_v1.2.0/screens/novel_v3_uploader_home_screen.dart';
 
 import 'pages/app_more_page.dart';
 import 'pages/home_page.dart';
@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
             child: const TabBarView(
               children: [
                 HomePage(),
-                OnlineNovelHomeScreen(),
+                NovelV3UploaderHomeScreen(),
                 AppMorePage(),
               ],
             ),

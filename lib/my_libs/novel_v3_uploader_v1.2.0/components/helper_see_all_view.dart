@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/helper_file.dart';
 import 'index.dart';
-import 'see_all_view.dart';
 
 class HelperSeeAllView extends StatelessWidget {
   String title;

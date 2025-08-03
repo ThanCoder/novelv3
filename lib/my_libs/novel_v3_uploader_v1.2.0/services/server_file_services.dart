@@ -1,33 +1,29 @@
 import 'dart:io';
 
-import '../../setting/path_util.dart';
 import '../constants.dart';
+import '../novel_v3_uploader.dart';
 
 class ServerFileServices {
+  static String getRootPath({bool absPath = true}) {
+    // for custom server
+    final customServerDir = NovelV3Uploader.instance.getCustomServerPath();
+    if (customServerDir.isNotEmpty && Directory(customServerDir).existsSync()) {
+      return customServerDir;
+    }
+    var rootPath = absPath ? Directory.current.path : '';
+    return '$rootPath/server';
+  }
+
   static String getImagePath({bool absPath = true}) {
-    final imagePath = PathUtil.createDir(
-      '${getRootPath(absPath: absPath)}/images',
-    );
-    return imagePath;
+    return '${getRootPath(absPath: absPath)}/images';
   }
 
   static String getFilesPath({bool absPath = true}) {
-    final imagePath = PathUtil.createDir(
-      '${getRootPath(absPath: absPath)}/files',
-    );
-    return imagePath;
+    return '${getRootPath(absPath: absPath)}/files';
   }
 
   static String getContentDBFilesPath(String name, {bool absPath = true}) {
-    final dirPath = PathUtil.createDir(
-      '${getRootPath(absPath: absPath)}/content_db',
-    );
-    return '$dirPath/$name.db.json';
-  }
-
-  static String getRootPath({bool absPath = true}) {
-    var rootPath = absPath ? Directory.current.path : '';
-    return PathUtil.createDir('$rootPath/server');
+    return '${getRootPath(absPath: absPath)}/content_db/$name.db.json';
   }
 
   static String getImageUrl(String name) {

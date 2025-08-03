@@ -75,11 +75,10 @@ class UploaderNovelServices extends ChangeNotifier {
   }
 
   Future<void> update(UploaderNovel novel) async {
-    isLoading = true;
-    notifyListeners();
     try {
-      // await Future.delayed(Duration(seconds: 1));
-      // check already exists title
+      isLoading = true;
+      notifyListeners();
+
       final findedIndex = _list.indexWhere((e) => e.id == novel.id);
       if (findedIndex == -1) {
         // ရှိနေလို့

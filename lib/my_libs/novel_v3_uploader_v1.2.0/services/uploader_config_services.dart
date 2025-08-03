@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
+import 'index.dart';
 
 class UploaderConfigServices {
   static Future<void> setConfig(
@@ -10,7 +11,7 @@ class UploaderConfigServices {
     String dbName = 'main.db.json',
     bool isPrettyJson = false,
   }) async {
-    final fpath = File('${Directory.current.path}/server/$dbName');
+    final fpath = File('${ServerFileServices.getRootPath()}/$dbName');
     await Isolate.run(() async {
       try {
         String content = jsonEncode(map);
@@ -28,7 +29,7 @@ class UploaderConfigServices {
     String dbName = 'main.db.json',
     bool isPrettyJson = false,
   }) async {
-    final fpath = File('${Directory.current.path}/server/$dbName');
+    final fpath = File('${ServerFileServices.getRootPath()}/$dbName');
     if (!fpath.existsSync()) {
       return {};
     }
@@ -44,7 +45,7 @@ class UploaderConfigServices {
     String dbName = 'main.db.json',
     bool isPrettyJson = false,
   }) async {
-    final fpath = File('${Directory.current.path}/server/$dbName');
+    final fpath = File('${ServerFileServices.getRootPath()}/$dbName');
     await Isolate.run(() async {
       try {
         String content = jsonEncode(mapList);
@@ -62,7 +63,7 @@ class UploaderConfigServices {
     String dbName = 'main.db.json',
     bool isPrettyJson = false,
   }) async {
-    final fpath = File('${Directory.current.path}/server/$dbName');
+    final fpath = File('${ServerFileServices.getRootPath()}/$dbName');
     if (!fpath.existsSync()) {
       return [];
     }
