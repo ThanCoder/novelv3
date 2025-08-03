@@ -48,6 +48,43 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Static Server'),
+        actions: [
+          // config app bar
+          ...NovelV3Uploader.instance.appBarActions,
+          IconButton(
+            onPressed: _goSearchScreen,
+            icon: const Icon(Icons.search),
+          ),
+          IconButton(
+            onPressed: () {
+              isListView = !isListView;
+              setState(() {});
+            },
+            icon: Icon(isListView ? Icons.list : Icons.grid_on_sharp),
+          ),
+          // for desktop
+          PlatformExtension.isDesktop()
+              ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
+              : SizedBox.shrink(),
+        ],
+      ),
+      body: isLoading
+          ? Center(child: TLoaderRandom())
+          : RefreshIndicator.adaptive(
+              onRefresh: init,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _onListStyleChanger(),
+              ),
+            ),
+    );
+  }
+
   void _goContentPage(UploaderNovel novel) {
     Navigator.push(
       context,
@@ -132,6 +169,7 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
             },
           ),
         ),
+        SliverToBoxAdapter(child: SizedBox(height: 10)),
 
         SliverToBoxAdapter(
           child: OnlineNovelSeeAllView(
@@ -143,6 +181,8 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
             onClicked: _goContentPage,
           ),
         ),
+        SliverToBoxAdapter(child: SizedBox(height: 10)),
+
         SliverToBoxAdapter(
           child: OnlineNovelSeeAllView(
             title: 'အသစ်များ',
@@ -152,7 +192,7 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
             onClicked: _goContentPage,
           ),
         ),
-
+        SliverToBoxAdapter(child: SizedBox(height: 10)),
         SliverToBoxAdapter(
           child: OnlineNovelSeeAllView(
             title: 'ပြီးဆုံး',
@@ -162,6 +202,7 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
             onClicked: _goContentPage,
           ),
         ),
+        SliverToBoxAdapter(child: SizedBox(height: 10)),
         SliverToBoxAdapter(
           child: OnlineNovelSeeAllView(
             title: 'ဘာသာပြန်နေဆဲ',
@@ -171,6 +212,7 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
             onClicked: _goContentPage,
           ),
         ),
+        SliverToBoxAdapter(child: SizedBox(height: 10)),
         SliverToBoxAdapter(
           child: OnlineNovelSeeAllView(
             titleColor: Colors.red,
@@ -189,39 +231,5 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
       return _getListWidget();
     }
     return _getGridWidget();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Static Server'),
-        actions: [
-          // config app bar
-          ...NovelV3Uploader.instance.appBarActions,
-          IconButton(
-            onPressed: _goSearchScreen,
-            icon: const Icon(Icons.search),
-          ),
-          IconButton(
-            onPressed: () {
-              isListView = !isListView;
-              setState(() {});
-            },
-            icon: Icon(isListView ? Icons.list : Icons.grid_on_sharp),
-          ),
-          // for desktop
-          PlatformExtension.isDesktop()
-              ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
-              : SizedBox.shrink(),
-        ],
-      ),
-      body: isLoading
-          ? Center(child: TLoaderRandom())
-          : RefreshIndicator.adaptive(
-              onRefresh: init,
-              child: _onListStyleChanger(),
-            ),
-    );
   }
 }

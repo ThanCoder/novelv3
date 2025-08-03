@@ -15,34 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  void _goContentPage(UploaderNovel novel) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => NovelContentScreen(novel: novel)),
-    );
-  }
-
-  void _goSeeAllScreen(String tag) async {
-    try {
-      final allList = await OnlineNovelServices.getNovelList();
-      final list = allList.where((e) => e.tags.contains(tag)).toList();
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SeeAllScreen(
-            title: Text(tag),
-            list: list,
-            gridItemBuilder: (context, item) =>
-                OnlineNovelGridItem(novel: item, onClicked: _goContentPage),
-          ),
-        ),
-      );
-    } catch (e) {
-      NovelV3Uploader.instance.showLog(e.toString());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -96,14 +68,43 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            TTagsWrapView(
-                values: widget.novel.getTags, onClicked: _goSeeAllScreen),
+            TagWrapView(list: widget.novel.getTags, onClicked: _goSeeAllScreen),
             widget.novel.desc.isEmpty ? SizedBox.shrink() : Divider(),
-            SelectableText(widget.novel.desc,
-                style: const TextStyle(fontSize: 16)),
+            SelectableText(
+              widget.novel.desc,
+              style: const TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _goContentPage(UploaderNovel novel) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NovelContentScreen(novel: novel)),
+    );
+  }
+
+  void _goSeeAllScreen(String tag) async {
+    try {
+      final allList = await OnlineNovelServices.getNovelList();
+      final list = allList.where((e) => e.tags.contains(tag)).toList();
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SeeAllScreen(
+            title: Text(tag),
+            list: list,
+            gridItemBuilder: (context, item) =>
+                OnlineNovelGridItem(novel: item, onClicked: _goContentPage),
+          ),
+        ),
+      );
+    } catch (e) {
+      NovelV3Uploader.instance.showLog(e.toString());
+    }
   }
 }

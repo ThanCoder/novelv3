@@ -27,8 +27,8 @@ class HelperSeeAllView extends StatelessWidget {
       showLines: showLines,
       list: list,
       onSeeAllClicked: onSeeAllClicked,
-      itemBuilder: (context, index) =>
-          HelperGridItem(helper: list[index], onClicked: onClicked),
+      gridItemBuilder: (context, item) =>
+          HelperGridItem(helper: item, onClicked: onClicked),
     );
   }
 }

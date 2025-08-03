@@ -11,14 +11,14 @@ class SeeAllView<T> extends StatelessWidget {
   EdgeInsetsGeometry? margin;
   Color? titleColor;
   void Function(String title, List<T> list) onSeeAllClicked;
-  Widget? Function(BuildContext context, int index) itemBuilder;
+  Widget Function(BuildContext context, T item) gridItemBuilder;
 
   SeeAllView({
     super.key,
     required this.title,
     required this.list,
     required this.onSeeAllClicked,
-    required this.itemBuilder,
+    required this.gridItemBuilder,
     this.showCount = 8,
     this.margin,
     this.showLines,
@@ -30,59 +30,91 @@ class SeeAllView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print('${list.length} > $showCount');
-
     final showList = list.take(showCount).toList();
-    if (showList.isEmpty) return const SizedBox.shrink();
-    int showLine = 1;
-    if (showLines == null && showList.length > 1) {
-      showLine = 2;
-    } else {
-      showLine = showLines ?? 1;
+    if (showList.isEmpty) {
+      return SizedBox.shrink();
     }
 
-    return Container(
-      padding: EdgeInsets.all(padding),
-      margin: margin,
-      child: SizedBox(
-        height: showLine * 170,
-        child: Column(
-          spacing: 5,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 5,
+      children: [
+        // header row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(title,style: TextStyle(color: titleColor),),
-                list.length > showCount
-                    ? Container(
-                        margin: const EdgeInsets.only(right: 5),
-                        child: TextButton(
-                          onPressed: () => onSeeAllClicked(title, list),
-                          child: Text(
-                            moreTitle,
-                            style: const TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ],
-            ),
-            Expanded(
-              child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: showList.length,
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 170,
-                  mainAxisExtent: 130,
-                  mainAxisSpacing: 5,
-                  crossAxisSpacing: 5,
-                ),
-                itemBuilder: itemBuilder,
-              ),
-            ),
+            Text(title, style: TextStyle(color: titleColor)),
+            list.length > showCount
+                ? Container(
+                    margin: const EdgeInsets.only(right: 5),
+                    child: TextButton(
+                      onPressed: () => onSeeAllClicked(title, list),
+                      child: Text(
+                        moreTitle,
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
-      ),
+        // grid item
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 5,
+            children: List.generate(
+              showList.length,
+              (index) => gridItemBuilder(context, showList[index]),
+            ),
+          ),
+        ),
+      ],
     );
+
+    // old methods
+    // return Container(
+    //   padding: EdgeInsets.all(padding),
+    //   margin: margin,
+    //   child: SizedBox(
+    //     height: showLine * 170,
+    //     child: Column(
+    //       spacing: 5,
+    //       children: [
+    //         Row(
+    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //           children: [
+    //             Text(title, style: TextStyle(color: titleColor)),
+    //             list.length > showCount
+    //                 ? Container(
+    //                     margin: const EdgeInsets.only(right: 5),
+    //                     child: TextButton(
+    //                       onPressed: () => onSeeAllClicked(title, list),
+    //                       child: Text(
+    //                         moreTitle,
+    //                         style: const TextStyle(color: Colors.blue),
+    //                       ),
+    //                     ),
+    //                   )
+    //                 : const SizedBox.shrink(),
+    //           ],
+    //         ),
+    //         Expanded(
+    //           child: GridView.builder(
+    //             scrollDirection: Axis.horizontal,
+    //             itemCount: showList.length,
+    //             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    //               maxCrossAxisExtent: 170,
+    //               mainAxisExtent: 130,
+    //               mainAxisSpacing: 5,
+    //               crossAxisSpacing: 5,
+    //             ),
+    //             itemBuilder: itemBuilder,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
