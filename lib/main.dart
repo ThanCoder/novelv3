@@ -7,7 +7,7 @@ import 'package:novel_v3/my_libs/general_server/index.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/my_libs/novel_v3_uploader_v1.2.0/novel_v3_uploader.dart';
+import 'package:novel_v3/my_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 import 'package:novel_v3/my_libs/t_history_v1.0.0/t_history_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';

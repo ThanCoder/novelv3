@@ -2,7 +2,7 @@ name: novel_v3
 description: "WebNovel App"
 repository: https://github.com/ThanCoder/novelv3
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 2.5.1
+version: 2.5.2
 
 environment:
   sdk: ^3.5.4
@@ -23,7 +23,7 @@ dependencies:
   than_pkg: ^2.4.1
   t_server: ^1.0.3
   flutter_riverpod: ^2.6.1
-  t_widgets: ^0.5.3
+  t_widgets: ^0.6.4
   desktop_drop: ^0.6.0
   uuid: ^4.5.1
 
