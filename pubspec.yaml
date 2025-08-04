@@ -23,7 +23,7 @@ dependencies:
   than_pkg: ^2.4.1
   t_server: ^1.0.3
   flutter_riverpod: ^2.6.1
-  t_widgets: ^0.6.4
+  t_widgets: ^0.6.5
   desktop_drop: ^0.6.0
   uuid: ^4.5.1
 
