@@ -1,0 +1,1 @@
+export 'novel_provider.dart';

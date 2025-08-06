@@ -11,7 +11,7 @@ import 'package:novel_v3/app/riverpods/providers.dart';
 import 'package:novel_v3/app/route_helper.dart';
 import 'package:novel_v3/app/screens/content/background_scaffold.dart';
 import 'package:novel_v3/app/services/index.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_edit_dialog.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/dialogs/pdf_config_edit_dialog.dart';
 import 'package:novel_v3/my_libs/t_history_v1.0.0/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';

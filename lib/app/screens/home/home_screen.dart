@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
             child: const TabBarView(
               children: [
                 HomePage(),
+                // NovelDirHomeScreen(),
                 NovelV3UploaderHomeScreen(),
                 AppMorePage(),
               ],

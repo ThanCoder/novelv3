@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_reader.dart';
 import 'package:novel_v3/my_libs/text_reader/add_bookmark_title_dialog.dart';
 import 'package:novel_v3/my_libs/text_reader/chapter_bookmark_model.dart';
 import 'package:novel_v3/app/models/index.dart';
@@ -10,8 +11,6 @@ import 'package:novel_v3/app/screens/forms/chapter_edit_form.dart';
 import 'package:novel_v3/app/screens/content/novel_content_screen.dart';
 import 'package:novel_v3/app/screens/forms/novel_edit_form_screen.dart';
 import 'package:novel_v3/app/screens/novel_see_all_screen.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_config_model.dart';
-import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdfrx_reader_screen.dart';
 import 'package:novel_v3/my_libs/text_reader/text_reader_config_model.dart';
 import 'package:novel_v3/my_libs/text_reader/text_reader_screen.dart';
 
@@ -64,6 +63,18 @@ void goChapterEditForm(BuildContext context, WidgetRef ref) async {
 void goPdfReader(BuildContext context, WidgetRef ref, PdfModel pdf) async {
   final provider = ref.read(novelNotifierProvider.notifier);
   final novel = provider.getCurrent;
+
+  // Navigator.push(
+  //   context,
+  //   MaterialPageRoute(
+  //     builder: (context) => CustomPdfReaderScreen(
+  //       title: pdf.title,
+  //       pdfConfig: PdfConfigModel.fromPath(pdf.configPath),
+  //       bookmarkPath: pdf.bookMarkPath,
+  //       sourcePath: pdf.path,
+  //     ),
+  //   ),
+  // );
 
   Navigator.push(
     context,

@@ -10,7 +10,6 @@ import 'package:novel_v3/app/screens/home/search_button.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:novel_v3/app/setting/home_list_styles.dart';
 import 'package:novel_v3/my_libs/app_helpers/app_help_button.dart';
-import 'package:novel_v3/my_libs/general_server/general_server_noti_button.dart';
 import 'package:than_pkg/extensions/platform_extension.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -36,7 +35,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       title: const Text(appTitle),
       actions: [
         AppHelpButton(),
-        const GeneralServerNotiButton(),
         const SearchButton(),
         PlatformExtension.isDesktop()
             ? IconButton(

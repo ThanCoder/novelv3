@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-import 'android_screen_orientation_chooser.dart';
-import 'pdf_config_model.dart';
+import '../components/android_screen_orientation_chooser.dart';
+import '../types/pdf_config_model.dart';
 
 class PdfReaderSettingDialog extends StatefulWidget {
   PdfConfigModel config;

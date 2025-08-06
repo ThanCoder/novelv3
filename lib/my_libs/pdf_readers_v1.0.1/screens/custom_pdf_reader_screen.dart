@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:pdfrx/pdfrx.dart';
 
-import 'pdf_config_model.dart';
+import '../types/pdf_config_model.dart';
 
-class PdfrxSinglePageReaderScreen extends StatefulWidget {
+class CustomPdfReaderScreen extends StatefulWidget {
   PdfConfigModel pdfConfig;
   String sourcePath;
   String title;
-  void Function(PdfConfigModel pdfConfig)? saveConfig;
+  void Function(PdfConfigModel pdfConfig)? onConfigSaved;
   String? bookmarkPath;
-  PdfrxSinglePageReaderScreen({
+  CustomPdfReaderScreen({
     super.key,
     required this.pdfConfig,
     required this.sourcePath,
-    this.saveConfig,
+    this.onConfigSaved,
     this.title = 'PDF Reader',
     this.bookmarkPath,
   });
 
   @override
-  State<PdfrxSinglePageReaderScreen> createState() =>
-      _PdfrxSinglePageReaderScreenState();
+  State<CustomPdfReaderScreen> createState() => _CustomPdfReaderScreenState();
 }
 
-class _PdfrxSinglePageReaderScreenState
-    extends State<PdfrxSinglePageReaderScreen> {
+class _CustomPdfReaderScreenState extends State<CustomPdfReaderScreen> {
   late PdfConfigModel config;
 
   @override
@@ -38,17 +36,21 @@ class _PdfrxSinglePageReaderScreenState
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text(widget.title),),body: _getCurrentPdfReader(),);
+  }
+
   Widget _getPdfItem(PdfDocument? document) {
     return ListView.builder(
       itemCount: document?.pages.length ?? 0,
       itemBuilder: (context, index) {
         return Container(
           margin: const EdgeInsets.all(8),
-          height: 240,
+          height: MediaQuery.of(context).size.height * 0.8,
           child: Column(
             children: [
-              SizedBox(
-                height: 220,
+              Expanded(
                 child: PdfPageView(
                   document: document,
                   pageNumber: index + 1,
@@ -71,11 +73,13 @@ class _PdfrxSinglePageReaderScreenState
       //is online
       return PdfDocumentViewBuilder.uri(
         Uri.parse(widget.sourcePath),
+        useProgressiveLoading: true,
         builder: (context, document) => _getPdfItem(document),
       );
     } else {
       return PdfDocumentViewBuilder.file(
         widget.sourcePath,
+        useProgressiveLoading: true,
         builder: (context, document) => _getPdfItem(document),
       );
     }
@@ -96,10 +100,5 @@ class _PdfrxSinglePageReaderScreenState
         ),
       ],
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _getCurrentPdfReader();
   }
 }

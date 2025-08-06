@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/dialogs/core/index.dart';
 
-import 'pdf_bookmark_model.dart';
+import '../types/pdf_bookmark_model.dart';
 
 class PdfBookmarkDrawer extends StatefulWidget {
   String bookmarkPath;
