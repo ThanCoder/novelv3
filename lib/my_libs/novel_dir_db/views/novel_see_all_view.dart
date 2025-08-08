@@ -4,14 +4,10 @@ import '../novel_dir_db.dart';
 class NovelSeeAllView extends StatelessWidget {
   String title;
   List<Novel> list;
-  void Function(Novel novel) onClicked;
-  void Function(String title, List<Novel> list) onSeeAllClicked;
   NovelSeeAllView({
     super.key,
     required this.title,
     required this.list,
-    required this.onClicked,
-    required this.onSeeAllClicked,
   });
 
   @override
@@ -19,10 +15,13 @@ class NovelSeeAllView extends StatelessWidget {
     return SeeAllView<Novel>(
       title: title,
       list: list,
-      showMoreButtonBottomPos: true,
-      onSeeAllClicked: onSeeAllClicked,
-      gridItemBuilder: (context, item) =>
-          NovelGridItem(novel: item, onClicked: onClicked),
+      showMoreButtonBottomPos: false,
+      onSeeAllClicked: (title, list) =>
+          goNovelSeeAllScreen(context, title, list),
+      gridItemBuilder: (context, item) => NovelGridItem(
+        novel: item,
+        onClicked: (novel) => goContentScreen(context, novel),
+      ),
     );
   }
 }

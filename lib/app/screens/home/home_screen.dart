@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/my_libs/novel_dir_db/screens/novel_dir_home_screen.dart';
 import 'package:novel_v3/my_libs/novel_v3_uploader_v1.3.0/screens/novel_v3_uploader_home_screen.dart';
 import 'pages/app_more_page.dart';
-import 'pages/home_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,8 +16,8 @@ class HomeScreen extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 800),
             child: const TabBarView(
               children: [
-                HomePage(),
-                // NovelDirHomeScreen(),
+                // HomePage(),
+                NovelDirHomeScreen(),
                 NovelV3UploaderHomeScreen(),
                 AppMorePage(),
               ],

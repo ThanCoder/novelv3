@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:novel_v3/my_libs/pdf_readers_v1.0.1/pdf_reader.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -89,9 +90,13 @@ class PdfConfigModel {
       };
 
   void savePath(String configPath) {
-    final file = File(configPath);
-    final data = const JsonEncoder.withIndent(' ').convert(toMap());
-    file.writeAsStringSync(data);
+    try {
+      final file = File(configPath);
+      final data = const JsonEncoder.withIndent(' ').convert(toMap());
+      file.writeAsStringSync(data);
+    } catch (e) {
+      PdfReader.showDebugLog(e.toString(), tag: 'PdfConfigModel:savePath');
+    }
   }
 
   @override

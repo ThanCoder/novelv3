@@ -84,7 +84,7 @@ void goPdfReader(BuildContext context, WidgetRef ref, PdfModel pdf) async {
         pdfConfig: PdfConfigModel.fromPath(pdf.configPath),
         bookmarkPath: pdf.bookMarkPath,
         sourcePath: pdf.path,
-        saveConfig: (pdfConfig) {
+        onConfigUpdated: (pdfConfig) {
           pdfConfig.savePath(pdf.configPath);
           if (novel == null) return;
           novel.setRecentPdfReader(pdf);

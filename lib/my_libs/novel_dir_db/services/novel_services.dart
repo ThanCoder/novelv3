@@ -23,6 +23,7 @@ class NovelServices {
           // dir ပဲယူမယ်
           list.add(Novel.fromPath(file.path));
         }
+        // sort
       } catch (e) {
         NovelDirDb.showDebugLog(e.toString(), tag: 'NovelServices:getList');
       }

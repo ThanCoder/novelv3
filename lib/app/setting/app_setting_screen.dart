@@ -5,7 +5,6 @@ import 'package:novel_v3/app/components/index.dart';
 import 'package:novel_v3/app/constants.dart';
 import 'package:novel_v3/app/dialogs/index.dart';
 import 'package:novel_v3/app/setting/home_list_style_chooser.dart';
-import 'package:novel_v3/my_libs/general_server/proxy_hosting_server/index.dart';
 import 'package:novel_v3/app/models/index.dart';
 import 'package:novel_v3/app/setting/app_notifier.dart';
 import 'package:novel_v3/app/services/index.dart';
@@ -183,23 +182,23 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                   )),
               const Divider(),
               //forward proxy server
-              ForwardProxyTTextField(
-                controller: forwardProxyController,
-                onChanged: (value) {
-                  setState(() {
-                    isChanged = true;
-                  });
-                },
-              ),
-              //browser proxy server
-              BrowserProxyTTextField(
-                controller: browserProxyController,
-                onChanged: (value) {
-                  setState(() {
-                    isChanged = true;
-                  });
-                },
-              ),
+            //   ForwardProxyTTextField(
+            //     controller: forwardProxyController,
+            //     onChanged: (value) {
+            //       setState(() {
+            //         isChanged = true;
+            //       });
+            //     },
+            //   ),
+            //   //browser proxy server
+            //   BrowserProxyTTextField(
+            //     controller: browserProxyController,
+            //     onChanged: (value) {
+            //       setState(() {
+            //         isChanged = true;
+            //       });
+            //     },
+            //   ),
             ],
           ),
         ),

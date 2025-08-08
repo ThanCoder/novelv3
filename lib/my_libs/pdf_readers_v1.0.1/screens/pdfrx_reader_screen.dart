@@ -13,13 +13,13 @@ class PdfrxReaderScreen extends StatefulWidget {
   PdfConfigModel pdfConfig;
   String sourcePath;
   String title;
-  void Function(PdfConfigModel pdfConfig)? saveConfig;
+  void Function(PdfConfigModel pdfConfig)? onConfigUpdated;
   String? bookmarkPath;
   PdfrxReaderScreen({
     super.key,
-    required this.pdfConfig,
     required this.sourcePath,
-    this.saveConfig,
+    required this.pdfConfig,
+    this.onConfigUpdated,
     this.title = 'PDF Reader',
     this.bookmarkPath,
   });
@@ -142,7 +142,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       setState(() {
         isLoading = false;
       });
-      debugPrint('onPdfLoaded error: ${e.toString()}');
+      PdfReader.showDebugLog(e.toString(),
+          tag: 'PdfrxReaderScreen:onPdfLoaded');
     }
   }
 
@@ -165,7 +166,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         isCanGoBack = !config.isOnBackpressConfirm;
       });
     } catch (e) {
-      debugPrint('_initConfig: ${e.toString()}');
+      PdfReader.showDebugLog(e.toString(),
+          tag: 'PdfrxReaderScreen:_initConfig');
     }
   }
 
@@ -343,7 +345,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             ),
           ];
         },
-      
       );
 
   Widget _getHeaderWidgets() {
@@ -462,7 +463,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   }
 
   void _onBackpress() async {
-    _saveConfig();
     if (!isCanGoBack) {
       showDialog(
         context: context,
@@ -475,9 +475,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             isCanGoBack = true;
             setState(() {});
             Navigator.pop(context);
+            _saveConfig();
           },
         ),
       );
+    } else {
+      _saveConfig();
     }
   }
 
@@ -487,11 +490,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
       if (isLoading) return;
       config.page = currentPage;
-      if (widget.saveConfig != null) {
-        widget.saveConfig!(config);
+      if (widget.onConfigUpdated != null) {
+        widget.onConfigUpdated!(config);
       }
     } catch (e) {
-      debugPrint('saveConfig: ${e.toString()}');
+      PdfReader.showDebugLog(e.toString(),
+          tag: 'PdfrxReaderScreen:_saveConfig');
     }
   }
 

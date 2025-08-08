@@ -3,8 +3,11 @@ import '../novel_dir_db.dart';
 
 class NovelProvider extends ChangeNotifier {
   final List<Novel> _list = [];
+  Novel? _novel;
+  // get
   bool isLoading = false;
   List<Novel> get getList => _list;
+  Novel? get getCurrent => _novel;
 
   Future<void> initList() async {
     isLoading = true;
@@ -15,6 +18,11 @@ class NovelProvider extends ChangeNotifier {
     _list.addAll(res);
 
     isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> setCurrent(Novel novel) async {
+    _novel = novel;
     notifyListeners();
   }
 }
