@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'novel_search_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
 import '../novel_dir_db.dart';
@@ -25,10 +26,25 @@ class _NovelDirHomeScreenState extends State<NovelDirHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Novel'),
+        title: Text('Novel V3'),
+        actions: [
+          _getSearchButton(),
+        ],
       ),
       body: _getList(),
     );
+  }
+
+  Widget _getSearchButton() {
+    return IconButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NovelSearchScreen(),
+              ));
+        },
+        icon: Icon(Icons.search));
   }
 
   Widget _getList() {

@@ -1,10 +1,4 @@
-## 3.0.0
-## Changed
-- `Core Code တစ်ခုလုံးပြောင်းလဲခြင်း`
-- `App Update ပြုလုပ်ပေးတဲ့ app ပြောင်းလဲခြင်း`
-- `PDF Reader Core Code ပြောင်လဲခြင်း - အသစ်ပြင်ဆင်ခြင်း`
-
-## 2.5.1
+## 2.5.2
 
 - Some Error Fixed
 - Some Function Added
