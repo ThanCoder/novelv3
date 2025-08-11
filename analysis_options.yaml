@@ -9,13 +9,7 @@
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
   errors:
-    depend_on_referenced_packages: ignore
     must_be_immutable: ignore
-    no_leading_underscores_for_local_identifiers: ignore
-    prefer_const_constructors: ignore
-    unused_element: ignore
-    unused_element_parameter: ignore
-    use_build_context_synchronously: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

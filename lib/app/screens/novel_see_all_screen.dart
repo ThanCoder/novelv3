@@ -1,26 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:novel_v3/app/components/novel_grid_item.dart';
-import 'package:novel_v3/app/dialogs/novel_data_config_exporter_dialog.dart';
-import 'package:novel_v3/app/models/index.dart';
-import 'package:novel_v3/app/route_helper.dart';
+import 'package:novel_v3/app/routes_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:t_widgets/t_widgets.dart';
 
-ValueNotifier<List<NovelModel>> novelSeeAllScreenNotifier = ValueNotifier([]);
+import '../novel_dir_app.dart';
 
-void novelSeeAllScreenTitleChanged({
-  required String oldTitle,
-  required String newTitle,
-}) {
-  final list = novelSeeAllScreenNotifier.value;
-  novelSeeAllScreenNotifier.value = list.map((e) {
-    if (e.title == oldTitle) {
-      return NovelModel.fromTitle(newTitle);
-    }
-    return e;
-  }).toList();
-}
+ValueNotifier<List<Novel>> novelSeeAllScreenNotifier = ValueNotifier([]);
 
-class NovelSeeAllScreen extends ConsumerStatefulWidget {
+class NovelSeeAllScreen extends StatefulWidget {
   String title;
   NovelSeeAllScreen({
     super.key,
@@ -28,74 +15,79 @@ class NovelSeeAllScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<NovelSeeAllScreen> createState() => _NovelSeeAllScreenState();
+  State<NovelSeeAllScreen> createState() => _NovelSeeAllScreenState();
 }
 
-class _NovelSeeAllScreenState extends ConsumerState<NovelSeeAllScreen> {
-  void _showMenu() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: 100,
-          ),
-          child: Column(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.import_export_rounded),
-                title: const Text('Data Config Files ထုတ်မယ်'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _exportDataConfig();
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _exportDataConfig() async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => NovelDataConfigExporterDialog(
-        list: novelSeeAllScreenNotifier.value,
-      ),
-    );
-  }
-
+class _NovelSeeAllScreenState extends State<NovelSeeAllScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-          IconButton(onPressed: _showMenu, icon: const Icon(Icons.more_vert))
-        ],
       ),
       body: ValueListenableBuilder(
           valueListenable: novelSeeAllScreenNotifier,
           builder: (context, list, child) {
             return GridView.builder(
               itemCount: list.length,
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 180,
                 mainAxisExtent: 200,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
               ),
               itemBuilder: (context, index) => NovelGridItem(
                 novel: list[index],
-                onClicked: (novel) {
-                  goNovelContentPage(context, ref, novel);
-                },
-                onLongClicked: (novel) {},
+                onClicked: (novel) => goNovelContentScreen(context, novel),
+                onRightClicked: _showItemMenu,
               ),
             );
           }),
+    );
+  }
+
+  void _showItemMenu(Novel novel) {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(novel.title),
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit'),
+          onTap: () {
+            closeContext(context);
+            _goEditScreen(novel);
+          },
+        ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever_rounded),
+          title: Text('Delete'),
+          onTap: () {
+            closeContext(context);
+            _deleteConfirm(novel);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _goEditScreen(Novel novel) {
+    goEditNovelForm(context, novel: novel);
+  }
+
+  void _deleteConfirm(Novel novel) {
+    showTConfirmDialog(
+      context,
+      submitText: 'Delete Forever',
+      contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+      onSubmit: () {
+        context.read<NovelProvider>().delete(novel);
+      },
     );
   }
 }

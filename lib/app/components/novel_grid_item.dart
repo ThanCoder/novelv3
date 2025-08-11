@@ -1,72 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/status_text.dart';
-import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:t_widgets/t_widgets.dart';
+import 'package:t_widgets/widgets/index.dart';
+import '../novel_dir_app.dart';
 
 class NovelGridItem extends StatelessWidget {
-  NovelModel novel;
-  double fontSize;
-  void Function(NovelModel novel) onClicked;
-  void Function(NovelModel novel)? onLongClicked;
+  Novel novel;
+  void Function(Novel novel) onClicked;
+  void Function(Novel novel)? onRightClicked;
   NovelGridItem({
     super.key,
     required this.novel,
     required this.onClicked,
-    this.onLongClicked,
-    this.fontSize = 12,
+    this.onRightClicked,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onClicked(novel),
-      onLongPress: () {
-       if(onLongClicked == null) return;
-        onLongClicked!(novel);
-      },
-      onSecondaryTap:(){
-        if(onLongClicked == null) return;
-        onLongClicked!(novel);
+      onSecondaryTap: () {
+        if (onRightClicked == null) return;
+        onRightClicked!(novel);
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Stack(
           children: [
-            Positioned.fill(
-              child: TImageFile(
-                path: novel.coverPath,
-                fit: BoxFit.fill,
-                width: double.infinity,
-              ),
+            Positioned.fill(child: TImage(source: novel.getCoverPath)),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(4)),
             ),
-            // cover
-
-            // title
             Positioned(
-              left: 0,
-              bottom: 0,
-              right: 0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(178, 0, 0, 0),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(4),
-                    bottomRight: Radius.circular(4),
-                  ),
-                ),
+                bottom: 0,
+                left: 0,
+                right: 0,
                 child: Text(
                   novel.title,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
                   maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: fontSize,
-                  ),
-                ),
-              ),
-            ),
-
+                      fontSize: 12,
+                      backgroundColor: Colors.black.withValues(alpha: 0.8)),
+                )),
+            // status
             Positioned(
               left: 0,
               top: 0,

@@ -1,41 +1,33 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:flutter/material.dart';
-import 'package:novel_v3/app/models/novel_model.dart';
-import 'package:novel_v3/app/utils/path_util.dart';
+import '../novel_dir_app.dart';
 
 class NovelServices {
-  static final NovelServices instance = NovelServices._();
-  NovelServices._();
-  factory NovelServices() => instance;
+  static Future<List<Novel>> getList() async {
+    final rootPath = FolderFileServices.getSourcePath();
 
-  Future<List<NovelModel>> getList({bool isFullInfo = false}) async {
-    final path = PathUtil.getSourcePath();
-    List<NovelModel> list = await Isolate.run<List<NovelModel>>(() async {
+    return await Isolate.run<List<Novel>>(() async {
+      List<Novel> list = [];
       try {
-        List<NovelModel> list = [];
-        final dir = Directory(path);
-        //skiped not dir
-        if (!await dir.exists()) return [];
-        for (var file in dir.listSync()) {
-          //skiped not dir
-          if (file.statSync().type != FileSystemEntityType.directory) continue;
-          final novel = NovelModel.fromPath(file.path, isFullInfo: isFullInfo);
-          list.add(novel);
+        final dir = Directory(rootPath);
+        if (!dir.existsSync()) {
+          NovelDirApp.showDebugLog('[not found!]: $rootPath',
+              tag: 'NovelServices:getList');
+          return list;
         }
-        //sort
-        list.sort((a, b) {
-          if (a.date > b.date) return -1;
-          if (a.date < b.date) return 1;
-          return 0;
-        });
-        return list;
+        // found
+        for (var file in dir.listSync()) {
+          // dir မဟုတ်ရင် ကျော်မယ်
+          if (file.statSync().type != FileSystemEntityType.directory) continue;
+          // dir ပဲယူမယ်
+          list.add(Novel.fromPath(file.path));
+        }
+        // sort
       } catch (e) {
-        debugPrint('NovelServices:getList-> ${e.toString()}');
+        NovelDirApp.showDebugLog(e.toString(), tag: 'NovelServices:getList');
       }
-      return [];
+      return list;
     });
-    return list;
   }
 }

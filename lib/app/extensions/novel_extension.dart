@@ -1,51 +1,25 @@
-import 'package:novel_v3/app/models/novel_model.dart';
+import 'package:novel_v3/app/types/novel.dart';
 
-extension NovelExtension on List<NovelModel> {
-  void sortTitle(bool isAsc) {
-    sort((a, b) => isAsc
-            ? a.title.compareTo(b.title) // Ascending
-            : b.title.compareTo(a.title) // Descending
-        );
-  }
-
-  void sortDate(bool isAsc) {
+extension NovelExtension on List<Novel> {
+  void sortDate({bool isNewest = true}) {
     sort((a, b) {
-      if (isAsc) {
-        if (a.date > b.date) return 1;
-        if (a.date < b.date) return -1;
+      if (isNewest) {
+        // newest
+        if (a.date.millisecondsSinceEpoch > b.date.millisecondsSinceEpoch) {
+          return -1;
+        }
+        if (a.date.millisecondsSinceEpoch < b.date.millisecondsSinceEpoch) {
+          return 1;
+        }
       } else {
-        if (a.date > b.date) return -1;
-        if (a.date < b.date) return 1;
+        // oldest top
+        if (a.date.millisecondsSinceEpoch > b.date.millisecondsSinceEpoch) {
+          return 1;
+        }
+        if (a.date.millisecondsSinceEpoch < b.date.millisecondsSinceEpoch) {
+          return -1;
+        }
       }
-
-      return 0;
-    });
-  }
-
-  void sortCompleted(bool isAsc) {
-    sort((a, b) {
-      if (isAsc) {
-        if (a.isCompleted && !b.isCompleted) return -1;
-        if (!a.isCompleted && b.isCompleted) return 1;
-      } else {
-        if (a.isCompleted && !b.isCompleted) return 1;
-        if (!a.isCompleted && b.isCompleted) return -1;
-      }
-
-      return 0;
-    });
-  }
-
-  void sortAdult(bool isAsc) {
-    sort((a, b) {
-      if (isAsc) {
-        if (a.isAdult && !b.isAdult) return -1;
-        if (!a.isAdult && b.isAdult) return 1;
-      } else {
-        if (a.isAdult && !b.isAdult) return 1;
-        if (!a.isAdult && b.isAdult) return -1;
-      }
-
       return 0;
     });
   }
