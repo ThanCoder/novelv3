@@ -21,6 +21,10 @@ class NovelGridItem extends StatelessWidget {
         if (onRightClicked == null) return;
         onRightClicked!(novel);
       },
+      onLongPress: () {
+        if (onRightClicked == null) return;
+        onRightClicked!(novel);
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Stack(
@@ -28,22 +32,31 @@ class NovelGridItem extends StatelessWidget {
             Positioned.fill(child: TImage(source: novel.getCoverPath)),
             Container(
               decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(4)),
+                color: Colors.black.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
             Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(4),
+                    bottomRight: Radius.circular(4),
+                  ),
+                ),
                 child: Text(
                   novel.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 12,
-                      backgroundColor: Colors.black.withValues(alpha: 0.8)),
-                )),
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+              ),
+            ),
             // status
             Positioned(
               left: 0,

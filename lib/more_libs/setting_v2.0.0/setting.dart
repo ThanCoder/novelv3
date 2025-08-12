@@ -22,8 +22,10 @@ class Setting {
 
   //widget
   static Widget get getHomeScreen => AppSettingScreen();
-  static Widget get getThemeSwitcher => ThemeComponent();
-  static Widget get getSettingListTile => AppSettingListTile();
+  static Widget get getThemeSwitcherWidget => ThemeComponent();
+  static Widget get getSettingListTileWidget => AppSettingListTile();
+  static Widget get getCurrentVersionWidget => AppCurrentVersion();
+  static Widget get getCacheManagerWidget => AppCacheManager();
 
   static bool isShowDebugLog = true;
   static bool isAppRefreshConfigPathChanged = true;
@@ -109,6 +111,4 @@ class Setting {
   static String get getErrorLog {
     return ''' await Setting.instance.initSetting''';
   }
-
-
 }

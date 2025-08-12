@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import '../../novel_dir_app.dart';
 
 class ContentHomePage extends StatefulWidget {
-  const ContentHomePage({
-    super.key,
-  });
+  const ContentHomePage({super.key});
 
   @override
   State<ContentHomePage> createState() => _ContentHomePageState();
@@ -16,41 +16,30 @@ class ContentHomePage extends StatefulWidget {
 class _ContentHomePageState extends State<ContentHomePage> {
   @override
   Widget build(BuildContext context) {
-    final novel = context.read<NovelProvider>().getCurrent;
-    if (novel == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Novel is null!'),
+    return ContentImageWrapper(
+      sliverBuilder: (context, novel) => [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _getHeader(),
+          ),
         ),
-      );
-    }
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(child: TImage(source: novel.getCoverPath)),
-          Container(
-            color: Colors.black.withValues(alpha: 0.8),
+
+        // tags
+        SliverToBoxAdapter(child: _getBottoms()),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TTagsWrapView(
+              title: novel.getTags.isEmpty ? null : Text('Tags'),
+              type: TTagsTypes.text,
+              values: novel.getTags,
+              onClicked: _searchTags,
+            ),
           ),
-          CustomScrollView(
-            slivers: [
-              // appbar
-              SliverAppBar(
-                title: Text('Content'),
-                floating: true,
-                snap: true,
-                backgroundColor: Colors.transparent,
-              ),
-              SliverToBoxAdapter(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: _getHeader(),
-              )),
-              SliverToBoxAdapter(child: _getBottoms()),
-              SliverToBoxAdapter(child: _getDesc()),
-            ],
-          ),
-        ],
-      ),
+        ),
+        SliverToBoxAdapter(child: _getDesc()),
+      ],
     );
   }
 
@@ -64,11 +53,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
           spacing: 5,
           runSpacing: 5,
           children: [
-            TImage(
-              source: novel.getCoverPath,
-              width: 180,
-              height: 200,
-            ),
+            TImage(source: novel.getCoverPath, width: 180, height: 200),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 5,
@@ -99,7 +84,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
               ],
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -108,13 +93,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 5,
-          runSpacing: 5,
-          children: [
-            _getPageButton(),
-          ],
-        ),
+        Wrap(spacing: 5, runSpacing: 5, children: [_getPageButton()]),
         Divider(),
       ],
     );
@@ -127,7 +106,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
     }
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SelectableText(novel.getContent),
+      child: SelectableText(novel.getContent, style: TextStyle(fontSize: 16)),
     );
   }
 
@@ -137,31 +116,32 @@ class _ContentHomePageState extends State<ContentHomePage> {
     final list = novel.getPageUrls;
     if (list.isNotEmpty) {
       return IconButton(
-          onPressed: () {
-            showTListDialog<String>(
-              context,
-              list: list,
-              listItemBuilder: (context, item) => ListTile(
-                title: Text(
-                  item,
-                  style: TextStyle(
-                    fontSize: 13,
-                  ),
-                  maxLines: 2,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  try {
-                    ThanPkg.platform.launch(item);
-                  } catch (e) {
-                    debugPrint(e.toString());
-                  }
-                },
-              ),
-            );
-          },
-          icon: Icon(Icons.open_in_browser));
+        onPressed: () {
+          showTListDialog<String>(
+            context,
+            list: list,
+            listItemBuilder: (context, item) => ListTile(
+              title: Text(item, style: TextStyle(fontSize: 13), maxLines: 2),
+              onTap: () {
+                Navigator.pop(context);
+                try {
+                  ThanPkg.platform.launch(item);
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              },
+            ),
+          );
+        },
+        icon: Icon(Icons.open_in_browser),
+      );
     }
     return SizedBox.shrink();
+  }
+
+  void _searchTags(String text) {
+    final list = context.read<NovelProvider>().getList;
+    final res = list.where((e) => e.getTagContent.contains(text)).toList();
+    goNovelSeeAllScreen(context, text, res);
   }
 }

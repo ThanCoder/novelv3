@@ -6,16 +6,14 @@ import 'package:than_pkg/than_pkg.dart';
 class Chapter {
   int number;
   String path;
-  Chapter({
-    required this.number,
-    required this.path,
-  });
+  Chapter({required this.number, required this.path});
 
   factory Chapter.createPath(String path) {
     final number = int.parse(path.getName());
     return Chapter(number: number, path: path);
   }
-  String get getNovelPath{
+
+  String get getNovelPath {
     return Directory(path).parent.path;
   }
 
@@ -39,8 +37,35 @@ class Chapter {
     return '';
   }
 
+  Chapter? get getNextChapter {
+    final oldChapter = File(path);
+    final file = File('${oldChapter.parent.path}/${number + 1}');
+    if (file.existsSync()) {
+      return Chapter.createPath(file.path);
+    }
+    return null;
+  }
+
+  Chapter? get getPrevChapter {
+    if (number == 0) return null;
+
+    final oldChapter = File(path);
+    final file = File('${oldChapter.parent.path}/${number - 1}');
+    if (file.existsSync()) {
+      return Chapter.createPath(file.path);
+    }
+    return null;
+  }
+
+  // static
+
   static bool isChapter(String path) {
     final number = int.tryParse(path.getName());
     return number == null ? false : true;
+  }
+
+  @override
+  String toString() {
+    return '$number';
   }
 }

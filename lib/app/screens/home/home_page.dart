@@ -26,10 +26,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Novel V3'),
-        actions: [
-          _getSearchButton(),
-        ],
+        title: Text('Novel V3 Pre'),
+        actions: [_getSearchButton()],
       ),
       body: _getList(),
     );
@@ -37,14 +35,14 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getSearchButton() {
     return IconButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NovelSearchScreen(),
-              ));
-        },
-        icon: Icon(Icons.search));
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NovelSearchScreen()),
+        );
+      },
+      icon: Icon(Icons.search),
+    );
   }
 
   Widget _getList() {
@@ -63,16 +61,10 @@ class _HomePageState extends State<HomePage> {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: NovelSeeAllView(
-            title: 'ကျပန်း စာစဥ်များ',
-            list: randomList,
-          ),
+          child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
         ),
         SliverToBoxAdapter(
-          child: NovelSeeAllView(
-            title: 'Latest စာစဥ်များ',
-            list: list,
-          ),
+          child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
         ),
         SliverToBoxAdapter(
           child: NovelSeeAllView(
@@ -81,16 +73,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SliverToBoxAdapter(
-          child: NovelSeeAllView(
-            title: 'OnGoing စာစဥ်များ',
-            list: onGoingList,
-          ),
+          child: NovelSeeAllView(title: 'OnGoing စာစဥ်များ', list: onGoingList),
         ),
         SliverToBoxAdapter(
-          child: NovelSeeAllView(
-            title: 'Adult စာစဥ်များ',
-            list: adultList,
-          ),
+          child: NovelSeeAllView(title: 'Adult စာစဥ်များ', list: adultList),
         ),
       ],
     );

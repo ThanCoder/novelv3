@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +8,11 @@ import 'package:t_widgets/t_widgets.dart';
 import '../novel_dir_app.dart';
 
 class NovelSearchScreen extends StatefulWidget {
-  const NovelSearchScreen({super.key});
+  Duration searchDelay;
+  NovelSearchScreen({
+    super.key,
+    this.searchDelay = const Duration(milliseconds: 500),
+  });
 
   @override
   State<NovelSearchScreen> createState() => _NovelSearchScreenState();
@@ -15,6 +21,8 @@ class NovelSearchScreen extends StatefulWidget {
 class _NovelSearchScreenState extends State<NovelSearchScreen> {
   List<Novel> list = [];
   List<Novel> resultList = [];
+  bool isShowSearchList = false;
+  Timer? _searchDelayTimer;
   @override
   void initState() {
     super.initState();
@@ -27,14 +35,31 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
   }
 
   @override
+  void dispose() {
+    _searchDelayTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TSearchField(
           hintText: 'Search...',
-          onChanged: _onSearch,
+          onChanged: (text) {
+            if (_searchDelayTimer?.isActive ?? false) {
+              _searchDelayTimer?.cancel();
+            }
+
+            _searchDelayTimer = Timer(
+              widget.searchDelay,
+              () => _onSearch(text),
+            );
+          },
+          autofocus: false,
           onCleared: () {
             resultList.clear();
+            isShowSearchList = false;
             setState(() {});
           },
         ),
@@ -45,10 +70,9 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
 
   void _onSearch(String text) {
     if (text.isEmpty) {
-      resultList.clear();
-      setState(() {});
       return;
     }
+
     resultList = list.where((e) {
       if (e.title.toUpperCase().contains(text.toUpperCase())) {
         return true;
@@ -66,11 +90,15 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     }).toList();
     // sort
     resultList.sort((a, b) => a.title.compareTo(b.title));
+    isShowSearchList = true;
     setState(() {});
   }
 
   Widget _getSwitchWidget() {
-    if (resultList.isNotEmpty) {
+    if (isShowSearchList && resultList.isEmpty) {
+      return Center(child: Text('ရှာမတွေ့ပါ....'));
+    }
+    if (isShowSearchList && resultList.isNotEmpty) {
       return ListView.builder(
         itemCount: resultList.length,
         itemBuilder: (context, index) => NovelListItem(

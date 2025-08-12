@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/types/novel_pdf.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.0.1/pdf_reader.dart';
 import 'services/index.dart';
@@ -43,7 +44,12 @@ class NovelDirApp {
     await FolderFileServices.createDir('${getRootDirPath()}/libary');
   }
 
-  void goTextReader(BuildContext context, Chapter chapter) {}
+  void goTextReader(BuildContext context, Chapter chapter) {
+    goRoute(
+      context,
+      builder: (context) => ChapterReaderScreen(chapter: chapter),
+    );
+  }
 
   void goPdfReader(BuildContext context, NovelPdf pdf) {
     goRoute(
@@ -51,6 +57,10 @@ class NovelDirApp {
       builder: (context) => PdfrxReaderScreen(
         sourcePath: pdf.path,
         pdfConfig: PdfConfigModel.fromPath(pdf.getConfigPath),
+        title: pdf.getTitle,
+        onConfigUpdated: (pdfConfig) {
+          pdfConfig.savePath(pdf.getConfigPath);
+        },
       ),
     );
   }

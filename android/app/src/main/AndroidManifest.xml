@@ -7,6 +7,7 @@
     <application
         android:label="Novel V3 Pre"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

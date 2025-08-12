@@ -7,17 +7,18 @@ class AppSettingListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.settings),
-      title: Text('Setting'),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AppSettingScreen(),
-          ),
-        );
-      },
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.settings),
+        title: Text('Setting'),
+        trailing: Icon(Icons.arrow_forward_ios_rounded),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AppSettingScreen()),
+          );
+        },
+      ),
     );
   }
 }

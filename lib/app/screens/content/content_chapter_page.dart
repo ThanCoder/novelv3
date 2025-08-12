@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:provider/provider.dart';
-import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/index.dart';
 
 import '../../novel_dir_app.dart';
+import 'content_image_wrapper.dart';
 
 class ContentChapterPage extends StatefulWidget {
   const ContentChapterPage({super.key});
@@ -27,33 +28,16 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final novel = context.watch<NovelProvider>().getCurrent;
     final provider = context.watch<ChapterProvider>();
     final isLoading = provider.isLoading;
     final list = provider.getList;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chapter'),
-        automaticallyImplyLeading: PlatformExtension.isDesktop(),
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-              child: TImage(source: novel == null ? '' : novel.getCoverPath)),
-          Container(
-            color: Colors.black.withValues(alpha: 0.8),
-          ),
-          isLoading
-              ? Center(child: TLoaderRandom())
-              : list.isEmpty
-                  ? _getEmptyListWidget()
-                  : CustomScrollView(
-                      slivers: [
-                        _getSliverList(list),
-                      ],
-                    ),
-        ],
-      ),
+
+    return ContentImageWrapper(
+      title: Text('Chapter'),
+      isLoading: isLoading,
+      automaticallyImplyLeading: PlatformExtension.isDesktop(),
+      sliverBuilder: (context, novel) => [_getSliverList(list)],
+      onRefresh: init,
     );
   }
 
@@ -65,32 +49,26 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
         children: [
           Text('List မရှိပါ...'),
           IconButton(
-              color: Colors.blue, onPressed: init, icon: Icon(Icons.refresh)),
+            color: Colors.blue,
+            onPressed: init,
+            icon: Icon(Icons.refresh),
+          ),
         ],
       ),
     );
   }
 
   Widget _getSliverList(List<Chapter> list) {
+    if (list.isEmpty) {
+      return SliverToBoxAdapter(child: _getEmptyListWidget());
+    }
     return SliverList.separated(
       itemCount: list.length,
-      itemBuilder: (context, index) {
-        final item = list[index];
-        return ListTile(
-          title: Row(
-            spacing: 5,
-            children: [
-              Text('Ch: ${item.number}'),
-              Text(
-                item.getTitle(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-          onTap: () => NovelDirApp.instance.goTextReader(context, item),
-        );
-      },
+      itemBuilder: (context, index) => ChapterListItem(
+        chapter: list[index],
+        onClicked: (chapter) =>
+            NovelDirApp.instance.goTextReader(context, chapter),
+      ),
       separatorBuilder: (context, index) => Divider(),
     );
   }

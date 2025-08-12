@@ -4,11 +4,13 @@ import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 
 class SortComponent extends StatelessWidget {
   SortType? value;
+  List<SortType> sortList;
   void Function(SortType type) onChanged;
   SortComponent({
     super.key,
     this.value,
     required this.onChanged,
+    this.sortList = const [],
   });
 
   @override
@@ -20,6 +22,7 @@ class SortComponent extends StatelessWidget {
           barrierDismissible: false,
           context: context,
           builder: (context) => SortChooserDialog(
+            sortList: sortList,
             type: type,
             onChanged: onChanged,
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
@@ -6,6 +7,7 @@ import '../novel_dir_app.dart';
 
 class PdfListItem extends StatefulWidget {
   NovelPdf pdf;
+  String? cachePath;
   void Function(NovelPdf pdf) onClicked;
   void Function(NovelPdf pdf)? onRightClicked;
   PdfListItem({
@@ -13,6 +15,7 @@ class PdfListItem extends StatefulWidget {
     required this.pdf,
     required this.onClicked,
     this.onRightClicked,
+    this.cachePath,
   });
 
   @override
@@ -30,9 +33,9 @@ class _PdfListItemState extends State<PdfListItem> {
 
   Future<void> init() async {
     try {
-      await ThanPkg.platform.genPdfThumbnail(pathList: [
-        SrcDistType(src: widget.pdf.path, dist: widget.pdf.getCoverPath)
-      ]);
+      await ThanPkg.platform.genPdfThumbnail(
+        pathList: [SrcDistType(src: widget.pdf.path, dist: _getCoverPath)],
+      );
       if (!mounted) return;
       setState(() {
         isLoading = false;
@@ -54,6 +57,10 @@ class _PdfListItemState extends State<PdfListItem> {
         if (widget.onRightClicked == null) return;
         widget.onRightClicked!(widget.pdf);
       },
+      onLongPress: () {
+        if (widget.onRightClicked == null) return;
+        widget.onRightClicked!(widget.pdf);
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
@@ -65,8 +72,14 @@ class _PdfListItemState extends State<PdfListItem> {
                 height: 150,
                 child: isLoading
                     ? TLoaderRandom()
-                    : TImage(
-                        source: widget.pdf.getCoverPath,
+                    : Container(
+                        decoration: BoxDecoration(
+                          color: Setting.getAppConfig.isDarkTheme
+                              ? Colors.white
+                              : Colors.black,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: TImage(source: _getCoverPath),
                       ),
               ),
               Expanded(
@@ -95,5 +108,13 @@ class _PdfListItemState extends State<PdfListItem> {
         ),
       ),
     );
+  }
+
+  String get _getCoverPath {
+    var destPath = widget.pdf.getCoverPath;
+    if (widget.cachePath != null) {
+      destPath = '${widget.cachePath}/${widget.pdf.getTitle}.png';
+    }
+    return destPath;
   }
 }

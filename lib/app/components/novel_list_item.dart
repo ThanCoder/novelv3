@@ -22,6 +22,7 @@ class NovelListItem extends StatelessWidget {
         if (onRightClicked == null) return;
         onRightClicked!(novel);
       },
+      onLongPress: () => onRightClicked?.call(novel),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
@@ -31,9 +32,7 @@ class NovelListItem extends StatelessWidget {
               SizedBox(
                 width: 140,
                 height: 150,
-                child: TImage(
-                  source: novel.getCoverPath,
-                ),
+                child: TImage(source: novel.getCoverPath),
               ),
               Expanded(
                 child: Column(
@@ -50,7 +49,11 @@ class NovelListItem extends StatelessWidget {
                     Row(
                       children: [
                         Icon(Icons.date_range),
-                        Text(novel.date.toParseTime()),
+                        Text(
+                          novel.date.toParseTime(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 13),
+                        ),
                       ],
                     ),
                   ],

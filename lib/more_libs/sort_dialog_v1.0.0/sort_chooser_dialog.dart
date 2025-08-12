@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 import 'sort_type.dart';
 
 class SortChooserDialog extends StatefulWidget {
   SortType type;
+  List<SortType> sortList;
   void Function(SortType type) onChanged;
   SortChooserDialog({
     super.key,
     required this.type,
     required this.onChanged,
+    this.sortList = const [],
   });
 
   @override
@@ -26,21 +29,6 @@ class _SortChooserDialogState extends State<SortChooserDialog> {
     super.initState();
   }
 
-  List<Widget> get _getSortList {
-    return SortType.getDefaultList
-        .map(
-          (e) => TChip(
-            avatar: e.title == type.title ? const Icon(Icons.check) : null,
-            title: Text(e.title),
-            onClick: () {
-              type = e;
-              setState(() {});
-            },
-          ),
-        )
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
@@ -50,11 +38,7 @@ class _SortChooserDialogState extends State<SortChooserDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //title
-          Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            children: _getSortList,
-          ),
+          Wrap(spacing: 5, runSpacing: 5, children: _getSortList),
           const Divider(),
           //sort
           Row(
@@ -97,5 +81,27 @@ class _SortChooserDialogState extends State<SortChooserDialog> {
         ),
       ],
     );
+  }
+
+  List<SortType> get _getSortTypes {
+    if (widget.sortList.isNotEmpty) {
+      return widget.sortList;
+    }
+    return SortType.getDefaultList;
+  }
+
+  List<Widget> get _getSortList {
+    return _getSortTypes
+        .map(
+          (e) => TChip(
+            avatar: e.title == type.title ? const Icon(Icons.check) : null,
+            title: Text(e.title.toCaptalize()),
+            onClick: () {
+              type = e;
+              setState(() {});
+            },
+          ),
+        )
+        .toList();
   }
 }

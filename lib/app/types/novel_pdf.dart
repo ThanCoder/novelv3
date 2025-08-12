@@ -5,9 +5,7 @@ import 'package:than_pkg/extensions/string_extension.dart';
 
 class NovelPdf {
   String path;
-  NovelPdf({
-    required this.path,
-  });
+  NovelPdf({required this.path});
 
   factory NovelPdf.createPath(String path) {
     return NovelPdf(path: path);
@@ -22,7 +20,7 @@ class NovelPdf {
   }
 
   String get getConfigPath {
-    return path.replaceAll('.pdf', '-config.json');
+    return path.replaceAll('.pdf', '-v3-config.json');
   }
 
   DateTime get getDate {
@@ -37,5 +35,16 @@ class NovelPdf {
 
   String get getCoverPath {
     return path.replaceAll('.pdf', '.png');
+  }
+
+  String get getParentPath {
+    final file = File(path);
+    return file.parent.path;
+  }
+
+  Future<void> rename(String newPath) async {
+    final file = File(path);
+    await file.rename(newPath);
+    path = newPath;
   }
 }
