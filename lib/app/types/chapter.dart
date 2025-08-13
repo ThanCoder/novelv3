@@ -57,8 +57,13 @@ class Chapter {
     return null;
   }
 
-  // static
+  Future<void> delete() async {
+    final file = File(path);
+    if (!file.existsSync()) return;
+    await file.delete();
+  }
 
+  // static
   static bool isChapter(String path) {
     final number = int.tryParse(path.getName());
     return number == null ? false : true;

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
+import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
+import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -17,6 +20,9 @@ class _ContentHomePageState extends State<ContentHomePage> {
   @override
   Widget build(BuildContext context) {
     return ContentImageWrapper(
+      appBarAction: [
+        IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
+      ],
       sliverBuilder: (context, novel) => [
         SliverToBoxAdapter(
           child: Padding(
@@ -44,7 +50,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
   }
 
   Widget _getHeader() {
-    final novel = context.read<NovelProvider>().getCurrent!;
+    final novel = context.watch<NovelProvider>().getCurrent!;
     return Column(
       children: [
         Wrap(
@@ -63,6 +69,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
                 Text('Translator: ${novel.getTranslator}'),
                 Text('MC: ${novel.getMC}'),
                 Text('ရက်စွဲ: ${novel.date.toParseTime()}'),
+                // status
                 Wrap(
                   spacing: 5,
                   runSpacing: 5,
@@ -81,6 +88,8 @@ class _ContentHomePageState extends State<ContentHomePage> {
                         : SizedBox.shrink(),
                   ],
                 ),
+                // readed
+                ReadedButton(),
               ],
             ),
           ],
@@ -100,7 +109,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
   }
 
   Widget _getDesc() {
-    final novel = context.read<NovelProvider>().getCurrent!;
+    final novel = context.watch<NovelProvider>().getCurrent!;
     if (novel.getContent.isEmpty) {
       return SizedBox.shrink();
     }
@@ -112,7 +121,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
   // page button
   Widget _getPageButton() {
-    final novel = context.read<NovelProvider>().getCurrent!;
+    final novel = context.watch<NovelProvider>().getCurrent!;
     final list = novel.getPageUrls;
     if (list.isNotEmpty) {
       return IconButton(
@@ -143,5 +152,46 @@ class _ContentHomePageState extends State<ContentHomePage> {
     final list = context.read<NovelProvider>().getList;
     final res = list.where((e) => e.getTagContent.contains(text)).toList();
     goNovelSeeAllScreen(context, text, res);
+  }
+
+  // main menu
+  void _showMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Chapter'),
+          onTap: () {
+            closeContext(context);
+            _goEditChapter();
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit Novel'),
+          onTap: () {
+            closeContext(context);
+            _goEditNovel();
+          },
+        ),
+      ],
+    );
+  }
+
+  void _goEditChapter() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    goRoute(
+      context,
+      builder: (context) => EditChapterScreen(novelPath: novel.path),
+    );
+  }
+
+  void _goEditNovel() {
+    final provider = context.read<NovelProvider>();
+    final novel = provider.getCurrent;
+    if (novel == null) return;
+    goRoute(context, builder: (context) => EditNovelForm(novel: novel));
   }
 }

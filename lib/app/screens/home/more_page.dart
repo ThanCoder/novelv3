@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -39,24 +38,7 @@ class _MorePageState extends State<MorePage> {
       onClick: () {
         goRoute(
           context,
-          builder: (context) => PdfScannerScreen(
-            onClicked: (pdf) {
-              final configPath =
-                  '${PathUtil.getCachePath()}/${pdf.getTitle.replaceAll('.pdf', '.config.json')}';
-
-              goRoute(
-                context,
-                builder: (context) => PdfrxReaderScreen(
-                  title: pdf.getTitle,
-                  sourcePath: pdf.path,
-                  pdfConfig: PdfConfigModel.fromPath(configPath),
-                  onConfigUpdated: (pdfConfig) {
-                    pdfConfig.savePath(configPath);
-                  },
-                ),
-              );
-            },
-          ),
+          builder: (context) => PdfScannerScreen(onClicked: goRecentPdfReader),
         );
       },
     );

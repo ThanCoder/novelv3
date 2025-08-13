@@ -6,12 +6,7 @@ import 'package:t_widgets/t_widgets.dart';
 
 class EditNovelForm extends StatefulWidget {
   Novel novel;
-  void Function(Novel updatedNovel) onUpdated;
-  EditNovelForm({
-    super.key,
-    required this.novel,
-    required this.onUpdated,
-  });
+  EditNovelForm({super.key, required this.novel});
 
   @override
   State<EditNovelForm> createState() => _EditNovelFormState();
@@ -56,11 +51,11 @@ class _EditNovelFormState extends State<EditNovelForm> {
     final allTags = context.watch<NovelProvider>().getAllTags;
 
     return TScaffold(
-      appBar: AppBar(
-        title: Text('Edit: ${widget.novel.title}'),
-      ),
+      appBar: AppBar(title: Text('Edit: ${widget.novel.title}')),
       body: TScrollableColumn(
         children: [
+          // cover
+          TCoverChooser(coverPath: novel.getCoverPath),
           TTextField(
             label: Text('Title'),
             maxLines: 1,
@@ -85,6 +80,8 @@ class _EditNovelFormState extends State<EditNovelForm> {
             controller: mcController,
             isSelectedAll: true,
           ),
+          // page urls
+          _getPageUrlWidget(),
           // tags
           TTagsWrapView(
             title: Text('Tags'),
@@ -112,13 +109,46 @@ class _EditNovelFormState extends State<EditNovelForm> {
     );
   }
 
+  Widget _getPageUrlWidget() {
+    return TTagsWrapView(
+      title: Text('Page Urls'),
+      values: novel.getPageUrls,
+      onAddButtonClicked: () {
+        showTReanmeDialog(
+          context,
+          title: Text('Page Urls'),
+          autofocus: true,
+          barrierDismissible: false,
+          submitText: 'Add Url',
+          text: '',
+          onCheckIsError: (text) {
+            if (!text.startsWith('http')) {
+              return 'http....***!';
+            }
+            return null;
+          },
+          onSubmit: (url) {
+            final res = novel.getPageUrls;
+            res.add(url);
+            novel.setPageUrls(res);
+            setState(() {});
+          },
+        );
+      },
+      onApply: (values) {
+        novel.setPageUrls(values);
+        setState(() {});
+      },
+    );
+  }
+
   void _onUpdate() async {
     try {
       setState(() {
         isLoading = true;
       });
 
-      final oldTitle = novel.title;
+      final oldTitle = widget.novel.title;
       final newTitle = titleController.text.trim();
       if (newTitle.isEmpty) return;
       // novel.title = newTitle;

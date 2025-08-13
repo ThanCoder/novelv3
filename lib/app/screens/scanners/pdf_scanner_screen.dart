@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/extensions/pdf_extension.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
+import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class PdfScannerScreen extends StatefulWidget {
-  void Function(NovelPdf pdf)? onClicked;
+  void Function(BuildContext context, NovelPdf pdf)? onClicked;
   PdfScannerScreen({super.key, this.onClicked});
 
   @override
@@ -22,6 +25,7 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
 
   bool isLoading = false;
   List<NovelPdf> list = [];
+  SortType sortType = SortType(title: 'date', isAsc: false);
 
   Future<void> init() async {
     try {
@@ -56,6 +60,7 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
       appBar: AppBar(
         title: Text('PDF Scanner'),
         actions: [
+          SortComponent(value: sortType, onChanged: _onSort),
           PlatformExtension.isDesktop()
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
@@ -92,13 +97,21 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
       itemBuilder: (context, index) => PdfListItem(
         cachePath: PathUtil.getCachePath(),
         pdf: list[index],
-        onClicked: (pdf) {
-          if (widget.onClicked == null) return;
-          widget.onClicked!(pdf);
-        },
+        onClicked: (pdf) => widget.onClicked?.call(context, pdf),
         onRightClicked: _showItemMenu,
       ),
     );
+  }
+
+  void _onSort(SortType sort) {
+    if (sort.title == 'title') {
+      list.sortTitle(aToZ: sort.isAsc);
+    }
+    if (sort.title == 'date') {
+      list.sortDate(isNewest: !sort.isAsc);
+    }
+    sortType = sort;
+    setState(() {});
   }
 
   // item menu

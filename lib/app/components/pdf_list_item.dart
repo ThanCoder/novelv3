@@ -34,7 +34,7 @@ class _PdfListItemState extends State<PdfListItem> {
   Future<void> init() async {
     try {
       await ThanPkg.platform.genPdfThumbnail(
-        pathList: [SrcDistType(src: widget.pdf.path, dist: _getCoverPath)],
+        pathList: [SrcDistType(src: widget.pdf.path, dist: widget.pdf.getCoverPath)],
       );
       if (!mounted) return;
       setState(() {
@@ -79,7 +79,7 @@ class _PdfListItemState extends State<PdfListItem> {
                               : null,
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: TImage(source: _getCoverPath),
+                        child: TImage(source: widget.pdf.getCoverPath),
                       ),
               ),
               Expanded(
@@ -110,11 +110,5 @@ class _PdfListItemState extends State<PdfListItem> {
     );
   }
 
-  String get _getCoverPath {
-    var destPath = widget.pdf.getCoverPath;
-    if (widget.cachePath != null) {
-      destPath = '${widget.cachePath}/${widget.pdf.getTitle}.png';
-    }
-    return destPath;
-  }
+
 }

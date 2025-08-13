@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:t_widgets/extensions/double_extension.dart';
 import 'package:than_pkg/extensions/string_extension.dart';
 
@@ -34,7 +35,7 @@ class NovelPdf {
   }
 
   String get getCoverPath {
-    return path.replaceAll('.pdf', '.png');
+    return '${PathUtil.getCachePath()}/$getTitle.png';
   }
 
   String get getParentPath {
@@ -46,5 +47,12 @@ class NovelPdf {
     final file = File(path);
     await file.rename(newPath);
     path = newPath;
+  }
+
+  Future<void> delete() async {
+    final file = File(path);
+    if (file.existsSync()) {
+      await file.delete();
+    }
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import '../novel_dir_app.dart';
 
 class NovelProvider extends ChangeNotifier {
   final List<Novel> _list = [];
   Novel? _novel;
+  SortType sortType = SortType(title: 'date', isAsc: false);
   // get
   bool isLoading = false;
   List<Novel> get getList => _list;
@@ -17,10 +19,14 @@ class NovelProvider extends ChangeNotifier {
     final res = await NovelServices.getList();
     _list.addAll(res);
 
-    // sort
-    _list.sortDate();
+    sortList(sortType);
 
     isLoading = false;
+    notifyListeners();
+  }
+
+  void add(Novel novel) {
+    _list.insert(0, novel);
     notifyListeners();
   }
 
@@ -29,11 +35,14 @@ class NovelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> update(Novel novel, String oldTitle) async {
+  Future<void> update(Novel updatedNovel, String oldTitle) async {
     try {
+      _novel = updatedNovel;
+      notifyListeners();
+
       final index = _list.indexWhere((e) => e.title == oldTitle);
       if (index == -1) return;
-      _list[index] = novel;
+      _list[index] = updatedNovel;
 
       notifyListeners();
     } catch (e) {
@@ -52,6 +61,23 @@ class NovelProvider extends ChangeNotifier {
     } catch (e) {
       NovelDirApp.showDebugLog(e.toString());
     }
+  }
+
+  void sortList(SortType sort) {
+    sortType = sort;
+    if (sort.title == 'title') {
+      _list.sort((a, b) {
+        if (sort.isAsc) {
+          return a.title.compareTo(b.title);
+        } else {
+          return b.title.compareTo(a.title);
+        }
+      });
+    }
+    if (sort.title == 'date') {
+      _list.sortDate(isNewest: !sort.isAsc);
+    }
+    notifyListeners();
   }
 
   // all tags

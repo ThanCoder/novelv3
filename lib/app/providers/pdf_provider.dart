@@ -32,6 +32,19 @@ class PdfProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> delete(NovelPdf pdf) async {
+    try {
+      final index = _list.indexWhere((e) => e.getTitle == pdf.getTitle);
+      if (index == -1) return;
+      _list.removeAt(index);
+
+      await pdf.delete();
+      notifyListeners();
+    } catch (e) {
+      NovelDirApp.showDebugLog(e.toString());
+    }
+  }
+
   void sortList(SortType type) {
     sortType = type;
     if (sortType.title == 'title') {

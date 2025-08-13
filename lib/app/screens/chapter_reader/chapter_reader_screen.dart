@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/types/index.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ChapterReaderScreen extends StatefulWidget {
   Chapter chapter;
-  ChapterReaderScreen({super.key, required this.chapter});
+  void Function(Chapter chapter)? onReadedLastChapter;
+  ChapterReaderScreen({
+    super.key,
+    required this.chapter,
+    this.onReadedLastChapter,
+  });
 
   @override
   State<ChapterReaderScreen> createState() => _ChapterReaderScreenState();
@@ -18,6 +25,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   bool isLoading = false;
   bool isShowGetPrevChapter = true;
   Chapter? topChapter;
+  bool isFullScreen = false;
 
   @override
   void initState() {
@@ -35,43 +43,56 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   @override
   Widget build(BuildContext context) {
     return TScaffold(
-      body: CustomScrollView(
-        controller: controller,
-        slivers: [
-          SliverAppBar(
-            title: Text('Chapter Reader'),
-            snap: true,
-            floating: true,
-            backgroundColor: Colors.black.withValues(alpha: 0.8),
-          ),
-          // top
-          SliverToBoxAdapter(child: _getPrevChapterWidget()),
-          // list
-          SliverList.separated(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final item = list[index];
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(item.getContents, style: TextStyle(fontSize: 19)),
-              );
-            },
-            separatorBuilder: (context, index) {
-              final item = list[index];
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      'Chapter: ${item.number} End...',
-                      style: TextStyle(fontSize: 20),
+      body: GestureDetector(
+        onDoubleTap: () => _toggleFullScreen(),
+
+        child: CustomScrollView(
+          controller: controller,
+          slivers: [
+            isFullScreen
+                ? SliverToBoxAdapter()
+                : SliverAppBar(
+                    title: Text('Chapter Reader'),
+                    snap: true,
+                    floating: true,
+                    backgroundColor: Colors.black.withValues(alpha: 0.8),
+                    leading: IconButton(
+                      onPressed: () {
+                        closeContext(context);
+                        widget.onReadedLastChapter?.call(list.last);
+                      },
+                      icon: Icon(Icons.arrow_back),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-        ],
+            // top
+            SliverToBoxAdapter(child: _getPrevChapterWidget()),
+            // list
+            SliverList.separated(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                final item = list[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(item.getContents, style: TextStyle(fontSize: 19)),
+                );
+              },
+              separatorBuilder: (context, index) {
+                final item = list[index];
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        'Chapter: ${item.number} End...',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -145,6 +166,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     isLoading = true;
     isShowGetPrevChapter = true;
     topChapter = list.first.getPrevChapter;
+    setState(() {});
+  }
+
+  void _toggleFullScreen() {
+    isFullScreen = !isFullScreen;
+    ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
     setState(() {});
   }
 }

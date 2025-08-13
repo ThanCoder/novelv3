@@ -1,16 +1,19 @@
 import 'dart:io';
 
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class Novel {
   String title;
   String path;
   DateTime date;
-  Novel({
-    required this.title,
-    required this.path,
-    required this.date,
-  });
+  Novel({required this.title, required this.path, required this.date});
+
+  factory Novel.createTitle(String title) {
+    final dir = Directory('${PathUtil.getSourcePath()}/$title');
+    dir.createSync(recursive: true);
+    return Novel.fromPath(dir.path);
+  }
 
   factory Novel.fromPath(String path) {
     final dir = Directory(path);
@@ -104,6 +107,13 @@ class Novel {
 
   String get getReaded {
     return _getFileContent('readed', defaultValue: '0');
+  }
+
+  int get getReadedNumber {
+    if (int.tryParse(getReaded) != null) {
+      return int.parse(getReaded);
+    }
+    return 0;
   }
 
   // set title
