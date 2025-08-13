@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:t_widgets/widgets/t_search_field.dart';
 
@@ -23,6 +25,39 @@ class UploaderNovelSearchScreen extends StatefulWidget {
 class _UploaderNovelSearchScreenState extends State<UploaderNovelSearchScreen> {
   List<UploaderNovel> resultList = [];
   bool isSearched = false;
+  Timer? _delaySearchTimer;
+
+  @override
+  void dispose() {
+    _delaySearchTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: TSearchField(
+          autofocus: false,
+          onChanged: (text) {
+            if (_delaySearchTimer?.isActive ?? false) {
+              _delaySearchTimer?.cancel();
+            }
+            _delaySearchTimer = Timer(
+              Duration(milliseconds: 500),
+              () => _onSearch(text),
+            );
+          },
+          onCleared: () {
+            setState(() {
+              isSearched = false;
+            });
+          },
+        ),
+      ),
+      body: _searchChanged(),
+    );
+  }
 
   Widget _getResultList() {
     return ListView.separated(
@@ -37,10 +72,7 @@ class _UploaderNovelSearchScreenState extends State<UploaderNovelSearchScreen> {
     final authorList = widget.list.map((e) => e.author).toSet().toList();
     final transList = widget.list.map((e) => e.translator).toSet().toList();
     final mcList = widget.list.map((e) => e.mc).toSet().toList();
-    final tagsList = widget.list
-        .expand((e) => e.getTags)
-        .toSet()
-        .toList();
+    final tagsList = widget.list.expand((e) => e.getTags).toSet().toList();
     return CustomScrollView(
       slivers: [
         // author
@@ -132,22 +164,5 @@ class _UploaderNovelSearchScreenState extends State<UploaderNovelSearchScreen> {
     setState(() {
       isSearched = true;
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: TSearchField(
-          onChanged: _onSearch,
-          onCleared: () {
-            setState(() {
-              isSearched = false;
-            });
-          },
-        ),
-      ),
-      body: _searchChanged(),
-    );
   }
 }

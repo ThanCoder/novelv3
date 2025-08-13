@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import '../novel_v3_uploader.dart';
 
@@ -15,8 +16,10 @@ class OnlineNovelServices {
       final res = await NovelV3Uploader.instance.onDownloadJson!(
         serverGitubDatabaseUrl,
       );
-      List<dynamic> resList = jsonDecode(res);
-      list = resList.map((e) => UploaderNovel.fromMapWithUrl(e)).toList();
+      return await Isolate.run<List<UploaderNovel>>(() async {
+        List<dynamic> resList = jsonDecode(res);
+        return resList.map((e) => UploaderNovel.fromMapWithUrl(e)).toList();
+      });
     } catch (e) {
       NovelV3Uploader.instance.showLog(e.toString());
     }

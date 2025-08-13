@@ -28,8 +28,11 @@ class OnlineNovelSeeAllView extends StatelessWidget {
       showLines: showLines,
       list: list,
       onSeeAllClicked: onSeeAllClicked,
-      itemBuilder: (context, index) =>
-          OnlineNovelGridItem(novel: list[index], onClicked: onClicked),
+      gridItemBuilder: (context, item) => SizedBox(
+        width: 140,
+        height: 180,
+        child: OnlineNovelGridItem(novel: item, onClicked: onClicked),
+      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.1/types/pdf_config_model.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/types/pdf_config_model.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 

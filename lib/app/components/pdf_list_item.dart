@@ -76,7 +76,7 @@ class _PdfListItemState extends State<PdfListItem> {
                         decoration: BoxDecoration(
                           color: Setting.getAppConfig.isDarkTheme
                               ? Colors.white
-                              : Colors.black,
+                              : null,
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: TImage(source: _getCoverPath),

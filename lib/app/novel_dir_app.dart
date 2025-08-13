@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/types/novel_pdf.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.1/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/pdf_reader.dart';
 import 'services/index.dart';
 import 'types/chapter.dart';
 

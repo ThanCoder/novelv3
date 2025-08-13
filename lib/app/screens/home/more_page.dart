@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.1/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 

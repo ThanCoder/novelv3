@@ -29,7 +29,13 @@ class OnlineNovelGridItem extends StatelessWidget {
                 cachePath: NovelV3Uploader.instance.imageCachePath,
               ),
             ),
-            // cover
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.1),
+              ),
+            ),
 
             // title
             Positioned(
@@ -49,10 +55,7 @@ class OnlineNovelGridItem extends StatelessWidget {
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: TextStyle(
-                    color: Colors.white,
-                    // fontSize: fontSize,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
             ),

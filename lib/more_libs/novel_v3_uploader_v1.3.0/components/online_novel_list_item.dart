@@ -21,50 +21,59 @@ class OnlineNovelListItem extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              // crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.all(2.0),
+            child: Wrap(
+              runSpacing: 8,
               spacing: 8,
               children: [
                 SizedBox(
-                  width: 140,
-                  height: 160,
+                  width: 120,
+                  height: 150,
                   child: TCacheImage(
                     url: novel.coverUrl,
                     cachePath: NovelV3Uploader.instance.imageCachePath,
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 3,
-                    children: [
-                      Text(novel.title),
-                      Text('Author: ${novel.author}'),
-                      Text('ဘာသာပြန်: ${novel.translator}'),
-                      Text('MC: ${novel.mc}'),
-                      TTagsWrapView(values: novel.getTags),
-                      Wrap(
-                        spacing: 5,
-                        children: [
-                          StatusText(
-                            bgColor: novel.isCompleted
-                                ? StatusText.completedColor
-                                : StatusText.onGoingColor,
-                            text: novel.isCompleted ? 'Completed' : 'OnGoing',
-                          ),
-                          novel.isAdult
-                              ? StatusText(
-                                  text: 'Adult',
-                                  bgColor: StatusText.adultColor,
-                                )
-                              : const SizedBox.shrink(),
-                        ],
-                      ),
-                      Text('ရက်စွဲ: ${novel.date.toParseTime()}'),
-                    ],
-                  ),
+                Wrap(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 3,
+                  children: [
+                    Text(
+                      novel.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text(
+                      'Author: ${novel.author}',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text(
+                      'ဘာသာပြန်: ${novel.translator}',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text('MC: ${novel.mc}', style: TextStyle(fontSize: 13)),
+                    // TTagsWrapView(values: novel.getTags),
+                    TagWrapView(list: novel.getTags),
+                    Wrap(
+                      spacing: 5,
+                      children: [
+                        StatusText(
+                          bgColor: novel.isCompleted
+                              ? StatusText.completedColor
+                              : StatusText.onGoingColor,
+                          text: novel.isCompleted ? 'Completed' : 'OnGoing',
+                        ),
+                        novel.isAdult
+                            ? StatusText(
+                                text: 'Adult',
+                                bgColor: StatusText.adultColor,
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
+                    Text('ရက်စွဲ: ${novel.date.toParseTime()}'),
+                  ],
                 ),
               ],
             ),

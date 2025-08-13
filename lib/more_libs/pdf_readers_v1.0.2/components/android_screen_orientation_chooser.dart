@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class AndroidScreenOrientationChooser extends StatefulWidget {
   String value;
@@ -32,11 +33,11 @@ class _AndroidScreenOrientationChooserState
       items: [
         DropdownMenuItem<String>(
           value: ScreenOrientationTypes.portrait.name,
-          child: Text(ScreenOrientationTypes.portrait.name),
+          child: Text(ScreenOrientationTypes.portrait.name.toCaptalize()),
         ),
         DropdownMenuItem<String>(
           value: ScreenOrientationTypes.landscape.name,
-          child: Text(ScreenOrientationTypes.landscape.name),
+          child: Text(ScreenOrientationTypes.landscape.name.toCaptalize()),
         ),
       ],
       onChanged: (value) {
