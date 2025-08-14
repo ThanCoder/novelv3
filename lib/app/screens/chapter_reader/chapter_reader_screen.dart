@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/types/index.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -42,56 +42,62 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return TScaffold(
-      body: GestureDetector(
-        onDoubleTap: () => _toggleFullScreen(),
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widget.onReadedLastChapter?.call(list.last);
+        });
+      },
+      child: TScaffold(
+        body: GestureDetector(
+          onDoubleTap: () => _toggleFullScreen(),
 
-        child: CustomScrollView(
-          controller: controller,
-          slivers: [
-            isFullScreen
-                ? SliverToBoxAdapter()
-                : SliverAppBar(
-                    title: Text('Chapter Reader'),
-                    snap: true,
-                    floating: true,
-                    backgroundColor: Colors.black.withValues(alpha: 0.8),
-                    leading: IconButton(
-                      onPressed: () {
-                        closeContext(context);
-                        widget.onReadedLastChapter?.call(list.last);
-                      },
-                      icon: Icon(Icons.arrow_back),
+          child: CustomScrollView(
+            controller: controller,
+            slivers: [
+              isFullScreen
+                  ? SliverToBoxAdapter()
+                  : SliverAppBar(
+                      title: Text('Chapter Reader'),
+                      snap: true,
+                      floating: true,
+                      backgroundColor: Setting.getAppConfig.isDarkTheme
+                          ? Colors.black.withValues(alpha: 0.8)
+                          : Colors.white.withValues(alpha: 0.8),
                     ),
-                  ),
-            // top
-            SliverToBoxAdapter(child: _getPrevChapterWidget()),
-            // list
-            SliverList.separated(
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                final item = list[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(item.getContents, style: TextStyle(fontSize: 19)),
-                );
-              },
-              separatorBuilder: (context, index) {
-                final item = list[index];
-                return Card(
-                  child: Padding(
+              // top
+              SliverToBoxAdapter(child: _getPrevChapterWidget()),
+              // list
+              SliverList.separated(
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  final item = list[index];
+                  return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        'Chapter: ${item.number} End...',
-                        style: TextStyle(fontSize: 20),
+                    child: Text(
+                      item.getContents,
+                      style: TextStyle(fontSize: 19),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  final item = list[index];
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          'Chapter: ${item.number} End...',
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

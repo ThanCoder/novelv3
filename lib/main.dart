@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/my_app.dart';
+import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
@@ -29,12 +30,13 @@ void main() async {
   );
   //static server
   await NovelV3Uploader.instance.init(
-      isShowDebugLog: true,
-      onDownloadJson: (url) async {
-        final res = await Dio().get(url);
-        return res.data.toString();
-      },
-      appBarActions: [AppHelpButton()]);
+    isShowDebugLog: true,
+    onDownloadJson: (url) async {
+      final res = await Dio().get(url);
+      return res.data.toString();
+    },
+    appBarActions: [AppHelpButton()],
+  );
   // local novel
   await NovelDirApp.instance.init(
     getAppCachePath: () => PathUtil.getCachePath(),
@@ -48,6 +50,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => NovelProvider()),
+        ChangeNotifierProvider(create: (context) => NovelBookmarkProvider()),
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
         ChangeNotifierProvider(create: (context) => PdfProvider()),
       ],

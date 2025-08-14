@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -243,6 +244,24 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
         Padding(padding: const EdgeInsets.all(8.0), child: Text(pdf.getTitle)),
         Divider(),
         ListTile(
+          iconColor: Colors.orange,
+          leading: Icon(Icons.restore),
+          title: Text('အပြင်ကို ပြန်ရွှေ့ (Move)'),
+          onTap: () {
+            closeContext(context);
+            _moveOutPdf(pdf);
+          },
+        ),
+        ListTile(
+          iconColor: Colors.green,
+          leading: Icon(Icons.restore),
+          title: Text('အပြင်ကို ကူးထုတ် (Copy)'),
+          onTap: () {
+            closeContext(context);
+            _moveOutCopyPdf(pdf);
+          },
+        ),
+        ListTile(
           iconColor: Colors.red,
           leading: Icon(Icons.delete_forever_rounded),
           title: Text('Delete'),
@@ -264,6 +283,18 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
         context.read<PdfProvider>().delete(pdf);
       },
     );
+  }
+
+  void _moveOutPdf(NovelPdf pdf) async {
+    await pdf.rename('${PathUtil.getOutPath()}/${pdf.getTitle}');
+    if (!mounted) return;
+    context.read<PdfProvider>().removeUI(pdf);
+  }
+
+  void _moveOutCopyPdf(NovelPdf pdf) async {
+    await pdf.copy('${PathUtil.getOutPath()}/${pdf.getTitle}');
+    if (!mounted) return;
+    showTSnackBar(context, 'ကူးထုတ်ပြီးပါပြီ...');
   }
 
   String get getNovelPath {

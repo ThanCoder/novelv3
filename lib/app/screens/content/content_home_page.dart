@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/components/novel_bookmark_action.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
+import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
@@ -21,6 +23,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
   Widget build(BuildContext context) {
     return ContentImageWrapper(
       appBarAction: [
+        NovelBookmarkAction(),
         IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
       ],
       sliverBuilder: (context, novel) => [
@@ -64,7 +67,13 @@ class _ContentHomePageState extends State<ContentHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 5,
               children: [
-                Text('T: ${novel.title}'),
+                GestureDetector(
+                  onLongPress: () {
+                    ThanPkg.appUtil.copyText(novel.title);
+                    showTSnackBar(context, 'Copied');
+                  },
+                  child: Text('T: ${novel.title}'),
+                ),
                 Text('Author: ${novel.getAuthor}'),
                 Text('Translator: ${novel.getTranslator}'),
                 Text('MC: ${novel.getMC}'),
@@ -102,7 +111,11 @@ class _ContentHomePageState extends State<ContentHomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(spacing: 5, runSpacing: 5, children: [_getPageButton()]),
+        Wrap(
+          spacing: 5,
+          runSpacing: 5,
+          children: [_getPageButton(), ReadedRecentButton()],
+        ),
         Divider(),
       ],
     );
@@ -124,7 +137,8 @@ class _ContentHomePageState extends State<ContentHomePage> {
     final novel = context.watch<NovelProvider>().getCurrent!;
     final list = novel.getPageUrls;
     if (list.isNotEmpty) {
-      return IconButton(
+      return TextButton(
+        child: const Text('Page Url'),
         onPressed: () {
           showTListDialog<String>(
             context,
@@ -142,7 +156,6 @@ class _ContentHomePageState extends State<ContentHomePage> {
             ),
           );
         },
-        icon: Icon(Icons.open_in_browser),
       );
     }
     return SizedBox.shrink();
@@ -175,6 +188,15 @@ class _ContentHomePageState extends State<ContentHomePage> {
             _goEditNovel();
           },
         ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever_rounded),
+          title: Text('Delete'),
+          onTap: () {
+            closeContext(context);
+            _deleteConfirm();
+          },
+        ),
       ],
     );
   }
@@ -193,5 +215,20 @@ class _ContentHomePageState extends State<ContentHomePage> {
     final novel = provider.getCurrent;
     if (novel == null) return;
     goRoute(context, builder: (context) => EditNovelForm(novel: novel));
+  }
+
+  void _deleteConfirm() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    showTConfirmDialog(
+      context,
+      submitText: 'Delete Forever',
+      contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+      onSubmit: () async {
+        await context.read<NovelProvider>().delete(novel);
+        if (!mounted) return;
+        closeContext(context);
+      },
+    );
   }
 }

@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_func.dart';
+import 'package:t_widgets/extensions/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import '../novel_search_screen.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +28,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> init() async {
     await context.read<NovelProvider>().initList();
+    if (!mounted) return;
+    await context.read<NovelBookmarkProvider>().initList();
   }
 
   @override
@@ -64,28 +71,43 @@ class _HomePageState extends State<HomePage> {
     if (isLoading) {
       return Center(child: TLoaderRandom());
     }
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
-        ),
-        SliverToBoxAdapter(
-          child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
-        ),
-        SliverToBoxAdapter(
-          child: NovelSeeAllView(
-            title: 'Completed စာစဥ်များ',
-            list: completedList,
+    return RefreshIndicator.adaptive(
+      onRefresh: init,
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: NovelSeeAllView(title: 'OnGoing စာစဥ်များ', list: onGoingList),
-        ),
-        SliverToBoxAdapter(
-          child: NovelSeeAllView(title: 'Adult စာစဥ်များ', list: adultList),
-        ),
-      ],
+          SliverToBoxAdapter(child: _getBookmarkWidet()),
+          SliverToBoxAdapter(
+            child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
+          ),
+          SliverToBoxAdapter(
+            child: NovelSeeAllView(
+              title: 'Completed စာစဥ်များ',
+              list: completedList,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: NovelSeeAllView(
+              title: 'OnGoing စာစဥ်များ',
+              list: onGoingList,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: NovelSeeAllView(title: 'Adult စာစဥ်များ', list: adultList),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget _getBookmarkWidet() {
+    final provider = context.watch<NovelBookmarkProvider>();
+    if (provider.isLoading) {
+      return Center(child: TLoaderRandom());
+    }
+    return NovelSeeAllView(title: 'BookMark', list: provider.getList);
   }
 
   // main menu
@@ -137,6 +159,14 @@ class _HomePageState extends State<HomePage> {
             _addNewNovel();
           },
         ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Novel From PDF'),
+          onTap: () {
+            closeContext(context);
+            _addNewNovelFromPdf();
+          },
+        ),
       ],
     );
   }
@@ -165,6 +195,48 @@ class _HomePageState extends State<HomePage> {
         provider.add(novel);
         goRoute(context, builder: (context) => EditNovelForm(novel: novel));
       },
+    );
+  }
+
+  void _addNewNovelFromPdf() {
+    final provider = context.read<NovelProvider>();
+
+    goRoute(
+      context,
+      builder: (context) => PdfScannerScreen(
+        onClicked: (pdfCtx, pdf) async {
+          try {
+            // check already title
+            final index = provider.getList.indexWhere(
+              (e) => e.title == pdf.getTitle,
+            );
+            if (index != -1) {
+              showTSnackBarError(
+                pdfCtx,
+                'Novel Title ရှိနေပြီးသားဖြစ်နေပါတယ်!...',
+              );
+              return;
+            }
+            closeContext(pdfCtx);
+            final novel = Novel.createTitle(
+              pdf.getTitle.getName(withExt: false),
+            );
+            // delay
+            await Future.delayed(Duration(milliseconds: 300));
+            // copy cover
+            final pdfCoverFile = File(pdf.getCoverPath);
+            await pdfCoverFile.copy(novel.getCoverPath);
+            // move pdf file
+            await pdf.rename('${novel.path}/${pdf.getTitle}');
+
+            provider.add(novel);
+            if (!context.mounted) return;
+            goRoute(context, builder: (context) => EditNovelForm(novel: novel));
+          } catch (e) {
+            NovelDirApp.showDebugLog(e.toString());
+          }
+        },
+      ),
     );
   }
 }

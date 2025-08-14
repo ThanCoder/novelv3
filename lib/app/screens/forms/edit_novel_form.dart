@@ -20,6 +20,8 @@ class _EditNovelFormState extends State<EditNovelForm> {
   final mcController = TextEditingController();
   late Novel novel;
   bool isLoading = false;
+  List<Novel> existsList = [];
+  String? titleError;
 
   @override
   void initState() {
@@ -44,23 +46,44 @@ class _EditNovelFormState extends State<EditNovelForm> {
     authorController.text = novel.getAuthor;
     translatorController.text = novel.getTranslator;
     mcController.text = novel.getMC;
+    // init exists list
+    existsList = context
+        .read<NovelProvider>()
+        .getList
+        .where((e) => e.title != novel.title)
+        .toList();
+    // remove current novel
   }
 
   @override
   Widget build(BuildContext context) {
     final allTags = context.watch<NovelProvider>().getAllTags;
-
     return TScaffold(
       appBar: AppBar(title: Text('Edit: ${widget.novel.title}')),
       body: TScrollableColumn(
         children: [
           // cover
           TCoverChooser(coverPath: novel.getCoverPath),
+          // fields
           TTextField(
             label: Text('Title'),
             maxLines: 1,
             controller: titleController,
             isSelectedAll: true,
+            errorText: titleError,
+            onChanged: (value) {
+              if (value.isEmpty) return;
+              if (_checkExistsNovelTitle(value)) {
+                // ရှိနေရင်
+                setState(() {
+                  titleError = 'ရှိနေပြီးသား ဖြစ်နေပါတယ်!...';
+                });
+              } else {
+                setState(() {
+                  titleError = null;
+                });
+              }
+            },
           ),
           TTextField(
             label: Text('Author'),
@@ -102,6 +125,8 @@ class _EditNovelFormState extends State<EditNovelForm> {
       ),
       floatingActionButton: isLoading
           ? TLoaderRandom()
+          : titleError != null
+          ? null
           : FloatingActionButton(
               onPressed: _onUpdate,
               child: Icon(Icons.save_as_rounded),
@@ -140,6 +165,11 @@ class _EditNovelFormState extends State<EditNovelForm> {
         setState(() {});
       },
     );
+  }
+
+  bool _checkExistsNovelTitle(String text) {
+    final index = existsList.indexWhere((e) => e.title == text);
+    return index != -1;
   }
 
   void _onUpdate() async {

@@ -10,10 +10,7 @@ ValueNotifier<List<Novel>> novelSeeAllScreenNotifier = ValueNotifier([]);
 
 class NovelSeeAllScreen extends StatefulWidget {
   String title;
-  NovelSeeAllScreen({
-    super.key,
-    required this.title,
-  });
+  NovelSeeAllScreen({super.key, required this.title});
 
   @override
   State<NovelSeeAllScreen> createState() => _NovelSeeAllScreenState();
@@ -23,27 +20,26 @@ class _NovelSeeAllScreenState extends State<NovelSeeAllScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: ValueListenableBuilder(
-          valueListenable: novelSeeAllScreenNotifier,
-          builder: (context, list, child) {
-            return GridView.builder(
-              itemCount: list.length,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 180,
-                mainAxisExtent: 200,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-              ),
-              itemBuilder: (context, index) => NovelGridItem(
-                novel: list[index],
-                onClicked: (novel) => goNovelContentScreen(context, novel),
-                onRightClicked: _showItemMenu,
-              ),
-            );
-          }),
+        valueListenable: novelSeeAllScreenNotifier,
+        builder: (context, list, child) {
+          return GridView.builder(
+            itemCount: list.length,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 180,
+              mainAxisExtent: 200,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+            ),
+            itemBuilder: (context, index) => NovelGridItem(
+              novel: list[index],
+              onClicked: (novel) => goNovelContentScreen(context, novel),
+              onRightClicked: _showItemMenu,
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -51,10 +47,7 @@ class _NovelSeeAllScreenState extends State<NovelSeeAllScreen> {
     showTMenuBottomSheet(
       context,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(novel.title),
-        ),
+        Padding(padding: const EdgeInsets.all(8.0), child: Text(novel.title)),
         Divider(),
         ListTile(
           leading: Icon(Icons.edit_document),
@@ -78,7 +71,7 @@ class _NovelSeeAllScreenState extends State<NovelSeeAllScreen> {
   }
 
   void _goEditScreen(Novel novel) {
-    goRoute(context, builder: (context) => EditNovelForm(novel: novel),);
+    goRoute(context, builder: (context) => EditNovelForm(novel: novel));
   }
 
   void _deleteConfirm(Novel novel) {

@@ -55,4 +55,15 @@ class PdfProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> removeUI(NovelPdf pdf) async {
+    try {
+      final index = _list.indexWhere((e) => e.getTitle == pdf.getTitle);
+      if (index == -1) return;
+      _list.removeAt(index);
+      notifyListeners();
+    } catch (e) {
+      NovelDirApp.showDebugLog(e.toString());
+    }
+  }
 }

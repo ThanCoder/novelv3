@@ -15,13 +15,20 @@ class NovelSeeAllView extends StatefulWidget {
 }
 
 class _NovelSeeAllViewState extends State<NovelSeeAllView> {
+  List<Novel> list = [];
+  @override
+  void initState() {
+    list = widget.list;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SeeAllView<Novel>(
       itemWidth: 140,
       itemHeight: 160,
       title: widget.title,
-      list: widget.list,
+      list: list,
       showMoreButtonBottomPos: false,
       onSeeAllClicked: (title, list) =>
           goNovelSeeAllScreen(context, title, list),

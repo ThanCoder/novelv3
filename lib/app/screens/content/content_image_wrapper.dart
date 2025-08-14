@@ -57,8 +57,10 @@ class _ContentImageWrapperState extends State<ContentImageWrapper> {
           title: widget.title,
           floating: true,
           snap: true,
-          backgroundColor: Colors.transparent,
 
+          backgroundColor: Setting.getAppConfig.isDarkTheme
+              ? Colors.black.withValues(alpha: 0.2)
+              : Colors.white.withValues(alpha: 0.2),
           actions: widget.appBarAction,
         ),
         // sliver builder

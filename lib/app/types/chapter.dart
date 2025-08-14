@@ -69,6 +69,11 @@ class Chapter {
     return number == null ? false : true;
   }
 
+  static bool isChapterExists(String path) {
+    final file = File(path);
+    return file.existsSync();
+  }
+
   @override
   String toString() {
     return '$number';

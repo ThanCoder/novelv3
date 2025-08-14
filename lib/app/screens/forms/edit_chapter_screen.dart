@@ -26,7 +26,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   @override
   void initState() {
     super.initState();
-    init();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   @override
@@ -49,15 +49,22 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
     if (widget.chapter != null) {
       chapter = widget.chapter!.number;
     } else {
+      setState(() {
+        isLoading = true;
+      });
+      final provider = context.read<ChapterProvider>();
+      await provider.initList(widget.novelPath);
       // set provider list
-      final list = context.read<ChapterProvider>().getList;
+      final list = provider.getList;
       if (list.isNotEmpty) {
         chapter = list.last.number + 1;
       }
     }
     chapterController.text = chapter.toString();
-
-    setState(() {});
+    if (!mounted) return;
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
