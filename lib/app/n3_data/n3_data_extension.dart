@@ -1,6 +1,6 @@
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'n3_data.dart';
 
-extension PdfExtension on List<NovelPdf> {
+extension N3DataExtension on List<N3Data> {
   void sortTitle({bool aToZ = true}) {
     sort((a, b) {
       if (aToZ) {
@@ -39,5 +39,4 @@ extension PdfExtension on List<NovelPdf> {
       return 0;
     });
   }
-
 }

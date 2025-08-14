@@ -18,6 +18,12 @@ class _EditNovelFormState extends State<EditNovelForm> {
   final authorController = TextEditingController();
   final translatorController = TextEditingController();
   final mcController = TextEditingController();
+  // focus
+  final titleFocus = FocusNode();
+  final descFocus = FocusNode();
+  final authorFocus = FocusNode();
+  final translatorFocus = FocusNode();
+  final mcFocus = FocusNode();
   late Novel novel;
   bool isLoading = false;
   List<Novel> existsList = [];
@@ -37,6 +43,11 @@ class _EditNovelFormState extends State<EditNovelForm> {
     authorController.dispose();
     translatorController.dispose();
     mcController.dispose();
+    titleFocus.dispose();
+    descFocus.dispose();
+    authorFocus.dispose();
+    translatorFocus.dispose();
+    mcFocus.dispose();
     super.dispose();
   }
 
@@ -71,6 +82,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
             controller: titleController,
             isSelectedAll: true,
             errorText: titleError,
+            focusNode: titleFocus,
             onChanged: (value) {
               if (value.isEmpty) return;
               if (_checkExistsNovelTitle(value)) {
@@ -89,19 +101,38 @@ class _EditNovelFormState extends State<EditNovelForm> {
             label: Text('Author'),
             maxLines: 1,
             controller: authorController,
+            focusNode: authorFocus,
             isSelectedAll: true,
           ),
           TTextField(
             label: Text('Translator'),
             maxLines: 1,
             controller: translatorController,
+            focusNode: translatorFocus,
             isSelectedAll: true,
           ),
           TTextField(
             label: Text('MC'),
             maxLines: 1,
             controller: mcController,
+            focusNode: mcFocus,
             isSelectedAll: true,
+          ),
+          SwitchListTile.adaptive(
+            title: Text('is Completed'),
+            value: novel.isCompleted,
+            onChanged: (value) {
+              novel.setCompleted(value);
+              setState(() {});
+            },
+          ),
+          SwitchListTile.adaptive(
+            title: Text('is Adult'),
+            value: novel.isAdult,
+            onChanged: (value) {
+              novel.setAdult(value);
+              setState(() {});
+            },
           ),
           // page urls
           _getPageUrlWidget(),
@@ -112,6 +143,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
             allTags: allTags,
             onApply: (values) {
               novel.setTags(values);
+              _clearFocus();
               setState(() {});
             },
           ),
@@ -120,6 +152,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
             label: Text('Description'),
             maxLines: null,
             controller: descController,
+            focusNode: descFocus,
           ),
         ],
       ),
@@ -152,10 +185,14 @@ class _EditNovelFormState extends State<EditNovelForm> {
             }
             return null;
           },
+          onCancel: () {
+            _clearFocus();
+          },
           onSubmit: (url) {
             final res = novel.getPageUrls;
             res.add(url);
             novel.setPageUrls(res);
+            _clearFocus();
             setState(() {});
           },
         );
@@ -170,6 +207,14 @@ class _EditNovelFormState extends State<EditNovelForm> {
   bool _checkExistsNovelTitle(String text) {
     final index = existsList.indexWhere((e) => e.title == text);
     return index != -1;
+  }
+
+  void _clearFocus() {
+    titleFocus.unfocus();
+    descFocus.unfocus();
+    authorFocus.unfocus();
+    translatorFocus.unfocus();
+    mcFocus.unfocus();
   }
 
   void _onUpdate() async {

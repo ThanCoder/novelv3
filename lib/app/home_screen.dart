@@ -14,11 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
-  List<Widget> pages = [
-    HomePage(),
-    NovelV3UploaderHomeScreen(),
-    MorePage(),
-  ];
+  List<Widget> pages = [HomePage(), NovelV3UploaderHomeScreen(), MorePage()];
   @override
   Widget build(BuildContext context) {
     return TScaffold(
@@ -32,10 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         items: const [
-          BottomNavigationBarItem(
-            label: 'Home',
-            icon: Icon(Icons.home),
-          ),
+          BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
           BottomNavigationBarItem(
             label: 'Online Lib',
             icon: Icon(Icons.cloud_download),

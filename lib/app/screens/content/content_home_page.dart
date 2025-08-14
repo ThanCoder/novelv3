@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_bookmark_action.dart';
+import 'package:novel_v3/app/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
@@ -262,10 +263,29 @@ class _ContentHomePageState extends State<ContentHomePage> {
   void _exportN3Data() {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
+
     showDialog(
-      barrierDismissible: false,
       context: context,
-      builder: (context) => N3DataExportDialog(novel: novel),
+      barrierDismissible: false,
+      builder: (context) => N3DataExportConfirmDialog(
+        onExport: (isSetPassword) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => N3DataExportDialog(
+              isSetPassword: isSetPassword,
+              novel: novel,
+              onSuccess: () {
+                showTSnackBar(
+                  context,
+                  'N3Data ထုတ်ပြီးပါပြီ...',
+                  showCloseIcon: true,
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

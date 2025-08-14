@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/types/novel_pdf.dart';
@@ -23,10 +25,12 @@ class NovelDirApp {
   late String Function() getAppCachePath;
   List<Widget> actionList = [];
   void Function(BuildContext context, String message)? _onShowMessage;
+  late String? Function() onGetN3DataPassword;
 
   Future<void> init({
     required String Function() getRootDirPath,
     required String Function() getAppCachePath,
+    String? Function()? onGetN3DataPassword,
     void Function(BuildContext context, String message)? onShowMessage,
     List<Widget> actionList = const [],
     bool isShowDebugLog = true,
@@ -34,6 +38,7 @@ class NovelDirApp {
     this.getAppCachePath = getAppCachePath;
     this.getRootDirPath = getRootDirPath;
     this.actionList = actionList;
+    this.onGetN3DataPassword = onGetN3DataPassword ?? () => null;
     NovelDirApp.isShowDebugLog = isShowDebugLog;
     _onShowMessage = onShowMessage;
     // create dir
@@ -41,8 +46,6 @@ class NovelDirApp {
     await FolderFileServices.createDir('${getRootDirPath()}/source');
     await FolderFileServices.createDir('${getRootDirPath()}/libary');
   }
-
-  
 
   void goPdfReader(BuildContext context, NovelPdf pdf) {
     goRoute(
@@ -66,6 +69,11 @@ class NovelDirApp {
   // static
   static String get getInitErrorText {
     return 'await NovelDirApp.instance.init';
+  }
+
+  static String get getSecretKey {
+    final list = ['QHRo', 'YW5jb2', 'Rlci5', '2M2Rhd', 'GEu', 'a2V5'];
+    return String.fromCharCodes(base64.decode(list.join('')));
   }
 
   static void showDebugLog(String msg, {String? tag}) {

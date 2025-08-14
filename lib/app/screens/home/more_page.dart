@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/screens/scanners/n3_data_scanner.dart';
+import 'package:novel_v3/app/n3_data/n3_data_scanner.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';

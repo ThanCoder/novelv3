@@ -10,6 +10,7 @@ import 'package:than_pkg/extensions/string_extension.dart';
 class N3Data {
   String path;
   String? _dataTitle;
+  bool isNovelExists = false;
   N3Data({required this.path});
 
   factory N3Data.createPath(String path) {
@@ -71,10 +72,10 @@ class N3Data {
         final inputStream = InputFileStream(path);
         final archive = ZipDecoder().decodeStream(inputStream);
         if (archive.files.isEmpty) return null;
-        final title = archive.files.first.name.replaceAll('/', '');
+        final title = File(archive.files.first.name).uri.pathSegments.first;
 
         await inputStream.close();
-        return title;
+        return title.trim();
       } catch (e) {
         NovelDirApp.showDebugLog(e.toString(), tag: 'N3Data:getDataTitle');
       }
@@ -86,6 +87,7 @@ class N3Data {
   Future<void> saveCover(String savedPath) async {
     final saveFile = File(savedPath);
     if (saveFile.existsSync()) return;
+    final password = NovelDirApp.instance.onGetN3DataPassword();
 
     // Zip file ကို read
     await Isolate.run(() async {
@@ -93,7 +95,10 @@ class N3Data {
         final inputStream = InputFileStream(path);
         final outputStream = OutputFileStream(savedPath);
 
-        final archive = ZipDecoder().decodeStream(inputStream);
+        final archive = ZipDecoder().decodeStream(
+          inputStream,
+          password: password,
+        );
         if (archive.files.isEmpty) return;
         final title = archive.files.first.name.replaceAll('/', '');
         _dataTitle = title;
@@ -107,10 +112,25 @@ class N3Data {
         await inputStream.close();
       } catch (e) {
         NovelDirApp.showDebugLog(e.toString(), tag: 'N3Data:saveCover');
+        final saveFile = File(savedPath);
+        if (saveFile.existsSync()) {
+          await saveFile.delete();
+        }
       }
     });
   }
 
   // static
+
+  // static dataIsEnctry(String zipPath) {
+  //   final inputStream = InputFileStream(zipPath);
+  //   final archive = ZipDecoder().decodeStream(inputStream);
+
+  //   // encrypted entries ရှိ/မရှိ စမ်း
+  //   final hasEncrypted = archive.any((file) => file.compression == ComPre);
+
+  //   inputStream.close();
+  // }
+
   static String get getExt => 'npz';
 }

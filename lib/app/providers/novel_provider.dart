@@ -68,7 +68,7 @@ class NovelProvider extends ChangeNotifier {
       await novel.deleteAll();
       notifyListeners();
     } catch (e) {
-      NovelDirApp.showDebugLog(e.toString());
+      NovelDirApp.showDebugLog(e.toString(), tag: 'NovelProvider:delete');
     }
   }
 

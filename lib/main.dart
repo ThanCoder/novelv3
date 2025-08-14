@@ -41,6 +41,7 @@ void main() async {
   await NovelDirApp.instance.init(
     getAppCachePath: () => PathUtil.getCachePath(),
     getRootDirPath: () => Setting.appRootPath,
+    onGetN3DataPassword: () => NovelDirApp.getSecretKey,
     onShowMessage: (context, message) {
       showTSnackBar(context, message);
     },
