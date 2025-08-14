@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_bookmark_action.dart';
+import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
@@ -189,6 +190,14 @@ class _ContentHomePageState extends State<ContentHomePage> {
           },
         ),
         ListTile(
+          leading: Icon(Icons.import_export),
+          title: Text('Export'),
+          onTap: () {
+            closeContext(context);
+            _showEditMenu();
+          },
+        ),
+        ListTile(
           iconColor: Colors.red,
           leading: Icon(Icons.delete_forever_rounded),
           title: Text('Delete'),
@@ -229,6 +238,34 @@ class _ContentHomePageState extends State<ContentHomePage> {
         if (!mounted) return;
         closeContext(context);
       },
+    );
+  }
+
+  // export menu
+  void _showEditMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.import_export),
+          title: Text('Export N3Data'),
+          onTap: () {
+            closeContext(context);
+            _exportN3Data();
+          },
+        ),
+      ],
+    );
+  }
+
+  // export n3data
+  void _exportN3Data() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => N3DataExportDialog(novel: novel),
     );
   }
 }

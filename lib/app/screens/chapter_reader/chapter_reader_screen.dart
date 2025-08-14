@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:novel_v3/app/types/index.dart';
+import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ChapterReaderScreen extends StatefulWidget {
   Chapter chapter;
-  void Function(Chapter chapter)? onReadedLastChapter;
-  ChapterReaderScreen({
-    super.key,
-    required this.chapter,
-    this.onReadedLastChapter,
-  });
+  void Function(Chapter lastChapter)? onReaderClosed;
+  ChapterReaderScreen({super.key, required this.chapter, this.onReaderClosed});
 
   @override
   State<ChapterReaderScreen> createState() => _ChapterReaderScreenState();
@@ -37,6 +33,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   @override
   void dispose() {
     controller.dispose();
+    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
     super.dispose();
   }
 
@@ -45,9 +42,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.onReadedLastChapter?.call(list.last);
-        });
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => widget.onReaderClosed?.call(list.last),
+        );
       },
       child: TScaffold(
         body: GestureDetector(
@@ -180,4 +177,51 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
     setState(() {});
   }
+
+  // save readed config dialog
+  // bool get _isCanGoback {
+  //   final novel = context.read<NovelProvider>().getCurrent;
+  //   if (novel == null) return true;
+  //   final readed = novel.getReadedNumber;
+  //   //ကြီးနေတယ်ဆိုရင်
+  //   // current > readed
+  //   if (list.last.number > readed) return false;
+  //   return true;
+  // }
+
+  // void _showReadedConfirmDialog() {
+  //   try {
+  //     final novel = context.read<NovelProvider>().getCurrent;
+  //     if (novel == null) return;
+  //     final lastChapter = list.last;
+  //     final readed = novel.getReadedNumber;
+  //     if (lastChapter.number <= readed) return;
+  //     showTConfirmDialog(
+  //       context,
+  //       barrierDismissible: false,
+  //       title: 'Readed ကိုသိမ်းဆည်းချင်ပါသလား?',
+  //       contentText:
+  //           'သိမ်းဆည်းထားသော Chapter:`$readed`\nဖတ်ပြီးသွားတဲ့ Chapter:`${lastChapter.number}`',
+  //       submitText: 'သိမ်းမယ်',
+  //       cancelText: 'မသိမ်းဘူး',
+  //       onCancel: () async {
+  //         if (!mounted) return;
+  //         setState(() {});
+  //         closeContext(context);
+  //       },
+  //       onSubmit: () async {
+  //         novel.setReaded(lastChapter.number.toString());
+  //         if (!mounted) return;
+  //         context.read<NovelProvider>().refreshNotifier();
+  //         setState(() {});
+  //         closeContext(context);
+  //       },
+  //     );
+  //   } catch (e) {
+  //     NovelDirApp.showDebugLog(
+  //       e.toString(),
+  //       tag: 'ChapterReaderScreen:_showReadedConfirmDialog',
+  //     );
+  //   }
+  // }
 }

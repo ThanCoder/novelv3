@@ -51,7 +51,8 @@ class NovelPdf {
 
   Future<void> copy(String newPath) async {
     final file = File(path);
-    if (file.existsSync()) return;
+    final newFile = File(newPath);
+    if (newFile.existsSync()) return;
     await file.copy(newPath);
   }
 

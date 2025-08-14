@@ -153,7 +153,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
       context,
       builder: (context) => ChapterReaderScreen(
         chapter: chapter,
-        onReadedLastChapter: _checkLastChapter,
+        onReaderClosed: _checkLastChapter,
       ),
     );
   }

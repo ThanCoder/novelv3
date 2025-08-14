@@ -35,6 +35,10 @@ class NovelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshNotifier() {
+    notifyListeners();
+  }
+
   Future<void> update(Novel updatedNovel, String oldTitle) async {
     try {
       _novel = updatedNovel;
