@@ -222,6 +222,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
       setState(() {
         isLoading = true;
       });
+      await Future.delayed(Duration(milliseconds: 900));
 
       final oldTitle = widget.novel.title;
       final newTitle = titleController.text.trim();
@@ -229,7 +230,6 @@ class _EditNovelFormState extends State<EditNovelForm> {
       // novel.title = newTitle;
       await novel.setTitle(newTitle);
       // delay
-      await Future.delayed(Duration(seconds: 1));
 
       novel.setAuthor(authorController.text.trim());
       novel.setTranslator(translatorController.text.trim());

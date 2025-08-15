@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/app_internet_checker_widget.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -151,6 +152,7 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
 
     return CustomScrollView(
       slivers: [
+        AppInternetCheckerWidget(isSliverWidget: true),
         // helper
         SliverToBoxAdapter(
           child: HelperSeeAllView(

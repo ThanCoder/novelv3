@@ -48,6 +48,8 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   void init() async {
     if (widget.chapter != null) {
       chapter = widget.chapter!.number;
+      contentController.text = widget.chapter!.getContents;
+      setState(() {});
     } else {
       setState(() {
         isLoading = true;
@@ -258,6 +260,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   }
 
   void _backpress() {
+    if (!isChanged) return;
     context.read<ChapterProvider>().initList(widget.novelPath);
   }
 }

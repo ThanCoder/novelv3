@@ -110,12 +110,13 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     );
   }
 
-  void _goEditChapter() {
+  void _goEditChapter({Chapter? chapter}) {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
     goRoute(
       context,
-      builder: (context) => EditChapterScreen(novelPath: novel.path),
+      builder: (context) =>
+          EditChapterScreen(novelPath: novel.path, chapter: chapter),
     );
   }
 
@@ -129,7 +130,14 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
           child: Text('Chapter: ${chapter.number}'),
         ),
         Divider(),
-
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit'),
+          onTap: () {
+            closeContext(context);
+            _goEditChapter(chapter: chapter);
+          },
+        ),
         ListTile(
           iconColor: Colors.red,
           leading: Icon(Icons.delete_forever_rounded),

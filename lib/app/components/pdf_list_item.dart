@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:than_pkg/types/src_dist_type.dart';
+import 'package:than_pkg/types/src_dest_type.dart';
 import '../novel_dir_app.dart';
 
 class PdfListItem extends StatefulWidget {
@@ -34,7 +34,7 @@ class _PdfListItemState extends State<PdfListItem> {
   Future<void> init() async {
     try {
       await ThanPkg.platform.genPdfThumbnail(
-        pathList: [SrcDistType(src: widget.pdf.path, dist: widget.pdf.getCoverPath)],
+        pathList: [SrcDestType(src: widget.pdf.path, dest: widget.pdf.getCoverPath)],
       );
       if (!mounted) return;
       setState(() {

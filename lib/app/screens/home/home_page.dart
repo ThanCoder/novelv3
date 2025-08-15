@@ -5,6 +5,7 @@ import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_func.dart';
 import 'package:t_widgets/extensions/index.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -35,13 +36,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Novel V3 Pre'),
-        actions: [
-          _getSearchButton(),
-          IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text('Novel V3 Pre'),
+      //   actions: [
+      //     _getSearchButton(),
+      //     IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
+      //   ],
+      // ),
       body: _getList(),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
@@ -81,6 +82,21 @@ class _HomePageState extends State<HomePage> {
       onRefresh: init,
       child: CustomScrollView(
         slivers: [
+          SliverAppBar(
+            title: Text('Novel V3 Pre'),
+            snap: true,
+            floating: true,
+            backgroundColor: Setting.getAppConfig.isDarkTheme
+                ? Colors.black.withValues(alpha: 0.9)
+                : Colors.white.withValues(alpha: 0.9),
+            actions: [
+              _getSearchButton(),
+              IconButton(
+                onPressed: _showMenu,
+                icon: Icon(Icons.more_vert_rounded),
+              ),
+            ],
+          ),
           SliverToBoxAdapter(
             child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
           ),
