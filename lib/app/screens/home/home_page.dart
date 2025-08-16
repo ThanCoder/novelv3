@@ -240,6 +240,7 @@ class _HomePageState extends State<HomePage> {
               return;
             }
             closeContext(pdfCtx);
+
             final novel = Novel.createTitle(
               pdf.getTitle.getName(withExt: false),
             );

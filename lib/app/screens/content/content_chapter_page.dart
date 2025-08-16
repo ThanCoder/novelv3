@@ -138,10 +138,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     goRoute(
       context,
       builder: (context) => FetcherChapterScreen(
-        fetchSendData: FetchSendData(
-          url: 'https://telegra.ph/%E1%80%A1%E1%80%95%E1%80%84-71-08-05',
-          chapterNumber: latestChapter,
-        ),
+        fetchSendData: FetchSendData(url: '', chapterNumber: latestChapter + 1),
         onReceiveData: (context, receiveData) async {
           try {
             final chapter = Chapter.createPath(

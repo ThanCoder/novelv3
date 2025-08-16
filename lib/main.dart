@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
@@ -19,9 +20,23 @@ void main() async {
   await Setting.instance.initSetting(appName: 'novel_v3');
 
   await ThanPkg.instance.init();
+
   await TWidgets.instance.init(
     defaultImageAssetsPath: 'assets/cover.png',
     getDarkMode: () => Setting.getAppConfig.isDarkTheme,
+    onOpenImageFileChooser: ({initialDirectory}) async {
+      final files = await openFiles(
+        initialDirectory: initialDirectory,
+        acceptedTypeGroups: [
+          const XTypeGroup(mimeTypes: ['image/*']),
+        ],
+      );
+      if (files.isNotEmpty) {
+        final path = files.first.path;
+        return path;
+      }
+      return null;
+    },
   );
   await PdfReader.instance.init(
     getDarkTheme: () => Setting.getAppConfig.isDarkTheme,

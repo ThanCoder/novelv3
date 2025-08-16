@@ -20,12 +20,13 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
     super.initState();
   }
 
-  bool isChanged = false;
-  bool isCustomPathTextControllerTextSelected = false;
-  late AppConfig config;
   final customPathTextController = TextEditingController();
   final forwardProxyController = TextEditingController();
   final customServerPathController = TextEditingController();
+  final customContentImageCoverPathController = TextEditingController();
+  bool isChanged = false;
+  bool isCustomPathTextControllerTextSelected = false;
+  late AppConfig config;
 
   void init() async {
     customPathTextController.text =
@@ -35,6 +36,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
     if (config.customPath.isNotEmpty) {
       customPathTextController.text = config.customPath;
     }
+    customContentImageCoverPathController.text =
+        config.customNovelContentImagePath;
   }
 
   @override
@@ -52,64 +55,9 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
               // theme
               ThemeComponent(),
               //custom path
-              TListTileWithDesc(
-                title: "Config Custom Path",
-                desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
-                trailing: Checkbox(
-                  value: config.isUseCustomPath,
-                  onChanged: (value) {
-                    setState(() {
-                      config.isUseCustomPath = value!;
-                      isChanged = true;
-                    });
-                  },
-                ),
-              ),
-              config.isUseCustomPath
-                  ? TListTileWithDescWidget(
-                      widget1: TextField(
-                        controller: customPathTextController,
-                        onTap: () {
-                          if (!isCustomPathTextControllerTextSelected) {
-                            customPathTextController.selectAll();
-                            isCustomPathTextControllerTextSelected = true;
-                          }
-                        },
-                        onTapOutside: (event) {
-                          isCustomPathTextControllerTextSelected = false;
-                        },
-                      ),
-                      widget2: IconButton(
-                        onPressed: () {
-                          _saveConfig();
-                        },
-                        icon: const Icon(Icons.save),
-                      ),
-                    )
-                  : SizedBox.shrink(),
-              //proxy server
-              // TListTileWithDesc(
-              //   title: 'Custom Proxy Server',
-              //   trailing: Switch.adaptive(
-              //     value: config.isUseProxyServer,
-              //     onChanged: (value) {
-              //       setState(() {
-              //         config.isUseProxyServer = value;
-              //         isChanged = true;
-              //       });
-              //     },
-              //   ),
-              // ),
-              // config.isUseProxyServer
-              //     ? ForwardProxyTTextField(
-              //         controller: forwardProxyController,
-              //         onChanged: (value) {
-              //           config.forwardProxyUrl = value;
-              //           isChanged = true;
-              //           setState(() {});
-              //         },
-              //       )
-              //     : SizedBox.shrink(),
+              _getCustomPathWidget(),
+              // custom image
+              _getCustomNovelCoverWidet(),
             ],
           ),
         ),
@@ -121,6 +69,70 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                 child: const Icon(Icons.save),
               )
             : null,
+      ),
+    );
+  }
+
+  Widget _getCustomPathWidget() {
+    return Column(
+      children: [
+        TListTileWithDesc(
+          title: "Config Custom Path",
+          desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
+          trailing: Checkbox(
+            value: config.isUseCustomPath,
+            onChanged: (value) {
+              setState(() {
+                config.isUseCustomPath = value!;
+                isChanged = true;
+              });
+            },
+          ),
+        ),
+        config.isUseCustomPath
+            ? TListTileWithDescWidget(
+                widget1: TextField(
+                  controller: customPathTextController,
+                  onTap: () {
+                    if (!isCustomPathTextControllerTextSelected) {
+                      customPathTextController.selectAll();
+                      isCustomPathTextControllerTextSelected = true;
+                    }
+                  },
+                  onTapOutside: (event) {
+                    isCustomPathTextControllerTextSelected = false;
+                  },
+                ),
+                widget2: IconButton(
+                  onPressed: () {
+                    _saveConfig();
+                  },
+                  icon: const Icon(Icons.save),
+                ),
+              )
+            : SizedBox.shrink(),
+      ],
+    );
+  }
+
+  Widget _getCustomNovelCoverWidet() {
+    return TListTileWithDescWidget(
+      spacing: 15,
+      widget1: TTextField(
+        label: Text('Custom Novel Content Image Cover Path'),
+        controller: customContentImageCoverPathController,
+        maxLines: 1,
+        isSelectedAll: true,
+        onChanged: (value) {
+          config.customNovelContentImagePath = value;
+          setState(() {
+            isChanged = true;
+          });
+        },
+      ),
+      widget2: Icon(
+        color: isExistsCustomContentImageCoverPath ? Colors.green : Colors.red,
+        isExistsCustomContentImageCoverPath ? Icons.check : Icons.close,
       ),
     );
   }
@@ -176,5 +188,11 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         },
       ),
     );
+  }
+
+  // get
+  bool get isExistsCustomContentImageCoverPath {
+    final file = File(customContentImageCoverPathController.text);
+    return file.existsSync();
   }
 }

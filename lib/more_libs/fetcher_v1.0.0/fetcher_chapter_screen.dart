@@ -28,6 +28,12 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
   final titleController = TextEditingController();
   final contentController = TextEditingController();
   final chapterNumberController = TextEditingController();
+  // focus
+  final urlFocus = FocusNode();
+  final titleFocus = FocusNode();
+  final contentFocus = FocusNode();
+  final chapterNumberFocus = FocusNode();
+
   late FetchSendData fetchSendData;
   FetcherTypes fetcherType = FetcherTypes.telegra;
   List<FetchChapterQuery> queryList = [
@@ -56,6 +62,10 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
     titleController.dispose();
     contentController.dispose();
     chapterNumberController.dispose();
+    urlFocus.dispose();
+    titleFocus.dispose();
+    contentFocus.dispose();
+    chapterNumberFocus.dispose();
     super.dispose();
   }
 
@@ -91,11 +101,13 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
               controller: titleController,
               maxLines: 1,
               isSelectedAll: true,
+              focusNode: titleFocus,
             ),
             TTextField(
               label: Text('Content'),
               controller: contentController,
               maxLines: null,
+              focusNode: contentFocus,
             ),
           ],
         ),
@@ -132,6 +144,7 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
             maxLines: 1,
             isSelectedAll: true,
             onChanged: _onFetcherTypeAutoChanger,
+            focusNode: urlFocus,
           ),
         ),
         SizedBox(width: 10),
@@ -140,6 +153,7 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
             try {
               urlController.text = await ThanPkg.appUtil.pasteText();
               _onFetcherTypeAutoChanger(urlController.text);
+              _onFetch();
             } catch (e) {
               Fetcher.showDebugLog(e.toString());
             }
@@ -182,9 +196,9 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
             maxLines: 1,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             textInputType: TextInputType.number,
+            focusNode: chapterNumberFocus,
           ),
         ),
-        Spacer(),
         // auto incre
         Text(autoIncreChapter ? 'Increment' : 'Decrement'),
         Switch.adaptive(
@@ -244,6 +258,8 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
     titleController.text = '';
     contentController.text = '';
     chapterNumberController.text = number.toString();
+    // clear focus
+    _clearFocus();
   }
 
   void _onFetch() async {
@@ -306,6 +322,13 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
       if (!mounted) return;
       Fetcher.instance.showErrorMessage(context, e.toString());
     }
+  }
+
+  void _clearFocus() {
+    urlFocus.unfocus();
+    titleFocus.unfocus();
+    contentFocus.unfocus();
+    chapterNumberFocus.unfocus();
   }
 
   String get _getQueryTitle {

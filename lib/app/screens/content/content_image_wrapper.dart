@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -34,7 +36,18 @@ class _ContentImageWrapperState extends State<ContentImageWrapper> {
     }
     return Stack(
       children: [
-        Positioned.fill(child: TImage(source: novel.getCoverPath)),
+        Positioned.fill(
+          child: ValueListenableBuilder(
+            valueListenable: Setting.getAppConfigNotifier,
+            builder: (context, config, child) {
+              if (config.customNovelContentImagePath.isNotEmpty &&
+                  File(config.customNovelContentImagePath).existsSync()) {
+                return TImage(source: config.customNovelContentImagePath);
+              }
+              return TImage(source: novel.getCoverPath);
+            },
+          ),
+        ),
         Container(
           color: Setting.getAppConfig.isDarkTheme
               ? Colors.black.withValues(alpha: 0.8)

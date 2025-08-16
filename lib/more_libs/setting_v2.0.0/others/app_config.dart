@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:than_pkg/than_pkg.dart';
+
 import '../setting.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
@@ -14,6 +16,7 @@ class AppConfig {
   bool isUseForwardProxy;
   bool isUseProxy;
   bool isDarkTheme;
+  String customNovelContentImagePath;
   AppConfig({
     required this.customPath,
     required this.forwardProxyUrl,
@@ -24,10 +27,12 @@ class AppConfig {
     required this.isUseForwardProxy,
     required this.isUseProxy,
     required this.isDarkTheme,
+    required this.customNovelContentImagePath,
   });
 
   factory AppConfig.create({
     String customPath = '',
+    String customNovelContentImagePath = '',
     String forwardProxyUrl = '',
     String browserForwardProxyUrl = '',
     String proxyUrl = '',
@@ -39,6 +44,7 @@ class AppConfig {
   }) {
     return AppConfig(
       customPath: customPath,
+      customNovelContentImagePath: customNovelContentImagePath,
       forwardProxyUrl: forwardProxyUrl,
       browserForwardProxyUrl: browserForwardProxyUrl,
       proxyUrl: proxyUrl,
@@ -52,6 +58,7 @@ class AppConfig {
 
   AppConfig copyWith({
     String? customPath,
+    String? customNovelContentImagePath,
     String? forwardProxyUrl,
     String? browserForwardProxyUrl,
     String? proxyUrl,
@@ -63,8 +70,11 @@ class AppConfig {
   }) {
     return AppConfig(
       customPath: customPath ?? this.customPath,
+      customNovelContentImagePath:
+          customNovelContentImagePath ?? this.customNovelContentImagePath,
       forwardProxyUrl: forwardProxyUrl ?? this.forwardProxyUrl,
-      browserForwardProxyUrl: browserForwardProxyUrl ?? this.browserForwardProxyUrl,
+      browserForwardProxyUrl:
+          browserForwardProxyUrl ?? this.browserForwardProxyUrl,
       proxyUrl: proxyUrl ?? this.proxyUrl,
       hostUrl: hostUrl ?? this.hostUrl,
       isUseCustomPath: isUseCustomPath ?? this.isUseCustomPath,
@@ -78,6 +88,7 @@ class AppConfig {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'customPath': customPath,
+      'customNovelContentImagePath': customNovelContentImagePath,
       'forwardProxyUrl': forwardProxyUrl,
       'browserForwardProxyUrl': browserForwardProxyUrl,
       'proxyUrl': proxyUrl,
@@ -92,6 +103,9 @@ class AppConfig {
   factory AppConfig.fromMap(Map<String, dynamic> map) {
     return AppConfig(
       customPath: map['customPath'] as String,
+      customNovelContentImagePath: MapServices.getString(map, [
+        'customNovelContentImagePath',
+      ]),
       forwardProxyUrl: map['forwardProxyUrl'] as String,
       browserForwardProxyUrl: map['browserForwardProxyUrl'] as String,
       proxyUrl: map['proxyUrl'] as String,
@@ -111,7 +125,6 @@ class AppConfig {
       await file.writeAsString(contents);
       // appConfigNotifier.value = this;
       Setting.instance.initSetConfigFile();
-      
     } catch (e) {
       Setting.showDebugLog(e.toString(), tag: 'AppConfig:save');
     }
@@ -128,6 +141,4 @@ class AppConfig {
   }
 
   static String configName = 'main.config.json';
-
-  
 }
