@@ -8,15 +8,19 @@ import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
+typedef PdfScannerOnClickedCallback =
+    void Function(BuildContext context, NovelPdf pdf);
+
 class PdfScannerScreen extends StatefulWidget {
-  void Function(BuildContext context, NovelPdf pdf)? onClicked;
+  PdfScannerOnClickedCallback? onClicked;
+
   PdfScannerScreen({super.key, this.onClicked});
 
   @override
-  State<PdfScannerScreen> createState() => _PdfScannerScreenState();
+  State<PdfScannerScreen> createState() => PdfScannerScreenState();
 }
 
-class _PdfScannerScreenState extends State<PdfScannerScreen> {
+class PdfScannerScreenState extends State<PdfScannerScreen> {
   @override
   void initState() {
     super.initState();
@@ -117,6 +121,17 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
     setState(() {});
   }
 
+  // remove ui pdf
+  void removeUIPdf(NovelPdf pdf) {
+    if (!mounted) return;
+    // ui remove
+    final index = list.indexWhere((e) => e.getTitle == pdf.getTitle);
+    if (index == -1) return;
+    list.removeAt(index);
+    if (!mounted) return;
+    setState(() {});
+  }
+
   // item menu
   void _showItemMenu(NovelPdf pdf) {
     showTMenuBottomSheet(
@@ -178,12 +193,7 @@ class _PdfScannerScreenState extends State<PdfScannerScreen> {
       contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
       onSubmit: () async {
         await pdf.delete();
-        // ui remove
-        final index = list.indexWhere((e) => e.getTitle == pdf.getTitle);
-        if (index == -1) return;
-        list.removeAt(index);
-        if (!mounted) return;
-        setState(() {});
+        removeUIPdf(pdf);
       },
     );
   }

@@ -4,6 +4,9 @@ import 'package:than_pkg/than_pkg.dart';
 import 'others/index.dart';
 export 'others/index.dart';
 
+typedef OnShowMessageCallback =
+    void Function(BuildContext context, String message);
+
 class Setting {
   // singleton
   static final Setting instance = Setting._();
@@ -30,12 +33,12 @@ class Setting {
   static bool isShowDebugLog = true;
   static bool isAppRefreshConfigPathChanged = true;
   late String appName;
-  void Function(BuildContext context, String message)? onShowMessage;
+  OnShowMessageCallback? onShowMessage;
 
   Future<void> initSetting({
     required String appName,
     bool isShowDebugLog = true,
-    void Function(BuildContext context, String message)? onShowMessage,
+    OnShowMessageCallback? onShowMessage,
     bool isAppRefreshConfigPathChanged = false,
   }) async {
     try {

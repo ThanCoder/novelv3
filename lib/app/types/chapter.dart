@@ -57,6 +57,11 @@ class Chapter {
     return null;
   }
 
+  Future<void> setContent(String text) async {
+    final file = File(path);
+    await file.writeAsString(text);
+  }
+
   Future<void> delete() async {
     final file = File(path);
     if (!file.existsSync()) return;

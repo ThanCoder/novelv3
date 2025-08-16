@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,16 @@ void main() async {
     onGetN3DataPassword: () => NovelDirApp.getSecretKey,
     onShowMessage: (context, message) {
       showTSnackBar(context, message);
+    },
+  );
+  // fetcher
+  await Fetcher.instance.init(
+    onGetHtmlContent: (url) async {
+      final res = await Dio().get(url);
+      return res.data.toString();
+    },
+    onShowErrorMessage: (context, message) {
+      showTMessageDialogError(context, message);
     },
   );
 

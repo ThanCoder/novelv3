@@ -3,6 +3,9 @@ import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher_chapter_screen.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
 import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import 'package:provider/provider.dart';
@@ -106,6 +109,14 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
             _goEditChapter();
           },
         ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Chapter With Online'),
+          onTap: () {
+            closeContext(context);
+            _goFetcher();
+          },
+        ),
       ],
     );
   }
@@ -117,6 +128,38 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
       context,
       builder: (context) =>
           EditChapterScreen(novelPath: novel.path, chapter: chapter),
+    );
+  }
+
+  void _goFetcher() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    final latestChapter = context.read<ChapterProvider>().getLatestChapter;
+    goRoute(
+      context,
+      builder: (context) => FetcherChapterScreen(
+        fetchSendData: FetchSendData(
+          url: 'https://telegra.ph/%E1%80%A1%E1%80%95%E1%80%84-71-08-05',
+          chapterNumber: latestChapter,
+        ),
+        onReceiveData: (context, receiveData) async {
+          try {
+            final chapter = Chapter.createPath(
+              '${novel.path}/${receiveData.chapterNumber}',
+            );
+            await chapter.setContent(receiveData.contentText);
+            if (!context.mounted) return;
+
+            showTSnackBar(context, 'Added Chapter:${chapter.number}');
+          } catch (e) {
+            Setting.showDebugLog(
+              e.toString(),
+              tag: 'ContentChapterPage:onReceiveData',
+            );
+          }
+        },
+        onClosed: init,
+      ),
     );
   }
 

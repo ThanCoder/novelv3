@@ -109,12 +109,16 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     );
   }
 
+  // pdf scanner အတွက် global key
+  final GlobalKey<PdfScannerScreenState> _pdfScannerScreenState = GlobalKey();
+
   void _goAddPdfPage() {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
     goRoute(
       context,
       builder: (context) => PdfScannerScreen(
+        key: _pdfScannerScreenState,
         onClicked: (context, pdf) {
           // closeContext(context);
           _showPdfMenu(pdf);
@@ -159,7 +163,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           title: Text('Novel ထဲကို ရွေ့မယ် (Move)'),
           onTap: () {
             closeContext(context);
-            _movePdf(pdf);
+            _moveInPdf(pdf);
           },
         ),
         ListTile(
@@ -186,11 +190,13 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     goRecentPdfReader(context, pdf);
   }
 
-  void _movePdf(NovelPdf pdf) async {
+  void _moveInPdf(NovelPdf pdf) async {
     try {
       await pdf.rename('$getNovelPath/${pdf.getTitle}');
       if (!mounted) return;
       context.read<PdfProvider>().initList(getNovelPath);
+
+      _pdfScannerScreenState.currentState?.removeUIPdf(pdf);
     } catch (e) {
       NovelDirApp.showDebugLog(e.toString());
     }
@@ -222,6 +228,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
         await novelCoverFile.writeAsBytes(coverFile.readAsBytesSync());
         await ThanPkg.appUtil.clearImageCache();
         if (!mounted) return;
+        setState(() {});
         NovelDirApp.instance.showMessage(context, 'Cover ထည့်သွင်းပြီးပါပြီ');
       }
     } catch (e) {
@@ -259,6 +266,14 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           onTap: () {
             closeContext(context);
             _moveOutCopyPdf(pdf);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.image),
+          title: Text('Set Cover'),
+          onTap: () {
+            closeContext(context);
+            _setCover(pdf);
           },
         ),
         ListTile(

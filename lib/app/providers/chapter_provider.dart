@@ -29,6 +29,12 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> add(Chapter chapter) async {
+    _list.add(chapter);
+    sortList(sortType);
+    notifyListeners();
+  }
+
   Future<void> delete(Chapter chapter) async {
     final index = _list.indexWhere((e) => e.number == chapter.number);
     if (index == -1) return;
@@ -54,5 +60,11 @@ class ChapterProvider extends ChangeNotifier {
       });
     }
     notifyListeners();
+  }
+
+  int get getLatestChapter {
+    if (_list.isEmpty) return 1;
+    _list.sortNumber();
+    return _list.last.number;
   }
 }

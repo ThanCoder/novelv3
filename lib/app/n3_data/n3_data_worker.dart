@@ -10,6 +10,9 @@ import 'package:t_widgets/extensions/index.dart';
 
 import '../novel_dir_app.dart';
 
+typedef ProgressCallback = Function(double progress);
+typedef ErrorCallback = Function(String message);
+
 class N3DataTask {
   String zipPath;
   String novelPath;
@@ -50,9 +53,9 @@ class N3DataWorker {
   static Future<void> exportProgress(
     Novel novel, {
     bool isSetPassword = false,
-    Function()? onSuccess,
-    Function(double progress)? onProgress,
-    Function(String message)? onError,
+    VoidCallback? onSuccess,
+    ProgressCallback? onProgress,
+    ErrorCallback? onError,
   }) async {
     try {
       final receivePort = ReceivePort();

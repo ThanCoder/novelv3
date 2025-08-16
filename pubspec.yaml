@@ -20,6 +20,7 @@ dependencies:
   uuid: ^4.5.1
   provider: ^6.1.5
   archive: ^4.0.7
+  t_html_parser: ^0.0.2
 
 dev_dependencies:
   flutter_test:
