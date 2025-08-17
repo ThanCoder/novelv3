@@ -6,12 +6,14 @@ import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/screens/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/screens/developer/novel_dev_list_item.dart';
+import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:novel_v3/more_libs/t_sort/t_sort_action_button.dart';
 import 'package:novel_v3/more_libs/t_sort/t_sort_list.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 import '../../routes_helper.dart';
 
@@ -25,8 +27,15 @@ class NovelDevListScreen extends StatefulWidget {
 class _NovelDevListScreenState extends State<NovelDevListScreen> {
   @override
   void initState() {
-    sortList.setAll(TSortList.getDefaultList);
+    sortList.setAll(TSortList.getDefaultTypeList);
     sortList.add('Size', ascTitle: 'အသေးဆုံး', descTitle: 'အကြီးဆုံး');
+    sortList.add('Completed', ascTitle: 'isCompleted', descTitle: 'OnGoing');
+    sortList.add('Adult', ascTitle: 'IsAdult', descTitle: 'No Adult');
+    sortList.add(
+      'Description',
+      ascTitle: 'ထည့်သွင်းပြီးသား',
+      descTitle: 'မထည့်သွင်းရသေး',
+    );
     sortName = 'Date';
 
     super.initState();
@@ -66,6 +75,12 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
 
   Future<void> initOnlineList() async {
     try {
+      final isOnline = await ThanPkg.platform.isInternetConnected();
+      if (!isOnline) {
+        if (!mounted) return;
+        showTMessageDialogError(context, 'Internet ဖွင့်ပေးပါ...');
+        return;
+      }
       setState(() {
         isOnlineListLoading = true;
       });
@@ -139,14 +154,25 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
   }
 
   void _onSortList() async {
-    if (sortName == 'Date') {
-      localList.sortDate(isNewest: !isAsc);
-    }
-    if (sortName == 'Title') {
-      localList.sortTitle(aToZ: isAsc);
-    }
-    if (sortName == 'Size') {
-      localList.sortSize(isSmallest: isAsc);
+    switch (sortName) {
+      case 'Date':
+        localList.sortDate(isNewest: !isAsc);
+        break;
+      case 'Title':
+        localList.sortTitle(aToZ: isAsc);
+        break;
+      case 'Size':
+        localList.sortSize(isSmallest: isAsc);
+        break;
+      case 'Completed':
+        localList.sortCompleted(isCompleted: isAsc);
+        break;
+      case 'Adult':
+        localList.sortAdult(isAdult: isAsc);
+        break;
+      case 'Description':
+        localList.sortDesc(isAdded: isAsc);
+        break;
     }
     setState(() {});
   }
@@ -163,6 +189,14 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       children: [
         Padding(padding: const EdgeInsets.all(8.0), child: Text(novel.title)),
         Divider(),
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit'),
+          onTap: () {
+            closeContext(context);
+            _editNovel(novel);
+          },
+        ),
         ListTile(
           leading: Icon(Icons.import_export),
           title: Text('Export N3Data'),
@@ -273,5 +307,9 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         },
       ),
     );
+  }
+
+  void _editNovel(Novel novel) {
+    goRoute(context, builder: (context) => EditNovelForm(novel: novel));
   }
 }

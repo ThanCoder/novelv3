@@ -7,7 +7,7 @@ import 'package:novel_v3/app/screens/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_func.dart';
+import 'package:novel_v3/more_libs/t_sort/funcs.dart';
 import 'package:t_widgets/extensions/index.dart';
 import 'package:t_widgets/t_widgets.dart';
 import '../novel_search_screen.dart';
@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
       body: _getList(),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
-
       //   },
       //   child: Text('export'),
       // ),
@@ -76,21 +75,7 @@ class _HomePageState extends State<HomePage> {
       onRefresh: init,
       child: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text('Novel V3 Pre'),
-            snap: true,
-            floating: true,
-            backgroundColor: Setting.getAppConfig.isDarkTheme
-                ? Colors.black.withValues(alpha: 0.9)
-                : Colors.white.withValues(alpha: 0.9),
-            actions: [
-              _getSearchButton(),
-              IconButton(
-                onPressed: _showMenu,
-                icon: Icon(Icons.more_vert_rounded),
-              ),
-            ],
-          ),
+          _getSliverAppBar(),
           SliverToBoxAdapter(
             child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
           ),
@@ -115,6 +100,21 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _getSliverAppBar() {
+    return SliverAppBar(
+      title: Text('Novel V3 Pre'),
+      snap: true,
+      floating: true,
+      backgroundColor: Setting.getAppConfig.isDarkTheme
+          ? Colors.black.withValues(alpha: 0.9)
+          : Colors.white.withValues(alpha: 0.9),
+      actions: [
+        _getSearchButton(),
+        IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
+      ],
     );
   }
 
@@ -161,11 +161,13 @@ class _HomePageState extends State<HomePage> {
 
   void _showSort() {
     final provider = context.read<NovelProvider>();
-    showSortDialog(
+
+    showTSortDialog(
       context,
-      value: provider.sortType,
-      onChanged: (type) {
-        provider.sortList(type);
+      fieldName: provider.sortFieldName,
+      isAscDefault: provider.isSortAsc,
+      sortDialogCallback: (field, isAsc) {
+        provider.setSort(field, isAsc);
       },
     );
   }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pdfrx/pdfrx.dart';
 
-import '../types/pdf_config_model.dart';
+import '../types/pdf_config.dart';
 
 class CustomPdfReaderScreen extends StatefulWidget {
-  PdfConfigModel pdfConfig;
+  PdfConfig pdfConfig;
   String sourcePath;
   String title;
-  void Function(PdfConfigModel pdfConfig)? onConfigSaved;
+  void Function(PdfConfig pdfConfig)? onConfigSaved;
   String? bookmarkPath;
   CustomPdfReaderScreen({
     super.key,
@@ -23,7 +23,7 @@ class CustomPdfReaderScreen extends StatefulWidget {
 }
 
 class _CustomPdfReaderScreenState extends State<CustomPdfReaderScreen> {
-  late PdfConfigModel config;
+  late PdfConfig config;
 
   @override
   void initState() {
@@ -38,7 +38,10 @@ class _CustomPdfReaderScreenState extends State<CustomPdfReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text(widget.title),),body: _getCurrentPdfReader(),);
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: _getCurrentPdfReader(),
+    );
   }
 
   Widget _getPdfItem(PdfDocument? document) {
@@ -57,9 +60,7 @@ class _CustomPdfReaderScreenState extends State<CustomPdfReaderScreen> {
                   alignment: Alignment.center,
                 ),
               ),
-              Text(
-                '${index + 1}',
-              ),
+              Text('${index + 1}'),
             ],
           ),
         );

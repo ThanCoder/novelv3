@@ -16,11 +16,12 @@ class PdfServices {
 
       void scanDir(Directory dir) {
         for (var file in dir.listSync()) {
+          final name = file.path.split('/').last;
           // dir အနေမှာ စစ်မယ်
           //. စရင် ကျော်မယ်
-          if (file.getName().startsWith('.')) continue;
+          if (name.startsWith('.')) continue;
           // list ထဲက ဟာတွေကျော်မယ်
-          if (filterList.contains(file.getName())) continue;
+          if (filterList.contains(name)) continue;
 
           if (file.isFile) {
             // pdf စစ်မယ်

@@ -4,17 +4,17 @@ import 't_sort_list.dart';
 typedef TSortDialogCallback = void Function(String field, bool isAsc);
 
 class TSortDalog extends StatefulWidget {
-  String fieldName;
+  String? fieldName;
   bool isAscDefault;
-  TSortList sortList;
+  TSortList? sortList;
   Color activeColor;
   Color? activeTextColor;
   TSortDialogCallback sortDialogCallback;
   TSortDalog({
     super.key,
-    required this.sortList,
     required this.sortDialogCallback,
     this.isAscDefault = true,
+    this.sortList,
     required this.fieldName,
     this.activeColor = Colors.teal,
     this.activeTextColor,
@@ -25,11 +25,17 @@ class TSortDalog extends StatefulWidget {
 }
 
 class _TSortDalogState extends State<TSortDalog> {
-  late String fieldName;
+  String fieldName = '';
+  late TSortList sortList;
   bool isAsc = true;
   @override
   void initState() {
-    fieldName = widget.fieldName;
+    if (widget.sortList != null) {
+      sortList = widget.sortList!;
+    } else {
+      sortList = TSortList.getDefaultList;
+    }
+    fieldName = widget.fieldName ?? sortList.getFields.first;
     isAsc = widget.isAscDefault;
     super.initState();
   }
@@ -37,6 +43,7 @@ class _TSortDalogState extends State<TSortDalog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
+      // contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 8),
       scrollable: true,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +63,7 @@ class _TSortDalogState extends State<TSortDalog> {
   }
 
   Widget _getListWidget() {
-    final fields = widget.sortList.getAll.map((e) => e.field).toSet().toList();
+    final fields = sortList.getAll.map((e) => e.field).toSet().toList();
     return Wrap(
       children: List.generate(fields.length, (index) {
         final name = fields[index];
@@ -83,14 +90,20 @@ class _TSortDalogState extends State<TSortDalog> {
   }
 
   Widget _getAscWidget() {
-    final ascIndex = widget.sortList.getAll.indexWhere(
+    final ascIndex = sortList.getAll.indexWhere(
       (e) => e.field == fieldName && e.isAsc,
     );
-    final descIndex = widget.sortList.getAll.indexWhere(
+    final descIndex = sortList.getAll.indexWhere(
       (e) => e.field == fieldName && !e.isAsc,
     );
-    final ascTitle = widget.sortList.getAll[ascIndex].title;
-    final descTitle = widget.sortList.getAll[descIndex].title;
+    if (ascIndex == -1 || descIndex == -1) {
+      return Text(
+        'Field Name:`$fieldName` Not Found!',
+        style: TextStyle(color: Colors.red),
+      );
+    }
+    final ascTitle = sortList.getAll[ascIndex].title;
+    final descTitle = sortList.getAll[descIndex].title;
 
     return Row(
       spacing: 5,

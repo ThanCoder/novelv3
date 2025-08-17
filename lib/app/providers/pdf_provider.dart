@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/extensions/pdf_extension.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import '../novel_dir_app.dart';
 
 class PdfProvider extends ChangeNotifier {
   final List<NovelPdf> _list = [];
   NovelPdf? _pdf;
-  SortType sortType = SortType.getDefaultDate();
+  String sortFieldName = 'Date';
+  bool isSortAsc = false;
   // get
   bool isLoading = false;
   List<NovelPdf> get getList => _list;
   NovelPdf? get getCurrent => _pdf;
-  SortType get getCurrentSortType => sortType;
 
   Future<void> initList(String novelPath) async {
     isLoading = true;
@@ -21,7 +20,7 @@ class PdfProvider extends ChangeNotifier {
     final res = await PdfServices.getList(novelPath);
     _list.addAll(res);
 
-    sortList(sortType);
+    sortList();
 
     isLoading = false;
     notifyListeners();
@@ -45,13 +44,18 @@ class PdfProvider extends ChangeNotifier {
     }
   }
 
-  void sortList(SortType type) {
-    sortType = type;
-    if (sortType.title == 'title') {
-      _list.sortTitle(aToZ: type.isAsc);
+  void setSort(String field, bool isAsc) {
+    sortFieldName = field;
+    isSortAsc = isAsc;
+    sortList();
+  }
+
+  void sortList() {
+    if (sortFieldName == 'Title') {
+      _list.sortTitle(aToZ: isSortAsc);
     }
-    if (sortType.title == 'date') {
-      _list.sortDate(isNewest: !sortType.isAsc);
+    if (sortFieldName == 'Date') {
+      _list.sortDate(isNewest: !isSortAsc);
     }
     notifyListeners();
   }

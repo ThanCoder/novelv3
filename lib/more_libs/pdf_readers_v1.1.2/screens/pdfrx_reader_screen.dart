@@ -10,10 +10,10 @@ import 'package:than_pkg/than_pkg.dart';
 import '../pdf_reader.dart';
 
 class PdfrxReaderScreen extends StatefulWidget {
-  PdfConfigModel pdfConfig;
+  PdfConfig pdfConfig;
   String sourcePath;
   String title;
-  void Function(PdfConfigModel pdfConfig)? onConfigUpdated;
+  void Function(PdfConfig pdfConfig)? onConfigUpdated;
   String? bookmarkPath;
   PdfrxReaderScreen({
     super.key,
@@ -35,7 +35,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   int currentPage = 1;
   int pageCount = 0;
   bool initCalled = false;
-  late PdfConfigModel config;
+  late PdfConfig config;
   double oldZoom = 0;
   double oldOffsetX = 0;
   double oldOffsetY = 0;
@@ -73,12 +73,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         appBar: config.isFullscreen
             ? null
             : AppBar(
-                title: Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 11,
-                  ),
-                ),
+                title: Text(widget.title, style: const TextStyle(fontSize: 11)),
               ),
         endDrawer: widget.bookmarkPath == null
             ? null
@@ -92,12 +87,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         body: Stack(
           children: [
             _getColorFilteredPdfReader(),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _getHeaderWidgets(),
-            ),
+            Positioned(top: 0, left: 0, right: 0, child: _getHeaderWidgets()),
           ],
         ),
       ),
@@ -128,8 +118,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         await goPage(oldPage);
       }
 
-      await ThanPkg.platform
-          .toggleFullScreen(isFullScreen: config.isFullscreen);
+      await ThanPkg.platform.toggleFullScreen(
+        isFullScreen: config.isFullscreen,
+      );
 
       // pdfController.
       if (!mounted) return;
@@ -142,22 +133,23 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       setState(() {
         isLoading = false;
       });
-      PdfReader.showDebugLog(e.toString(),
-          tag: 'PdfrxReaderScreen:onPdfLoaded');
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:onPdfLoaded',
+      );
     }
   }
 
   void _initConfig() async {
     try {
       if (Platform.isAndroid) {
-        await ThanPkg.android.app
-            .toggleKeepScreenOn(isKeep: config.isKeepScreen);
-        await ThanPkg.android.app.requestOrientation(
-          type: ScreenOrientationTypes.getType(
-            config.screenOrientation,
-          ),
+        await ThanPkg.android.app.toggleKeepScreenOn(
+          isKeep: config.isKeepScreen,
         );
-        if (config.screenOrientation == ScreenOrientationTypes.landscape.name) {
+        await ThanPkg.android.app.requestOrientation(
+          type: config.screenOrientation,
+        );
+        if (config.screenOrientation == ScreenOrientationTypes.landscape) {
           //full screen
           await ThanPkg.android.app.showFullScreen();
         }
@@ -166,8 +158,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         isCanGoBack = !config.isOnBackpressConfirm;
       });
     } catch (e) {
-      PdfReader.showDebugLog(e.toString(),
-          tag: 'PdfrxReaderScreen:_initConfig');
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:_initConfig',
+      );
     }
   }
 
@@ -245,107 +239,103 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   }
 
   PdfViewerParams getParams() => PdfViewerParams(
-        margin: 0,
-        scrollByMouseWheel: config.scrollByMouseWheel,
-        scaleEnabled: config.isPanLocked == false,
-        panAxis: config.isPanLocked ? PanAxis.vertical : PanAxis.free,
-        textSelectionParams:
-            PdfTextSelectionParams(enabled: config.isTextSelection),
-        // enableTextSelection: config.isTextSelection,
-        pageDropShadow: null,
-        useAlternativeFitScaleAsMinScale: false,
-        scrollByArrowKey: config.scrollByArrowKey,
-        enableKeyboardNavigation: true,
-        onGeneralTap: (context, controller, details) {
-          if (details.type == PdfViewerGeneralTapType.doubleTap) {
-            _setFullScreen(!config.isFullscreen);
-          }
-          if (details.type == PdfViewerGeneralTapType.longPress) {
-            _showSetting();
-          }
-          if (details.type == PdfViewerGeneralTapType.secondaryTap) {
-            _showSetting();
-          }
-          return true;
-        },
-        onKey: (params, key, isRealKeyPress) {
-          if (key.keyLabel == 'F') {
-            _setFullScreen(!config.isFullscreen);
-            return false;
-          }
-          return null;
-        },
-        //error
-        errorBannerBuilder: (context, error, stackTrace, documentRef) {
-          return const Center(child: Text('pdf error'));
-        },
-        //loading
-        loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
-          return Center(
-            child: TLoaderRandom(
-              isDarkMode: config.isDarkMode,
-            ),
-          );
-        },
-        //page changed
-        onPageChanged: (pageNumber) {
-          try {
-            final offset = pdfController.centerPosition;
-            config.zoom = pdfController.currentZoom;
-            config.offsetDx = offset.dx;
-            config.offsetDy = offset.dy;
-            // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
-            setState(() {
-              currentPage = pageNumber ?? 1;
-              pageCount = pdfController.pageCount;
-            });
-          } catch (e) {
-            debugPrint('onPageChanged: ${e.toString()}');
-          }
-        },
-        //pdf ready
-        onViewerReady: (document, controller) => onPdfLoaded(),
+    margin: 0,
+    scrollByMouseWheel: config.scrollByMouseWheel,
+    scaleEnabled: config.isPanLocked == false,
+    panAxis: config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+    textSelectionParams: PdfTextSelectionParams(
+      enabled: config.isTextSelection,
+    ),
+    // enableTextSelection: config.isTextSelection,
+    pageDropShadow: null,
+    useAlternativeFitScaleAsMinScale: false,
+    scrollByArrowKey: config.scrollByArrowKey,
+    enableKeyboardNavigation: true,
+    onGeneralTap: (context, controller, details) {
+      if (details.type == PdfViewerGeneralTapType.doubleTap) {
+        _setFullScreen(!config.isFullscreen);
+      }
+      if (details.type == PdfViewerGeneralTapType.longPress) {
+        _showSetting();
+      }
+      if (details.type == PdfViewerGeneralTapType.secondaryTap) {
+        _showSetting();
+      }
+      return true;
+    },
+    onKey: (params, key, isRealKeyPress) {
+      if (key.keyLabel == 'F') {
+        _setFullScreen(!config.isFullscreen);
+        return false;
+      }
+      return null;
+    },
+    //error
+    errorBannerBuilder: (context, error, stackTrace, documentRef) {
+      return const Center(child: Text('pdf error'));
+    },
+    //loading
+    loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
+      return Center(child: TLoaderRandom(isDarkMode: config.isDarkMode));
+    },
+    //page changed
+    onPageChanged: (pageNumber) {
+      try {
+        final offset = pdfController.centerPosition;
+        config.zoom = pdfController.currentZoom;
+        config.offsetDx = offset.dx;
+        config.offsetDy = offset.dy;
+        // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
+        setState(() {
+          currentPage = pageNumber ?? 1;
+          pageCount = pdfController.pageCount;
+        });
+      } catch (e) {
+        debugPrint('onPageChanged: ${e.toString()}');
+      }
+    },
+    //pdf ready
+    onViewerReady: (document, controller) => onPdfLoaded(),
 
-        viewerOverlayBuilder: config.isShowScrollThumb
-            ? (context, size, handleLinkTap) => [
-                  // Add vertical scroll thumb on viewer's right side
-                  PdfViewerScrollThumb(
-                    controller: pdfController,
-                    orientation: ScrollbarOrientation.right,
-                    thumbSize: const Size(50, 25),
-                    thumbBuilder:
-                        (context, thumbSize, pageNumber, controller) =>
-                            Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      // Show page number on the thumb
-                      child: Center(
-                        child: Text(
-                          pageNumber.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
+    viewerOverlayBuilder: config.isShowScrollThumb
+        ? (context, size, handleLinkTap) => [
+            // Add vertical scroll thumb on viewer's right side
+            PdfViewerScrollThumb(
+              controller: pdfController,
+              orientation: ScrollbarOrientation.right,
+              thumbSize: const Size(50, 25),
+              thumbBuilder: (context, thumbSize, pageNumber, controller) =>
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    // Show page number on the thumb
+                    child: Center(
+                      child: Text(
+                        pageNumber.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
                         ),
                       ),
                     ),
                   ),
-                ]
-            : null,
-        pageOverlaysBuilder: (context, pageRect, page) {
-          return [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                page.pageNumber.toString(),
-                style: const TextStyle(color: Colors.red),
-              ),
             ),
-          ];
-        },
-      );
+          ]
+        : null,
+    pageOverlaysBuilder: (context, pageRect, page) {
+      return [
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Text(
+            page.pageNumber.toString(),
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+      ];
+    },
+  );
 
   Widget _getHeaderWidgets() {
     if (config.isFullscreen) {
@@ -373,8 +363,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
                   config.isDarkMode = !config.isDarkMode;
                 });
               },
-              icon:
-                  Icon(config.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+              icon: Icon(
+                config.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              ),
             ),
             //pan axis lock
             IconButton(
@@ -383,9 +374,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
                   config.isPanLocked = !config.isPanLocked;
                 });
               },
-              icon: Icon(
-                config.isPanLocked ? Icons.lock : Icons.lock_open,
-              ),
+              icon: Icon(config.isPanLocked ? Icons.lock : Icons.lock_open),
             ),
             //zoom
             IconButton(
@@ -406,13 +395,15 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
                 if (isLoading) return;
                 if (!config.isFullscreen) {
                   PdfReader.instance.showAutoMessage(
-                      context, 'Double Tap Is Exist FullScreen!');
+                    context,
+                    'Double Tap Is Exist FullScreen!',
+                  );
                 }
                 _setFullScreen(!config.isFullscreen);
               },
-              icon: Icon(config.isFullscreen
-                  ? Icons.fullscreen_exit
-                  : Icons.fullscreen),
+              icon: Icon(
+                config.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
+              ),
             ),
             //setting
             IconButton(
@@ -494,8 +485,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         widget.onConfigUpdated!(config);
       }
     } catch (e) {
-      PdfReader.showDebugLog(e.toString(),
-          tag: 'PdfrxReaderScreen:_saveConfig');
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:_saveConfig',
+      );
     }
   }
 
@@ -503,8 +496,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
     ThanPkg.platform.toggleKeepScreen(isKeep: false);
     if (Platform.isAndroid) {
-      ThanPkg.android.app
-          .requestOrientation(type: ScreenOrientationTypes.portrait);
+      ThanPkg.android.app.requestOrientation(
+        type: ScreenOrientationTypes.portrait,
+      );
     }
   }
 }

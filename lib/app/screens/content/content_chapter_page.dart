@@ -6,8 +6,8 @@ import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher_chapter_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
+import 'package:novel_v3/more_libs/t_sort/t_sort_action_button.dart';
+import 'package:novel_v3/more_libs/t_sort/t_sort_list.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/index.dart';
@@ -23,8 +23,10 @@ class ContentChapterPage extends StatefulWidget {
 }
 
 class _ContentChapterPageState extends State<ContentChapterPage> {
+  TSortList sortList = TSortList();
   @override
   void initState() {
+    sortList.add('Chapter', ascTitle: 'အငယ်ဆုံး', descTitle: 'အကြီးဆုံး');
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
@@ -43,7 +45,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
     return ContentImageWrapper(
       appBarAction: [
-        _getSortAciton(),
+        _getSortAction(),
         IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
       ],
       title: Text('Chapter'),
@@ -54,12 +56,15 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     );
   }
 
-  Widget _getSortAciton() {
-    return SortComponent(
-      sortList: [SortType(title: 'chapter', isAsc: true)],
-      value: context.watch<ChapterProvider>().sortType,
-      onChanged: (type) {
-        context.read<ChapterProvider>().sortList(type);
+  Widget _getSortAction() {
+    final provider = context.read<ChapterProvider>();
+
+    return TSortActionButton(
+      sortList: sortList,
+      isAscDefault: provider.isSortAsc,
+      fieldName: provider.sortFieldName,
+      sortDialogCallback: (field, isAsc) {
+        provider.setSort(field, isAsc);
       },
     );
   }

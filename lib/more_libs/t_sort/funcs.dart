@@ -4,11 +4,11 @@ import 't_sort_dalog.dart';
 
 void showTSortDialog(
   BuildContext context, {
-  required String fieldName,
-  required TSortList sortList,
+  String? fieldName,
+  TSortList? sortList,
   required TSortDialogCallback sortDialogCallback,
   bool isAscDefault = true,
-  required Color activeColor,
+  Color? activeColor,
   Color? activeTextColor,
 }) {
   showAdaptiveDialog(

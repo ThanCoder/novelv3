@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import '../novel_dir_app.dart';
 
 class ChapterProvider extends ChangeNotifier {
   final List<Chapter> _list = [];
   Chapter? _chapter;
-  SortType sortType = SortType(title: 'chatper', isAsc: true);
+  String sortFieldName = 'Chapter';
+  bool isSortAsc = true;
   // get
   bool isLoading = false;
   List<Chapter> get getList => _list;
@@ -21,7 +21,8 @@ class ChapterProvider extends ChangeNotifier {
 
     isLoading = false;
     notifyListeners();
-    sortList(sortType);
+
+    sortList();
   }
 
   Future<void> setCurrent(Chapter chapter) async {
@@ -31,7 +32,7 @@ class ChapterProvider extends ChangeNotifier {
 
   Future<void> add(Chapter chapter) async {
     _list.add(chapter);
-    sortList(sortType);
+    sortList();
     notifyListeners();
   }
 
@@ -44,21 +45,19 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void sortList(SortType type) {
-    sortType = type;
-    if (type.title == 'chapter') {
-      _list.sort((a, b) {
-        if (type.isAsc) {
-          if (a.number > b.number) return 1;
-          if (a.number < b.number) return -1;
-        } else {
-          // desc
-          if (a.number > b.number) return -1;
-          if (a.number < b.number) return 1;
-        }
-        return 0;
-      });
+  void setSort(String field, bool isAsc) {
+    sortFieldName = field;
+    isSortAsc = isAsc;
+    sortList();
+  }
+
+  void sortList() {
+    if (sortFieldName == 'Chapter') {
+      _list.sortNumber(isSmallerTop: isSortAsc);
     }
+    // if (sortFieldName == 'Date') {
+    //   _list.sortDate(isNewest: !isSortAsc);
+    // }
     notifyListeners();
   }
 

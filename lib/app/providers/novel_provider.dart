@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import '../novel_dir_app.dart';
 
 class NovelProvider extends ChangeNotifier {
   final List<Novel> _list = [];
   Novel? _novel;
-  SortType sortType = SortType(title: 'date', isAsc: false);
+  String sortFieldName = 'Date';
+  bool isSortAsc = false;
   // get
   bool isLoading = false;
   List<Novel> get getList => _list;
@@ -19,7 +19,7 @@ class NovelProvider extends ChangeNotifier {
     final res = await NovelServices.getList();
     _list.addAll(res);
 
-    sortList(sortType);
+    sortList();
 
     isLoading = false;
     notifyListeners();
@@ -72,19 +72,18 @@ class NovelProvider extends ChangeNotifier {
     }
   }
 
-  void sortList(SortType sort) {
-    sortType = sort;
-    if (sort.title == 'title') {
-      _list.sort((a, b) {
-        if (sort.isAsc) {
-          return a.title.compareTo(b.title);
-        } else {
-          return b.title.compareTo(a.title);
-        }
-      });
+  void setSort(String field, bool isAsc) {
+    sortFieldName = field;
+    isSortAsc = isAsc;
+    sortList();
+  }
+
+  void sortList() {
+    if (sortFieldName == 'Title') {
+      _list.sortTitle(aToZ: isSortAsc);
     }
-    if (sort.title == 'date') {
-      _list.sortDate(isNewest: !sort.isAsc);
+    if (sortFieldName == 'Date') {
+      _list.sortDate(isNewest: !isSortAsc);
     }
     notifyListeners();
   }

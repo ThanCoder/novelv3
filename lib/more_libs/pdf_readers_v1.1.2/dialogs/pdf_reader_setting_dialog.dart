@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 import '../components/android_screen_orientation_chooser.dart';
-import '../types/pdf_config_model.dart';
+import '../types/pdf_config.dart';
 
 class PdfReaderSettingDialog extends StatefulWidget {
-  PdfConfigModel config;
-  void Function(PdfConfigModel config) onApply;
+  PdfConfig config;
+  void Function(PdfConfig config) onApply;
 
   PdfReaderSettingDialog({
     super.key,
@@ -24,7 +24,7 @@ class PdfReaderSettingDialog extends StatefulWidget {
 class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
   final mouseScrollWheelController = TextEditingController();
   final scrollByArrowKeyController = TextEditingController();
-  late PdfConfigModel config;
+  late PdfConfig config;
 
   @override
   void initState() {
@@ -152,12 +152,11 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                   child: TTextField(
                     controller: mouseScrollWheelController,
                     hintText: '1.2',
-                    textInputType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    textInputType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d*\.?\d*$'),
-                      ),
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
                     ],
                     onChanged: (value) {
                       if (value.isEmpty) return;
@@ -178,12 +177,11 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                   child: TTextField(
                     controller: scrollByArrowKeyController,
                     hintText: '50',
-                    textInputType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    textInputType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d*\.?\d*$'),
-                      ),
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
                     ],
                     onChanged: (value) {
                       if (value.isEmpty) return;

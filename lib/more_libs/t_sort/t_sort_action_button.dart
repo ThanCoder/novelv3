@@ -4,17 +4,17 @@ import 't_sort_dalog.dart';
 import 't_sort_list.dart';
 
 class TSortActionButton extends StatelessWidget {
-  String fieldName;
-  TSortList sortList;
+  String? fieldName;
+  TSortList? sortList;
   TSortDialogCallback sortDialogCallback;
   bool isAscDefault;
   Color activeColor;
   Color? activeTextColor;
   TSortActionButton({
     super.key,
-    required this.fieldName,
-    required this.sortList,
     required this.sortDialogCallback,
+    this.fieldName,
+    this.sortList,
     this.isAscDefault = true,
     this.activeColor = Colors.teal,
     this.activeTextColor,

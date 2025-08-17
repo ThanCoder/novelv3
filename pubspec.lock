@@ -162,7 +162,7 @@ packages:
     source: hosted
     version: "2.1.4"
   file_selector:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: file_selector
       sha256: "5019692b593455127794d5718304ff1ae15447dea286cdda9f0db2a796a1b828"
@@ -629,14 +629,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.2"
-  t_server:
-    dependency: "direct main"
-    description:
-      name: t_server
-      sha256: "0fe291d11f24ffef7d84f8c2f18342c72d9b0ce4f1a4911598a1097901815fd5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.4"
   t_widgets:
     dependency: "direct main"
     description:
@@ -665,10 +657,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: "342ea5115b26790db9de5c6930c6f5330aa632ada72bb57cbf5f06488a53bc5f"
+      sha256: ad07d5ee2f1010d27d9e8eb4cc804fdfb160b4583ac69eb5cfdf3d32080b4a4d
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.4"
   timeago:
     dependency: transitive
     description:

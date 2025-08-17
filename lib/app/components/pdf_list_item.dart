@@ -27,14 +27,20 @@ class _PdfListItemState extends State<PdfListItem> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
+    // init();
   }
 
-  bool isLoading = true;
+  bool isLoading = false;
 
   Future<void> init() async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       await ThanPkg.platform.genPdfThumbnail(
-        pathList: [SrcDestType(src: widget.pdf.path, dest: widget.pdf.getCoverPath)],
+        pathList: [
+          SrcDestType(src: widget.pdf.path, dest: widget.pdf.getCoverPath),
+        ],
       );
       if (!mounted) return;
       setState(() {
@@ -109,6 +115,4 @@ class _PdfListItemState extends State<PdfListItem> {
       ),
     );
   }
-
-
 }

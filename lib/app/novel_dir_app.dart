@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/types/novel_pdf.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
 import 'services/index.dart';
 
 export 'services/index.dart';
@@ -52,7 +52,7 @@ class NovelDirApp {
       context,
       builder: (context) => PdfrxReaderScreen(
         sourcePath: pdf.path,
-        pdfConfig: PdfConfigModel.fromPath(pdf.getConfigPath),
+        pdfConfig: PdfConfig.fromPath(pdf.getConfigPath),
         title: pdf.getTitle,
         onConfigUpdated: (pdfConfig) {
           pdfConfig.savePath(pdf.getConfigPath);

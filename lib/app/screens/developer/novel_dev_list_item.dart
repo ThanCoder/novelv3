@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/types/novel.dart';
+import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/components/index.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 typedef NovelDevListItemOnClickCallback = void Function(Novel novel);
@@ -62,10 +62,13 @@ class NovelDevListItem extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    // status
+                    _getStatusWidget(),
                     // already title
                     Text(
                       isExistsTitle
-                          ? 'Online မှာနေပါတယ်'
+                          ? 'Online မှာရှိနေပါတယ်'
                           : 'Online မှာမရှိပါ...',
                       style: TextStyle(
                         color: isExistsTitle ? Colors.green : Colors.red,
@@ -84,6 +87,30 @@ class NovelDevListItem extends StatelessWidget {
 
   Widget _getTagWidget() {
     return TTagsWrapView(values: novel.getTags, type: TTagsTypes.text);
+  }
+
+  Widget _getStatusWidget() {
+    return Wrap(
+      spacing: 5,
+      runSpacing: 5,
+      children: [
+        StatusText(
+          bgColor: novel.isCompleted
+              ? StatusText.completedColor
+              : StatusText.onGoingColor,
+          text: novel.isCompleted ? 'Completed' : 'OnGoing',
+        ),
+        novel.isAdult
+            ? StatusText(bgColor: StatusText.adultColor, text: 'Adult')
+            : SizedBox.shrink(),
+        novel.getContent.isEmpty
+            ? StatusText(
+                bgColor: const Color.fromARGB(255, 102, 87, 22),
+                text: 'Description မရှိပါ',
+              )
+            : SizedBox.shrink(),
+      ],
+    );
   }
 
   bool get isExistsTitle {

@@ -3,8 +3,8 @@ import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AndroidScreenOrientationChooser extends StatefulWidget {
-  String value;
-  void Function(String type) onChanged;
+  ScreenOrientationTypes value;
+  void Function(ScreenOrientationTypes type) onChanged;
   AndroidScreenOrientationChooser({
     super.key,
     required this.value,
@@ -18,7 +18,7 @@ class AndroidScreenOrientationChooser extends StatefulWidget {
 
 class _AndroidScreenOrientationChooserState
     extends State<AndroidScreenOrientationChooser> {
-  String? value;
+  ScreenOrientationTypes? value;
 
   @override
   void initState() {
@@ -28,15 +28,15 @@ class _AndroidScreenOrientationChooserState
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
+    return DropdownButton<ScreenOrientationTypes>(
       value: value,
       items: [
-        DropdownMenuItem<String>(
-          value: ScreenOrientationTypes.portrait.name,
+        DropdownMenuItem<ScreenOrientationTypes>(
+          value: ScreenOrientationTypes.portrait,
           child: Text(ScreenOrientationTypes.portrait.name.toCaptalize()),
         ),
-        DropdownMenuItem<String>(
-          value: ScreenOrientationTypes.landscape.name,
+        DropdownMenuItem<ScreenOrientationTypes>(
+          value: ScreenOrientationTypes.landscape,
           child: Text(ScreenOrientationTypes.landscape.name.toCaptalize()),
         ),
       ],

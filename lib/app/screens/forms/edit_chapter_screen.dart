@@ -57,10 +57,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
       final provider = context.read<ChapterProvider>();
       await provider.initList(widget.novelPath);
       // set provider list
-      final list = provider.getList;
-      if (list.isNotEmpty) {
-        chapter = list.last.number + 1;
-      }
+      chapter = provider.getLatestChapter + 1;
     }
     chapterController.text = chapter.toString();
     if (!mounted) return;
@@ -261,6 +258,8 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
 
   void _backpress() {
     if (!isChanged) return;
-    context.read<ChapterProvider>().initList(widget.novelPath);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ChapterProvider>().initList(widget.novelPath);
+    });
   }
 }

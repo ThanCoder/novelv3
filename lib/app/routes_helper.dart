@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/screens/content/novel_content_home_screen.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/screens/pdfrx_reader_screen.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.0.2/types/pdf_config_model.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/screens/pdfrx_reader_screen.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/types/pdf_config.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ void goRecentPdfReader(BuildContext context, NovelPdf pdf) {
     builder: (context) => PdfrxReaderScreen(
       title: pdf.getTitle,
       sourcePath: pdf.path,
-      pdfConfig: PdfConfigModel.fromPath(configPath),
+      pdfConfig: PdfConfig.fromPath(configPath),
       onConfigUpdated: (pdfConfig) {
         pdfConfig.savePath(configPath);
       },

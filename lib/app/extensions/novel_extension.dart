@@ -10,6 +10,36 @@ extension NovelExtension on List<Novel> {
     }
   }
 
+  void sortDesc({bool isAdded = true}) {
+    sort((a, b) {
+      if (isAdded) {
+        return a.getContent.isNotEmpty ? -1 : 1;
+      } else {
+        return a.getContent.isNotEmpty ? 1 : -1;
+      }
+    });
+  }
+
+  void sortCompleted({bool isCompleted = true}) {
+    sort((a, b) {
+      if (isCompleted) {
+        return a.isCompleted ? -1 : 1;
+      } else {
+        return a.isCompleted ? 1 : -1;
+      }
+    });
+  }
+
+  void sortAdult({bool isAdult = true}) {
+    sort((a, b) {
+      if (isAdult) {
+        return a.isAdult ? -1 : 1;
+      } else {
+        return a.isAdult ? 1 : -1;
+      }
+    });
+  }
+
   void sortSize({bool isSmallest = true}) {
     sort((a, b) {
       if (isSmallest) {

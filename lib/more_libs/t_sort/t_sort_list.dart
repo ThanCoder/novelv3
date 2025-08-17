@@ -25,7 +25,13 @@ class TSortList {
   List<TSortType> get getAll => _items;
   List<String> get getFields => _items.map((e) => e.field).toSet().toList();
 
-  static List<TSortType> get getDefaultList {
+  static TSortList get getDefaultList {
+    final sort = TSortList();
+    sort.setAll(getDefaultTypeList);
+    return sort;
+  }
+
+  static List<TSortType> get getDefaultTypeList {
     final list = TSortList();
     list.add('Title', ascTitle: 'A-Z', descTitle: 'Z-A');
     list.add('Date', ascTitle: 'Oldest', descTitle: 'Newest');

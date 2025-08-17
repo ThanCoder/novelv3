@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class StatusText extends StatelessWidget {
-  static Color onGoingColor = const Color.fromARGB(213, 6, 124, 112);
-  static Color completedColor = const Color.fromARGB(221, 13, 31, 90);
+  static Color onGoingColor = const Color.fromARGB(242, 8, 54, 50);
+  static Color completedColor = const Color.fromARGB(221, 15, 38, 112);
   static Color adultColor = const Color.fromARGB(210, 189, 36, 25);
 
   String text;
@@ -32,10 +32,7 @@ class StatusText extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: TextStyle(
-          color: textColor,
-          fontSize: isSmallSize ? 11 : 13,
-        ),
+        style: TextStyle(color: textColor, fontSize: isSmallSize ? 11 : 13),
       ),
     );
   }

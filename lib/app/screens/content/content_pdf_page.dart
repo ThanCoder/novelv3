@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/dialogs/edit_pdf_config_dialog.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
+import 'package:novel_v3/more_libs/t_sort/t_sort_action_button.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -52,10 +55,12 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
   }
 
   Widget _getSortAction() {
-    return SortComponent(
-      value: context.watch<PdfProvider>().getCurrentSortType,
-      onChanged: (type) {
-        context.read<PdfProvider>().sortList(type);
+    final provider = context.read<PdfProvider>();
+    return TSortActionButton(
+      isAscDefault: provider.isSortAsc,
+      fieldName: provider.sortFieldName,
+      sortDialogCallback: (field, isAsc) {
+        provider.setSort(field, isAsc);
       },
     );
   }
@@ -269,6 +274,14 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           },
         ),
         ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit PDF Config'),
+          onTap: () {
+            closeContext(context);
+            _editPdfConfigCover(pdf);
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.image),
           title: Text('Set Cover'),
           onTap: () {
@@ -286,6 +299,19 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
           },
         ),
       ],
+    );
+  }
+
+  void _editPdfConfigCover(NovelPdf pdf) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => EditPdfConfigDialog(
+        pdfConfig: PdfConfig.fromPath(pdf.getConfigPath),
+        onUpdated: (updatedConfig) {
+          updatedConfig.savePath(pdf.getConfigPath);
+          showTSnackBar(context, 'Config Saved');
+        },
+      ),
     );
   }
 
