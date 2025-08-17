@@ -59,6 +59,7 @@ class NovelProvider extends ChangeNotifier {
       final index = _list.indexWhere((e) => e.title == novel.title);
       if (index == -1) return;
       _list.removeAt(index);
+      notifyListeners();
 
       final res = novelSeeAllScreenNotifier.value
           .where((e) => e.title != novel.title)
@@ -66,7 +67,6 @@ class NovelProvider extends ChangeNotifier {
       novelSeeAllScreenNotifier.value = res;
 
       await novel.deleteAll();
-      notifyListeners();
     } catch (e) {
       NovelDirApp.showDebugLog(e.toString(), tag: 'NovelProvider:delete');
     }

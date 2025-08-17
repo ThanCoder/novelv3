@@ -20,12 +20,12 @@ class N3DataServices {
           // list ထဲက ဟာတွေကျော်မယ်
           if (filterList.contains(file.getName())) continue;
 
-          if (file.isFile()) {
+          if (file.isFile) {
             // pdf စစ်မယ်
             if (N3Data.isN3Data(file.path)) {
               list.add(N3Data.createPath(file.path));
             }
-          } else if (file.isDirectory()) {
+          } else if (file.isDirectory) {
             // scan လုပ်မယ်
             scanDir(Directory(file.path));
           }
@@ -35,7 +35,7 @@ class N3DataServices {
       // scan
       for (var path in pathList) {
         final dir = Directory(path);
-        if (!dir.isDirectory()) continue;
+        if (!dir.isDirectory) continue;
         scanDir(dir);
       }
 

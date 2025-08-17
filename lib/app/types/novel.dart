@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -7,6 +8,7 @@ class Novel {
   String title;
   String path;
   DateTime date;
+  int? cacheSize;
   Novel({required this.title, required this.path, required this.date});
 
   factory Novel.createTitle(String title) {
@@ -198,6 +200,41 @@ class Novel {
   void _setFileContent(String name, String contents) {
     final file = File('$path/$name');
     file.writeAsStringSync(contents);
+  }
+
+  int get getSizeInt {
+    return cacheSize ?? 0;
+  }
+
+  String get getSize {
+    if ((cacheSize ?? 0) > 0) {
+      return cacheSize!.toDouble().toFileSizeLabel();
+    }
+    final dir = Directory(path);
+    if (!dir.existsSync()) return '';
+    int size = 0;
+    for (var file in dir.listSync(followLinks: false)) {
+      if (file is File) {
+        size += file.lengthSync();
+      }
+    }
+    cacheSize = size;
+    return size.toDouble().toFileSizeLabel();
+  }
+
+  Future<String> getConfigJson() async {
+    final map = {};
+    map['title'] = title;
+    map['author'] = getAuthor;
+    map['translator'] = getTranslator;
+    map['translator'] = getMC;
+    map['tags'] = getTagContent;
+    map['pageUrls'] = getPageUrlContent;
+    map['isCompleted'] = isCompleted;
+    map['isAdult'] = isAdult;
+    map['desc'] = getContent;
+
+    return JsonEncoder.withIndent(' ').convert(map);
   }
 
   @override

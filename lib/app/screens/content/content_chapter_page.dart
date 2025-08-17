@@ -48,7 +48,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
       ],
       title: Text('Chapter'),
       isLoading: isLoading,
-      automaticallyImplyLeading: PlatformExtension.isDesktop(),
+      automaticallyImplyLeading: TPlatform.isDesktop,
       sliverBuilder: (context, novel) => [_getSliverList(list)],
       onRefresh: init,
     );

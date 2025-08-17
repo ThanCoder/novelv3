@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/routes_helper.dart';
@@ -28,6 +30,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
   bool isLoading = false;
   List<Novel> existsList = [];
   String? titleError;
+  Timer? titleCheckTimer;
 
   @override
   void initState() {
@@ -48,6 +51,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
     authorFocus.dispose();
     translatorFocus.dispose();
     mcFocus.dispose();
+    titleCheckTimer?.cancel();
     super.dispose();
   }
 
@@ -85,18 +89,25 @@ class _EditNovelFormState extends State<EditNovelForm> {
             focusNode: titleFocus,
             onChanged: (value) {
               if (value.isEmpty) return;
-              if (_checkExistsNovelTitle(value)) {
-                // ရှိနေရင်
-                setState(() {
-                  titleError = 'ရှိနေပြီးသား ဖြစ်နေပါတယ်!...';
-                });
-              } else {
-                setState(() {
-                  titleError = null;
-                });
+              if (titleCheckTimer?.isActive ?? false) {
+                titleCheckTimer?.cancel();
               }
+              // delay
+              titleCheckTimer = Timer(Duration(milliseconds: 1200), () {
+                if (_checkExistsNovelTitle(value)) {
+                  // ရှိနေရင်
+                  setState(() {
+                    titleError = 'ရှိနေပြီးသား ဖြစ်နေပါတယ်!...';
+                  });
+                } else {
+                  setState(() {
+                    titleError = null;
+                  });
+                }
+              });
             },
           ),
+          
           TTextField(
             label: Text('Author'),
             maxLines: 1,

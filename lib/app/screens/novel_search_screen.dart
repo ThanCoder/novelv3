@@ -11,7 +11,7 @@ class NovelSearchScreen extends StatefulWidget {
   Duration searchDelay;
   NovelSearchScreen({
     super.key,
-    this.searchDelay = const Duration(milliseconds: 500),
+    this.searchDelay = const Duration(milliseconds: 1200),
   });
 
   @override

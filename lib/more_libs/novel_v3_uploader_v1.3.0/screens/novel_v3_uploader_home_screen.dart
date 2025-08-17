@@ -69,7 +69,7 @@ class _NovelV3UploaderHomeScreenState extends State<NovelV3UploaderHomeScreen> {
             icon: Icon(isListView ? Icons.list : Icons.grid_view_outlined),
           ),
           // for desktop
-          PlatformExtension.isDesktop()
+          TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
         ],

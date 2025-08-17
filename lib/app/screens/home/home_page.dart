@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/app/screens/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -36,13 +37,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Novel V3 Pre'),
-      //   actions: [
-      //     _getSearchButton(),
-      //     IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
-      //   ],
-      // ),
       body: _getList(),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
@@ -153,6 +147,14 @@ class _HomePageState extends State<HomePage> {
             _showSort();
           },
         ),
+        ListTile(
+          leading: Icon(Icons.view_list_rounded),
+          title: Text('Dev'),
+          onTap: () {
+            closeContext(context);
+            _goDevScreen();
+          },
+        ),
       ],
     );
   }
@@ -166,6 +168,10 @@ class _HomePageState extends State<HomePage> {
         provider.sortList(type);
       },
     );
+  }
+
+  void _goDevScreen() {
+    goRoute(context, builder: (context) => NovelDevListScreen());
   }
 
   // add main menu

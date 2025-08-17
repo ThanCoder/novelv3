@@ -38,7 +38,7 @@ class PdfConfigModel {
   });
 
   factory PdfConfigModel.create() {
-    return PdfConfigModel(isShowScrollThumb: PlatformExtension.isDesktop());
+    return PdfConfigModel(isShowScrollThumb: TPlatform.isDesktop);
   }
 
   factory PdfConfigModel.fromPath(String configPath) {

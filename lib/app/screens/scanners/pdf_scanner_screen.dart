@@ -65,7 +65,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
         title: Text('PDF Scanner'),
         actions: [
           SortComponent(value: sortType, onChanged: _onSort),
-          PlatformExtension.isDesktop()
+          TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
         ],

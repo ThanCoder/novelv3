@@ -195,7 +195,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
           title: Text('Export'),
           onTap: () {
             closeContext(context);
-            _showEditMenu();
+            _showExportMenu();
           },
         ),
         ListTile(
@@ -243,7 +243,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
   }
 
   // export menu
-  void _showEditMenu() {
+  void _showExportMenu() {
     showTMenuBottomSheet(
       context,
       children: [

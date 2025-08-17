@@ -66,7 +66,7 @@ class _N3DataScannerState extends State<N3DataScanner> {
         title: Text('N3 Data Scanner'),
         actions: [
           SortComponent(value: sortType, onChanged: _onSort),
-          PlatformExtension.isDesktop()
+          TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
         ],

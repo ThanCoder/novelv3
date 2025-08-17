@@ -37,7 +37,7 @@ class _AppCacheManagerState extends State<AppCacheManager> {
     int sizeInt = 0;
     if (dir.existsSync()) {
       for (var file in dir.listSync()) {
-        if (!file.isFile()) continue;
+        if (!file.isFile) continue;
         sizeInt += (await file.stat()).size;
       }
     }
@@ -51,7 +51,7 @@ class _AppCacheManagerState extends State<AppCacheManager> {
       final dir = Directory(getCachePath);
       if (dir.existsSync()) {
         for (var file in dir.listSync()) {
-          if (!file.isFile()) continue;
+          if (!file.isFile) continue;
           await file.delete(recursive: true);
         }
       }
