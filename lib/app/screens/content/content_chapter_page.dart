@@ -6,8 +6,6 @@ import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher_chapter_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:novel_v3/more_libs/t_sort/t_sort_action_button.dart';
-import 'package:novel_v3/more_libs/t_sort/t_sort_list.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/index.dart';
@@ -23,10 +21,8 @@ class ContentChapterPage extends StatefulWidget {
 }
 
 class _ContentChapterPageState extends State<ContentChapterPage> {
-  TSortList sortList = TSortList();
   @override
   void initState() {
-    sortList.add('Chapter', ascTitle: 'အငယ်ဆုံး', descTitle: 'အကြီးဆုံး');
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
@@ -58,14 +54,19 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
   Widget _getSortAction() {
     final provider = context.read<ChapterProvider>();
-
-    return TSortActionButton(
-      sortList: sortList,
-      isAscDefault: provider.isSortAsc,
-      fieldName: provider.sortFieldName,
-      sortDialogCallback: (field, isAsc) {
-        provider.setSort(field, isAsc);
+    return IconButton(
+      onPressed: () {
+        showTSortDialog(
+          context,
+          currentId: provider.currentSortId,
+          isAsc: provider.isSortAsc,
+          sortList: provider.getSortList,
+          sortDialogCallback: (id, isAsc) {
+            provider.setSort(id, isAsc);
+          },
+        );
       },
+      icon: Icon(Icons.sort),
     );
   }
 

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:t_widgets/t_widgets.dart';
 import '../novel_dir_app.dart';
 
 class NovelProvider extends ChangeNotifier {
   final List<Novel> _list = [];
   Novel? _novel;
-  String sortFieldName = 'Date';
+  int currentSortId = TSort.getDateId;
   bool isSortAsc = false;
   // get
   bool isLoading = false;
@@ -72,17 +73,17 @@ class NovelProvider extends ChangeNotifier {
     }
   }
 
-  void setSort(String field, bool isAsc) {
-    sortFieldName = field;
+  void setSort(int id, bool isAsc) {
+    currentSortId = id;
     isSortAsc = isAsc;
     sortList();
   }
 
   void sortList() {
-    if (sortFieldName == 'Title') {
+    if (currentSortId == TSort.getTitleId) {
       _list.sortTitle(aToZ: isSortAsc);
     }
-    if (sortFieldName == 'Date') {
+    if (currentSortId == TSort.getDateId) {
       _list.sortDate(isNewest: !isSortAsc);
     }
     notifyListeners();

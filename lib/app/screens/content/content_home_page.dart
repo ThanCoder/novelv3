@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/novel_bookmark_action.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_confirm_dialog.dart';
@@ -6,8 +8,10 @@ import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
+import 'package:novel_v3/app/screens/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -244,6 +248,8 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
   // export menu
   void _showExportMenu() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
     showTMenuBottomSheet(
       context,
       children: [
@@ -252,7 +258,15 @@ class _ContentHomePageState extends State<ContentHomePage> {
           title: Text('Export N3Data'),
           onTap: () {
             closeContext(context);
-            _exportN3Data();
+            _exportN3Data(novel);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.import_export),
+          title: Text('Export Config'),
+          onTap: () {
+            closeContext(context);
+            _exportConfig(novel);
           },
         ),
       ],
@@ -260,10 +274,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
   }
 
   // export n3data
-  void _exportN3Data() {
-    final novel = context.read<NovelProvider>().getCurrent;
-    if (novel == null) return;
-
+  void _exportN3Data(Novel novel) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -284,6 +295,42 @@ class _ContentHomePageState extends State<ContentHomePage> {
               },
             ),
           );
+        },
+      ),
+    );
+  }
+
+  void _exportConfig(Novel novel) {
+    showAdaptiveDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => NovelConfigExportDialog(
+        onApply: (isIncludeCover) async {
+          try {
+            final file = File(
+              '${PathUtil.getOutPath()}/${novel.title}.config.json',
+            );
+            // config
+            await file.writeAsString(await novel.getConfigJson());
+            // cover
+            if (isIncludeCover) {
+              final coverFile = File('${novel.path}/cover.png');
+              if (coverFile.existsSync()) {
+                await coverFile.copy(
+                  '${PathUtil.getOutPath()}/${novel.title}.png',
+                );
+              }
+            }
+            if (!context.mounted) return;
+            showTSnackBar(context, 'Config Exported');
+          } catch (e) {
+            NovelDirApp.showDebugLog(
+              e.toString(),
+              tag: 'NovelDevListScreen:_exportConfig',
+            );
+            if (!context.mounted) return;
+            showTMessageDialogError(context, e.toString());
+          }
         },
       ),
     );

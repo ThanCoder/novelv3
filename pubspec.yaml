@@ -13,7 +13,7 @@ dependencies:
   dio: ^5.8.0+1
   pdfrx: ^2.1.3
   than_pkg: ^3.0.4
-  t_widgets: ^1.0.0
+  t_widgets: ^1.1.2
   desktop_drop: ^0.6.0
   uuid: ^4.5.1
   provider: ^6.1.5

@@ -51,7 +51,19 @@ class NovelDevListItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 13),
                     ),
-                    Text('Size: ${novel.getSize}'),
+                    FutureBuilder(
+                      future: novel.getAllSizeLabel(),
+                      builder: (context, asyncSnapshot) {
+                        if (asyncSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text('Size: တွက်ချက်နေပါတယ်...');
+                        }
+                        if (asyncSnapshot.hasData) {
+                          return Text('Size: ${asyncSnapshot.data ?? ''}');
+                        }
+                        return SizedBox.shrink();
+                      },
+                    ),
                     Row(
                       children: [
                         Icon(Icons.date_range),

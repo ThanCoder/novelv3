@@ -7,9 +7,8 @@ import 'package:novel_v3/app/screens/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:novel_v3/more_libs/t_sort/funcs.dart';
-import 'package:t_widgets/extensions/index.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 import '../novel_search_screen.dart';
 import 'package:provider/provider.dart';
 import '../../novel_dir_app.dart';
@@ -113,6 +112,8 @@ class _HomePageState extends State<HomePage> {
           : Colors.white.withValues(alpha: 0.9),
       actions: [
         _getSearchButton(),
+
+        IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
         IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
       ],
     );
@@ -140,14 +141,6 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         ListTile(
-          leading: Icon(Icons.sort),
-          title: Text('Sort'),
-          onTap: () {
-            closeContext(context);
-            _showSort();
-          },
-        ),
-        ListTile(
           leading: Icon(Icons.view_list_rounded),
           title: Text('Dev'),
           onTap: () {
@@ -164,8 +157,8 @@ class _HomePageState extends State<HomePage> {
 
     showTSortDialog(
       context,
-      fieldName: provider.sortFieldName,
-      isAscDefault: provider.isSortAsc,
+      currentId: provider.currentSortId,
+      isAsc: provider.isSortAsc,
       sortDialogCallback: (field, isAsc) {
         provider.setSort(field, isAsc);
       },

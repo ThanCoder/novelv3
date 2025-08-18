@@ -3,8 +3,6 @@ import 'package:novel_v3/app/extensions/pdf_extension.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -29,7 +27,8 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
 
   bool isLoading = false;
   List<NovelPdf> list = [];
-  SortType sortType = SortType(title: 'date', isAsc: false);
+  int currentSortId = TSort.getDateId;
+  bool isSortAsc = false;
 
   Future<void> init() async {
     try {
@@ -64,7 +63,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
       appBar: AppBar(
         title: Text('PDF Scanner'),
         actions: [
-          SortComponent(value: sortType, onChanged: _onSort),
+          _getSortWidget(),
           TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
@@ -110,14 +109,30 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
     );
   }
 
-  void _onSort(SortType sort) {
-    if (sort.title == 'title') {
-      list.sortTitle(aToZ: sort.isAsc);
+  Widget _getSortWidget() {
+    return IconButton(
+      onPressed: () {
+        showTSortDialog(
+          context,
+          currentId: currentSortId,
+          sortDialogCallback: (id, isAsc) {
+            currentSortId = id;
+            isSortAsc = isAsc;
+            _onSort();
+          },
+        );
+      },
+      icon: Icon(Icons.sort),
+    );
+  }
+
+  void _onSort() {
+    if (currentSortId == TSort.getTitleId) {
+      list.sortTitle(aToZ: isSortAsc);
     }
-    if (sort.title == 'date') {
-      list.sortDate(isNewest: !sort.isAsc);
+    if (currentSortId == TSort.getDateId) {
+      list.sortDate(isNewest: !isSortAsc);
     }
-    sortType = sort;
     setState(() {});
   }
 

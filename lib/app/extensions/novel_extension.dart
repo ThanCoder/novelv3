@@ -1,21 +1,12 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:novel_v3/app/types/novel.dart';
 
 extension NovelExtension on List<Novel> {
-  Future<void> initCalcSize() async {
-    for (var novel in this) {
-      novel.cacheSize = await compute(_calcSize, novel.path);
-    }
-  }
-
   void sortDesc({bool isAdded = true}) {
     sort((a, b) {
       if (isAdded) {
-        return a.getContent.isNotEmpty ? -1 : 1;
+        return a.cacheIsExistsDesc ? -1 : 1;
       } else {
-        return a.getContent.isNotEmpty ? 1 : -1;
+        return a.cacheIsExistsDesc ? 1 : -1;
       }
     });
   }
@@ -98,16 +89,4 @@ extension NovelExtension on List<Novel> {
       }
     });
   }
-}
-
-int _calcSize(String path) {
-  final dir = Directory(path);
-  if (!dir.existsSync()) return 0;
-  int size = 0;
-  for (var file in dir.listSync(followLinks: false)) {
-    if (file is File) {
-      size += file.lengthSync();
-    }
-  }
-  return size;
 }

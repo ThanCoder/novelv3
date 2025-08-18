@@ -9,8 +9,6 @@ import 'package:novel_v3/app/screens/developer/novel_dev_list_item.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:novel_v3/more_libs/t_sort/t_sort_action_button.dart';
-import 'package:novel_v3/more_libs/t_sort/t_sort_list.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -27,17 +25,29 @@ class NovelDevListScreen extends StatefulWidget {
 class _NovelDevListScreenState extends State<NovelDevListScreen> {
   @override
   void initState() {
-    sortList.setAll(TSortList.getDefaultTypeList);
-    sortList.add('Size', ascTitle: 'အသေးဆုံး', descTitle: 'အကြီးဆုံး');
-    sortList.add('Completed', ascTitle: 'isCompleted', descTitle: 'OnGoing');
-    sortList.add('Adult', ascTitle: 'IsAdult', descTitle: 'No Adult');
     sortList.add(
-      'Description',
-      ascTitle: 'ထည့်သွင်းပြီးသား',
-      descTitle: 'မထည့်သွင်းရသေး',
+      TSort(id: 0, title: 'Size', ascTitle: 'အသေးဆုံး', descTitle: 'အကြီးဆုံး'),
     );
-    sortName = 'Date';
-
+    sortList.add(
+      TSort(
+        id: 1,
+        title: 'Completed',
+        ascTitle: 'isCompleted',
+        descTitle: 'OnGoing',
+      ),
+    );
+    sortList.add(
+      TSort(id: 2, title: 'Adult', ascTitle: 'IsAdult', descTitle: 'No Adult'),
+    );
+    sortList.add(
+      TSort(
+        id: 3,
+        title: 'Description',
+        ascTitle: 'ထည့်သွင်းပြီးသား',
+        descTitle: 'မထည့်သွင်းရသေး',
+      ),
+    );
+    sortList.addAll(TSort.getDefaultList);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
@@ -46,8 +56,8 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
   bool isOnlineListLoading = false;
   List<UploaderNovel> onlineList = [];
   List<Novel> localList = [];
-  final sortList = TSortList();
-  late String sortName;
+  List<TSort> sortList = [];
+  int currentSortId = TSort.getDateId;
   bool isAsc = false;
 
   Future<void> init() async {
@@ -55,8 +65,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       setState(() {
         isLoading = true;
       });
-      localList = await NovelServices.getList();
-      // await localList.initCalcSize();
+      localList = await NovelServices.getList(isAllCalc: true);
 
       _onSortList();
 
@@ -85,6 +94,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         isOnlineListLoading = true;
       });
       onlineList = await OnlineNovelServices.getNovelList();
+
       if (!mounted) return;
       setState(() {
         isOnlineListLoading = false;
@@ -141,39 +151,71 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
   }
 
   Widget _getSortWidget() {
-    return TSortActionButton(
-      fieldName: sortName,
-      sortList: sortList,
-      isAscDefault: isAsc,
-      sortDialogCallback: (field, isAsc) {
-        sortName = field;
-        this.isAsc = isAsc;
-        _onSortList();
+    final resList = List.of(sortList);
+    if (onlineList.isNotEmpty) {
+      resList.add(
+        TSort(
+          id: 10,
+          title: 'Online',
+          ascTitle: 'ရှိပြီးသား',
+          descTitle: 'မရှိသေး',
+        ),
+      );
+    }
+
+    return IconButton(
+      onPressed: () {
+        showTSortDialog(
+          context,
+          currentId: currentSortId,
+          sortList: resList,
+          isAsc: isAsc,
+          sortDialogCallback: (id, isAsc) {
+            currentSortId = id;
+            this.isAsc = isAsc;
+            _onSortList();
+          },
+        );
       },
+      icon: Icon(Icons.sort),
     );
   }
 
   void _onSortList() async {
-    switch (sortName) {
-      case 'Date':
-        localList.sortDate(isNewest: !isAsc);
-        break;
-      case 'Title':
-        localList.sortTitle(aToZ: isAsc);
-        break;
-      case 'Size':
-        localList.sortSize(isSmallest: isAsc);
-        break;
-      case 'Completed':
-        localList.sortCompleted(isCompleted: isAsc);
-        break;
-      case 'Adult':
-        localList.sortAdult(isAdult: isAsc);
-        break;
-      case 'Description':
-        localList.sortDesc(isAdded: isAsc);
-        break;
+    if (currentSortId == TSort.getDateId) {
+      localList.sortDate(isNewest: !isAsc);
     }
+    if (currentSortId == TSort.getTitleId) {
+      localList.sortTitle(aToZ: isAsc);
+    }
+    if (currentSortId == 0) {
+      localList.sortSize(isSmallest: isAsc);
+    }
+    if (currentSortId == 1) {
+      localList.sortCompleted(isCompleted: isAsc);
+    }
+    if (currentSortId == 2) {
+      localList.sortAdult(isAdult: isAsc);
+    }
+    if (currentSortId == 3) {
+      localList.sortDesc(isAdded: isAsc);
+    }
+    if (currentSortId == 10) {
+      final titleList = onlineList.map((e) => e.title).toSet().toList();
+      localList.sort((a, b) {
+        if (isAsc) {
+          // ရှိနေပြီးသား
+          if (titleList.contains(a.title)) return -1;
+          if (!titleList.contains(a.title)) return 1;
+        } else {
+          //မရှိသေး
+          if (titleList.contains(a.title)) return 1;
+          if (!titleList.contains(a.title)) return -1;
+        }
+        return 0;
+      });
+    }
+
     setState(() {});
   }
 

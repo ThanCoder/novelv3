@@ -5,11 +5,8 @@ import 'package:novel_v3/app/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/services/n3_data_services.dart';
-import 'n3_data_extension.dart';
 import 'n3_data.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_component.dart';
-import 'package:novel_v3/more_libs/sort_dialog_v1.0.0/sort_type.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -29,7 +26,7 @@ class _N3DataScannerState extends State<N3DataScanner> {
 
   bool isLoading = false;
   List<N3Data> n3DataList = [];
-  SortType sortType = SortType(title: 'date', isAsc: false);
+  int currentSortId = 101;
 
   Future<void> init() async {
     try {
@@ -49,7 +46,7 @@ class _N3DataScannerState extends State<N3DataScanner> {
       setState(() {
         isLoading = false;
       });
-      _onSort(sortType);
+      _onSort();
     } catch (e) {
       NovelDirApp.showDebugLog(e.toString(), tag: 'N3DataScanner:init');
       if (!mounted) return;
@@ -65,7 +62,7 @@ class _N3DataScannerState extends State<N3DataScanner> {
       appBar: AppBar(
         title: Text('N3 Data Scanner'),
         actions: [
-          SortComponent(value: sortType, onChanged: _onSort),
+          // SortComponent(value: sortType, onChanged: _onSort),
           TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
@@ -111,15 +108,15 @@ class _N3DataScannerState extends State<N3DataScanner> {
     );
   }
 
-  void _onSort(SortType sort) {
-    if (sort.title == 'title') {
-      n3DataList.sortTitle(aToZ: sort.isAsc);
-    }
-    if (sort.title == 'date') {
-      n3DataList.sortDate(isNewest: !sort.isAsc);
-    }
-    sortType = sort;
-    setState(() {});
+  void _onSort() {
+    // if (sort.title == 'title') {
+    //   n3DataList.sortTitle(aToZ: sort.isAsc);
+    // }
+    // if (sort.title == 'date') {
+    //   n3DataList.sortDate(isNewest: !sort.isAsc);
+    // }
+    // sortType = sort;
+    // setState(() {});
   }
 
   void _showItemOnClickMenu(N3Data n3data) {

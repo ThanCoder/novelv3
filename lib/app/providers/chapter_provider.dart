@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:t_widgets/t_widgets.dart';
 import '../novel_dir_app.dart';
 
 class ChapterProvider extends ChangeNotifier {
   final List<Chapter> _list = [];
   Chapter? _chapter;
-  String sortFieldName = 'Chapter';
+
+  // sort
+  final List<TSort> _sortList = [
+    TSort(
+      id: 0,
+      title: 'Chapter',
+      ascTitle: 'အငယ်ဆုံး',
+      descTitle: 'အကြီးဆုံး',
+    ),
+  ];
+  int currentSortId = 0;
   bool isSortAsc = true;
+  List<TSort> get getSortList => _sortList;
+
   // get
   bool isLoading = false;
   List<Chapter> get getList => _list;
@@ -45,14 +58,14 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSort(String field, bool isAsc) {
-    sortFieldName = field;
+  void setSort(int id, bool isAsc) {
+    currentSortId = id;
     isSortAsc = isAsc;
     sortList();
   }
 
   void sortList() {
-    if (sortFieldName == 'Chapter') {
+    if (currentSortId == 0) {
       _list.sortNumber(isSmallerTop: isSortAsc);
     }
     // if (sortFieldName == 'Date') {

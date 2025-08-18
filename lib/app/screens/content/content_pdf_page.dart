@@ -8,7 +8,6 @@ import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/dialogs/edit_pdf_config_dialog.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
-import 'package:novel_v3/more_libs/t_sort/t_sort_action_button.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -56,12 +55,18 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
 
   Widget _getSortAction() {
     final provider = context.read<PdfProvider>();
-    return TSortActionButton(
-      isAscDefault: provider.isSortAsc,
-      fieldName: provider.sortFieldName,
-      sortDialogCallback: (field, isAsc) {
-        provider.setSort(field, isAsc);
+    return IconButton(
+      onPressed: () {
+        showTSortDialog(
+          context,
+          currentId: provider.currentSortId,
+          isAsc: provider.isSortAsc,
+          sortDialogCallback: (id, isAsc) {
+            provider.setSort(id, isAsc);
+          },
+        );
       },
+      icon: Icon(Icons.sort),
     );
   }
 

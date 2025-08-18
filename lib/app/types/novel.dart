@@ -8,7 +8,10 @@ class Novel {
   String title;
   String path;
   DateTime date;
-  int? cacheSize;
+  int cacheSize = 0;
+  bool cacheIsExistsDesc = false;
+  bool cacheIsOnlineExists = false;
+
   Novel({required this.title, required this.path, required this.date});
 
   factory Novel.createTitle(String title) {
@@ -189,6 +192,11 @@ class Novel {
     return file.existsSync();
   }
 
+  bool get isExistsDesc {
+    final file = File('$path/is-completed');
+    return file.existsSync();
+  }
+
   String _getFileContent(String name, {String defaultValue = ''}) {
     final file = File('$path/$name');
     if (file.existsSync()) {
@@ -203,23 +211,32 @@ class Novel {
   }
 
   int get getSizeInt {
-    return cacheSize ?? 0;
+    return cacheSize;
   }
 
-  String get getSize {
-    if ((cacheSize ?? 0) > 0) {
-      return cacheSize!.toDouble().toFileSizeLabel();
+  String get getContentPath => '$path/content';
+
+  Future<String> getAllSizeLabel() async {
+    if (cacheSize > 0) {
+      return cacheSize.toDouble().toFileSizeLabel();
     }
+    final size = await getAllSize();
+    return size.toDouble().toFileSizeLabel();
+  }
+
+  Future<int> getAllSize() async {
+    if (cacheSize > 0) return cacheSize;
+
     final dir = Directory(path);
-    if (!dir.existsSync()) return '';
+    if (!dir.existsSync()) return 0;
     int size = 0;
     for (var file in dir.listSync(followLinks: false)) {
       if (file is File) {
-        size += file.lengthSync();
+        size += await file.length();
       }
     }
     cacheSize = size;
-    return size.toDouble().toFileSizeLabel();
+    return size;
   }
 
   Future<String> getConfigJson() async {
@@ -227,7 +244,7 @@ class Novel {
     map['title'] = title;
     map['author'] = getAuthor;
     map['translator'] = getTranslator;
-    map['translator'] = getMC;
+    map['mc'] = getMC;
     map['tags'] = getTagContent;
     map['pageUrls'] = getPageUrlContent;
     map['isCompleted'] = isCompleted;

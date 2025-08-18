@@ -4,8 +4,7 @@ import 'dart:isolate';
 import 'package:archive/archive.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
-import 'package:t_widgets/extensions/double_extension.dart';
-import 'package:than_pkg/extensions/string_extension.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class N3Data {
   String path;
