@@ -197,6 +197,11 @@ class Novel {
     return file.existsSync();
   }
 
+  bool isExistsNovelData({String ext = 'npz'}) {
+    final file = File('${PathUtil.getOutPath()}/$title.$ext');
+    return file.existsSync();
+  }
+
   String _getFileContent(String name, {String defaultValue = ''}) {
     final file = File('$path/$name');
     if (file.existsSync()) {

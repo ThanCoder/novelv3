@@ -232,6 +232,14 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         Padding(padding: const EdgeInsets.all(8.0), child: Text(novel.title)),
         Divider(),
         ListTile(
+          leading: Icon(Icons.open_in_browser),
+          title: Text('Content'),
+          onTap: () {
+            closeContext(context);
+            _goNovelContent(novel);
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.edit_document),
           title: Text('Edit'),
           onTap: () {
@@ -266,6 +274,10 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         ),
       ],
     );
+  }
+
+  void _goNovelContent(Novel novel) {
+    goNovelContentScreen(context, novel);
   }
 
   // export n3data

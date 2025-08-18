@@ -95,7 +95,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
                           : StatusText.onGoingColor,
                       text: novel.isCompleted ? 'Completed' : 'OnGoing',
                     ),
-                    !novel.isAdult
+                    novel.isAdult
                         ? StatusText(
                             text: 'Adult',
                             bgColor: StatusText.adultColor,

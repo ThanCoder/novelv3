@@ -86,7 +86,7 @@ class NovelDevListItem extends StatelessWidget {
                         color: isExistsTitle ? Colors.green : Colors.red,
                       ),
                     ),
-                    _getTagWidget(),
+                    // _getTagWidget(),
                   ],
                 ),
               ),
@@ -97,9 +97,9 @@ class NovelDevListItem extends StatelessWidget {
     );
   }
 
-  Widget _getTagWidget() {
-    return TTagsWrapView(values: novel.getTags, type: TTagsTypes.text);
-  }
+  // Widget _getTagWidget() {
+  //   return TTagsWrapView(values: novel.getTags, type: TTagsTypes.text);
+  // }
 
   Widget _getStatusWidget() {
     return Wrap(
@@ -120,6 +120,10 @@ class NovelDevListItem extends StatelessWidget {
                 bgColor: const Color.fromARGB(255, 102, 87, 22),
                 text: 'Description မရှိပါ',
               )
+            : SizedBox.shrink(),
+        // is novel data is exists
+        novel.isExistsNovelData()
+            ? StatusText(text: 'V3Data ထုတ်ထားပါတယ်')
             : SizedBox.shrink(),
       ],
     );
