@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_data.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_db.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_list_item.dart';
-import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:provider/provider.dart';
@@ -185,9 +184,9 @@ class _ContentChapterBookmarkPageState
     // );
   }
 
-  void _deleteForever(Chapter chapter) {
-    // context.read<ChapterProvider>().delete(chapter);
-  }
+  // void _deleteForever(Chapter chapter) {
+  // context.read<ChapterProvider>().delete(chapter);
+  // }
 
   // go text reader
   void _goTextReader(ChapterBookmarkData bookmark) {
