@@ -52,6 +52,7 @@ class NovelDirApp {
       context,
       builder: (context) => PdfrxReaderScreen(
         sourcePath: pdf.path,
+        bookmarkPath: pdf.getBookmarkPath,
         pdfConfig: PdfConfig.fromPath(pdf.getConfigPath),
         title: pdf.getTitle,
         onConfigUpdated: (pdfConfig) {

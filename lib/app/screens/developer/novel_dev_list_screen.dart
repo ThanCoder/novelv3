@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/n3_data/n3_data.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
@@ -45,6 +46,14 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         title: 'Description',
         ascTitle: 'ထည့်သွင်းပြီးသား',
         descTitle: 'မထည့်သွင်းရသေး',
+      ),
+    );
+    sortList.add(
+      TSort(
+        id: 4,
+        title: 'VData',
+        ascTitle: 'ထုတ်ထားပြီးပြီ',
+        descTitle: 'မထုတ်ရသေး',
       ),
     );
     sortList.addAll(TSort.getDefaultList);
@@ -112,16 +121,25 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
   @override
   Widget build(BuildContext context) {
     return TScaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            title: Text('Novel Dev List'),
-            snap: true,
-            floating: true,
-            actions: [_getOnlineListDownloader(), _getSortWidget()],
-          ),
-          _getListWidget(),
-        ],
+      body: RefreshIndicator.adaptive(
+        onRefresh: init,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              title: Text('Novel Dev List'),
+              snap: true,
+              floating: true,
+              actions: [
+                TPlatform.isDesktop
+                    ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
+                    : SizedBox.shrink(),
+                _getOnlineListDownloader(),
+                _getSortWidget(),
+              ],
+            ),
+            _getListWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -170,6 +188,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
           currentId: currentSortId,
           sortList: resList,
           isAsc: isAsc,
+          showSortType: TShowSortTypes.title,
           sortDialogCallback: (id, isAsc) {
             currentSortId = id;
             this.isAsc = isAsc;
@@ -200,6 +219,20 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
     if (currentSortId == 3) {
       localList.sortDesc(isAdded: isAsc);
     }
+    if (currentSortId == 4) {
+      localList.sort((a, b) {
+        if (isAsc) {
+          //ထုတ်ပြီးသား
+          if (a.isExistsNovelData() && !b.isExistsNovelData()) return -1;
+          if (!a.isExistsNovelData() && b.isExistsNovelData()) return 1;
+        } else {
+          //မထုတ်ရသေး
+          if (a.isExistsNovelData() && !b.isExistsNovelData()) return 1;
+          if (!a.isExistsNovelData() && b.isExistsNovelData()) return -1;
+        }
+        return 0;
+      });
+    }
     if (currentSortId == 10) {
       final titleList = onlineList.map((e) => e.title).toSet().toList();
       localList.sort((a, b) {
@@ -228,9 +261,8 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
   void _showItemMenu(Novel novel) {
     showTMenuBottomSheet(
       context,
+      title: Text(novel.title),
       children: [
-        Padding(padding: const EdgeInsets.all(8.0), child: Text(novel.title)),
-        Divider(),
         ListTile(
           leading: Icon(Icons.open_in_browser),
           title: Text('Content'),
@@ -255,6 +287,16 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
             _exportN3Data(novel);
           },
         ),
+        novel.isN3DataExported
+            ? ListTile(
+                leading: Icon(Icons.edit_document),
+                title: Text('Edit N3Data Name'),
+                onTap: () {
+                  closeContext(context);
+                  _editN3DataName(novel);
+                },
+              )
+            : SizedBox.shrink(),
         ListTile(
           leading: Icon(Icons.import_export),
           title: Text('Export Config'),
@@ -274,10 +316,6 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         ),
       ],
     );
-  }
-
-  void _goNovelContent(Novel novel) {
-    goNovelContentScreen(context, novel);
   }
 
   // export n3data
@@ -306,7 +344,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       ),
     );
   }
-
+  // delete novel
   void _deleteConfirm(Novel novel) {
     showTConfirmDialog(
       context,
@@ -321,8 +359,6 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         if (index == -1) return;
         localList.removeAt(index);
         setState(() {});
-
-        closeContext(context);
       },
     );
   }
@@ -361,6 +397,27 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
         },
       ),
     );
+  }
+
+  void _editN3DataName(Novel novel) {
+    showTReanmeDialog(
+      context,
+      barrierDismissible: false,
+      title: Text('Edit N3Data Name'),
+      text: novel.title,
+      onSubmit: (text) {
+        final oldFile = File(
+          '${PathUtil.getOutPath()}/${novel.title}.${N3Data.getExt}',
+        );
+        if (!oldFile.existsSync()) return;
+        oldFile.renameSync('${PathUtil.getOutPath()}/$text.${N3Data.getExt}');
+        setState(() {});
+      },
+    );
+  }
+
+  void _goNovelContent(Novel novel) {
+    goNovelContentScreen(context, novel);
   }
 
   void _editNovel(Novel novel) {

@@ -10,6 +10,7 @@ extension NovelExtension on List<Novel> {
       }
     });
   }
+  
 
   void sortCompleted({bool isCompleted = true}) {
     sort((a, b) {

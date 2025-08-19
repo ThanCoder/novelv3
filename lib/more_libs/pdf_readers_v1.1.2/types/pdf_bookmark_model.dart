@@ -8,10 +8,14 @@ import 'package:than_pkg/than_pkg.dart';
 class PdfBookmarkModel {
   String title;
   int page;
-  PdfBookmarkModel({
-    this.title = 'Untitled',
-    required this.page,
-  });
+  PdfBookmarkModel({required this.title, required this.page});
+
+  factory PdfBookmarkModel.create({
+    String title = 'Untitled',
+    required int page,
+  }) {
+    return PdfBookmarkModel(title: title, page: page);
+  }
 
   factory PdfBookmarkModel.fromMap(Map<String, dynamic> map) {
     var page = MapServices.get<int>(map, ['page_index'], defaultValue: 0);
@@ -28,7 +32,8 @@ class PdfBookmarkModel {
   Map<String, dynamic> get toMap => {'title': title, 'page': page};
 
   static Future<List<PdfBookmarkModel>> getBookmarkListFromPath(
-      String bookmarkPath) async {
+    String bookmarkPath,
+  ) async {
     List<PdfBookmarkModel> list = [];
     try {
       final file = File(bookmarkPath);
@@ -43,7 +48,9 @@ class PdfBookmarkModel {
   }
 
   static Future<void> setBookmarkListFromPath(
-      String bookmarkPath, List<PdfBookmarkModel> list) async {
+    String bookmarkPath,
+    List<PdfBookmarkModel> list,
+  ) async {
     try {
       final file = File(bookmarkPath);
       final data = list.map((bm) => bm.toMap).toList();

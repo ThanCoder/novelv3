@@ -18,6 +18,22 @@ Future<void> goNovelContentScreen(BuildContext context, Novel novel) async {
   goRoute(context, builder: (context) => NovelContentHomeScreen());
 }
 
+void goPdfReader(BuildContext context, NovelPdf pdf) {
+
+  goRoute(
+    context,
+    builder: (context) => PdfrxReaderScreen(
+      title: pdf.getTitle,
+      sourcePath: pdf.path,
+      bookmarkPath: pdf.getBookmarkPath,
+      pdfConfig: PdfConfig.fromPath(pdf.getConfigPath),
+      onConfigUpdated: (pdfConfig) {
+        pdfConfig.savePath(pdf.getConfigPath);
+      },
+    ),
+  );
+}
+
 void goRecentPdfReader(BuildContext context, NovelPdf pdf) {
   final configPath =
       '${PathUtil.getCachePath()}/${pdf.getTitle.replaceAll('.pdf', '.config.json')}';

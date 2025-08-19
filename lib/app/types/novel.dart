@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:novel_v3/app/n3_data/n3_data.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -197,6 +198,11 @@ class Novel {
     return file.existsSync();
   }
 
+  bool get isN3DataExported {
+    final file = File('${PathUtil.getOutPath()}/$title.${N3Data.getExt}');
+    return file.existsSync();
+  }
+
   bool isExistsNovelData({String ext = 'npz'}) {
     final file = File('${PathUtil.getOutPath()}/$title.$ext');
     return file.existsSync();
@@ -220,6 +226,8 @@ class Novel {
   }
 
   String get getContentPath => '$path/content';
+  String get getChapterBookmarkPath => '$path/fav_list2.json';
+  
 
   Future<String> getAllSizeLabel() async {
     if (cacheSize > 0) {

@@ -86,7 +86,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
   }
 
   void _addQuick() async {
-    final bm = PdfBookmarkModel(page: widget.currentPage);
+    final bm = PdfBookmarkModel.create(page: widget.currentPage);
     list.add(bm);
     list.sort((a, b) => a.page.compareTo(b.page));
     await PdfBookmarkModel.setBookmarkListFromPath(widget.bookmarkPath, list);

@@ -15,9 +15,13 @@ class NovelPdf {
     return path.endsWith('.pdf');
   }
 
+  // get
   String get getTitle {
     return path.getName();
   }
+
+  String get getBookmarkPath =>
+      '${path.getName(withExt: false)}.bookmark.config';
 
   String get getConfigPath {
     return path.replaceAll('.pdf', '-v3-config.json');

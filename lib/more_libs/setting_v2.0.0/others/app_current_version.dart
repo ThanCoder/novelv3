@@ -12,7 +12,9 @@ class AppCurrentVersion extends StatelessWidget {
         final data = snapshot.data;
         if (snapshot.hasData && data != null) {
           return Card(
-            child: ListTile(title: Text('Current Version: ${data.version}')),
+            child: ListTile(
+              title: Text('Current Version: ${data.version} Pre-Build-4'),
+            ),
           );
         }
         return SizedBox.shrink();

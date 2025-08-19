@@ -69,6 +69,12 @@ class Chapter {
   }
 
   // static
+  static Chapter? createFromPath(String path) {
+    final file = File(path);
+    if (!file.existsSync()) return null;
+    return Chapter.createPath(path);
+  }
+
   static bool isChapter(String path) {
     final number = int.tryParse(path.getName());
     return number == null ? false : true;
