@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
-import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
-import 'package:novel_v3/app/services/novel_bookmark_services.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
 
@@ -18,7 +17,7 @@ class _NovelBookmarkActionState extends State<NovelBookmarkAction> {
     final novel = context.watch<NovelProvider>().getCurrent;
     if (novel == null) return SizedBox.shrink();
     return FutureBuilder(
-      future: NovelBookmarkServices.isExists(novel.title),
+      future: NovelBookmarkDB.getInstance().getNovelList(),
       builder: (context, asyncSnapshot) {
         if (asyncSnapshot.connectionState == ConnectionState.waiting) {
           return TLoader(size: 20);
@@ -26,7 +25,9 @@ class _NovelBookmarkActionState extends State<NovelBookmarkAction> {
         if (!asyncSnapshot.hasData) {
           return SizedBox.shrink();
         }
-        final isExists = asyncSnapshot.data ?? false;
+        final list = asyncSnapshot.data ?? [];
+        final index = list.indexWhere((e) => e.title == novel.title);
+        final isExists = index != -1;
         return IconButton(
           onPressed: _toggle,
           icon: Icon(
@@ -42,9 +43,9 @@ class _NovelBookmarkActionState extends State<NovelBookmarkAction> {
 
   void _toggle() async {
     final novel = context.read<NovelProvider>().getCurrent!;
-    await NovelBookmarkServices.toggle(novel.title);
+    await NovelBookmarkDB.getInstance().toggleNovel(novel);
     if (!mounted) return;
-    context.read<NovelBookmarkProvider>().initList();
     setState(() {});
+    context.read<NovelProvider>().refreshNotifier();
   }
 }

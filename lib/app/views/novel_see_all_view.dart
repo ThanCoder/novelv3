@@ -8,7 +8,13 @@ import '../novel_dir_app.dart';
 class NovelSeeAllView extends StatefulWidget {
   String title;
   List<Novel> list;
-  NovelSeeAllView({super.key, required this.title, required this.list});
+  EdgeInsetsGeometry padding;
+  NovelSeeAllView({
+    super.key,
+    required this.title,
+    required this.list,
+    this.padding = const EdgeInsets.all(8.0),
+  });
 
   @override
   State<NovelSeeAllView> createState() => _NovelSeeAllViewState();
@@ -24,18 +30,21 @@ class _NovelSeeAllViewState extends State<NovelSeeAllView> {
 
   @override
   Widget build(BuildContext context) {
-    return SeeAllView<Novel>(
-      itemWidth: 140,
-      itemHeight: 160,
-      title: widget.title,
-      list: list,
-      showMoreButtonBottomPos: false,
-      onSeeAllClicked: (title, list) =>
-          goNovelSeeAllScreen(context, title, list),
-      gridItemBuilder: (context, item) => NovelGridItem(
-        novel: item,
-        onClicked: (novel) => goNovelContentScreen(context, novel),
-        onRightClicked: _showItemMenu,
+    return Padding(
+      padding: widget.padding,
+      child: SeeAllView<Novel>(
+        itemWidth: 140,
+        itemHeight: 160,
+        title: widget.title,
+        list: list,
+        showMoreButtonBottomPos: false,
+        onSeeAllClicked: (title, list) =>
+            goNovelSeeAllScreen(context, title, list),
+        gridItemBuilder: (context, item) => NovelGridItem(
+          novel: item,
+          onClicked: (novel) => goNovelContentScreen(context, novel),
+          onRightClicked: _showItemMenu,
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:novel_v3/more_libs/json_database_v1.0.0/converter.dart';
 import 'package:than_pkg/services/map_services.dart';
 
 class ChapterBookmarkData {
@@ -16,19 +15,19 @@ class ChapterBookmarkData {
       chapter: MapServices.getInt(map, ['chapter']),
     );
   }
-  static ChapterBookmarkDataConverter get getConverter =>
-      ChapterBookmarkDataConverter();
 }
 
-class ChapterBookmarkDataConverter
-    implements MapConverter<ChapterBookmarkData> {
-  @override
-  ChapterBookmarkData from(Map<String, dynamic> map) {
-    return ChapterBookmarkData.fromMap(map);
-  }
-
-  @override
-  Map<String, dynamic> to(ChapterBookmarkData value) {
-    return value.toMap();
+extension ChapterBookmarkDataExtension on List<ChapterBookmarkData> {
+  void sortChapter({bool isAsc = true}) {
+    sort((a, b) {
+      if (isAsc) {
+        if (a.chapter > b.chapter) return 1;
+        if (a.chapter < b.chapter) return -1;
+      } else {
+        if (a.chapter > b.chapter) return -1;
+        if (a.chapter < b.chapter) return 1;
+      }
+      return 0;
+    });
   }
 }

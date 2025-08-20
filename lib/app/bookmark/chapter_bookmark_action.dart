@@ -1,0 +1,103 @@
+import 'package:flutter/material.dart';
+import 'package:novel_v3/app/bookmark/chapter_bookmark_db.dart';
+import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:provider/provider.dart';
+import 'package:t_widgets/t_widgets.dart';
+
+class ChapterBookmarkAction extends StatefulWidget {
+  Chapter chapter;
+  Widget? title;
+  ChapterBookmarkAction({super.key, required this.chapter, this.title});
+
+  @override
+  State<ChapterBookmarkAction> createState() => _ChapterBookmarkActionState();
+}
+
+class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  bool isExists = false;
+  bool isLoading = false;
+
+  void init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final novel = context.read<NovelProvider>().getCurrent!;
+      final list = await ChapterBookmarkDB.instance(
+        novel.getChapterBookmarkPath,
+      ).getCacheList();
+
+      final index = list.indexWhere((e) => e.chapter == widget.chapter.number);
+      isExists = index != -1;
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      NovelDirApp.showDebugLog(e.toString(), tag: 'ChapterBookmarkAction:init');
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return TLoader(size: 30);
+    }
+    if (widget.title != null) {
+      return Row(spacing: 5, children: [widget.title!, _getAction()]);
+    }
+    return _getAction();
+  }
+
+  Widget _getAction() {
+    return IconButton(
+      onPressed: _toggleBookmark,
+      icon: Icon(
+        color: isExists ? Colors.red : Colors.blue,
+        isExists ? Icons.bookmark_remove : Icons.bookmark_add,
+      ),
+    );
+  }
+
+  void _toggleBookmark() async {
+    final novel = context.read<NovelProvider>().getCurrent!;
+    if (isExists) {
+      await ChapterBookmarkDB.instance(
+        novel.getChapterBookmarkPath,
+      ).toggle(widget.chapter.number);
+      if (!mounted) return;
+      setState(() {
+        isExists = !isExists;
+      });
+    } else {
+      //add
+      showTReanmeDialog(
+        context,
+        barrierDismissible: false,
+        text: widget.chapter.getTitle(),
+        title: Text('Book Mark'),
+        submitText: 'Add',
+        onSubmit: (text) async {
+          await ChapterBookmarkDB.instance(
+            novel.getChapterBookmarkPath,
+          ).toggle(widget.chapter.number, title: text);
+          if (!mounted) return;
+          setState(() {
+            isExists = !isExists;
+          });
+        },
+      );
+    }
+  }
+}

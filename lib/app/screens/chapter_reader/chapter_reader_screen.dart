@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:novel_v3/app/bookmark/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -72,9 +73,16 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
                   final item = list[index];
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      item.getContents,
-                      style: TextStyle(fontSize: 19),
+                    child: Column(
+                      spacing: 5,
+                      children: [
+                        Text(item.getContents, style: TextStyle(fontSize: 19)),
+                        // bookmark
+                        ChapterBookmarkAction(
+                          chapter: item,
+                          title: Text('BookMark'),
+                        ),
+                      ],
                     ),
                   );
                 },

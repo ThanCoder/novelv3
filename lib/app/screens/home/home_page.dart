@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
+import 'package:novel_v3/app/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/screens/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
@@ -38,7 +40,17 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: _getList(),
       // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
+      //   onPressed: () async {
+      //     final url =
+      //         'https://mmxianxia.com/novels/the-unique-guardian-beast-master-in-cultivation-world/';
+      //     goRoute(
+      //       context,
+      //       builder: (context) => FetcherDescScreen(
+      //         onReceiveData: (context, description) {
+      //           print(description);
+      //         },
+      //       ),
+      //     );
       //   },
       //   child: Text('export'),
       // ),
@@ -75,6 +87,9 @@ class _HomePageState extends State<HomePage> {
       child: CustomScrollView(
         slivers: [
           _getSliverAppBar(),
+          
+          SliverToBoxAdapter(child: _getRecentWidet()),
+
           SliverToBoxAdapter(
             child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
           ),
@@ -120,11 +135,39 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getBookmarkWidet() {
-    final provider = context.watch<NovelBookmarkProvider>();
-    if (provider.isLoading) {
-      return Center(child: TLoaderRandom());
-    }
-    return NovelSeeAllView(title: 'BookMark', list: provider.getList);
+    return FutureBuilder(
+      future: NovelBookmarkDB.getInstance().getNovelList(),
+      builder: (context, asyncSnapshot) {
+        if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: TLoaderRandom());
+        }
+        if (asyncSnapshot.hasData) {
+          return NovelSeeAllView(
+            title: 'မှတ်သားထား',
+            list: asyncSnapshot.data ?? [],
+          );
+        }
+        return SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _getRecentWidet() {
+    return FutureBuilder(
+      future: NovelRecentDB.getInstance().getNovelList(),
+      builder: (context, asyncSnapshot) {
+        if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: TLoaderRandom());
+        }
+        if (asyncSnapshot.hasData) {
+          return NovelSeeAllView(
+            title: 'မကြာခင်က',
+            list: asyncSnapshot.data ?? [],
+          );
+        }
+        return SizedBox.shrink();
+      },
+    );
   }
 
   // main menu

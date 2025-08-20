@@ -23,6 +23,9 @@ void main() async {
   await TWidgets.instance.init(
     defaultImageAssetsPath: 'assets/cover.png',
     getDarkMode: () => Setting.getAppConfig.isDarkTheme,
+    onDownloadImage: (url, savePath) async {
+      await Dio().download(url, savePath);
+    },
   );
   await PdfReader.instance.init(
     getDarkTheme: () => Setting.getAppConfig.isDarkTheme,

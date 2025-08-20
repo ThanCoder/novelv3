@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-export 'fetcher_chapter_screen.dart';
-export 'fetcher_types.dart';
+export 'screens/fetcher_chapter_screen.dart';
 export 'fetch_send_data.dart';
 export 'fetch_receive_data.dart';
-export 'fetch_chapter_query.dart';
 
 typedef OnGetHtmlContent = Future<String> Function(String url);
 typedef OnShowMessageCallback =

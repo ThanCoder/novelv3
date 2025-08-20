@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/novel_bookmark_action.dart';
+import 'package:novel_v3/app/bookmark/novel_bookmark_action.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
+import 'package:novel_v3/app/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
@@ -11,6 +12,7 @@ import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/screens/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_desc_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -25,6 +27,23 @@ class ContentHomePage extends StatefulWidget {
 }
 
 class _ContentHomePageState extends State<ContentHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  void init() async {
+    try {
+      final novel = context.read<NovelProvider>().getCurrent!;
+      await NovelRecentDB.getInstance().addRecent(novel);
+      if (!mounted) return;
+      context.read<NovelProvider>().refreshNotifier();
+    } catch (e) {
+      NovelDirApp.showDebugLog(e.toString(), tag: 'ContentHomePage:init');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ContentImageWrapper(
@@ -187,6 +206,14 @@ class _ContentHomePageState extends State<ContentHomePage> {
           },
         ),
         ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Online Description'),
+          onTap: () {
+            closeContext(context);
+            _addOnlineDesc();
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.edit_document),
           title: Text('Edit Novel'),
           onTap: () {
@@ -243,6 +270,20 @@ class _ContentHomePageState extends State<ContentHomePage> {
         if (!mounted) return;
         closeContext(context);
       },
+    );
+  }
+
+  void _addOnlineDesc() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    goRoute(
+      context,
+      builder: (context) => FetcherDescScreen(
+        onReceiveData: (context, description) {
+          novel.setContent(description);
+          context.read<NovelProvider>().refreshNotifier();
+        },
+      ),
     );
   }
 

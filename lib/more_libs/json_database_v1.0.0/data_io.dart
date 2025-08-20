@@ -6,6 +6,10 @@ abstract class DataIO {
 }
 
 class JsonIO implements DataIO {
+  static final JsonIO instance = JsonIO._();
+  JsonIO._();
+  factory JsonIO() => instance;
+
   @override
   Future<void> write(String path, String json) async {
     final file = File(path);

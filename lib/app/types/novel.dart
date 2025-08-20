@@ -227,7 +227,6 @@ class Novel {
 
   String get getContentPath => '$path/content';
   String get getChapterBookmarkPath => '$path/fav_list2.json';
-  
 
   Future<String> getAllSizeLabel() async {
     if (cacheSize > 0) {

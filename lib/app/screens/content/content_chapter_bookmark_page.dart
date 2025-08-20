@@ -49,7 +49,11 @@ class _ContentChapterBookmarkPageState
       final novel = context.read<NovelProvider>().getCurrent;
       if (novel == null) return;
       final db = ChapterBookmarkDB.instance(novel.getChapterBookmarkPath);
-      list = await db.load();
+      final res = await db.get();
+      // filter
+      list = res
+          .where((e) => Chapter.isChapterExists(novel.path, e.chapter))
+          .toList();
 
       if (!mounted) return;
       setState(() {
@@ -128,16 +132,7 @@ class _ContentChapterBookmarkPageState
   }
 
   void _onSort() {
-    list.sort((a, b) {
-      if (isAsc) {
-        if (a.chapter > b.chapter) return 1;
-        if (a.chapter < b.chapter) return -1;
-      } else {
-        if (a.chapter > b.chapter) return -1;
-        if (a.chapter < b.chapter) return 1;
-      }
-      return 0;
-    });
+    list.sortChapter(isAsc: isAsc);
     setState(() {});
   }
 
@@ -160,32 +155,47 @@ class _ContentChapterBookmarkPageState
 
   // item menu
   void _showItemMenu(ChapterBookmarkData bookmark) {
-    // showTMenuBottomSheet(
-    //   context,
-    //   title: Text('Bookmark: ${chapter.number}'),
-    //   children: [
-    //     ListTile(
-    //       leading: Icon(Icons.edit_document),
-    //       title: Text('Edit'),
-    //       onTap: () {
-    //         closeContext(context);
-    //       },
-    //     ),
-    //     ListTile(
-    //       iconColor: Colors.red,
-    //       leading: Icon(Icons.delete_forever_rounded),
-    //       title: Text('Delete Forever!'),
-    //       onTap: () {
-    //         closeContext(context);
-    //         _deleteForever(chapter);
-    //       },
-    //     ),
-    //   ],
-    // );
+    showTMenuBottomSheet(
+      context,
+      title: Text('Bookmark: ${bookmark.chapter}'),
+      children: [
+        // ListTile(
+        //   leading: Icon(Icons.edit_document),
+        //   title: Text('Edit'),
+        //   onTap: () {
+        //     closeContext(context);
+        //     _goEditBookmark(bookmark);
+        //   },
+        // ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever_rounded),
+          title: Text('Remove'),
+          onTap: () {
+            closeContext(context);
+            _removeBookmark(bookmark);
+          },
+        ),
+      ],
+    );
   }
 
-  // void _deleteForever(Chapter chapter) {
-  // context.read<ChapterProvider>().delete(chapter);
+  void _removeBookmark(ChapterBookmarkData book) {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    // remove ui
+    final index = list.indexWhere((e) => e.chapter == book.chapter);
+    if (index == -1) return;
+    list.removeAt(index);
+    setState(() {});
+    // remove db
+    ChapterBookmarkDB.instance(
+      novel.getChapterBookmarkPath,
+    ).delete(index, book);
+  }
+
+  // void _goEditBookmark(ChapterBookmarkData book) {
+
   // }
 
   // go text reader

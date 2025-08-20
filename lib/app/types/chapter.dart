@@ -80,8 +80,8 @@ class Chapter {
     return number == null ? false : true;
   }
 
-  static bool isChapterExists(String path) {
-    final file = File(path);
+  static bool isChapterExists(String novelPath, int chapter) {
+    final file = File('$novelPath/$chapter');
     return file.existsSync();
   }
 

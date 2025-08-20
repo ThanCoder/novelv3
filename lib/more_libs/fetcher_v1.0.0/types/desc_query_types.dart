@@ -1,0 +1,1 @@
+enum DescQueryTypes { mmxianxia, msunmm }

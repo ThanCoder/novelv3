@@ -75,7 +75,7 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   int get getLatestChapter {
-    if (_list.isEmpty) return 1;
+    if (_list.isEmpty) return 0;
     _list.sortNumber();
     return _list.last.number;
   }

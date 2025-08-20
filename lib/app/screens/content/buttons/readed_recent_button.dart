@@ -21,7 +21,7 @@ class _ReadedRecentButtonState extends State<ReadedRecentButton> {
     }
     final chapterNum = novel.getReadedNumber;
     final path = '${novel.path}/$chapterNum';
-    if (!Chapter.isChapterExists(path)) {
+    if (!Chapter.isChapterExists(novel.path, chapterNum)) {
       return SizedBox.shrink();
     }
 

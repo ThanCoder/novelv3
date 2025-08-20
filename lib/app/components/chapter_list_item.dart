@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/bookmark/chapter_bookmark_action.dart';
 import '../novel_dir_app.dart';
 
 class ChapterListItem extends StatelessWidget {
@@ -39,6 +40,7 @@ class ChapterListItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              ChapterBookmarkAction(chapter: chapter),
             ],
           ),
         ),

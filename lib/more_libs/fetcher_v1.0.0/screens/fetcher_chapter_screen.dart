@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/querys/chapter_query.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/selector_rules.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/soup_extractor.dart';
+import '../types/chapter_query_types.dart';
 import 'package:t_html_parser/t_html_extensions.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'fetcher.dart';
+import '../fetcher.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 typedef ReceiveCallback =
     void Function(BuildContext context, FetchReceiveData receiveData);
 
 class FetcherChapterScreen extends StatefulWidget {
-  FetchSendData fetchSendData;
   ReceiveCallback? onReceiveData;
+  FetchSendData fetchSendData;
   VoidCallback? onClosed;
   FetcherChapterScreen({
     super.key,
@@ -35,17 +39,25 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
   final chapterNumberFocus = FocusNode();
 
   late FetchSendData fetchSendData;
-  FetcherTypes fetcherType = FetcherTypes.telegra;
-  List<FetchChapterQuery> queryList = [
-    FetchChapterQuery(
-      title: '.tl_article_header h1',
-      content: '.tl_article',
-      type: FetcherTypes.telegra,
+  ChapterQueryTypes fetcherType = ChapterQueryTypes.telegra;
+  List<ChapterQuery> queryList = [
+    ChapterQuery(
+      startHostUrl: 'https://telegra.ph',
+      titleSelector: '.tl_article_header h1',
+      contentSelector: '#_tl_editor',
+      type: ChapterQueryTypes.telegra,
     ),
-    FetchChapterQuery(
-      title: '.epheader .cat-series',
-      content: '.epcontent',
-      type: FetcherTypes.mmxianxia,
+    ChapterQuery(
+      startHostUrl: 'https://mmxianxia.com',
+      titleSelector: '.epheader .cat-series',
+      contentSelector: '.epcontent',
+      type: ChapterQueryTypes.mmxianxia,
+    ),
+    ChapterQuery(
+      startHostUrl: 'https://msunmm.com',
+      titleSelector: '.epheader .cat-series',
+      contentSelector: '.epcontent',
+      type: ChapterQueryTypes.msunmm,
     ),
   ];
 
@@ -165,13 +177,13 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
   }
 
   Widget _getTypeChooser() {
-    return DropdownButton<FetcherTypes>(
+    return DropdownButton<ChapterQueryTypes>(
       borderRadius: BorderRadius.circular(4),
       padding: EdgeInsets.all(4),
       value: fetcherType,
-      items: FetcherTypes.values
+      items: ChapterQueryTypes.values
           .map(
-            (e) => DropdownMenuItem<FetcherTypes>(
+            (e) => DropdownMenuItem<ChapterQueryTypes>(
               value: e,
               child: Text(e.name.toCaptalize()),
             ),
@@ -211,22 +223,6 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
         ),
       ],
     );
-  }
-
-  void _onFetcherTypeAutoChanger(String text) {
-    if (text.isEmpty) return;
-    if (text.startsWith('https://telegra.ph') &&
-        fetcherType != FetcherTypes.telegra) {
-      setState(() {
-        fetcherType = FetcherTypes.telegra;
-      });
-    }
-    if (text.startsWith('https://mmxianxia.com') &&
-        fetcherType != FetcherTypes.mmxianxia) {
-      setState(() {
-        fetcherType = FetcherTypes.mmxianxia;
-      });
-    }
   }
 
   void _onSave() {
@@ -290,6 +286,18 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
     }
   }
 
+  void _onFetcherTypeAutoChanger(String text) {
+    if (text.isEmpty) return;
+    for (var query in queryList) {
+      if (text.startsWith(query.startHostUrl) && fetcherType != query.type) {
+        setState(() {
+          fetcherType = query.type;
+        });
+        break;
+      }
+    }
+  }
+
   void _onFetchType(String content) {
     try {
       final htmlEle = content.toHtmlElement;
@@ -297,23 +305,16 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
         Fetcher.instance.showErrorMessage(context, 'HTML Ele is null');
         return;
       }
-      final title = htmlEle.getQuerySelectorText(selector: _getQueryTitle);
-      titleController.text = title;
-
-      var body = htmlEle.getQuerySelectorHtml(
-        selector: _getQueryContent,
-        attr: '',
+      final extractor = SoupExtractor(
+        rules: {
+          'title': SelectorRules(_getQueryTitle),
+          'content': SelectorRules(_getQueryContent),
+        },
       );
-      // <br>, <p>, <div> စတဲ့ tag တွေကို newline နဲ့ အစားထိုး
-      String text = body
-          .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
-          .replaceAll(RegExp(r'</p>', caseSensitive: false), '\n')
-          .replaceAll(RegExp(r'</div>', caseSensitive: false), '\n');
+      final map = extractor.extract(content);
 
-      // အဲ့တုန့် tag တွေ ဖယ် (အခြား HTML tag)
-      text = text.replaceAll(RegExp(r'<[^>]*>'), '');
-
-      contentController.text = text;
+      titleController.text = map['title'] ?? '';
+      contentController.text = map['content'] ?? '';
     } catch (e) {
       Fetcher.showDebugLog(
         e.toString(),
@@ -334,12 +335,12 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
   String get _getQueryTitle {
     final index = queryList.indexWhere((e) => e.type == fetcherType);
     if (index == -1) return '';
-    return queryList[index].title;
+    return queryList[index].titleSelector;
   }
 
   String get _getQueryContent {
     final index = queryList.indexWhere((e) => e.type == fetcherType);
     if (index == -1) return '';
-    return queryList[index].content;
+    return queryList[index].contentSelector;
   }
 }

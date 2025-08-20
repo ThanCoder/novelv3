@@ -4,7 +4,7 @@ import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher_chapter_screen.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
