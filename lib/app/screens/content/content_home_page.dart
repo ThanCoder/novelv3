@@ -178,6 +178,9 @@ class _ContentHomePageState extends State<ContentHomePage> {
                   debugPrint(e.toString());
                 }
               },
+              onLongPress: () {
+                ThanPkg.appUtil.copyText(item);
+              },
             ),
           );
         },
