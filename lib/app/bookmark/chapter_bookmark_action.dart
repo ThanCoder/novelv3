@@ -31,7 +31,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
       final novel = context.read<NovelProvider>().getCurrent!;
       final list = await ChapterBookmarkDB.instance(
         novel.getChapterBookmarkPath,
-      ).getCacheList();
+      ).getCacheList(key: novel.title);
 
       final index = list.indexWhere((e) => e.chapter == widget.chapter.number);
       isExists = index != -1;
@@ -75,7 +75,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     if (isExists) {
       await ChapterBookmarkDB.instance(
         novel.getChapterBookmarkPath,
-      ).toggle(widget.chapter.number);
+      ).toggle(chapterNumber: widget.chapter.number, key: novel.title);
       if (!mounted) return;
       setState(() {
         isExists = !isExists;
@@ -89,9 +89,11 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
         title: Text('Book Mark'),
         submitText: 'Add',
         onSubmit: (text) async {
-          await ChapterBookmarkDB.instance(
-            novel.getChapterBookmarkPath,
-          ).toggle(widget.chapter.number, title: text);
+          await ChapterBookmarkDB.instance(novel.getChapterBookmarkPath).toggle(
+            chapterNumber: widget.chapter.number,
+            title: text,
+            key: novel.title,
+          );
           if (!mounted) return;
           setState(() {
             isExists = !isExists;

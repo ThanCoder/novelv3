@@ -35,9 +35,11 @@ class NovelRecentDB extends JsonDBInterface<NovelRecentData> {
               Directory('${PathUtil.getSourcePath()}/${e.title}').existsSync(),
         )
         .toList();
-    filteredList.insert(0, NovelRecentData(title: novel.title));
+    final value = NovelRecentData(title: novel.title);
+    filteredList.insert(0, value);
 
     await save(filteredList);
+    notify(value);
   }
 
   Future<List<Novel>> getNovelList() async {

@@ -168,6 +168,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
     );
   }
 
+  // sorting
   Widget _getSortWidget() {
     final resList = List.of(sortList);
     if (onlineList.isNotEmpty) {
@@ -220,18 +221,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       localList.sortDesc(isAdded: isAsc);
     }
     if (currentSortId == 4) {
-      localList.sort((a, b) {
-        if (isAsc) {
-          //ထုတ်ပြီးသား
-          if (a.isExistsNovelData() && !b.isExistsNovelData()) return -1;
-          if (!a.isExistsNovelData() && b.isExistsNovelData()) return 1;
-        } else {
-          //မထုတ်ရသေး
-          if (a.isExistsNovelData() && !b.isExistsNovelData()) return 1;
-          if (!a.isExistsNovelData() && b.isExistsNovelData()) return -1;
-        }
-        return 0;
-      });
+      localList.sortN3Data(isExported: isAsc);
     }
     if (currentSortId == 10) {
       final titleList = onlineList.map((e) => e.title).toSet().toList();
@@ -344,6 +334,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       ),
     );
   }
+
   // delete novel
   void _deleteConfirm(Novel novel) {
     showTConfirmDialog(

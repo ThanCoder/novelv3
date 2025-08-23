@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
+import 'package:novel_v3/app/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/screens/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
+import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -22,11 +24,19 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    implements DatabaseListener<NovelRecentData> {
   @override
   void initState() {
     super.initState();
+    NovelRecentDB.getInstance().addListener(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  @override
+  void dispose() {
+    NovelRecentDB.getInstance().removeListener(this);
+    super.dispose();
   }
 
   Future<void> init() async {
@@ -87,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       child: CustomScrollView(
         slivers: [
           _getSliverAppBar(),
-          
+
           SliverToBoxAdapter(child: _getRecentWidet()),
 
           SliverToBoxAdapter(
@@ -119,7 +129,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getSliverAppBar() {
     return SliverAppBar(
-      title: Text('Novel V3 Pre'),
+      title: Text('Novel V3 ${Setting.versionLable}'),
       snap: true,
       floating: true,
       backgroundColor: Setting.getAppConfig.isDarkTheme
@@ -143,7 +153,7 @@ class _HomePageState extends State<HomePage> {
         }
         if (asyncSnapshot.hasData) {
           return NovelSeeAllView(
-            title: 'မှတ်သားထား',
+            title: 'မှတ်သားထားသော',
             list: asyncSnapshot.data ?? [],
           );
         }
@@ -305,5 +315,11 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  //novel recent db listener
+  @override
+  void onChanged(NovelRecentData? value) {
+    setState(() {});
   }
 }

@@ -83,6 +83,7 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
 
   bool isLoading = false;
   bool autoIncreChapter = true;
+  bool isIncludeTitle = false;
 
   void init() {
     urlController.text = fetchSendData.url;
@@ -108,12 +109,26 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
             _getTypeChooser(),
             Divider(),
             Text('Result'),
-            TTextField(
-              label: Text('Title'),
-              controller: titleController,
-              maxLines: 1,
-              isSelectedAll: true,
-              focusNode: titleFocus,
+            Row(
+              children: [
+                Expanded(
+                  child: TTextField(
+                    label: Text('Title'),
+                    controller: titleController,
+                    maxLines: 1,
+                    isSelectedAll: true,
+                    focusNode: titleFocus,
+                  ),
+                ),
+                Switch.adaptive(
+                  value: isIncludeTitle,
+                  onChanged: (value) {
+                    setState(() {
+                      isIncludeTitle = value;
+                    });
+                  },
+                ),
+              ],
             ),
             TTextField(
               label: Text('Content'),
@@ -314,7 +329,12 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
       final map = extractor.extract(content);
 
       titleController.text = map['title'] ?? '';
-      contentController.text = map['content'] ?? '';
+      if (isIncludeTitle) {
+        contentController.text =
+            '${titleController.text}\n${map['content'] ?? ''}';
+      } else {
+        contentController.text = (map['content'] ?? '').trim();
+      }
     } catch (e) {
       Fetcher.showDebugLog(
         e.toString(),

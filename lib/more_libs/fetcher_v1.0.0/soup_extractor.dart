@@ -52,6 +52,18 @@ class SoupExtractor {
     );
     res = res.replaceAll(RegExp(r'<[^>]+>'), '');
     res = res.replaceAll(RegExp(r'\n\s*\n+'), '\n\n');
+    // space အမျိုးအစားများ
+    res = res.replaceAll("&nbsp;", " ");
+    res = res.replaceAll("&ensp;", " "); // U+2002 en space
+    res = res.replaceAll("&emsp;", " "); // U+2003 em space
+    res = res.replaceAll("&thinsp;", " "); // U+2009 thin space
+
+    // အခြားသင်္ကေတများ
+    res = res.replaceAll("&lt;", "<");
+    res = res.replaceAll("&gt;", ">");
+    res = res.replaceAll("&amp;", "&");
+    res = res.replaceAll("&quot;", "\"");
+    res = res.replaceAll("&apos;", "'");
     return res;
   }
 }

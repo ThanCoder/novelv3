@@ -43,7 +43,7 @@ class NovelDevListItem extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 2,
+                  spacing: 5,
                   children: [
                     Text(
                       'T: ${novel.title}',
@@ -64,6 +64,7 @@ class NovelDevListItem extends StatelessWidget {
                         return SizedBox.shrink();
                       },
                     ),
+                    // date
                     Row(
                       children: [
                         Icon(Icons.date_range),
@@ -115,12 +116,15 @@ class NovelDevListItem extends StatelessWidget {
         novel.isAdult
             ? StatusText(bgColor: StatusText.adultColor, text: 'Adult')
             : SizedBox.shrink(),
-        novel.getContent.isEmpty
+        !novel.cacheIsExistsDesc
             ? StatusText(
                 bgColor: const Color.fromARGB(255, 102, 87, 22),
                 text: 'Description မရှိပါ',
               )
-            : SizedBox.shrink(),
+            : StatusText(
+                bgColor: const Color.fromARGB(255, 2, 73, 2),
+                text: 'Description ရှိ',
+              ),
         // is novel data is exists
         novel.isExistsNovelData()
             ? StatusText(text: 'V3Data ထုတ်ထားပါတယ်')

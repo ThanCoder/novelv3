@@ -1,17 +1,26 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/factorys/file_scanner_factory.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 import '../novel_dir_app.dart';
+
+typedef IsolatePerparingSearchListReturn = (
+  List<Novel> novelList,
+  List<String> author,
+  List<String> translator,
+  List<String> mc,
+  List<String> tags,
+);
 
 class NovelSearchScreen extends StatefulWidget {
   Duration searchDelay;
   NovelSearchScreen({
     super.key,
-    this.searchDelay = const Duration(milliseconds: 1200),
+    this.searchDelay = const Duration(milliseconds: 1500),
   });
 
   @override
@@ -19,19 +28,49 @@ class NovelSearchScreen extends StatefulWidget {
 }
 
 class _NovelSearchScreenState extends State<NovelSearchScreen> {
-  List<Novel> list = [];
-  List<Novel> resultList = [];
-  bool isShowSearchList = false;
-  Timer? _searchDelayTimer;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => init());
+    // WidgetsBinding.instance.addPostFrameCallback((_) => init());
+    init();
   }
 
-  void init() async {
-    list = context.read<NovelProvider>().getList;
-    setState(() {});
+  List<Novel> list = [];
+  List<String> authorList = [];
+  List<String> translatorList = [];
+  List<String> mcList = [];
+  List<String> tagsList = [];
+  List<Novel> resultList = [];
+  bool isShowSearchList = false;
+  Timer? _searchDelayTimer;
+  bool isLoading = false;
+  bool isSearching = false;
+
+  Future<void> init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      final (novelList, author, translator, mc, tags) =
+          await getPreparingSearchList();
+
+      list = novelList;
+      authorList = author;
+      translatorList = translator;
+      mcList = mc;
+      tagsList = tags;
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -44,35 +83,47 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TSearchField(
-          hintText: 'Search...',
-          onChanged: (text) {
-            if (_searchDelayTimer?.isActive ?? false) {
-              _searchDelayTimer?.cancel();
-            }
-
-            _searchDelayTimer = Timer(
-              widget.searchDelay,
-              () => _onSearch(text),
-            );
-          },
-          autofocus: false,
-          onCleared: () {
-            resultList.clear();
-            isShowSearchList = false;
-            setState(() {});
-          },
+        title: Column(
+          children: [
+            TSearchField(
+              hintText: 'Search...',
+              onChanged: _onSearchChange,
+              autofocus: false,
+              onCleared: () {
+                resultList.clear();
+                isShowSearchList = false;
+                setState(() {});
+              },
+            ),
+            isSearching ? LinearProgressIndicator() : SizedBox.shrink(),
+          ],
         ),
       ),
       body: _getSwitchWidget(),
     );
   }
 
-  void _onSearch(String text) {
+  // event
+  void _onSearchChange(String text) {
+    if (_searchDelayTimer?.isActive ?? false) {
+      _searchDelayTimer?.cancel();
+    }
     if (text.isEmpty) {
+      setState(() {
+        isSearching = false;
+      });
       return;
     }
+    if (!isSearching) {
+      setState(() {
+        isSearching = true;
+      });
+    }
 
+    _searchDelayTimer = Timer(widget.searchDelay, () => _onSearch(text));
+  }
+
+  void _onSearch(String text) {
     resultList = list.where((e) {
       if (e.title.toUpperCase().contains(text.toUpperCase())) {
         return true;
@@ -90,11 +141,17 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     }).toList();
     // sort
     resultList.sort((a, b) => a.title.compareTo(b.title));
-    isShowSearchList = true;
-    setState(() {});
+    setState(() {
+      isShowSearchList = true;
+      isSearching = false;
+    });
   }
+  //
 
   Widget _getSwitchWidget() {
+    if (isLoading) {
+      return Center(child: TLoaderRandom());
+    }
     if (isShowSearchList && resultList.isEmpty) {
       return Center(child: Text('ရှာမတွေ့ပါ....'));
     }
@@ -111,19 +168,18 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     }
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: _getAuthorList(list)),
-        SliverToBoxAdapter(child: _getTranslatorList(list)),
-        SliverToBoxAdapter(child: _getTagsList(list)),
-        SliverToBoxAdapter(child: _getMCList(list)),
+        SliverToBoxAdapter(child: _getAuthorList()),
+        SliverToBoxAdapter(child: _getTranslatorList()),
+        SliverToBoxAdapter(child: _getTagsList()),
+        SliverToBoxAdapter(child: _getMCList()),
       ],
     );
   }
 
-  Widget _getAuthorList(List<Novel> list) {
-    final res = list.map((e) => e.getAuthor).toSet().toList();
+  Widget _getAuthorList() {
     return _getWrap(
       'Author',
-      res,
+      authorList,
       onClicked: (text) {
         final res = list.where((e) => e.getAuthor == text).toList();
         goNovelSeeAllScreen(context, text, res);
@@ -131,11 +187,10 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     );
   }
 
-  Widget _getTranslatorList(List<Novel> list) {
-    final res = list.map((e) => e.getTranslator).toSet().toList();
+  Widget _getTranslatorList() {
     return _getWrap(
       'Translator',
-      res,
+      translatorList,
       onClicked: (text) {
         final res = list.where((e) => e.getTranslator == text).toList();
         goNovelSeeAllScreen(context, text, res);
@@ -143,11 +198,10 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     );
   }
 
-  Widget _getMCList(List<Novel> list) {
-    final res = list.map((e) => e.getMC).toSet().toList();
+  Widget _getMCList() {
     return _getWrap(
       'MC',
-      res,
+      mcList,
       onClicked: (text) {
         final res = list.where((e) => e.getMC == text).toList();
         goNovelSeeAllScreen(context, text, res);
@@ -155,11 +209,10 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     );
   }
 
-  Widget _getTagsList(List<Novel> list) {
-    final res = list.expand((e) => e.getTags).toSet().toList();
+  Widget _getTagsList() {
     return _getWrap(
       'Tags',
-      res,
+      tagsList,
       onClicked: (text) {
         final res = list.where((e) => e.getTagContent.contains(text)).toList();
         goNovelSeeAllScreen(context, text, res);
@@ -185,5 +238,24 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
         ),
       ),
     );
+  }
+
+  //static
+  static Future<IsolatePerparingSearchListReturn>
+  getPreparingSearchList() async {
+    final rootPath = FolderFileServices.getSourcePath();
+
+    //final (novelList, author, translator, mc, tags) =
+    return await Isolate.run<IsolatePerparingSearchListReturn>(() async {
+      final list = await FileScannerFactory.getScanner<Novel>().getList(
+        rootPath,
+      );
+      final author = list.map((e) => e.getAuthor).toSet().toList();
+      final translator = list.map((e) => e.getTranslator).toSet().toList();
+      final mc = list.map((e) => e.getMC).toSet().toList();
+      final tags = list.expand((e) => e.getTags).toSet().toList();
+      final result = (list, author, translator, mc, tags);
+      return result;
+    });
   }
 }

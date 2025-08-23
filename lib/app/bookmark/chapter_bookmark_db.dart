@@ -14,21 +14,27 @@ class ChapterBookmarkDB extends JsonDBInterface<ChapterBookmarkData> {
     );
   }
 
-  static List<ChapterBookmarkData> _caheList = [];
+  static final Map<String, List<ChapterBookmarkData>> _caheList = {};
 
   void clearCacheList() {
     _caheList.clear();
   }
 
-  Future<List<ChapterBookmarkData>> getCacheList() async {
-    if (_caheList.isEmpty) {
-      _caheList = await get();
+  Future<List<ChapterBookmarkData>> getCacheList({required String key}) async {
+    if (_caheList.containsKey(key)) {
+      _caheList[key] ?? [];
+    } else {
+      _caheList[key] = await get();
     }
-    return _caheList;
+    return _caheList[key] ?? [];
   }
 
-  Future<void> toggle(int chapterNumber, {String title = 'Untitled'}) async {
-    final list = await getCacheList();
+  Future<void> toggle({
+    required int chapterNumber,
+    required String key,
+    String title = 'Untitled',
+  }) async {
+    final list = await getCacheList(key: key);
     final index = list.indexWhere((e) => e.chapter == chapterNumber);
     final isExists = index != -1;
     if (isExists) {

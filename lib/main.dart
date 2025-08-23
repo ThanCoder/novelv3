@@ -16,7 +16,10 @@ import 'more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Setting.instance.initSetting(appName: 'novel_v3');
+  await Setting.instance.initSetting(
+    appName: 'novel_v3',
+    versionLable: 'Pre Build 5',
+  );
 
   await ThanPkg.instance.init();
 

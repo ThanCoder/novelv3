@@ -38,7 +38,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
       final novel = context.read<NovelProvider>().getCurrent!;
       await NovelRecentDB.getInstance().addRecent(novel);
       if (!mounted) return;
-      context.read<NovelProvider>().refreshNotifier();
+      // context.read<NovelProvider>().refreshNotifier();
     } catch (e) {
       NovelDirApp.showDebugLog(e.toString(), tag: 'ContentHomePage:init');
     }

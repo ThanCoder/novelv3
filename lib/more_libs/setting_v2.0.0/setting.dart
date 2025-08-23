@@ -22,6 +22,7 @@ class Setting {
   static String appExternalPath = '';
   static ValueNotifier<AppConfig> get getAppConfigNotifier => appConfigNotifier;
   static String get getOutPath => PathUtil.getOutPath();
+  static String versionLable = '';
 
   //widget
   static Widget get getHomeScreen => AppSettingScreen();
@@ -40,10 +41,12 @@ class Setting {
     bool isShowDebugLog = true,
     OnShowMessageCallback? onShowMessage,
     bool isAppRefreshConfigPathChanged = false,
+    String versionLable = '',
   }) async {
     try {
       Setting.isShowDebugLog = isShowDebugLog;
       Setting.isAppRefreshConfigPathChanged = isAppRefreshConfigPathChanged;
+      Setting.versionLable = versionLable;
       this.appName = appName;
       this.onShowMessage = onShowMessage;
 

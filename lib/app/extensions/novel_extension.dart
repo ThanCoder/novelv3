@@ -1,16 +1,35 @@
 import 'package:novel_v3/app/types/novel.dart';
 
 extension NovelExtension on List<Novel> {
+  void sortN3Data({bool isExported = true}) {
+    sort((a, b) {
+      if (isExported) {
+        //ထုတ်ပြီးသား
+        if (a.isExistsNovelData() && !b.isExistsNovelData()) return -1;
+        if (!a.isExistsNovelData() && b.isExistsNovelData()) return 1;
+      } else {
+        //မထုတ်ရသေး
+        if (a.isExistsNovelData() && !b.isExistsNovelData()) return 1;
+        if (!a.isExistsNovelData() && b.isExistsNovelData()) return -1;
+      }
+      return 0;
+    });
+  }
+
   void sortDesc({bool isAdded = true}) {
     sort((a, b) {
       if (isAdded) {
-        return a.cacheIsExistsDesc ? -1 : 1;
+        //ထုတ်ပြီးသား
+        if (a.cacheIsExistsDesc && !b.cacheIsExistsDesc) return -1;
+        if (!a.cacheIsExistsDesc && b.cacheIsExistsDesc) return 1;
       } else {
-        return a.cacheIsExistsDesc ? 1 : -1;
+        //မထုတ်ရသေး
+        if (a.cacheIsExistsDesc && !b.cacheIsExistsDesc) return 1;
+        if (!a.cacheIsExistsDesc && b.cacheIsExistsDesc) return -1;
       }
+      return 0;
     });
   }
-  
 
   void sortCompleted({bool isCompleted = true}) {
     sort((a, b) {
