@@ -59,6 +59,7 @@ class Setting {
       appConfigPath = PathUtil.createDir('$rootPath/.$appName');
       appRootPath = appConfigPath;
       appExternalPath = externalPath ?? '';
+      // init
 
       await initSetConfigFile();
     } catch (e) {

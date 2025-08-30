@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_screen.dart';
@@ -203,12 +202,10 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
   // go text reader
   void _goTextReader(Chapter chapter) {
-    goRoute(
+    goChapterReader(
       context,
-      builder: (context) => ChapterReaderScreen(
-        chapter: chapter,
-        onReaderClosed: _checkLastChapter,
-      ),
+      chapter: chapter,
+      onReaderClosed: _checkLastChapter,
     );
   }
 

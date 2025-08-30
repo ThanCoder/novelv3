@@ -3,7 +3,6 @@ import 'package:novel_v3/app/bookmark/chapter_bookmark_data.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_db.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_list_item.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/index.dart';
@@ -207,9 +206,6 @@ class _ContentChapterBookmarkPageState
       showTMessageDialogError(context, '`${bookmark.chapter}` မရှိပါ...');
       return;
     }
-    goRoute(
-      context,
-      builder: (context) => ChapterReaderScreen(chapter: chapter),
-    );
+    goChapterReader(context, chapter: chapter);
   }
 }

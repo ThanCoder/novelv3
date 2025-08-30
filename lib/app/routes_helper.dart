@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/chapter_reader/chapter_reader_config.dart';
+import 'package:novel_v3/app/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/screens/content/novel_content_home_screen.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/screens/pdfrx_reader_screen.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/types/pdf_config.dart';
@@ -18,8 +20,28 @@ Future<void> goNovelContentScreen(BuildContext context, Novel novel) async {
   goRoute(context, builder: (context) => NovelContentHomeScreen());
 }
 
-void goPdfReader(BuildContext context, NovelPdf pdf) {
+// text reader
+void goChapterReader(
+  BuildContext context, {
+  required Chapter chapter,
+  OnChapterReaderCloseCallback? onReaderClosed,
+}) {
+  final configPath = PathUtil.getConfigPath(name: 'chapter_reader.config.json');
+  goRoute(
+    context,
+    builder: (context) => ChapterReaderScreen(
+      chapter: chapter,
+      config: ChapterReaderConfig.fromPath(configPath),
+      onUpdateConfig: (updatedConfig) {
+        updatedConfig.savePath(configPath);
+      },
+      onReaderClosed: onReaderClosed,
+    ),
+  );
+}
 
+// pdf reader
+void goPdfReader(BuildContext context, NovelPdf pdf) {
   goRoute(
     context,
     builder: (context) => PdfrxReaderScreen(

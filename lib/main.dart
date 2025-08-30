@@ -18,16 +18,17 @@ void main() async {
 
   await Setting.instance.initSetting(
     appName: 'novel_v3',
-    versionLable: 'Pre Build 5',
+    versionLable: 'NV3 Pre Build 5',
   );
 
   await ThanPkg.instance.init();
 
+  final dio = Dio();
   await TWidgets.instance.init(
     defaultImageAssetsPath: 'assets/cover.png',
     getDarkMode: () => Setting.getAppConfig.isDarkTheme,
     onDownloadImage: (url, savePath) async {
-      await Dio().download(url, savePath);
+      await dio.download(url, savePath);
     },
   );
   await PdfReader.instance.init(

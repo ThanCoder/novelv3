@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/screens/chapter_reader/chapter_reader_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -28,12 +27,10 @@ class _ReadedRecentButtonState extends State<ReadedRecentButton> {
     return TextButton(
       child: Text('Ch: $chapterNum ကနေဖတ်မယ်'),
       onPressed: () {
-        goRoute(
+        goChapterReader(
           context,
-          builder: (context) => ChapterReaderScreen(
-            chapter: Chapter.createPath(path),
-            onReaderClosed: _checkLastChapter,
-          ),
+          chapter: Chapter.createPath(path),
+          onReaderClosed: _checkLastChapter,
         );
       },
     );

@@ -1,38 +1,191 @@
+  <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Share Novel</title>
+     <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f6fa;
+      margin: 0;
+      padding: 20px;
+    }
+    .file {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .file:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      word-break: break-word;
+    }
+    .size, .date, .type {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .size::before {
+      content: "📦 ";
+    }
+    .type::before {
+      content: "📄 ";
+      color: #27ae60;
+      font-weight: bold;
+    }
+    .type {
+      color: #27ae60; /* အစိမ်းလေး */
+    }
+    .date::before {
+      content: "📅 ";
+    }
+    .download {
+      margin-top: 12px;
+    }
+    .download a {
+      display: inline-block;
+      background: #3498db;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s ease-in-out;
+    }
+    .download a:hover {
+      background: #2980b9;
+    }
+    .download a::before {
+      content: "⬇️ ";
+    }
+  </style>
 
-(မသေမျိးကျင့်ကြံခြင်းစနစ် ကုဒ်ဖြေနေပါတယ်….ဒေတာဖိုင် မှားယွင်းပါတယ်… နောက်တစ်ကြိမ် ကုဒ်ဖြေလိုပါသလား)
+  </head>
+  <body>
+  <div class="file-list">
+      <div class="file">
+  <div class="title">ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.png</div>
+  <div class="size">Size: 1012.27 KB</div>
+  <div class="type">Type: image/png</div>
+  <div class="date">Date: 06:43 PM 08/08/2025</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.png">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.pdf.png</div>
+  <div class="size">Size: 125.72 KB</div>
+  <div class="type">Type: image/png</div>
+  <div class="date">Date: 02:09 PM 04/12/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.pdf.png">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book-config.json</div>
+  <div class="size">Size: 242.00 byte</div>
+  <div class="type">Type: application/json</div>
+  <div class="date">Date: 02:09 PM 04/12/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book-config.json">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.config.json</div>
+  <div class="size">Size: 141.00 byte</div>
+  <div class="type">Type: application/json</div>
+  <div class="date">Date: 08:26 PM 30/11/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.config.json">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">config.enc</div>
+  <div class="size">Size: 233.00 byte</div>
+ 
+  <div class="date">Date: 05:20 AM 08/11/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/config.enc">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book-book_list.json</div>
+  <div class="size">Size: 2.00 byte</div>
+  <div class="type">Type: application/json</div>
+  <div class="date">Date: 06:39 PM 06/11/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book-book_list.json">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">cover.png</div>
+  <div class="size">Size: 276.51 KB</div>
+  <div class="type">Type: image/png</div>
+  <div class="date">Date: 11:10 AM 29/10/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/cover.png">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">is-completed</div>
+  <div class="size">Size: 0.00 byte</div>
+ 
+  <div class="date">Date: 11:10 AM 29/10/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/is-completed">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">link</div>
+  <div class="size">Size: 0.00 byte</div>
+ 
+  <div class="date">Date: 11:10 AM 29/10/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/link">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">content</div>
+  <div class="size">Size: 0.00 byte</div>
+ 
+  <div class="date">Date: 11:10 AM 29/10/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/content">Download</a>
+  </div>
+  </div>
+      
+  <div class="file">
+  <div class="title">ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.pdf</div>
+  <div class="size">Size: 53.13 MB</div>
+  <div class="type">Type: application/pdf</div>
+  <div class="date">Date: 11:10 AM 29/10/2024</div>
+  <div class="download">
+    <a href="/download?path=/home/than/.novel_v3/source/ပြိုင်ဘက်ကင်းပါရမီရှင် (ရှောင်လောင်)/ပြိုင်ဘက်ကင်းပါရမီရှင်_completed_book.pdf">Download</a>
+  </div>
+  </div>
+      
+  </div>
+    </body>
+</html>
 
-“အင်း”
-
-“ကုဒ်ဖြေတာ အောင််မြင်ပါတယ်…မသေမျိုးကျင့်ကြံခြင်းစနစ်ကို နာမည်ပြန်ပေးနေပါတယ်)
-
-“သားရဲထိန်းစနစ် အသင့်ဖြစ်ပါပြီ”
-
-ကောင်လေး အံ့ဩသွားသည်။ ဤလောကသည် မသေမျိုးကျင့်ကြံမှုလောက ဖြစ်သည်။ သားရဲထိန်းစနစ် ဘယ်လိုရောက်လာသည်မသိ။
-
-“တိန်”
-
-(မစ်ရှင် – ထိပ်သီးပါရာမောင့်)
-
-(စနစ်စစ်ဆေးချက်၊ လက်ရှိလောကမှာ သင်ဟာ အသန်မာဆုံးသားရဲထိန်းဖြစ်လာပါပြီ။ ဆုလာဒ် ထုတ်ပေးနေပါတယ်)
-
-(ဝိညာဉ်တစ်သောင်း ထိပ်သီးခန္ဓာ)
-
-(ရှင်းလင်းချက်၊ သင်ဟာ မသေမျိုးဝိညာဉ်ရင်းမြစ် ဝိညာဉ်တစ်သောင်းထိပ်သီးခန္ဓာပိုင်ရှင် ဖြစ်လာပါပြီ။ သင့်ရဲ့ သွေးတစ်စက်ချင်း၊ ဆံပင်တစ်ချောင်းချင်းစီဟာ မသေမျိုးအဖြစ်ကိုရဖို့ အတားအဆီးအားလုံး ချိုးဖျက်ပြီး ထာဝရရှင်သန်ခြင်းနှင့် အနန္တစွမ်းအားရနိုင်မယ့်အလားအလာ ရှိနေပါပြီ)
-
-မှင်သက်မိနေသည့်ကောင်လေး တစ်ကိုယ်လုံးတုန်သွားပြီး ပြန်အသိဝင်လာသည်။ လောဘရိပ်အပြည့်ဖြင့် သူ့ကိုစိုက်ကြည့်နေသည့် မျက်လုံးပေါင်းတစ်ဒါဇင်ကျော်ကို သူမြင်လိုက်ရသည်။ သူ့ခြံထဲမှ အိမ်မွေးတိရစ္ဆာန်များပင်ဖြစ်သည်။
-
-လူဝင်စားဖုန်ချင်အန်း။
-
-အတိတ်မှတ်ဉာဏ်ပြန်ရထားသော်လည်း သာမန်ဆယ်ကျော်သက်တစ်ယောက်။
-
-သူတောင့်တသည်က မသေမျိုးကျင့်ကြံမှုလမ်းစဉ်။ ရလာသည်က သားရဲထိန်းစနစ်။
-
-မကြိုက်။
- မကြိုက်သော်လည်း ရွေးစရာမရှိ။ ရှိသည့်စနစ်ကိုသာ သူလေ့ကျင့်ရသည်။
- အိမ်တွင် မွေးထားသည့် တိရစ္ဆာန်များဖြင့် မကျွမ်းကျင်သေးသည့် သားရဲအသွင်ပြောင်း နည်းလမ်းများစမ်းကြည့်သည်။ သူ့မိခင်တုတ်ချက်မိသည်။သို့သော် သူဇွဲမလျှော့။
-
-အနာဂတ်မှာ ထိုစနစ်နှင့်အတူ သူဘယ်လောက် စွမ်းအားကြီးလာမလဲ။
-
-ဘယ်လို အလွဲအချော်တွေ ကြုံရဦးမလဲ။
-
-ဘယ်လို အခက်အခဲတွေ ကြုံရဦးမလဲ။
+ 
