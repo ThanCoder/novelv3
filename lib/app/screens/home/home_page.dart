@@ -7,7 +7,7 @@ import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
-import 'package:novel_v3/app/screens/developer/novel_dev_list_screen.dart';
+import 'package:novel_v3/app/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';

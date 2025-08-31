@@ -9,7 +9,7 @@ import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
-import 'package:novel_v3/app/screens/developer/novel_config_export_dialog.dart';
+import 'package:novel_v3/app/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_desc_screen.dart';

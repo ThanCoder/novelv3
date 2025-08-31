@@ -5,8 +5,8 @@ import 'package:novel_v3/app/n3_data/n3_data.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
-import 'package:novel_v3/app/screens/developer/novel_config_export_dialog.dart';
-import 'package:novel_v3/app/screens/developer/novel_dev_list_item.dart';
+import 'package:novel_v3/app/developer/novel_config_export_dialog.dart';
+import 'package:novel_v3/app/developer/novel_dev_list_item.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../routes_helper.dart';
+import '../routes_helper.dart';
 
 class NovelDevListScreen extends StatefulWidget {
   const NovelDevListScreen({super.key});
@@ -190,6 +190,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
           sortList: resList,
           isAsc: isAsc,
           showSortType: TShowSortTypes.title,
+          submitText: Text('စစ်ထုတ်မယ်'),
           sortDialogCallback: (id, isAsc) {
             currentSortId = id;
             this.isAsc = isAsc;

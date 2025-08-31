@@ -18,7 +18,7 @@ void main() async {
 
   await Setting.instance.initSetting(
     appName: 'novel_v3',
-    versionLable: 'NV3 Pre Build 5',
+    versionLable: 'NV3 Pre Build 6',
   );
 
   await ThanPkg.instance.init();
