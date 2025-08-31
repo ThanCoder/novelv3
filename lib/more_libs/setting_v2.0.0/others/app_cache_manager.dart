@@ -17,14 +17,17 @@ class _AppCacheManagerState extends State<AppCacheManager> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _getCalSize(),
-      builder: (context, asyncSnapshot) {
-        if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return ListTile(title: Text('တွက်ချက်နေပါတယ်...'));
         }
-        final size = asyncSnapshot.data ?? '';
-        if (asyncSnapshot.hasData && size.isNotEmpty) {
+        final (size, itemCount) = snapshot.data ?? ('', 0);
+        if (snapshot.hasData && size.isNotEmpty) {
           return Card(
-            child: ListTile(title: Text('Cache: $size'), onTap: _cleanCache),
+            child: ListTile(
+              title: Text('Cache: $size - ( Items: $itemCount )'),
+              onTap: _cleanCache,
+            ),
           );
         }
         return SizedBox.shrink();
@@ -32,34 +35,47 @@ class _AppCacheManagerState extends State<AppCacheManager> {
     );
   }
 
-  Future<String> _getCalSize() async {
+  Future<(String, int)> _getCalSize() async {
     final dir = Directory(getCachePath);
     int sizeInt = 0;
+    int itemCount = 0;
     if (dir.existsSync()) {
       for (var file in dir.listSync()) {
         if (!file.isFile) continue;
         sizeInt += (await file.stat()).size;
+        itemCount++;
       }
     }
     // await Future.delayed(Duration(seconds: 3));
-
-    return sizeInt > 0 ? sizeInt.toDouble().toFileSizeLabel() : '';
+    final label = sizeInt > 0 ? sizeInt.toDouble().toFileSizeLabel() : '';
+    return (label, itemCount);
   }
 
   void _cleanCache() async {
-    try {
-      final dir = Directory(getCachePath);
-      if (dir.existsSync()) {
-        for (var file in dir.listSync()) {
-          if (!file.isFile) continue;
-          await file.delete(recursive: true);
+    // local func
+    Future<void> scanDir(Directory dir) async {
+      try {
+        if (dir.existsSync()) {
+          for (var file in dir.listSync()) {
+            if (file.isDirectory) {
+              await scanDir(Directory(file.path));
+              await file.delete(recursive: true);
+            } else if (file.isFile) {
+              // print('del: ${file.path}');
+              await file.delete(recursive: true);
+            }
+          }
         }
+      } catch (e) {
+        Setting.showDebugLog(e.toString(), tag: 'AppCacheManager:_cleanCache');
       }
-      if (!mounted) return;
-      setState(() {});
-    } catch (e) {
-      Setting.showDebugLog(e.toString(), tag: 'AppCacheManager:_cleanCache');
     }
+
+    // call inner func
+    await scanDir(Directory(getCachePath));
+
+    if (!mounted) return;
+    setState(() {});
   }
 
   String get getCachePath => PathUtil.getCachePath();

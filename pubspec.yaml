@@ -21,7 +21,6 @@ dependencies:
   t_html_parser: ^0.0.2
   t_server: ^2.1.0
   flutter_animate: ^4.5.2
-  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

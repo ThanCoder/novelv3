@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/share/libs/share_receive_url_form_dialog.dart';
 import 'package:novel_v3/app/share/novel_receive_screen.dart';
 import 'package:novel_v3/app/share/novel_share_screen.dart';
+import 'package:novel_v3/more_libs/json_database_v1.0.0/recent_db.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -55,9 +56,11 @@ class _ShareScreenState extends State<ShareScreen> {
   }
 
   void _goReceiveScreen() async {
-    final pre = await SharedPreferences.getInstance();
+    final pre = await RecentDB.getInstance(
+      dbPath: PathUtil.getCachePath(name: 'share-recent.db.json'),
+    );
     String key = 'share-host-address';
-    String url = pre.getString(key) ?? '';
+    String url = pre.getString(key);
 
     if (!mounted) return;
     showDialog(

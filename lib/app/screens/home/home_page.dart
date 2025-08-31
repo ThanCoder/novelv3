@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
@@ -48,22 +49,20 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _getList(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     final url =
-      //         'https://mmxianxia.com/novels/the-unique-guardian-beast-master-in-cultivation-world/';
-      //     goRoute(
-      //       context,
-      //       builder: (context) => FetcherDescScreen(
-      //         onReceiveData: (context, description) {
-      //           print(description);
-      //         },
-      //       ),
-      //     );
-      //   },
-      //   child: Text('export'),
-      // ),
+      body: DropTarget(
+        enable: true,
+        onDragDone: (details) {
+          if (details.files.isEmpty) return;
+          final path = details.files.first.path;
+          final mime = lookupMimeType(path) ?? '';
+          if (mime.isEmpty) return;
+          if (mime.endsWith('/pdf')) {
+            // pdf
+            _createPdfWithNovel(NovelPdf.createPath(path));
+          }
+        },
+        child: _getList(),
+      ),
     );
   }
 
@@ -274,46 +273,57 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  // create form pdf
   void _addNewNovelFromPdf() {
-    final provider = context.read<NovelProvider>();
-
     goRoute(
       context,
       builder: (context) => PdfScannerScreen(
         onClicked: (pdfCtx, pdf) async {
-          try {
-            // check already title
-            final index = provider.getList.indexWhere(
-              (e) => e.title == pdf.getTitle,
-            );
-            if (index != -1) {
-              showTSnackBarError(
-                pdfCtx,
-                'Novel Title ရှိနေပြီးသားဖြစ်နေပါတယ်!...',
-              );
-              return;
-            }
-            closeContext(pdfCtx);
-
-            final novel = Novel.createTitle(
-              pdf.getTitle.getName(withExt: false),
-            );
-            // delay
-            await Future.delayed(Duration(milliseconds: 300));
-            // copy cover
-            final pdfCoverFile = File(pdf.getCoverPath);
-            await pdfCoverFile.copy(novel.getCoverPath);
-            // move pdf file
-            await pdf.rename('${novel.path}/${pdf.getTitle}');
-
-            provider.add(novel);
-            if (!context.mounted) return;
-            goRoute(context, builder: (context) => EditNovelForm(novel: novel));
-          } catch (e) {
-            NovelDirApp.showDebugLog(e.toString());
-          }
+          closeContext(pdfCtx);
+          _createPdfWithNovel(pdf);
         },
       ),
+    );
+  }
+
+  // create with rename novel dialog
+  void _createPdfWithNovel(NovelPdf pdf) {
+    final provider = context.read<NovelProvider>();
+    final list = provider.getList;
+    // rename novel title
+    showTReanmeDialog(
+      context,
+      barrierDismissible: false,
+      autofocus: true,
+      submitText: 'New',
+      title: Text('New Novel'),
+      text: pdf.getTitle.getName(withExt: false),
+      onCheckIsError: (text) {
+        final index = list.indexWhere((e) => e.title == (text.trim()));
+        if (index != -1) {
+          return 'title ရှိနေပြီးသားဖြစ်နေပါတယ်!...';
+        }
+        return null;
+      },
+      onSubmit: (text) async {
+        if (text.isEmpty) return;
+        try {
+          final novel = Novel.createTitle(text.trim());
+          // delay
+          await Future.delayed(Duration(milliseconds: 500));
+          // copy cover
+          final pdfCoverFile = File(pdf.getCoverPath);
+          await pdfCoverFile.copy(novel.getCoverPath);
+          // move pdf file
+          await pdf.rename('${novel.path}/${pdf.getTitle}');
+
+          provider.add(novel);
+          if (!mounted) return;
+          goRoute(context, builder: (context) => EditNovelForm(novel: novel));
+        } catch (e) {
+          NovelDirApp.showDebugLog(e.toString());
+        }
+      },
     );
   }
 
