@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/bookmark/novel_bookmark_db.dart';
+import 'package:novel_v3/app/clean_manager/clean_manager_screen.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/recents/novel_recent_db.dart';
@@ -193,6 +194,14 @@ class _HomePageState extends State<HomePage>
           },
         ),
         ListTile(
+          leading: Icon(Icons.cleaning_services_rounded),
+          title: Text('Clean Mangager'),
+          onTap: () {
+            closeContext(context);
+            _goCleanManagerScreen();
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.view_list_rounded),
           title: Text('Dev'),
           onTap: () {
@@ -219,6 +228,10 @@ class _HomePageState extends State<HomePage>
 
   void _goDevScreen() {
     goRoute(context, builder: (context) => NovelDevListScreen());
+  }
+
+  void _goCleanManagerScreen() {
+    goRoute(context, builder: (context) => CleanManagerScreen());
   }
 
   // add main menu

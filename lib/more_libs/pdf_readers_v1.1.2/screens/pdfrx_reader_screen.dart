@@ -94,150 +94,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     );
   }
 
-  //pdf loaded
-  void onPdfLoaded() async {
-    try {
-      //set offset
-      // await Future.delayed(const Duration(milliseconds: 1200));
-
-      if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
-        await pdfController.goToPage(pageNumber: oldPage);
-
-        final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
-        await pdfController.setZoom(newOffset, oldZoom);
-      }
-      // config page changed
-      else if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY == 0) {
-        await pdfController.goToPage(pageNumber: oldPage);
-        // offset ပြန်ရယူ
-        final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
-        await pdfController.setZoom(newOffset, oldZoom);
-        // print('set 2');
-      } else {
-        // await pdfController.goToPage(pageNumber: oldPage);
-        await goPage(oldPage);
-      }
-
-      await ThanPkg.platform.toggleFullScreen(
-        isFullScreen: config.isFullscreen,
-      );
-
-      // pdfController.
-      if (!mounted) return;
-      setState(() {
-        isLoading = false;
-      });
-      pageCount = pdfController.pageCount;
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        isLoading = false;
-      });
-      PdfReader.showDebugLog(
-        e.toString(),
-        tag: 'PdfrxReaderScreen:onPdfLoaded',
-      );
-    }
-  }
-
-  void _initConfig() async {
-    try {
-      if (Platform.isAndroid) {
-        await ThanPkg.android.app.toggleKeepScreenOn(
-          isKeep: config.isKeepScreen,
-        );
-        await ThanPkg.android.app.requestOrientation(
-          type: config.screenOrientation,
-        );
-        if (config.screenOrientation == ScreenOrientationTypes.landscape) {
-          //full screen
-          await ThanPkg.android.app.showFullScreen();
-        }
-      }
-      setState(() {
-        isCanGoBack = !config.isOnBackpressConfirm;
-      });
-    } catch (e) {
-      PdfReader.showDebugLog(
-        e.toString(),
-        tag: 'PdfrxReaderScreen:_initConfig',
-      );
-    }
-  }
-
-  //go page
-  Future<void> goPage(int pageNum) async {
-    try {
-      double oldZoom = pdfController.currentZoom;
-
-      await pdfController.goToPage(pageNumber: pageNum);
-      Offset oldOffset = pdfController.centerPosition;
-      // delay
-      await Future.delayed(Duration(milliseconds: delayMiliSec));
-      await pdfController.setZoom(oldOffset, oldZoom);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  void _showGoToDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => TRenameDialog(
-        text: currentPage.toString(),
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        textInputType: TextInputType.number,
-        renameLabelText: Text('Go To Page Range(1-$pageCount)'),
-        onCheckIsError: (text) {
-          int num = int.tryParse(text) ?? 0;
-          if (num > pageCount) {
-            return 'page number ကျော်လွန်နေပါတယ်';
-          }
-          return null;
-        },
-        submitText: 'Go',
-        onCancel: () {},
-        onSubmit: (text) {
-          if (text.isEmpty || text == '0') return;
-          try {
-            goPage(int.parse(text));
-          } catch (e) {
-            debugPrint(e.toString());
-          }
-        },
-      ),
-    );
-  }
-
-  void _setFullScreen(bool isFull) async {
-    if (isLoading) return;
-    if (config.isFullscreen == isFull) return;
-    config.isFullscreen = isFull;
-    double oldZoom = pdfController.currentZoom;
-    Offset oldOffset = pdfController.centerPosition;
-
-    setState(() {});
-    await ThanPkg.platform.toggleFullScreen(isFullScreen: isFull);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(milliseconds: delayMiliSec));
-      await pdfController.setZoom(oldOffset, oldZoom);
-    });
-  }
-
-  void _showSetting() {
-    showDialog(
-      context: context,
-      builder: (context) => PdfReaderSettingDialog(
-        config: config,
-        onApply: (changedConfig) {
-          config = changedConfig;
-          _saveConfig();
-          _initConfig();
-        },
-      ),
-    );
-  }
-
   PdfViewerParams getParams() => PdfViewerParams(
     margin: 0,
     scrollByMouseWheel: config.scrollByMouseWheel,
@@ -450,6 +306,150 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  //pdf loaded
+  void onPdfLoaded() async {
+    try {
+      //set offset
+      // await Future.delayed(const Duration(milliseconds: 1200));
+
+      if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
+        await pdfController.goToPage(pageNumber: oldPage);
+
+        final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
+        await pdfController.setZoom(newOffset, oldZoom);
+      }
+      // config page changed
+      else if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY == 0) {
+        await pdfController.goToPage(pageNumber: oldPage);
+        // offset ပြန်ရယူ
+        final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
+        await pdfController.setZoom(newOffset, oldZoom);
+        // print('set 2');
+      } else {
+        // await pdfController.goToPage(pageNumber: oldPage);
+        await goPage(oldPage);
+      }
+
+      await ThanPkg.platform.toggleFullScreen(
+        isFullScreen: config.isFullscreen,
+      );
+      pageCount = pdfController.pageCount;
+
+      // pdfController.
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:onPdfLoaded',
+      );
+    }
+  }
+
+  void _initConfig() async {
+    try {
+      if (Platform.isAndroid) {
+        await ThanPkg.android.app.toggleKeepScreenOn(
+          isKeep: config.isKeepScreen,
+        );
+        await ThanPkg.android.app.requestOrientation(
+          type: config.screenOrientation,
+        );
+        if (config.screenOrientation == ScreenOrientationTypes.landscape) {
+          //full screen
+          await ThanPkg.android.app.showFullScreen();
+        }
+      }
+      setState(() {
+        isCanGoBack = !config.isOnBackpressConfirm;
+      });
+    } catch (e) {
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:_initConfig',
+      );
+    }
+  }
+
+  //go page
+  Future<void> goPage(int pageNum) async {
+    try {
+      double oldZoom = pdfController.currentZoom;
+
+      await pdfController.goToPage(pageNumber: pageNum);
+      Offset oldOffset = pdfController.centerPosition;
+      // delay
+      await Future.delayed(Duration(milliseconds: delayMiliSec));
+      await pdfController.setZoom(oldOffset, oldZoom);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  void _showGoToDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => TRenameDialog(
+        text: currentPage.toString(),
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        textInputType: TextInputType.number,
+        renameLabelText: Text('Go To Page Range(1-$pageCount)'),
+        onCheckIsError: (text) {
+          int num = int.tryParse(text) ?? 0;
+          if (num > pageCount) {
+            return 'page number ကျော်လွန်နေပါတယ်';
+          }
+          return null;
+        },
+        submitText: 'Go',
+        onCancel: () {},
+        onSubmit: (text) {
+          if (text.isEmpty || text == '0') return;
+          try {
+            goPage(int.parse(text));
+          } catch (e) {
+            debugPrint(e.toString());
+          }
+        },
+      ),
+    );
+  }
+
+  void _setFullScreen(bool isFull) async {
+    if (isLoading) return;
+    if (config.isFullscreen == isFull) return;
+    config.isFullscreen = isFull;
+    double oldZoom = pdfController.currentZoom;
+    Offset oldOffset = pdfController.centerPosition;
+
+    setState(() {});
+    await ThanPkg.platform.toggleFullScreen(isFullScreen: isFull);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(Duration(milliseconds: delayMiliSec));
+      await pdfController.setZoom(oldOffset, oldZoom);
+    });
+  }
+
+  void _showSetting() {
+    showDialog(
+      context: context,
+      builder: (context) => PdfReaderSettingDialog(
+        config: config,
+        onApply: (changedConfig) {
+          config = changedConfig;
+          _saveConfig();
+          _initConfig();
+        },
+      ),
     );
   }
 
