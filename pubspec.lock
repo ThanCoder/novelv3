@@ -681,10 +681,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: ab16075cd4d043d1174bec8373698bea543255f327812f0fa0d2daff09e0829f
+      sha256: "3a2982bb24ce40b36e31106916a92b60e61f86a7061fa45cb26926d5602635fe"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.0"
+    version: "3.8.0"
   timeago:
     dependency: transitive
     description:

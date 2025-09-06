@@ -253,7 +253,11 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       final author = list.map((e) => e.getAuthor).toSet().toList();
       final translator = list.map((e) => e.getTranslator).toSet().toList();
       final mc = list.map((e) => e.getMC).toSet().toList();
-      final tags = list.expand((e) => e.getTags).toSet().toList();
+      final tags = list
+          .expand((e) => e.getTags)
+          .map((e) => e.trim())
+          .toSet()
+          .toList();
       final result = (list, author, translator, mc, tags);
       return result;
     });

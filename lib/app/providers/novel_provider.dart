@@ -93,8 +93,8 @@ class NovelProvider extends ChangeNotifier {
   List<String> get getAllTags {
     final res = _list
         .expand((e) => e.getTags)
-        .toSet()
         .map((e) => e.trim())
+        .toSet()
         .toList();
     return res;
   }
