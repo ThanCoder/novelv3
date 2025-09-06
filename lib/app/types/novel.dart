@@ -49,7 +49,11 @@ class Novel {
 
   List<String> get getTags {
     final content = getTagContent;
-    final list = content.split(',').where((e) => e.isNotEmpty).toList();
+    final list = content
+        .split(',')
+        .where((e) => e.isNotEmpty)
+        .map((e) => e.trim())
+        .toList();
     return list;
   }
 

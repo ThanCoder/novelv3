@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage>
 
   Widget _getSliverAppBar() {
     return SliverAppBar(
-      title: Text(Setting.versionLable),
+      title: Text('Novel V3'),
       snap: true,
       floating: true,
       backgroundColor: Setting.getAppConfig.isDarkTheme

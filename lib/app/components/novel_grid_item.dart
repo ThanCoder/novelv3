@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:t_widgets/widgets/index.dart';
 import '../novel_dir_app.dart';
 
@@ -79,7 +80,7 @@ class NovelGridItem extends StatelessWidget {
                   )
                 : const SizedBox.shrink(),
           ],
-        ),
+        ).animate().scaleXY(duration: Duration(milliseconds: 700)),
       ),
     );
   }

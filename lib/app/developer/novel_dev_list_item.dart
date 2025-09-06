@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/types/novel.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/components/index.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -31,69 +32,73 @@ class NovelDevListItem extends StatelessWidget {
       onLongPress: () => onRightClicked?.call(novel),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Card(
-          child: Row(
-            spacing: 8,
-            children: [
-              SizedBox(
-                width: 140,
-                height: 150,
-                child: TImage(source: novel.getCoverPath),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 5,
-                  children: [
-                    Text(
-                      'T: ${novel.title}',
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    FutureBuilder(
-                      future: novel.getAllSizeLabel(),
-                      builder: (context, asyncSnapshot) {
-                        if (asyncSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Text('Size: တွက်ချက်နေပါတယ်...');
-                        }
-                        if (asyncSnapshot.hasData) {
-                          return Text('Size: ${asyncSnapshot.data ?? ''}');
-                        }
-                        return SizedBox.shrink();
-                      },
-                    ),
-                    // date
-                    Row(
+        child:
+            Card(
+              child: Row(
+                spacing: 8,
+                children: [
+                  SizedBox(
+                    width: 140,
+                    height: 150,
+                    child: TImage(source: novel.getCoverPath),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 5,
                       children: [
-                        Icon(Icons.date_range),
                         Text(
-                          novel.date.toParseTime(),
+                          'T: ${novel.title}',
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(fontSize: 13),
                         ),
+                        FutureBuilder(
+                          future: novel.getAllSizeLabel(),
+                          builder: (context, asyncSnapshot) {
+                            if (asyncSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Text('Size: တွက်ချက်နေပါတယ်...');
+                            }
+                            if (asyncSnapshot.hasData) {
+                              return Text('Size: ${asyncSnapshot.data ?? ''}');
+                            }
+                            return SizedBox.shrink();
+                          },
+                        ),
+                        // date
+                        Row(
+                          children: [
+                            Icon(Icons.date_range),
+                            Text(
+                              novel.date.toParseTime(),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ],
+                        ),
+
+                        // status
+                        _getStatusWidget(),
+                        // already title
+                        Text(
+                          isExistsTitle
+                              ? 'Online မှာရှိနေပါတယ်'
+                              : 'Online မှာမရှိပါ...',
+                          style: TextStyle(
+                            color: isExistsTitle ? Colors.green : Colors.red,
+                          ),
+                        ),
+                        // _getTagWidget(),
                       ],
                     ),
-
-                    // status
-                    _getStatusWidget(),
-                    // already title
-                    Text(
-                      isExistsTitle
-                          ? 'Online မှာရှိနေပါတယ်'
-                          : 'Online မှာမရှိပါ...',
-                      style: TextStyle(
-                        color: isExistsTitle ? Colors.green : Colors.red,
-                      ),
-                    ),
-                    // _getTagWidget(),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ).animate().shimmer(
+              delay: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 900),
+            ),
       ),
     );
   }

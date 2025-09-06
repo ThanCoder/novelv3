@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/n3_data/n3_data.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/widgets/index.dart';
@@ -98,7 +99,7 @@ class _N3DataListItemState extends State<N3DataListItem> {
               ),
             ],
           ),
-        ),
+        ).animate().shimmer(duration: Duration(milliseconds: 700)),
       ),
     );
   }

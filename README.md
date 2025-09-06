@@ -4,7 +4,7 @@
 
 linux,android
 
-# needed lib from linux
+# Needed lib from linux
 
     sudo apt install net-tools  // wifi
     sudo apt install poppler-utils //pdf thumbnail

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/functions/dialog_func.dart';
@@ -19,7 +20,9 @@ class _ReadedButtonState extends State<ReadedButton> {
       return SizedBox.shrink();
     }
     return TextButton(
-      child: Text('Readed: ${novel.getReaded}'),
+      child: Text(
+        'Readed: ${novel.getReaded}',
+      ).animate().rotate(duration: Duration(milliseconds: 800)),
       onPressed: () {
         showTReanmeDialog(
           barrierDismissible: false,

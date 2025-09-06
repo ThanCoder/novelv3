@@ -18,12 +18,13 @@ void main() async {
 
   await Setting.instance.initSetting(
     appName: 'novel_v3',
-    versionLable: 'NV3 Pre Build 6',
+    versionLable: 'NV3 Pre B6 Animate',
   );
 
   await ThanPkg.instance.init();
 
   final dio = Dio();
+
   await TWidgets.instance.init(
     defaultImageAssetsPath: 'assets/cover.png',
     getDarkMode: () => Setting.getAppConfig.isDarkTheme,
@@ -41,7 +42,7 @@ void main() async {
   await NovelV3Uploader.instance.init(
     isShowDebugLog: true,
     onDownloadJson: (url) async {
-      final res = await Dio().get(url);
+      final res = await dio.get(url);
       return res.data.toString();
     },
     appBarActions: [AppHelpButton()],
@@ -58,7 +59,7 @@ void main() async {
   // fetcher
   await Fetcher.instance.init(
     onGetHtmlContent: (url) async {
-      final res = await Dio().get(url);
+      final res = await dio.get(url);
       return res.data.toString();
     },
     onShowErrorMessage: (context, message) {

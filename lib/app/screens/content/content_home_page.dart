@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/bookmark/novel_bookmark_action.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/n3_data/n3_data_export_dialog.dart';
@@ -129,7 +130,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
           ],
         ),
       ],
-    );
+    ).animate().scaleXY(duration: Duration(milliseconds: 800));
   }
 
   Widget _getBottoms() {
@@ -139,7 +140,13 @@ class _ContentHomePageState extends State<ContentHomePage> {
         Wrap(
           spacing: 5,
           runSpacing: 5,
-          children: [_getPageButton(), ReadedRecentButton()],
+          children: [_getPageButton().animate().fadeIn(
+      delay: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 900),
+    ), ReadedRecentButton().animate().fadeIn(
+      delay: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 900),
+    )],
         ),
         Divider(),
       ],
@@ -154,6 +161,9 @@ class _ContentHomePageState extends State<ContentHomePage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SelectableText(novel.getContent, style: TextStyle(fontSize: 16)),
+    ).animate().fadeIn(
+      delay: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 900),
     );
   }
 
