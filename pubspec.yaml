@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   dio: ^5.8.0+1
-  pdfrx: ^2.1.12
+  pdfrx: ^2.1.13
   than_pkg: ^3.8.0
   t_widgets: ^1.2.0
   desktop_drop: ^0.6.0
@@ -19,7 +19,7 @@ dependencies:
   provider: ^6.1.5
   archive: ^4.0.7
   t_html_parser: ^0.0.2
-  t_server: ^2.1.0
+  t_server: ^2.2.0
   flutter_animate: ^4.5.2
 
 dev_dependencies:

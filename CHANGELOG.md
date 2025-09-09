@@ -1,5 +1,12 @@
+## 3.1.0
+
+- Added Chapter Reader `Theme Mode`
+- Added PDF Reader Config Pros `Screen Orientation`
+
 ## 3.0.0
+
 ## Changed
+
 - `Core Code တစ်ခုလုံးပြောင်းလဲခြင်း`
 - `App Update ပြုလုပ်ပေးတဲ့ app ပြောင်းလဲခြင်း`
 - `PDF Reader Core Code ပြောင်လဲခြင်း - အသစ်ပြင်ဆင်ခြင်း`

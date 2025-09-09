@@ -312,8 +312,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   //pdf loaded
   void onPdfLoaded() async {
     try {
-      //set offset
-      // await Future.delayed(const Duration(milliseconds: 1200));
+      isLoading = false;
+
+      await ThanPkg.platform.toggleFullScreen(
+        isFullScreen: config.isFullscreen,
+      );
+      pageCount = pdfController.pageCount;
 
       if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
         await pdfController.goToPage(pageNumber: oldPage);
@@ -329,25 +333,15 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         await pdfController.setZoom(newOffset, oldZoom);
         // print('set 2');
       } else {
-        // await pdfController.goToPage(pageNumber: oldPage);
         await goPage(oldPage);
       }
 
-      await ThanPkg.platform.toggleFullScreen(
-        isFullScreen: config.isFullscreen,
-      );
-      pageCount = pdfController.pageCount;
-
       // pdfController.
       if (!mounted) return;
-      setState(() {
-        isLoading = false;
-      });
+      setState(() {});
     } catch (e) {
       if (!mounted) return;
-      setState(() {
-        isLoading = false;
-      });
+      setState(() {});
       PdfReader.showDebugLog(
         e.toString(),
         tag: 'PdfrxReaderScreen:onPdfLoaded',
@@ -369,6 +363,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           await ThanPkg.android.app.showFullScreen();
         }
       }
+      await ThanPkg.platform.toggleFullScreen(
+        isFullScreen: config.isFullscreen,
+      );
       setState(() {
         isCanGoBack = !config.isOnBackpressConfirm;
       });

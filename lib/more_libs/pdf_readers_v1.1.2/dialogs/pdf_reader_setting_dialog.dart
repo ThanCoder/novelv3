@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -105,18 +103,16 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 ),
               ),
               //on backpress confirm
-              Platform.isAndroid
-                  ? TListTileWithDesc(
-                      title: 'Screen Orientation',
-                      desc: 'Portrait,Landscape',
-                      trailing: AndroidScreenOrientationChooser(
-                        value: config.screenOrientation,
-                        onChanged: (type) {
-                          config.screenOrientation = type;
-                        },
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+              TListTileWithDesc(
+                title: 'Screen Orientation',
+                desc: 'Working in Android!',
+                trailing: AndroidScreenOrientationChooser(
+                  value: config.screenOrientation,
+                  onChanged: (type) {
+                    config.screenOrientation = type;
+                  },
+                ),
+              ),
               //on backpress confirm
               TListTileWithDesc(
                 title: 'On Backpress Confirm',
@@ -134,12 +130,24 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               // optional
               const Divider(),
               TListTileWithDesc(
-                title: config.isPanLocked ? 'Locked' : 'Lock',
+                title: config.isPanLocked ? 'Locked' : 'UnLocked',
                 trailing: Switch.adaptive(
                   value: config.isPanLocked,
                   onChanged: (value) {
                     setState(() {
                       config.isPanLocked = value;
+                    });
+                  },
+                ),
+              ),
+              // fullscreen
+              TListTileWithDesc(
+                title: 'FullScreen',
+                trailing: Switch.adaptive(
+                  value: config.isFullscreen,
+                  onChanged: (value) {
+                    setState(() {
+                      config.isFullscreen = value;
                     });
                   },
                 ),
@@ -199,20 +207,24 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            _onApply();
-          },
-          child: const Text('Apply'),
-        ),
-      ],
+      actions: _getActions(),
     );
+  }
+
+  List<Widget> _getActions() {
+    return [
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Cancel'),
+      ),
+      TextButton(
+        onPressed: () {
+          _onApply();
+        },
+        child: const Text('Apply'),
+      ),
+    ];
   }
 }

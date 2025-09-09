@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/chapter_reader/chapter_reader_config.dart';
+import 'package:novel_v3/app/chapter_reader/theme_chooser.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 typedef OnUpdateConfigCallback =
@@ -39,10 +40,15 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
       contentPadding: EdgeInsets.all(6),
       scrollable: true,
       content: TScrollableColumn(
+        spacing: 15,
         children: [
           SwitchListTile.adaptive(
             value: config.isKeepScreening,
-            title: Text('Screen မပိတ်ဘူး'),
+            title: Text('Keep Screen'),
+            subtitle: Text(
+              'Screen မီးဆက်တက်ဖွင့်ထားမယ်...',
+              style: TextStyle(fontSize: 12),
+            ),
             onChanged: (value) {
               setState(() {
                 config.isKeepScreening = value;
@@ -59,35 +65,52 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
               config.fontSize = double.parse(text);
             },
           ),
+          // theme
+          _getThemeChanger(),
           // padding
-          Column(
-            spacing: 5,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Reader Text Padding'),
-              TNumberField(
-                label: Text('Left-Right'),
-                maxLines: 1,
-                controller: paddingXController,
-                onChanged: (text) {
-                  if (double.tryParse(text) == null) return;
-                  config.paddingX = double.parse(text);
-                },
-              ),
-              TNumberField(
-                label: Text('Top-Bottom'),
-                maxLines: 1,
-                controller: paddingYController,
-                onChanged: (text) {
-                  if (double.tryParse(text) == null) return;
-                  config.paddingY = double.parse(text);
-                },
-              ),
-            ],
-          ),
+          _getPadding(),
         ],
       ),
       actions: _getActions(),
+    );
+  }
+
+  Widget _getThemeChanger() {
+    return ThemeChooser(
+      theme: config.theme,
+      onChanged: (theme) {
+        setState(() {
+          config.theme = theme;
+        });
+      },
+    );
+  }
+
+  Widget _getPadding() {
+    return Column(
+      spacing: 5,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Reader Text Padding'),
+        TNumberField(
+          label: Text('Left-Right'),
+          maxLines: 1,
+          controller: paddingXController,
+          onChanged: (text) {
+            if (double.tryParse(text) == null) return;
+            config.paddingX = double.parse(text);
+          },
+        ),
+        TNumberField(
+          label: Text('Top-Bottom'),
+          maxLines: 1,
+          controller: paddingYController,
+          onChanged: (text) {
+            if (double.tryParse(text) == null) return;
+            config.paddingY = double.parse(text);
+          },
+        ),
+      ],
     );
   }
 

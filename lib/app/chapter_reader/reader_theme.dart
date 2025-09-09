@@ -1,0 +1,88 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+
+class ReaderTheme {
+  final String id;
+  final String title;
+  final Color fontColor;
+  final Color bgColor;
+  const ReaderTheme({
+    required this.id,
+    required this.title,
+    required this.fontColor,
+    required this.bgColor,
+  });
+
+  factory ReaderTheme.getId(String id) {
+    final index = getDefaultList.indexWhere((e) => e.id == id);
+    if (index != -1) return getDefaultList[index];
+    return defaultLightTheme;
+  }
+
+  static List<ReaderTheme> get getDefaultList {
+    return [
+      defaultLightTheme,
+      defaultDarkTheme,
+      sepiaTheme,
+      blueLightFilter,
+      greenTheme,
+      greenPaper,
+      gray,
+      warmYellow,
+    ];
+  }
+
+  static const ReaderTheme defaultLightTheme = ReaderTheme(
+    id: '1',
+    title: 'Light Theme',
+    fontColor: Colors.black,
+    bgColor: Colors.white,
+  );
+  static const ReaderTheme defaultDarkTheme = ReaderTheme(
+    id: '2',
+    title: 'Dark Theme',
+    fontColor: Colors.grey,
+    bgColor: Colors.black,
+  );
+  static const ReaderTheme sepiaTheme = ReaderTheme(
+    id: '3',
+    title: 'Sepia',
+    fontColor: Color(0xFF5B4636),
+    bgColor: Color(0xFFF5DEB3),
+  );
+
+  static const ReaderTheme blueLightFilter = ReaderTheme(
+    id: '4',
+    title: 'Blue Light Filter',
+    fontColor: Colors.black,
+    bgColor: Color(0xFFE6E6FA), // light lavender
+  );
+
+  static const ReaderTheme greenTheme = ReaderTheme(
+    id: '5',
+    title: 'Green Calm',
+    fontColor: Color(0xFF003300),
+    bgColor: Color(0xFFE8F5E9),
+  );
+
+  static const ReaderTheme greenPaper = ReaderTheme(
+    id: '6',
+    title: 'Green Paper',
+    fontColor: Color(0xFF003300),
+    bgColor: Color(0xFFE8F5E9),
+  );
+
+  static const ReaderTheme gray = ReaderTheme(
+    id: '7',
+    title: 'Gray',
+    fontColor: Color(0xFF333333),
+    bgColor: Color(0xFFF0F0F0),
+  );
+
+  static const ReaderTheme warmYellow = ReaderTheme(
+    id: '8',
+    title: 'Warm Yellow',
+    fontColor: Color(0xFF5B4636),
+    bgColor: Color(0xFFFFF8DC),
+  );
+}

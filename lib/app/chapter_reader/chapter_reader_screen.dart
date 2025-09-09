@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -79,7 +78,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           onDoubleTap: () => _toggleFullScreen(),
           onLongPress: _showConfigDialog,
           onSecondaryTap: _showConfigDialog,
-          child: _getListWidget(),
+          child: Container(
+            color: config.theme.bgColor,
+            child: _getListWidget(),
+          ),
         ),
       ),
     );
@@ -92,12 +94,20 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         isFullScreen
             ? SliverToBoxAdapter()
             : SliverAppBar(
-                title: Text('Chapter Reader'),
+                title: Text(
+                  'Chapter Reader',
+                  style: TextStyle(color: config.theme.fontColor),
+                ),
                 snap: true,
                 floating: true,
-                backgroundColor: Setting.getAppConfig.isDarkTheme
-                    ? Colors.black.withValues(alpha: 0.8)
-                    : Colors.white.withValues(alpha: 0.8),
+                backgroundColor: config.theme.bgColor.withValues(alpha: 0.8),
+                leading: IconButton(
+                  color: config.theme.fontColor,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back),
+                ),
               ),
         // top
         SliverToBoxAdapter(child: _getPrevChapterWidget()),
@@ -113,13 +123,26 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
               ),
               child: Column(
                 spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  ChapterBookmarkAction(
+                    theme: config.theme,
+                    chapter: item,
+                    title: 'BookMark',
+                  ),
                   Text(
                     item.getContents,
-                    style: TextStyle(fontSize: config.fontSize),
+                    style: TextStyle(
+                      fontSize: config.fontSize,
+                      color: config.theme.fontColor,
+                    ),
                   ),
                   // bookmark
-                  ChapterBookmarkAction(chapter: item, title: Text('BookMark')),
+                  ChapterBookmarkAction(
+                    theme: config.theme,
+                    chapter: item,
+                    title: 'BookMark',
+                  ),
                 ],
               ),
             );
@@ -158,12 +181,20 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
+          color: config.theme.bgColor,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Icon(Icons.keyboard_arrow_up_rounded, size: 30),
-                Text('Chapter: ${topChapter!.number}'),
+                Icon(
+                  Icons.keyboard_arrow_up_rounded,
+                  size: 30,
+                  color: Colors.teal,
+                ),
+                Text(
+                  'Chapter: ${topChapter!.number}',
+                  style: TextStyle(color: config.theme.fontColor),
+                ),
               ],
             ),
           ),

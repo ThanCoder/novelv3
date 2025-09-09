@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/chapter_reader/reader_theme.dart';
 import 'package:than_pkg/services/t_map.dart';
 
 class ChapterReaderConfig {
@@ -9,11 +10,13 @@ class ChapterReaderConfig {
   double paddingX;
   double paddingY;
   bool isKeepScreening;
+  ReaderTheme theme;
   ChapterReaderConfig({
     required this.fontSize,
     required this.paddingX,
     required this.paddingY,
     required this.isKeepScreening,
+    required this.theme,
   });
 
   factory ChapterReaderConfig.create({
@@ -27,6 +30,7 @@ class ChapterReaderConfig {
       paddingX: paddingX,
       paddingY: paddingY,
       isKeepScreening: isKeepScreening,
+      theme: ReaderTheme.defaultLightTheme,
     );
   }
   // path
@@ -58,15 +62,18 @@ class ChapterReaderConfig {
       'paddingX': paddingX,
       'paddingY': paddingY,
       'isKeepScreening': isKeepScreening,
+      'themeId': theme.id,
     };
   }
 
   factory ChapterReaderConfig.fromMap(Map<String, dynamic> map) {
+    final themId = map.getString(['themeId'], def: '1');
     return ChapterReaderConfig(
       fontSize: map.getDouble(['fontSize'], def: 18),
       paddingX: map.getDouble(['paddingX'], def: 2),
       paddingY: map.getDouble(['paddingY'], def: 5),
       isKeepScreening: map.getBool(['isKeepScreening'], def: false),
+      theme: ReaderTheme.getId(themId),
     );
   }
 }

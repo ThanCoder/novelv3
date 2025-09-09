@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -27,14 +29,15 @@ class _PdfListItemState extends State<PdfListItem> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => init());
-    // init();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => init());
+    init();
   }
 
   bool isLoading = false;
 
   Future<void> init() async {
     try {
+      if (File(widget.pdf.getCoverPath).existsSync()) return;
       setState(() {
         isLoading = true;
       });

@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/bookmark/chapter_bookmark_db.dart';
+import 'package:novel_v3/app/chapter_reader/reader_theme.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterBookmarkAction extends StatefulWidget {
   Chapter chapter;
-  Widget? title;
-  ChapterBookmarkAction({super.key, required this.chapter, this.title});
+  String? title;
+  ReaderTheme? theme;
+  ChapterBookmarkAction({
+    super.key,
+    required this.chapter,
+    this.theme,
+    this.title,
+  });
 
   @override
   State<ChapterBookmarkAction> createState() => _ChapterBookmarkActionState();
@@ -55,13 +62,27 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
       return TLoader(size: 30);
     }
     if (widget.title != null) {
-      return Row(spacing: 5, children: [widget.title!, _getAction()]);
+      return Card(
+        color: widget.theme?.bgColor,
+        child: Row(
+          spacing: 5,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              widget.title!,
+              style: TextStyle(color: widget.theme?.fontColor),
+            ),
+            _getAction(),
+          ],
+        ),
+      );
     }
     return _getAction();
   }
 
   Widget _getAction() {
     return IconButton(
+      color: widget.theme?.bgColor,
       onPressed: _toggleBookmark,
       icon: Icon(
         color: isExists ? Colors.red : Colors.blue,

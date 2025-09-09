@@ -30,16 +30,7 @@ class _AndroidScreenOrientationChooserState
   Widget build(BuildContext context) {
     return DropdownButton<ScreenOrientationTypes>(
       value: value,
-      items: [
-        DropdownMenuItem<ScreenOrientationTypes>(
-          value: ScreenOrientationTypes.portrait,
-          child: Text(ScreenOrientationTypes.portrait.name.toCaptalize()),
-        ),
-        DropdownMenuItem<ScreenOrientationTypes>(
-          value: ScreenOrientationTypes.landscape,
-          child: Text(ScreenOrientationTypes.landscape.name.toCaptalize()),
-        ),
-      ],
+      items: _getItems,
       onChanged: (value) {
         if (value == null) return;
         setState(() {
@@ -48,5 +39,16 @@ class _AndroidScreenOrientationChooserState
         widget.onChanged(value);
       },
     );
+  }
+
+  List<DropdownMenuItem<ScreenOrientationTypes>> get _getItems {
+    return ScreenOrientationTypes.values
+        .map(
+          (e) => DropdownMenuItem<ScreenOrientationTypes>(
+            value: e,
+            child: Text(e.name.toCaptalize(), style: TextStyle(fontSize: 13)),
+          ),
+        )
+        .toList();
   }
 }
