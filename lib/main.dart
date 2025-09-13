@@ -28,13 +28,13 @@ void main() async {
 
   await TWidgets.instance.init(
     defaultImageAssetsPath: 'assets/cover.png',
-    getDarkMode: () => Setting.getAppConfig.isDarkTheme,
+    getDarkMode: () => Setting.getAppConfig.isDarkMode,
     onDownloadImage: (url, savePath) async {
       await dio.download(url, savePath);
     },
   );
   await PdfReader.instance.init(
-    getDarkTheme: () => Setting.getAppConfig.isDarkTheme,
+    getDarkTheme: () => Setting.getAppConfig.isDarkMode,
     showMessage: (context, msg) {
       showTSnackBar(context, msg);
     },

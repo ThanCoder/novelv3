@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/factorys/file_scanner_factory.dart';
+import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:t_widgets/t_widgets.dart';
 

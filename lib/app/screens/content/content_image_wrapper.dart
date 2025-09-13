@@ -34,29 +34,34 @@ class _ContentImageWrapperState extends State<ContentImageWrapper> {
     if (novel == null) {
       return Scaffold(appBar: AppBar(title: Text('Novel is null!')));
     }
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: ValueListenableBuilder(
-            valueListenable: Setting.getAppConfigNotifier,
-            builder: (context, config, child) {
-              if (config.customNovelContentImagePath.isNotEmpty &&
-                  File(config.customNovelContentImagePath).existsSync()) {
-                return TImage(source: config.customNovelContentImagePath);
-              }
-              return TImage(source: novel.getCoverPath);
-            },
-          ),
-        ),
-        Container(
-          color: Setting.getAppConfig.isDarkTheme
-              ? Colors.black.withValues(alpha: 0.8)
-              : Colors.white.withValues(alpha: 0.8),
-        ),
-        widget.isLoading
-            ? Center(child: TLoaderRandom())
-            : _getRefershSwitcher(),
-      ],
+    return ValueListenableBuilder(
+      valueListenable: Setting.getAppConfigNotifier,
+      builder: (context, value, child) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: ValueListenableBuilder(
+                valueListenable: Setting.getAppConfigNotifier,
+                builder: (context, config, child) {
+                  if (config.customNovelContentImagePath.isNotEmpty &&
+                      File(config.customNovelContentImagePath).existsSync()) {
+                    return TImage(source: config.customNovelContentImagePath);
+                  }
+                  return TImage(source: novel.getCoverPath);
+                },
+              ),
+            ),
+            Container(
+              color: Setting.getAppConfig.isDarkMode
+                  ? Colors.black.withValues(alpha: 0.8)
+                  : Colors.white.withValues(alpha: 0.8),
+            ),
+            widget.isLoading
+                ? Center(child: TLoaderRandom())
+                : _getRefershSwitcher(),
+          ],
+        );
+      },
     );
   }
 
@@ -71,7 +76,7 @@ class _ContentImageWrapperState extends State<ContentImageWrapper> {
           floating: true,
           snap: true,
 
-          backgroundColor: Setting.getAppConfig.isDarkTheme
+          backgroundColor: Setting.getAppConfig.isDarkMode
               ? Colors.black.withValues(alpha: 0.3)
               : Colors.white.withValues(alpha: 0.3),
           actions: widget.appBarAction,

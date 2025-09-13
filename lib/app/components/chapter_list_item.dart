@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:novel_v3/app/bookmark/chapter_bookmark_action.dart';
+import 'package:novel_v3/app/others/bookmark/chapter_bookmark_action.dart';
 import '../novel_dir_app.dart';
 
 class ChapterListItem extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/interfaces/file_scanner_interface.dart';
+import 'package:novel_v3/app/core/interfaces/file_scanner_interface.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 
 class NovelFileScanner extends FileScannerInterface<Novel> {

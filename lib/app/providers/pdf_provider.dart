@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/extensions/pdf_extension.dart';
+import 'package:novel_v3/app/core/extensions/pdf_extension.dart';
 import 'package:t_widgets/t_sort/index.dart';
 import '../novel_dir_app.dart';
 

@@ -40,6 +40,40 @@ class PdfConfig {
     required this.isFullscreen,
   });
 
+  PdfConfig copyWith({
+    int? page,
+    bool? isDarkMode,
+    bool? isPanLocked,
+    bool? isShowScrollThumb,
+    double? offsetDx,
+    double? offsetDy,
+    double? zoom,
+    bool? isKeepScreen,
+    bool? isTextSelection,
+    double? scrollByMouseWheel,
+    ScreenOrientationTypes? screenOrientation,
+    double? scrollByArrowKey,
+    bool? isOnBackpressConfirm,
+    bool? isFullscreen,
+  }) {
+    return PdfConfig(
+      page: page ?? this.page,
+      isDarkMode: isDarkMode ?? this.isDarkMode,
+      isPanLocked: isPanLocked ?? this.isPanLocked,
+      isShowScrollThumb: isShowScrollThumb ?? this.isShowScrollThumb,
+      offsetDx: offsetDx ?? this.offsetDx,
+      offsetDy: offsetDy ?? this.offsetDy,
+      zoom: zoom ?? this.zoom,
+      isKeepScreen: isKeepScreen ?? this.isKeepScreen,
+      isTextSelection: isTextSelection ?? this.isTextSelection,
+      scrollByMouseWheel: scrollByMouseWheel ?? this.scrollByMouseWheel,
+      screenOrientation: screenOrientation ?? this.screenOrientation,
+      scrollByArrowKey: scrollByArrowKey ?? this.scrollByArrowKey,
+      isOnBackpressConfirm: isOnBackpressConfirm ?? this.isOnBackpressConfirm,
+      isFullscreen: isFullscreen ?? this.isFullscreen,
+    );
+  }
+
   factory PdfConfig.create({
     int page = 1,
     bool isDarkMode = false,

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/interfaces/all_file_scanner_interface.dart';
-import 'package:novel_v3/app/types/novel_pdf.dart';
+import 'package:novel_v3/app/core/interfaces/all_file_scanner_interface.dart';
+import 'package:novel_v3/app/core/models/novel_pdf.dart';
 
 class PdfAllFileScanner extends AllFileScannerInterface<NovelPdf> {
   @override

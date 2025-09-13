@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
 
+import 'app_config.dart';
+import 'app_setting_screen.dart';
 import 'others/index.dart';
 export 'others/index.dart';
 
@@ -26,7 +28,7 @@ class Setting {
 
   //widget
   static Widget get getHomeScreen => AppSettingScreen();
-  static Widget get getThemeSwitcherWidget => ThemeComponent();
+  static Widget get getThemeSwitcherWidget => ThemeModesChooser();
   static Widget get getSettingListTileWidget => AppSettingListTile();
   static Widget get getCurrentVersionWidget => AppCurrentVersion();
   static Widget get getCacheManagerWidget => AppCacheManager();

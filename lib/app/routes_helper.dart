@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/chapter_reader/chapter_reader_config.dart';
-import 'package:novel_v3/app/chapter_reader/chapter_reader_screen.dart';
+import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
+import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/screens/content/novel_content_home_screen.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/screens/pdfrx_reader_screen.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/types/pdf_config.dart';

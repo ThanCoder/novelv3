@@ -1,0 +1,1 @@
+enum DatabaseTypes {folder}

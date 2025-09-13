@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/bookmark/chapter_bookmark_data.dart';
-import 'package:novel_v3/app/bookmark/chapter_bookmark_db.dart';
-import 'package:novel_v3/app/bookmark/chapter_bookmark_list_item.dart';
+import 'package:novel_v3/app/others/bookmark/chapter_bookmark_data.dart';
+import 'package:novel_v3/app/others/bookmark/chapter_bookmark_db.dart';
+import 'package:novel_v3/app/others/bookmark/chapter_bookmark_list_item.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';

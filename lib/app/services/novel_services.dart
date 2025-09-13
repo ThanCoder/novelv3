@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:novel_v3/app/factorys/file_scanner_factory.dart';
+import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
 import 'package:than_pkg/extensions/index.dart';
 import '../novel_dir_app.dart';
 

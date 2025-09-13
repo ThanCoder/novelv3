@@ -1,5 +1,5 @@
-import 'package:novel_v3/app/factorys/all_file_scanner_factory.dart';
-import 'package:novel_v3/app/factorys/file_scanner_factory.dart';
+import 'package:novel_v3/app/core/factorys/all_file_scanner_factory.dart';
+import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
 
 import '../novel_dir_app.dart';
 

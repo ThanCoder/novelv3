@@ -37,6 +37,8 @@ class _PdfListItemState extends State<PdfListItem> {
 
   Future<void> init() async {
     try {
+      await Future.delayed(Duration(milliseconds: 500));
+
       if (File(widget.pdf.getCoverPath).existsSync()) return;
       setState(() {
         isLoading = true;
@@ -85,7 +87,7 @@ class _PdfListItemState extends State<PdfListItem> {
                         ? TLoaderRandom()
                         : Container(
                             decoration: BoxDecoration(
-                              color: Setting.getAppConfig.isDarkTheme
+                              color: Setting.getAppConfig.isDarkMode
                                   ? Colors.white
                                   : null,
                               borderRadius: BorderRadius.circular(5),

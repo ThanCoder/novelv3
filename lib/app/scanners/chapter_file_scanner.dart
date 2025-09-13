@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:novel_v3/app/novel_dir_app.dart';
 
-import '../interfaces/file_scanner_interface.dart';
+import '../core/interfaces/file_scanner_interface.dart';
 
 class ChapterFileScanner extends FileScannerInterface<Chapter> {
   @override

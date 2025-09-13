@@ -30,16 +30,13 @@ class PdfrxReaderScreen extends StatefulWidget {
 
 class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   PdfViewerController pdfController = PdfViewerController();
+  PdfViewerController? loadedPdfController;
   final keyboardListenerFocus = FocusNode();
   bool isLoading = true;
   int currentPage = 1;
   int pageCount = 0;
   bool initCalled = false;
   late PdfConfig config;
-  double oldZoom = 0;
-  double oldOffsetX = 0;
-  double oldOffsetY = 0;
-  int oldPage = 1;
   bool isCanGoBack = true;
   int delayMiliSec = 200;
 
@@ -47,10 +44,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   void initState() {
     keyboardListenerFocus.requestFocus();
     config = widget.pdfConfig;
-    oldPage = config.page;
-    oldZoom = config.zoom;
-    oldOffsetX = config.offsetDx;
-    oldOffsetY = config.offsetDy;
     super.initState();
     _initConfig();
   }
@@ -102,7 +95,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     textSelectionParams: PdfTextSelectionParams(
       enabled: config.isTextSelection,
     ),
-    // enableTextSelection: config.isTextSelection,
     pageDropShadow: null,
     useAlternativeFitScaleAsMinScale: false,
     scrollByArrowKey: config.scrollByArrowKey,
@@ -138,10 +130,11 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     onPageChanged: (pageNumber) {
       try {
         final offset = pdfController.centerPosition;
-        config.zoom = pdfController.currentZoom;
-        config.offsetDx = offset.dx;
-        config.offsetDy = offset.dy;
-        // print('z:${config.zoom}-x:${config.offsetDx}-y:${config.offsetDy}');
+        config = config.copyWith(
+          zoom: pdfController.currentZoom,
+          offsetDx: offset.dx,
+          offsetDy: offset.dy,
+        );
         setState(() {
           currentPage = pageNumber ?? 1;
           pageCount = pdfController.pageCount;
@@ -151,7 +144,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       }
     },
     //pdf ready
-    onViewerReady: (document, controller) => onPdfLoaded(),
+    onViewerReady: (document, controller) {
+      loadedPdfController = controller;
+      onPdfLoaded();
+    },
 
     viewerOverlayBuilder: config.isShowScrollThumb
         ? (context, size, handleLinkTap) => [
@@ -318,22 +314,24 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         isFullScreen: config.isFullscreen,
       );
       pageCount = pdfController.pageCount;
+      final oldConfig = widget.pdfConfig;
 
-      if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY != 0) {
-        await pdfController.goToPage(pageNumber: oldPage);
+      if (oldConfig.zoom != 0 &&
+          oldConfig.offsetDx != 0 &&
+          oldConfig.offsetDy != 0) {
+        await pdfController.goToPage(pageNumber: oldConfig.page);
 
-        final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
-        await pdfController.setZoom(newOffset, oldZoom);
+        final newOffset = Offset(
+          oldConfig.offsetDx,
+          pdfController.centerPosition.dy,
+        );
+        await pdfController.setZoom(newOffset, oldConfig.zoom);
       }
       // config page changed
-      else if (oldZoom != 0 && oldOffsetX != 0 && oldOffsetY == 0) {
-        await pdfController.goToPage(pageNumber: oldPage);
-        // offset ပြန်ရယူ
-        final newOffset = Offset(oldOffsetX, pdfController.centerPosition.dy);
-        await pdfController.setZoom(newOffset, oldZoom);
-        // print('set 2');
+      else if (oldConfig.offsetDy == 0 && oldConfig.offsetDx != 0) {
+        await pdfController.goToPage(pageNumber: oldConfig.page);
       } else {
-        await goPage(oldPage);
+        await goPage(oldConfig.page);
       }
 
       // pdfController.
@@ -378,15 +376,19 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   }
 
   //go page
-  Future<void> goPage(int pageNum) async {
+  Future<void> goPage(int pageNumber) async {
     try {
-      double oldZoom = pdfController.currentZoom;
+      var controller = pdfController;
+      if (loadedPdfController != null) {
+        controller = loadedPdfController!;
+      }
+      double oldZoom = controller.currentZoom;
 
-      await pdfController.goToPage(pageNumber: pageNum);
-      Offset oldOffset = pdfController.centerPosition;
+      await controller.goToPage(pageNumber: pageNumber);
+      Offset oldOffset = controller.centerPosition;
       // delay
       await Future.delayed(Duration(milliseconds: delayMiliSec));
-      await pdfController.setZoom(oldOffset, oldZoom);
+      await controller.setZoom(oldOffset, oldZoom);
     } catch (e) {
       debugPrint(e.toString());
     }

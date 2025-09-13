@@ -81,4 +81,41 @@ class PathUtil {
     }
     return path;
   }
+
+  static Future<void> deleteDir(Directory directory) async {
+    Future<void> scanDir(Directory dir) async {
+      for (var file in dir.listSync(followLinks: false)) {
+        if (file.isDirectory) {
+          await scanDir(Directory(file.path));
+          await file.delete();
+        } else {
+          await file.delete();
+        }
+      }
+    }
+
+    await scanDir(directory);
+    await directory.delete(recursive: true);
+  }
+  static Future<void> renameDir({
+    required Directory oldDir,
+    required Directory newDir,
+  }) async {
+    if (!oldDir.existsSync()) {
+      throw Exception('Old Folder Not Found!');
+    }
+    if (newDir.existsSync()) {
+      throw Exception('New Folder Already Exists');
+    }
+    // dir ဖန်တီး
+    await newDir.create();
+    //file move
+    for (var file in oldDir.listSync(followLinks: false)) {
+      final newPath = '${newDir.path}/${file.getName()}';
+      await file.rename(newPath);
+    }
+    // old dir delete
+    await oldDir.delete();
+  }
 }
+

@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/bookmark/novel_bookmark_db.dart';
-import 'package:novel_v3/app/clean_manager/clean_manager_screen.dart';
+import 'package:novel_v3/app/others/bookmark/novel_bookmark_db.dart';
+import 'package:novel_v3/app/others/clean_manager/clean_manager_screen.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
-import 'package:novel_v3/app/recents/novel_recent_data.dart';
-import 'package:novel_v3/app/recents/novel_recent_db.dart';
+import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
+import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
-import 'package:novel_v3/app/developer/novel_dev_list_screen.dart';
+import 'package:novel_v3/app/others/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
@@ -128,19 +128,27 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _getSliverAppBar() {
-    return SliverAppBar(
-      title: Text('Novel V3'),
-      snap: true,
-      floating: true,
-      backgroundColor: Setting.getAppConfig.isDarkTheme
-          ? Colors.black.withValues(alpha: 0.9)
-          : Colors.white.withValues(alpha: 0.9),
-      actions: [
-        _getSearchButton(),
+    return ValueListenableBuilder(
+      valueListenable: Setting.getAppConfigNotifier,
+      builder: (context, config, child) {
+        return SliverAppBar(
+          title: Text('Novel V3'),
+          snap: true,
+          floating: true,
+          backgroundColor: config.isDarkMode
+              ? Colors.black.withValues(alpha: 0.9)
+              : Colors.white.withValues(alpha: 0.9),
+          actions: [
+            _getSearchButton(),
 
-        IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
-        IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
-      ],
+            IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
+            IconButton(
+              onPressed: _showMenu,
+              icon: Icon(Icons.more_vert_rounded),
+            ),
+          ],
+        );
+      },
     );
   }
 

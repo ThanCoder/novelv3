@@ -2,17 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/types/novel_pdf.dart';
+import 'package:novel_v3/app/core/models/novel_pdf.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
 import 'services/index.dart';
 
 export 'services/index.dart';
-export 'types/index.dart';
+export 'core/models/index.dart';
 export 'providers/index.dart';
 export 'components/index.dart';
 export 'views/index.dart';
 export 'screens/index.dart';
-export 'extensions/index.dart';
+export 'core/extensions/index.dart';
 
 class NovelDirApp {
   static final NovelDirApp instance = NovelDirApp._();

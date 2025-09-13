@@ -28,7 +28,7 @@ class _NovelContentHomeScreenState extends State<NovelContentHomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Setting.getAppConfig.isDarkTheme
+        unselectedItemColor: Setting.getAppConfig.isDarkMode
             ? Colors.white
             : Colors.black,
         onTap: (value) {

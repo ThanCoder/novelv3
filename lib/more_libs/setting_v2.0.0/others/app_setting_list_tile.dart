@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_setting_screen.dart';
+import '../app_setting_screen.dart';
 
 class AppSettingListTile extends StatelessWidget {
   const AppSettingListTile({super.key});

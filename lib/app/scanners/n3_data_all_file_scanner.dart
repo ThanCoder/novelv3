@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/interfaces/all_file_scanner_interface.dart';
-import 'package:novel_v3/app/n3_data/n3_data.dart';
+import 'package:novel_v3/app/core/interfaces/all_file_scanner_interface.dart';
+import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 
 class N3DataAllFileScanner extends AllFileScannerInterface<N3Data> {
   @override
