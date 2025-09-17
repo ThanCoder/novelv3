@@ -25,7 +25,7 @@ class SoupExtractor {
     rules.forEach((key, val) {
       if (val.attribute == null) {
         // is text
-        final res = ele.getQuerySelectorHtml(selector: val.selector, attr: '');
+        final res = ele.getQuerySelectorHtml(selector: val.selector);
 
         result[key] = isCleanHtmlTag ? cleanHtmlTag(res) : res;
       } else {
@@ -41,6 +41,35 @@ class SoupExtractor {
   }
 
   static String cleanHtmlTag(String htmlStr) {
+    // remove tag
+    var res = htmlStr.replaceAll(
+      RegExp(r'<br\s*/?>', caseSensitive: false),
+      '\n',
+    );
+    res = res.replaceAll(
+      RegExp(r'</?(p|div|h[1-6])[^>]*>', caseSensitive: false),
+      '\n',
+    );
+    res = res.replaceAll(RegExp(r'<[^>]+>'), '');
+    res = res.replaceAll(RegExp(r'\n\s*\n+'), '\n\n');
+    // space အမျိုးအစားများ
+    res = res.replaceAll("&nbsp;", " ");
+    res = res.replaceAll("&ensp;", " "); // U+2002 en space
+    res = res.replaceAll("&emsp;", " "); // U+2003 em space
+    res = res.replaceAll("&thinsp;", " "); // U+2009 thin space
+
+    // အခြားသင်္ကေတများ
+    res = res.replaceAll("&lt;", "<");
+    res = res.replaceAll("&gt;", ">");
+    res = res.replaceAll("&amp;", "&");
+    res = res.replaceAll("&quot;", "\"");
+    res = res.replaceAll("&apos;", "'");
+    return res;
+  }
+}
+
+extension ExtractorCleaner on String {
+  String cleanHtmlTag(String htmlStr) {
     // remove tag
     var res = htmlStr.replaceAll(
       RegExp(r'<br\s*/?>', caseSensitive: false),

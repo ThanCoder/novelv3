@@ -8,3 +8,4 @@ export 'app_cache_manager.dart';
 export 'app_internet_checker_widget.dart';
 export 'theme_services.dart';
 export 'theme_modes_chooser.dart';
+export 'theme_switcher.dart';

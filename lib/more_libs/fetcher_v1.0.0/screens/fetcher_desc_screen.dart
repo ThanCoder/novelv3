@@ -11,12 +11,12 @@ typedef ReceiveCallback =
     void Function(BuildContext context, String description);
 
 class FetcherDescScreen extends StatefulWidget {
-  ReceiveCallback? onReceiveData;
-  VoidCallback? onClosed;
-  String url;
-  FetcherDescScreen({
+  final ReceiveCallback? onReceiveData;
+  final VoidCallback? onClosed;
+  final String? url;
+  const FetcherDescScreen({
     super.key,
-    this.url = '',
+    this.url,
     this.onReceiveData,
     this.onClosed,
   });
@@ -33,7 +33,7 @@ class _FetcherDescScreenState extends State<FetcherDescScreen> {
   final descFocus = FocusNode();
 
   DescQueryTypes fetcherType = DescQueryTypes.mmxianxia;
-  List<DescQuery> queryList = [
+  final List<DescQuery> queryList = [
     DescQuery(
       startHostUrl: 'https://msunmm.com',
       title: 'Mmxianxia description',
@@ -50,8 +50,9 @@ class _FetcherDescScreenState extends State<FetcherDescScreen> {
 
   @override
   void initState() {
+    urlController.text = widget.url ?? '';
     super.initState();
-    init();
+    _onFetch();
   }
 
   @override
@@ -65,10 +66,6 @@ class _FetcherDescScreenState extends State<FetcherDescScreen> {
 
   bool isLoading = false;
   bool autoIncreChapter = true;
-
-  void init() {
-    urlController.text = widget.url;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -236,16 +233,12 @@ class _FetcherDescScreenState extends State<FetcherDescScreen> {
       final map = extractor.extract(content);
       if (map[fetcher.title] == null) throw Exception('[fetcher.title] null!');
 
-      descController.text = map[fetcher.title] ?? '';
+      final text = map[fetcher.title] ?? '';
+      descController.text = text.trim();
     } catch (e) {
       Fetcher.showDebugLog(e.toString(), tag: 'FetcherDescScreen:_onFetchType');
       if (!mounted) return;
       Fetcher.instance.showErrorMessage(context, e.toString());
     }
   }
-
-  // void _clearFocus() {
-  //   urlFocus.unfocus();
-  //   descFocus.unfocus();
-  // }
 }

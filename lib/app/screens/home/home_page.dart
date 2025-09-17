@@ -274,7 +274,7 @@ class _HomePageState extends State<HomePage>
     showTReanmeDialog(
       context,
       barrierDismissible: false,
-      autofocus: true,
+      
       submitText: 'New',
       title: Text('New Title'),
       onCheckIsError: (text) {

@@ -11,6 +11,7 @@ import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
+import 'package:novel_v3/app/screens/content/page_url_dialog.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_desc_screen.dart';
@@ -140,13 +141,16 @@ class _ContentHomePageState extends State<ContentHomePage> {
         Wrap(
           spacing: 5,
           runSpacing: 5,
-          children: [_getPageButton().animate().fadeIn(
-      delay: Duration(milliseconds: 400),
-      duration: Duration(milliseconds: 900),
-    ), ReadedRecentButton().animate().fadeIn(
-      delay: Duration(milliseconds: 400),
-      duration: Duration(milliseconds: 900),
-    )],
+          children: [
+            _getPageButton().animate().fadeIn(
+              delay: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 900),
+            ),
+            ReadedRecentButton().animate().fadeIn(
+              delay: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 900),
+            ),
+          ],
         ),
         Divider(),
       ],
@@ -175,21 +179,19 @@ class _ContentHomePageState extends State<ContentHomePage> {
       return TextButton(
         child: const Text('Page Url'),
         onPressed: () {
-          showTListDialog<String>(
-            context,
-            list: list,
-            listItemBuilder: (context, item) => ListTile(
-              title: Text(item, style: TextStyle(fontSize: 13), maxLines: 2),
-              onTap: () {
-                Navigator.pop(context);
+          showDialog(
+            context: context,
+            builder: (context) => PageUrlDialog(
+              list: list,
+              onClicked: (url) {
                 try {
-                  ThanPkg.platform.launch(item);
+                  ThanPkg.platform.launch(url);
                 } catch (e) {
                   debugPrint(e.toString());
                 }
               },
-              onLongPress: () {
-                ThanPkg.appUtil.copyText(item);
+              onRightClicked: (url) {
+                ThanPkg.appUtil.copyText(url);
               },
             ),
           );
@@ -289,12 +291,21 @@ class _ContentHomePageState extends State<ContentHomePage> {
   void _addOnlineDesc() {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
-    goRoute(
-      context,
-      builder: (context) => FetcherDescScreen(
-        onReceiveData: (context, description) {
-          novel.setContent(description);
-          context.read<NovelProvider>().refreshNotifier();
+    showDialog(
+      context: context,
+      builder: (context) => PageUrlDialog(
+        list: novel.getPageUrls,
+        onClicked: (url) {
+          goRoute(
+            context,
+            builder: (context) => FetcherDescScreen(
+              url: url,
+              onReceiveData: (context, description) {
+                novel.setContent(description);
+                context.read<NovelProvider>().refreshNotifier();
+              },
+            ),
+          );
         },
       ),
     );

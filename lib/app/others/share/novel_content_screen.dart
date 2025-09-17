@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/others/share/libs/downloader_dialog.dart';
-import 'package:novel_v3/app/others/share/libs/multi_downloader_dialog.dart';
+import 'package:novel_v3/app/others/share/client_download_manager.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file_extension.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -235,14 +235,22 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => DownloaderDialog(
-        url: '${widget.url}/download?path=${file.path}',
-        saveFullPath: PathUtil.getOutPath(name: file.name),
-        filename: file.name,
-        onSuccess: () {
-          showTSnackBar(context, 'Downloaded');
-        },
+      builder: (context) => TMultiDownloaderDialog(
+        manager: ClientDownloadManager(
+          token: TClientToken(isCancelFileDelete: false),
+          saveDir: Directory(PathUtil.getOutPath()),
+        ),
+        urls: ['${widget.url}/download?path=${file.path}'],
       ),
+
+      // DownloaderDialog(
+      //   url: '${widget.url}/download?path=${file.path}',
+      //   saveFullPath: PathUtil.getOutPath(name: file.name),
+      //   filename: file.name,
+      //   onSuccess: () {
+      //     showTSnackBar(context, 'Downloaded');
+      //   },
+      // ),
     );
   }
 
@@ -263,13 +271,21 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => MultiDownloaderDialog(
-        downloadUrlList: list
-            .map((e) => '${widget.url}/download?path=${e.path}')
-            .toList(),
-        outDir: Directory(novelPath),
-        onClosed: (errorMsg) {},
+      builder: (context) => TMultiDownloaderDialog(
+        manager: ClientDownloadManager(
+          token: TClientToken(isCancelFileDelete: false),
+          saveDir: Directory(novelPath),
+        ),
+        urls: list.map((e) => '${widget.url}/download?path=${e.path}').toList(),
       ),
+
+      //  MultiDownloaderDialog(
+      //   downloadUrlList: list
+      //       .map((e) => '${widget.url}/download?path=${e.path}')
+      //       .toList(),
+      //   outDir: Directory(novelPath),
+      //   onClosed: (errorMsg) {},
+      // ),
     );
   }
 }

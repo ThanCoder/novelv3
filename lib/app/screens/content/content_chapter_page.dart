@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/components/chapter_list_item.dart';
 import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/screens/content/page_url_dialog.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_list_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
@@ -122,6 +124,15 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
             _goFetcher();
           },
         ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Multi Chapter With Online'),
+          onTap: () {
+            closeContext(context);
+
+            _goMultiChapterFetcher();
+          },
+        ),
       ],
     );
   }
@@ -161,6 +172,36 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
           }
         },
         onClosed: init,
+      ),
+    );
+  }
+
+  void _goMultiChapterFetcher() {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) return;
+    showDialog(
+      context: context,
+      builder: (context) => PageUrlDialog(
+        list: novel.getPageUrls,
+        onClicked: (url) {
+          goRoute(
+            context,
+            builder: (context) => FetcherChapterListScreen(
+              sourceDirPath: novel.path,
+              pageUrl: url,
+              onClosed: () => init(),
+            ),
+          );
+        },
+        onSubmit: () {
+          goRoute(
+            context,
+            builder: (context) => FetcherChapterListScreen(
+              sourceDirPath: novel.path,
+              onClosed: () => init(),
+            ),
+          );
+        },
       ),
     );
   }

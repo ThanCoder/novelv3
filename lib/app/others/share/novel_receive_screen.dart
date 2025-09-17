@@ -117,8 +117,11 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
       ),
-      itemBuilder: (context, index) =>
-          ShareGridItem(url: widget.url, novel: list[index]),
+      itemBuilder: (context, index) => ShareGridItem(
+        url: widget.url,
+        novel: list[index],
+        onClicked: _goContentPage,
+      ),
     );
   }
 
