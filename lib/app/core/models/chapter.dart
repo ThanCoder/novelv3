@@ -87,6 +87,6 @@ class Chapter {
 
   @override
   String toString() {
-    return '$number';
+    return 'ChapterNumber: $number';
   }
 }

@@ -30,6 +30,6 @@ class WebChapterListFetcher extends WebChapterListFetcherInterface {
   String getContent(String html) {
     final ele = html.toHtmlElement;
     if (ele == null) return '';
-    return contentQuery.getResult(ele, isHtmlStyleText: true).trim();
+    return contentQuery.getResult(ele).trim();
   }
 }

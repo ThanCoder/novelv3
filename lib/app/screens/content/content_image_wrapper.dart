@@ -47,7 +47,10 @@ class _ContentImageWrapperState extends State<ContentImageWrapper> {
                       File(config.customNovelContentImagePath).existsSync()) {
                     return TImage(source: config.customNovelContentImagePath);
                   }
-                  return TImage(source: novel.getCoverPath);
+                  return TImage(
+                    source: novel.getCoverPath,
+                    defaultAssetsPath: 'assets/logo_2.jpg',
+                  );
                 },
               ),
             ),

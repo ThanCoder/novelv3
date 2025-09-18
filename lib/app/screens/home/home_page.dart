@@ -9,7 +9,10 @@ import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_screen.dart';
+import 'package:novel_v3/app/screens/home/create_novel_website_info_result_dialog.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -263,6 +266,14 @@ class _HomePageState extends State<HomePage>
             _addNewNovelFromPdf();
           },
         ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Novel From Url'),
+          onTap: () {
+            closeContext(context);
+            _addNewNovelFromUrl();
+          },
+        ),
       ],
     );
   }
@@ -274,7 +285,7 @@ class _HomePageState extends State<HomePage>
     showTReanmeDialog(
       context,
       barrierDismissible: false,
-      
+
       submitText: 'New',
       title: Text('New Title'),
       onCheckIsError: (text) {
@@ -345,6 +356,28 @@ class _HomePageState extends State<HomePage>
           NovelDirApp.showDebugLog(e.toString());
         }
       },
+    );
+  }
+
+  void _addNewNovelFromUrl() {
+    goRoute(
+      context,
+      builder: (context) =>
+          FetcherWebNovelUrlScreen(url: '', onSaved: _createNovelWithWebResult),
+    );
+  }
+
+  void _createNovelWithWebResult(WebsiteInfoResult result) async {
+    if (result.title == null) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => CreateNovelWebsiteInfoResultDialog(
+        result: result,
+        onSuccess: () {
+          init();
+        },
+      ),
     );
   }
 

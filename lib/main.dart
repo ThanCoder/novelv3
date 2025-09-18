@@ -27,7 +27,7 @@ void main() async {
   final dio = Dio();
 
   await TWidgets.instance.init(
-    defaultImageAssetsPath: 'assets/cover.png',
+    defaultImageAssetsPath: 'assets/logo_1.jpg',
     getDarkMode: () => Setting.getAppConfig.isDarkMode,
     onDownloadImage: (url, savePath) async {
       await dio.download(url, savePath);

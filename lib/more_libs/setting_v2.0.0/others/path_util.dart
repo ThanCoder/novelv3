@@ -56,8 +56,10 @@ class PathUtil {
     return '$dirPath$fileName';
   }
 
-  static String getSourcePath() {
-    return createDir('${getHomePath()}/source');
+  static String getSourcePath({String? name}) {
+    final dirPath = createDir('${getHomePath()}/source');
+    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    return '$dirPath$fileName';
   }
 
   static String getOutPath({String? name}) {
@@ -97,10 +99,12 @@ class PathUtil {
     await scanDir(directory);
     await directory.delete(recursive: true);
   }
+
   static Future<void> renameDir({
     required Directory oldDir,
     required Directory newDir,
   }) async {
+    if (oldDir.path == newDir.path) return;
     if (!oldDir.existsSync()) {
       throw Exception('Old Folder Not Found!');
     }
@@ -118,4 +122,3 @@ class PathUtil {
     await oldDir.delete();
   }
 }
-

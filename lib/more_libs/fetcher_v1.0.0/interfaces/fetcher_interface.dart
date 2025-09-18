@@ -1,7 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/querys/f_query.dart';
-
+import '../querys/f_query.dart';
 import '../types/web_chapter.dart';
+import '../types/website_info.dart';
 
 abstract class ChapterFetcherInterface {
   Future<String> title();
@@ -33,23 +32,14 @@ abstract class WebChapterListFetcherInterface {
 abstract class SupportedWebSiteInterface {
   final String title;
   final String url;
-  final FQuery titleQuery;
-  final FQuery? authorQuery;
-  final FQuery? translatorQuery;
-  final FQuery? descriptionQuery;
-  final FQuery? tagsQuery;
-  final FQuery? coverUrlQuery;
+  final WebsiteInfo info;
   final WebChapterListFetcherInterface? webChapterList;
 
   SupportedWebSiteInterface({
     required this.title,
     required this.url,
-    required this.titleQuery,
-    this.authorQuery,
-    this.translatorQuery,
-    this.descriptionQuery,
-    this.tagsQuery,
-    this.coverUrlQuery,
+    required this.info,
     this.webChapterList,
   });
 }
+

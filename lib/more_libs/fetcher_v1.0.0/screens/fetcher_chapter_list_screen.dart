@@ -1,14 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetchers/web_chapter_list_fetcher.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/interfaces/fetcher_interface.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/querys/f_query.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetch_web_chapter_screen.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/supported_website.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/web_chapter.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+import '../fetcher.dart';
+import '../interfaces/fetcher_interface.dart';
+import '../services/website_services.dart';
+import '../types/web_chapter.dart';
+import 'fetch_web_chapter_screen.dart';
 
 class FetcherChapterListScreen extends StatefulWidget {
   final String sourceDirPath;
@@ -31,9 +30,26 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
   void initState() {
     if (widget.pageUrl != null) {
       pageUrlController.text = widget.pageUrl!;
-      _onAutoChangeSupportedWebsite();
     }
     super.initState();
+    init();
+  }
+
+  List<SupportedWebSiteInterface> siteList = [];
+  SupportedWebSiteInterface? currentSite;
+  final pageUrlController = TextEditingController();
+  bool isLoading = false;
+  List<WebChapter> webChapterList = [];
+  int sortId = 1;
+  bool isAsc = true;
+  List<TSort> sortList = [
+    TSort(id: 1, title: 'Number', ascTitle: 'Smallest', descTitle: 'Biggest'),
+  ];
+
+  void init() async {
+    siteList = await WebsiteServices.getList();
+    if (!mounted) return;
+    _onAutoChangeSupportedWebsite();
   }
 
   @override
@@ -58,29 +74,6 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
       ),
     );
   }
-
-  final List<SupportedWebSiteInterface> siteList = [
-    SupportedWebSite(
-      title: 'mmxianxia',
-      url: 'https://mmxianxia.com',
-      titleQuery: FQuery(selector: '.entry-title'),
-      webChapterList: WebChapterListFetcher(
-        querySelectorAll: '.epl-title',
-        titleQuery: FQuery(selector: ''),
-        urlQuery: FQuery(selector: '', isParentElement: true, attr: 'href'),
-        contentQuery: FQuery(selector: '.entry-content'),
-      ),
-    ),
-  ];
-  SupportedWebSiteInterface? currentSite;
-  final pageUrlController = TextEditingController();
-  bool isLoading = false;
-  List<WebChapter> webChapterList = [];
-  int sortId = 1;
-  bool isAsc = true;
-  List<TSort> sortList = [
-    TSort(id: 1, title: 'Number', ascTitle: 'Smallest', descTitle: 'Biggest'),
-  ];
 
   Widget _getView() {
     if (isLoading) {
@@ -292,7 +285,7 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
       await file.writeAsString(content);
       if (!mounted) return;
       setState(() {});
-      showTSnackBar(context, 'Added: $chapterNumber');
+      // showTSnackBar(context, 'Added: $chapterNumber');
     } catch (e) {
       if (!mounted) return;
       showTMessageDialogError(context, e.toString());

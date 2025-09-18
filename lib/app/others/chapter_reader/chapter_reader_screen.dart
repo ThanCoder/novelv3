@@ -30,9 +30,11 @@ class ChapterReaderScreen extends StatefulWidget {
 class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   late ChapterReaderConfig config;
   List<Chapter> list = [];
+  List<Chapter> allList = [];
   final controller = ScrollController();
   double lastScrollPos = 0;
   bool isLoading = false;
+  bool isInitLoading = false;
   bool isShowGetPrevChapter = true;
   Chapter? topChapter;
   bool isFullScreen = false;
@@ -44,6 +46,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     controller.addListener(_onScroll);
     super.initState();
     initConfig();
+    init();
   }
 
   void initConfig() async {
@@ -52,6 +55,26 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       setState(() {});
     } catch (e) {
       debugPrint('[ChapterReaderScreen:initConfig]: ${e.toString()}');
+    }
+  }
+
+  void init() async {
+    try {
+      setState(() {
+        isInitLoading = true;
+      });
+      allList = await ChapterServices.getList(widget.chapter.getNovelPath);
+      allList.sort((a, b) => a.number.compareTo(b.number));
+      if (!mounted) return;
+      setState(() {
+        isInitLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isInitLoading = false;
+      });
+      showTMessageDialogError(context, e.toString());
     }
   }
 
@@ -78,16 +101,13 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           onDoubleTap: () => _toggleFullScreen(),
           onLongPress: _showConfigDialog,
           onSecondaryTap: _showConfigDialog,
-          child: Container(
-            color: config.theme.bgColor,
-            child: _getListWidget(),
-          ),
+          child: Container(color: config.theme.bgColor, child: _getView()),
         ),
       ),
     );
   }
 
-  Widget _getListWidget() {
+  Widget _getView() {
     return CustomScrollView(
       controller: controller,
       slivers: [
@@ -112,57 +132,64 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         // top
         SliverToBoxAdapter(child: _getPrevChapterWidget()),
         // list
-        SliverList.separated(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            final item = list[index];
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: config.paddingY,
-                horizontal: config.paddingX,
+        _getListWidget(),
+      ],
+    );
+  }
+
+  Widget _getListWidget() {
+    if (isInitLoading) {
+      return SliverFillRemaining(child: Center(child: TLoader.random()));
+    }
+    return SliverList.separated(
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        final item = list[index];
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: config.paddingY,
+            horizontal: config.paddingX,
+          ),
+          child: Column(
+            spacing: 5,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ChapterBookmarkAction(
+                theme: config.theme,
+                chapter: item,
+                title: 'BookMark',
               ),
-              child: Column(
-                spacing: 5,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ChapterBookmarkAction(
-                    theme: config.theme,
-                    chapter: item,
-                    title: 'BookMark',
-                  ),
-                  Text(
-                    item.getContents,
-                    style: TextStyle(
-                      fontSize: config.fontSize,
-                      color: config.theme.fontColor,
-                    ),
-                  ),
-                  // bookmark
-                  ChapterBookmarkAction(
-                    theme: config.theme,
-                    chapter: item,
-                    title: 'BookMark',
-                  ),
-                ],
-              ),
-            );
-          },
-          separatorBuilder: (context, index) {
-            final item = list[index];
-            return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    'Chapter: ${item.number} End...',
-                    style: TextStyle(fontSize: 20),
-                  ),
+              Text(
+                item.getContents,
+                style: TextStyle(
+                  fontSize: config.fontSize,
+                  color: config.theme.fontColor,
                 ),
               ),
-            );
-          },
-        ),
-      ],
+              // bookmark
+              ChapterBookmarkAction(
+                theme: config.theme,
+                chapter: item,
+                title: 'BookMark',
+              ),
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (context, index) {
+        final item = list[index];
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                'Chapter: ${item.number} End...',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -226,24 +253,46 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   }
 
   Future<void> _getNextChapter() async {
-    isLoading = true;
-    final res = list.last.getNextChapter;
-    if (res == null) {
+    try {
+      final currentChapterPos = allList.indexWhere(
+        (e) => e.number == list.last.number,
+      );
+      if (currentChapterPos == -1 ||
+          currentChapterPos >= (allList.length - 1)) {
+        return;
+      }
+
+      isLoading = true;
+      final res = allList[currentChapterPos + 1];
+      // // ရှိနေရင်
+      list.add(res);
+      setState(() {});
+      await Future.delayed(Duration(seconds: 1));
       isLoading = false;
-      return;
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+      // debugPrint(e.toString());
     }
-    // ရှိနေရင်
-    list.add(res);
-    setState(() {});
-    await Future.delayed(Duration(seconds: 2));
-    isLoading = false;
   }
 
   Future<void> _getPrevChapter() async {
-    isLoading = true;
-    isShowGetPrevChapter = true;
-    topChapter = list.first.getPrevChapter;
-    setState(() {});
+    try {
+      final currentChapterPos = allList.indexWhere(
+        (e) => e.number == list.first.number,
+      );
+      if (currentChapterPos == -1 || currentChapterPos == 0) {
+        return;
+      }
+      isLoading = true;
+      isShowGetPrevChapter = true;
+
+      topChapter = allList[currentChapterPos - 1];
+      setState(() {});
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+    }
   }
 
   void _toggleFullScreen() {
