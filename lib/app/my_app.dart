@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size);
     return ThemeSwitcher(
       builder: (config) {
         return MaterialApp(

@@ -18,11 +18,12 @@ abstract class JsonDatabase<T> extends Database<T> {
   Future<void> add(T value) async {
     final list = await getAll();
     list.add(value);
+    notify(DatabaseListenerEvent.add);
     await save(list);
   }
 
   @override
-  Future<List<T>> getAll() async {
+  Future<List<T>> getAll({Map<String, dynamic> query = const {}}) async {
     final file = File(root);
     List<T> list = [];
     if (!file.existsSync()) return list;
@@ -41,6 +42,6 @@ abstract class JsonDatabase<T> extends Database<T> {
     final file = File(root);
     final jsonList = list.map((e) => to(e)).toList();
     await file.writeAsString(JsonEncoder.withIndent(' ').convert(jsonList));
-    notify();
+    notify(DatabaseListenerEvent.saved);
   }
 }

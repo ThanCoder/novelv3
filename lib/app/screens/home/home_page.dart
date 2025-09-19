@@ -104,12 +104,14 @@ class _HomePageState extends State<HomePage>
           SliverToBoxAdapter(child: _getRecentWidet()),
 
           SliverToBoxAdapter(
-            child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
-          ),
-          SliverToBoxAdapter(child: _getBookmarkWidet()),
-          SliverToBoxAdapter(
             child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
           ),
+          SliverToBoxAdapter(child: _getBookmarkWidet()),
+
+          SliverToBoxAdapter(
+            child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
+          ),
+
           SliverToBoxAdapter(
             child: NovelSeeAllView(
               title: 'Completed စာစဥ်များ',

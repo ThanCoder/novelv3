@@ -55,6 +55,12 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       final (novelList, author, translator, mc, tags) =
           await getPreparingSearchList();
 
+      // sort
+      author.sort((a, b) => a.compareTo(b));
+      translator.sort((a, b) => a.compareTo(b));
+      mc.sort((a, b) => a.compareTo(b));
+      tags.sort((a, b) => a.compareTo(b));
+
       list = novelList;
       authorList = author;
       translatorList = translator;
@@ -123,18 +129,22 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     _searchDelayTimer = Timer(widget.searchDelay, () => _onSearch(text));
   }
 
-  void _onSearch(String text) {
+  void _onSearch(String text) async {
+    // list ကို sendable အဖြစ် serialize
+    // final listMap = list.map((e) => e.toMap()).toList();
+    final upper = text.toUpperCase();
+
     resultList = list.where((e) {
-      if (e.title.toUpperCase().contains(text.toUpperCase())) {
+      if (e.title.toUpperCase().contains(upper)) {
         return true;
       }
-      if (e.getMC.toUpperCase().contains(text.toUpperCase())) {
+      if (e.getMC.toUpperCase().contains(upper)) {
         return true;
       }
-      if (e.getAuthor.toUpperCase().contains(text.toUpperCase())) {
+      if (e.getAuthor.toUpperCase().contains(upper)) {
         return true;
       }
-      if (e.getTranslator.toUpperCase().contains(text.toUpperCase())) {
+      if (e.getTranslator.toUpperCase().contains(upper)) {
         return true;
       }
       return false;

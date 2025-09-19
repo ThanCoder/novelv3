@@ -27,7 +27,7 @@ void main() async {
   final dio = Dio();
 
   await TWidgets.instance.init(
-    defaultImageAssetsPath: 'assets/logo_1.jpg',
+    defaultImageAssetsPath: 'assets/logo_2.jpg',
     getDarkMode: () => Setting.getAppConfig.isDarkMode,
     onDownloadImage: (url, savePath) async {
       await dio.download(url, savePath);
@@ -69,12 +69,12 @@ void main() async {
   );
   await DesktopExe.instance.exportNotExists(
     name: 'Novel',
-    assetsIconPath: 'assets/cover.png',
+    assetsIconPath: 'assets/logo_v2.jpg',
   );
 
   if (TPlatform.isDesktop) {
     WindowOptions windowOptions = const WindowOptions(
-      size: Size(514, 414), // စတင်ဖွင့်တဲ့အချိန် window size
+      size: Size(602, 568), // စတင်ဖွင့်တဲ့အချိန် window size
 
       backgroundColor: Colors.transparent,
       skipTaskbar: false,

@@ -9,7 +9,7 @@ abstract class Database<T> {
   final Storage storage;
   Database({required this.root, required this.storage});
 
-  Future<List<T>> getAll();
+  Future<List<T>> getAll({Map<String, dynamic> query = const {}});
   Future<void> add(T value);
   Future<void> update(String id, T value);
   Future<void> delete(String id);
@@ -27,10 +27,10 @@ abstract class Database<T> {
     _listener.clear();
   }
 
-  void notify() {
+  void notify(DatabaseListenerEvent event, {String? id}) {
     try {
       for (var ev in _listener) {
-        ev.onDatabaseChanged();
+        ev.onDatabaseChanged(event, id: id);
       }
     } catch (e) {
       debugPrint('[Database:notify]: ${e.toString()}');
@@ -39,5 +39,7 @@ abstract class Database<T> {
 }
 
 mixin DatabaseListener {
-  void onDatabaseChanged();
+  void onDatabaseChanged(DatabaseListenerEvent event, {String? id});
 }
+
+enum DatabaseListenerEvent { saved, add, update, delete }

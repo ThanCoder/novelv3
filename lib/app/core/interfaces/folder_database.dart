@@ -10,7 +10,7 @@ abstract class FolderDatabase<T> extends Database<T> {
   T? from(FileSystemEntity file);
 
   @override
-  Future<List<T>> getAll() async {
+  Future<List<T>> getAll({Map<String, dynamic> query = const {}}) async {
     List<T> list = [];
     final dir = Directory(root);
     if (!dir.existsSync()) return list;

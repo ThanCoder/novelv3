@@ -8,9 +8,15 @@ import 'package:than_pkg/than_pkg.dart';
 import '../../novel_dir_app.dart';
 
 class EditChapterScreen extends StatefulWidget {
-  String novelPath;
-  Chapter? chapter;
-  EditChapterScreen({super.key, required this.novelPath, this.chapter});
+  final String novelPath;
+  final Chapter? chapter;
+  final void Function()? onClosed;
+  const EditChapterScreen({
+    super.key,
+    required this.novelPath,
+    this.chapter,
+    this.onClosed,
+  });
 
   @override
   State<EditChapterScreen> createState() => _EditChapterScreenState();
@@ -258,8 +264,9 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
 
   void _backpress() {
     if (!isChanged) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ChapterProvider>().initList(widget.novelPath);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   context.read<ChapterProvider>().initList(widget.novelPath);
+    // });
+    widget.onClosed?.call();
   }
 }

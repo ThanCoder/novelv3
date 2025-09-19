@@ -142,8 +142,13 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     if (novel == null) return;
     goRoute(
       context,
-      builder: (context) =>
-          EditChapterScreen(novelPath: novel.path, chapter: chapter),
+      builder: (context) => EditChapterScreen(
+        novelPath: novel.path,
+        chapter: chapter,
+        onClosed: () {
+          init();
+        },
+      ),
     );
   }
 
