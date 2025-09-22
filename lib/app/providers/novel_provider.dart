@@ -36,6 +36,11 @@ class NovelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refreshCurrentNovel(String path) async {
+    _novel = Novel.fromPath(path);
+    notifyListeners();
+  }
+
   void refreshNotifier() {
     notifyListeners();
   }

@@ -63,7 +63,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     }
     if (widget.title != null) {
       return Card(
-        color: widget.theme?.bgColor,
+        color: widget.theme?.bgColor.withValues(alpha: 0.7),
         child: Row(
           spacing: 5,
           mainAxisAlignment: MainAxisAlignment.end,

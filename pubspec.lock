@@ -484,18 +484,18 @@ packages:
     dependency: "direct main"
     description:
       name: pdfrx
-      sha256: d3423503fb08ca1241fd78d1ba35151e8ffa7753bdb4526eca644f34f544e058
+      sha256: "54e8474eb1b4ce7a2cebcce6f0f54223e12bd252516d4a67ecc28dd6cb09313d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.14"
+    version: "2.1.15"
   pdfrx_engine:
     dependency: transitive
     description:
       name: pdfrx_engine
-      sha256: "3843477877302b89d0a2cbecaf518f39f2aca35ea9f359c187547345790fe5f2"
+      sha256: "1e144c7a86871f0c004049bf608b3f648057b2e54ba85b151aeca24f35cce397"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.15"
+    version: "0.1.16"
   petitparser:
     dependency: transitive
     description:
@@ -532,10 +532,10 @@ packages:
     dependency: "direct main"
     description:
       name: provider
-      sha256: "4abbd070a04e9ddc287673bf5a030c7ca8b685ff70218720abab8b092f53dd84"
+      sha256: "4e82183fa20e5ca25703ead7e05de9e4cceed1fbd1eadc1ac3cb6f565a09f272"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.5"
+    version: "6.1.5+1"
   rxdart:
     dependency: transitive
     description:
@@ -641,10 +641,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_client
-      sha256: "511312fd52638eab38cd8dc1a1a27c29263c8f5222913710142533fca3e5d537"
+      sha256: "9c795e791f1586669073c24572fbbcf775d57868f496494fb7cfd9d5e0510e12"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.6"
   t_html_parser:
     dependency: "direct main"
     description:
@@ -665,10 +665,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: ec1fe51e3898037ece06b311b09cc719cd323cf911088193ca5d47f30bdb6356
+      sha256: db0a75ffce6726c4431c8ed57e72d9f4455dc19237ba582b0ed61bfdcbfb4380
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.5.0"
   term_glyph:
     dependency: transitive
     description:
@@ -689,10 +689,10 @@ packages:
     dependency: "direct main"
     description:
       name: than_pkg
-      sha256: "3a2982bb24ce40b36e31106916a92b60e61f86a7061fa45cb26926d5602635fe"
+      sha256: e53fccd7a04ea157ff9b83ab849d5fa6eb9a7aa60d6b01dc743f885dd851af0c
       url: "https://pub.dev"
     source: hosted
-    version: "3.8.0"
+    version: "4.3.1"
   timeago:
     dependency: transitive
     description:

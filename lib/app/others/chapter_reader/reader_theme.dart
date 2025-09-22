@@ -23,19 +23,20 @@ class ReaderTheme {
     return [
       defaultLightTheme,
       defaultDarkTheme,
+      warmYellow,
       sepiaTheme,
+      cobalt,
       blueLightFilter,
       greenTheme,
       greenPaper,
       gray,
-      warmYellow,
     ];
   }
 
   static const ReaderTheme defaultLightTheme = ReaderTheme(
     id: '1',
     title: 'Light Theme',
-    fontColor: Colors.black,
+    fontColor: Color.fromARGB(255, 10, 10, 10),
     bgColor: Colors.white,
   );
   static const ReaderTheme defaultDarkTheme = ReaderTheme(
@@ -67,9 +68,9 @@ class ReaderTheme {
 
   static const ReaderTheme greenPaper = ReaderTheme(
     id: '6',
-    title: 'Green Paper',
-    fontColor: Color(0xFF003300),
-    bgColor: Color(0xFFE8F5E9),
+    title: 'Green ',
+    fontColor: Color.fromARGB(255, 4, 44, 4),
+    bgColor: Color.fromARGB(255, 176, 187, 177),
   );
 
   static const ReaderTheme gray = ReaderTheme(
@@ -84,5 +85,11 @@ class ReaderTheme {
     title: 'Warm Yellow',
     fontColor: Color(0xFF5B4636),
     bgColor: Color(0xFFFFF8DC),
+  );
+  static const ReaderTheme cobalt = ReaderTheme(
+    id: '9',
+    title: 'Cobalt',
+    fontColor: Color.fromARGB(255, 194, 194, 194),
+    bgColor: Color.fromARGB(255, 7, 28, 46),
   );
 }

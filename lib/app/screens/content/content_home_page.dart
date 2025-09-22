@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:novel_v3/app/components/add_website_result_dialog.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_action.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
@@ -14,7 +15,8 @@ import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/screens/content/page_url_dialog.dart';
 import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_desc_screen.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -222,10 +224,10 @@ class _ContentHomePageState extends State<ContentHomePage> {
         ),
         ListTile(
           leading: Icon(Icons.add),
-          title: Text('Add Online Description'),
+          title: Text('Add Online Info'),
           onTap: () {
             closeContext(context);
-            _addOnlineDesc();
+            _addOnlineInfo();
           },
         ),
         ListTile(
@@ -288,7 +290,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
     );
   }
 
-  void _addOnlineDesc() {
+  void _addOnlineInfo() {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
     showDialog(
@@ -298,14 +300,25 @@ class _ContentHomePageState extends State<ContentHomePage> {
         onClicked: (url) {
           goRoute(
             context,
-            builder: (context) => FetcherDescScreen(
+            builder: (context) => FetcherWebNovelUrlScreen(
               url: url,
-              onReceiveData: (context, description) {
-                novel.setContent(description);
-                context.read<NovelProvider>().refreshNotifier();
-              },
+              onSaved: (result) => _addWebsiteResult(novel, result),
             ),
           );
+        },
+      ),
+    );
+  }
+
+  void _addWebsiteResult(Novel novel, WebsiteInfoResult result) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AddWebsiteResultDialog(
+        novel: novel,
+        result: result,
+        onLoaded: (novelPath) {
+          context.read<NovelProvider>().refreshCurrentNovel(novelPath);
         },
       ),
     );

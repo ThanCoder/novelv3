@@ -4,11 +4,17 @@ import 'dart:io';
 
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ClientDownloadManager extends TDownloadManager {
   final TClientToken token;
   final Directory saveDir;
-  ClientDownloadManager({required this.token, required this.saveDir});
+  final bool isExistsFileSkip;
+  ClientDownloadManager({
+    required this.token,
+    required this.saveDir,
+    this.isExistsFileSkip = true,
+  });
 
   final client = TClient();
 
@@ -33,6 +39,11 @@ class ClientDownloadManager extends TDownloadManager {
             '${saveDir.path}/${name.getName(withExt: false)}.tem',
           );
           index++;
+          // skip
+          if (isExistsFileSkip && File('${saveDir.path}/$name').existsSync()) {
+            continue;
+          }
+
           await client.download(
             url,
             savePath: temFile.path,
@@ -46,7 +57,7 @@ class ClientDownloadManager extends TDownloadManager {
                   loaded: received,
                   total: total,
                   message:
-                      'Downloading...\n$name\nSpeed: ${speed.formatSpeed()} - Left: ${eta?.toAutoTimeLabel()}',
+                      'Downloading...\n$name\nSpeed: ${speed.getAutoSpeedLabel()} - Left: ${eta?.getAutoTimeLabel()}',
                 ),
               );
             },

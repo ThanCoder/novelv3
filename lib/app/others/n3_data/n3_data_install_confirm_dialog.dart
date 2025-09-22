@@ -3,12 +3,14 @@ import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 
 class N3DataInstallConfirmDialog extends StatefulWidget {
   N3Data n3data;
+  Widget? descText;
   void Function(bool isInstallConfigFiles, bool isInstallFileOverride)
   onInstall;
   N3DataInstallConfirmDialog({
     super.key,
     required this.n3data,
     required this.onInstall,
+    this.descText,
   });
 
   @override
@@ -27,7 +29,13 @@ class _N3DataInstallConfirmDialogState
       title: Text('Install N3Data'),
       scrollable: true,
       content: Column(
+        spacing: 5,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // desc
+          widget.descText ?? SizedBox.shrink(),
+          widget.descText == null ? SizedBox.shrink() : Divider(),
+
           SwitchListTile.adaptive(
             title: Text('Install Config Files'),
             subtitle: Text(

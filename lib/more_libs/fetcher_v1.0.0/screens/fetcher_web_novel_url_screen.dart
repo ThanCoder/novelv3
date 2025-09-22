@@ -32,6 +32,13 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
   SupportedWebSiteInterface? currentSite;
   WebsiteInfoResult result = WebsiteInfoResult(url: '');
 
+  bool isIncludeTitle = true;
+  bool isIncludeAuthor = true;
+  bool isIncludeTranslator = true;
+  bool isIncludeCoverUrl = true;
+  bool isIncludeTags = true;
+  bool isIncludeDesc = true;
+
   @override
   void initState() {
     pageUrlController.text = widget.url;
@@ -60,6 +67,8 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
       children: [
         _getPageUrlWidget(),
         _getSiteChooser(),
+        Divider(),
+        _getFormInfo(),
         Divider(),
         _getForms(),
       ],
@@ -90,6 +99,21 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
     );
   }
 
+  Widget _getFormInfo() {
+    return Column(
+      children: [
+        Text('အကြောင်းအရာ'),
+        Row(children: [Icon(Icons.check_box), Text('ထည့်သွင်းမယ်')]),
+        Row(
+          children: [
+            Icon(Icons.check_box_outline_blank_outlined),
+            Text('မထည့်သွင်းဘူး'),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _getForms() {
     if (isLoading) {
       return Center(child: TLoader.random());
@@ -105,43 +129,120 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
       );
     }
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
         currentSite!.info.titleQuery == null
             ? SizedBox.shrink()
-            : TTextField(
-                label: Text('Title'),
-                maxLines: 1,
-                controller: titleController,
+            : Row(
+                children: [
+                  Checkbox.adaptive(
+                    value: isIncludeTitle,
+                    onChanged: (value) {
+                      setState(() {
+                        isIncludeTitle = value!;
+                      });
+                    },
+                  ),
+                  Expanded(
+                    child: TTextField(
+                      label: Text('Title'),
+                      maxLines: 1,
+                      controller: titleController,
+                    ),
+                  ),
+                ],
               ),
 
         currentSite!.info.authorQuery == null
             ? SizedBox.shrink()
-            : TTextField(
-                label: Text('Author'),
-                maxLines: 1,
-                controller: authorController,
+            : Row(
+                children: [
+                  Checkbox.adaptive(
+                    value: isIncludeAuthor,
+                    onChanged: (value) {
+                      setState(() {
+                        isIncludeAuthor = value!;
+                      });
+                    },
+                  ),
+                  TTextField(
+                    label: Text('Author'),
+                    maxLines: 1,
+                    controller: authorController,
+                  ),
+                ],
               ),
         currentSite!.info.translatorQuery == null
             ? SizedBox.shrink()
-            : TTextField(
-                label: Text('Translator'),
-                maxLines: 1,
-                controller: translatorController,
+            : Row(
+                children: [
+                  Checkbox.adaptive(
+                    value: isIncludeTranslator,
+                    onChanged: (value) {
+                      setState(() {
+                        isIncludeTranslator = value!;
+                      });
+                    },
+                  ),
+                  TTextField(
+                    label: Text('Translator'),
+                    maxLines: 1,
+                    controller: translatorController,
+                  ),
+                ],
               ),
         currentSite!.info.coverUrlQuery == null
             ? SizedBox.shrink()
-            : TTextField(
-                label: Text('Cover Url'),
-                maxLines: 1,
-                controller: coverUrlController,
+            : Row(
+                children: [
+                  Checkbox.adaptive(
+                    value: isIncludeCoverUrl,
+                    onChanged: (value) {
+                      setState(() {
+                        isIncludeCoverUrl = value!;
+                      });
+                    },
+                  ),
+                  Expanded(
+                    child: TTextField(
+                      label: Text('Cover Url'),
+                      maxLines: 1,
+                      controller: coverUrlController,
+                    ),
+                  ),
+                ],
               ),
         currentSite!.info.tagsQuery == null
             ? SizedBox.shrink()
-            : TTextField(
-                label: Text('Tags'),
-                maxLines: 1,
-                controller: tagsController,
+            : Row(
+                children: [
+                  Checkbox.adaptive(
+                    value: isIncludeTags,
+                    onChanged: (value) {
+                      setState(() {
+                        isIncludeTags = value!;
+                      });
+                    },
+                  ),
+                  Expanded(
+                    child: TTextField(
+                      label: Text('Tags'),
+                      maxLines: 1,
+                      controller: tagsController,
+                    ),
+                  ),
+                ],
+              ),
+        currentSite!.info.descriptionQuery == null
+            ? SizedBox.shrink()
+            : Checkbox.adaptive(
+                value: isIncludeDesc,
+                onChanged: (value) {
+                  setState(() {
+                    isIncludeDesc = value!;
+                  });
+                },
               ),
         currentSite!.info.descriptionQuery == null
             ? SizedBox.shrink()
@@ -244,13 +345,13 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
 
       result = result.copyWith(
         url: pageUrlController.text,
-        title: title,
+        title: !isIncludeTitle ? null : title,
         engTitle: engTitle,
-        author: author,
-        coverUrl: coverUrl,
-        translator: translator,
-        description: description,
-        tags: tags,
+        author: !isIncludeAuthor ? null : author,
+        coverUrl: !isIncludeCoverUrl ? null : coverUrl,
+        translator: !isIncludeTranslator ? null : translator,
+        description: !isIncludeDesc ? null : description,
+        tags: !isIncludeTags ? null : tags,
       );
 
       if (!mounted) return;

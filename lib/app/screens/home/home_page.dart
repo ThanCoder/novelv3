@@ -4,6 +4,9 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/others/clean_manager/clean_manager_screen.dart';
+import 'package:novel_v3/app/others/n3_data/n3_data.dart';
+import 'package:novel_v3/app/others/n3_data/n3_data_install_confirm_dialog.dart';
+import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
@@ -44,6 +47,12 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  //novel recent db listener
+  @override
+  void onChanged(NovelRecentData? value) {
+    setState(() {});
+  }
+
   Future<void> init() async {
     await context.read<NovelProvider>().initList();
     if (!mounted) return;
@@ -58,11 +67,18 @@ class _HomePageState extends State<HomePage>
         onDragDone: (details) {
           if (details.files.isEmpty) return;
           final path = details.files.first.path;
+          if (N3Data.isN3Data(path)) {
+            // n3data
+            _createN3Data(path);
+            return;
+          }
+          // mime
           final mime = lookupMimeType(path) ?? '';
           if (mime.isEmpty) return;
           if (mime.endsWith('/pdf')) {
             // pdf
             _createPdfWithNovel(NovelPdf.createPath(path));
+            return;
           }
         },
         child: _getList(),
@@ -383,9 +399,28 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  //novel recent db listener
-  @override
-  void onChanged(NovelRecentData? value) {
-    setState(() {});
+  void _createN3Data(String path) {
+    final n3data = N3Data.createPath(path);
+    showDialog(
+      context: context,
+      builder: (context) => N3DataInstallConfirmDialog(
+        descText: Text('Name: ${n3data.getTitle}'),
+        n3data: n3data,
+        onInstall: (isInstallConfigFiles, isInstallFileOverride) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => N3DataInstallDialog(
+              n3data: n3data,
+              isInstallConfigFiles: isInstallConfigFiles,
+              isInstallFileOverride: isInstallFileOverride,
+              onSuccess: () {
+                init();
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }

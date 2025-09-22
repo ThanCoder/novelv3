@@ -18,8 +18,16 @@ class ShareScreen extends StatefulWidget {
 class _ShareScreenState extends State<ShareScreen> {
   @override
   void initState() {
-    TServer.instance.startListen(port: 4545);
     super.initState();
+    init();
+  }
+
+  void init() {
+    try {
+      TServer.instance.startListen(port: 4545);
+    } catch (e) {
+      showTMessageDialogError(context, e.toString());
+    }
   }
 
   @override

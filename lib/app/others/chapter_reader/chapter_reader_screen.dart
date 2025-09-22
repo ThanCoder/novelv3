@@ -143,53 +143,58 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     }
     return SliverList.separated(
       itemCount: list.length,
-      itemBuilder: (context, index) {
-        final item = list[index];
-        return Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: config.paddingY,
-            horizontal: config.paddingX,
+      itemBuilder: (context, index) => _getListItem(index),
+      separatorBuilder: (context, index) => _getSeparator(index),
+    );
+  }
+
+  Widget _getListItem(int index) {
+    final item = list[index];
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: config.paddingY,
+        horizontal: config.paddingX,
+      ),
+      child: Column(
+        spacing: 5,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          ChapterBookmarkAction(
+            theme: config.theme,
+            chapter: item,
+            title: 'BookMark',
           ),
-          child: Column(
-            spacing: 5,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ChapterBookmarkAction(
-                theme: config.theme,
-                chapter: item,
-                title: 'BookMark',
-              ),
-              Text(
-                item.getContents,
-                style: TextStyle(
-                  fontSize: config.fontSize,
-                  color: config.theme.fontColor,
-                ),
-              ),
-              // bookmark
-              ChapterBookmarkAction(
-                theme: config.theme,
-                chapter: item,
-                title: 'BookMark',
-              ),
-            ],
-          ),
-        );
-      },
-      separatorBuilder: (context, index) {
-        final item = list[index];
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Chapter: ${item.number} End...',
-                style: TextStyle(fontSize: 20),
-              ),
+          Text(
+            item.getContents,
+            style: TextStyle(
+              fontSize: config.fontSize,
+              color: config.theme.fontColor,
             ),
           ),
-        );
-      },
+          // bookmark
+          ChapterBookmarkAction(
+            theme: config.theme,
+            chapter: item,
+            title: 'BookMark',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getSeparator(int index) {
+    final item = list[index];
+    return Card(
+      color: config.theme.bgColor.withValues(alpha: 0.5),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Text(
+            'Chapter: ${item.number} End...',
+            style: TextStyle(fontSize: 20, color: config.theme.fontColor),
+          ),
+        ),
+      ),
     );
   }
 
@@ -208,7 +213,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
-          color: config.theme.bgColor,
+          color: config.theme.bgColor.withValues(alpha: 0.5),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
