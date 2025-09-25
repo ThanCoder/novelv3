@@ -32,8 +32,11 @@ class _ReadedButtonState extends State<ReadedButton> {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           textInputType: TextInputType.number,
           submitText: 'Update',
-          onSubmit: (text) {
+          onSubmit: (text) async {
             novel.setReaded(text);
+            await Future.delayed(Duration(milliseconds: 500));
+            if (!context.mounted) return;
+            context.read<NovelProvider>().refreshNotifier();
             setState(() {});
           },
         );

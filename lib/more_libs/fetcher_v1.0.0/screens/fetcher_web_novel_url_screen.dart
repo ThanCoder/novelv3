@@ -166,10 +166,12 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
                       });
                     },
                   ),
-                  TTextField(
-                    label: Text('Author'),
-                    maxLines: 1,
-                    controller: authorController,
+                  Expanded(
+                    child: TTextField(
+                      label: Text('Author'),
+                      maxLines: 1,
+                      controller: authorController,
+                    ),
                   ),
                 ],
               ),
@@ -185,10 +187,12 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
                       });
                     },
                   ),
-                  TTextField(
-                    label: Text('Translator'),
-                    maxLines: 1,
-                    controller: translatorController,
+                  Expanded(
+                    child: TTextField(
+                      label: Text('Translator'),
+                      maxLines: 1,
+                      controller: translatorController,
+                    ),
                   ),
                 ],
               ),

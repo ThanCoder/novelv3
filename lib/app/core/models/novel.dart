@@ -6,9 +6,9 @@ import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class Novel {
-  String title;
-  String path;
-  DateTime date;
+  final String title;
+  final String path;
+  final DateTime date;
   int cacheSize = 0;
   bool cacheIsExistsDesc = false;
   bool cacheIsOnlineExists = false;
@@ -29,6 +29,14 @@ class Novel {
       date: dir.statSync().modified,
     );
   }
+  Novel copyWith({String? title, String? path, DateTime? date}) {
+    return Novel(
+      title: title ?? this.title,
+      path: path ?? this.path,
+      date: date ?? this.date,
+    );
+  }
+
   // set list
   void setPageUrls(List<String> list) {
     final contents = list.join(',');
@@ -54,6 +62,7 @@ class Novel {
         .where((e) => e.isNotEmpty)
         .map((e) => e.trim())
         .toList();
+    list.sort((a, b) => a.compareTo(b));
     return list;
   }
 
@@ -124,30 +133,6 @@ class Novel {
       return int.parse(getReaded);
     }
     return 0;
-  }
-
-  // set title
-  Future<void> setTitle(String newTitle) async {
-    if (title != newTitle) {
-      // rename title
-      final oldDir = Directory(path);
-      final newDir = Directory('${oldDir.parent.path}/$newTitle');
-      if (newDir.existsSync()) {
-        throw Exception('title ရှိနေပြီးသား ဖြစ်နေပါတယ်');
-      }
-      // အတူဘူးဆိုရင်
-      await newDir.create(recursive: true);
-      title = newTitle;
-      path = newDir.path;
-
-      // move old dir
-      for (var file in oldDir.listSync()) {
-        final newPath = '${newDir.path}/${file.getName()}';
-        await file.rename(newPath);
-      }
-      // delete old dir
-      await oldDir.delete(recursive: true);
-    }
   }
 
   Future<void> onSave() async {}

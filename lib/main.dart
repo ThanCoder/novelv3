@@ -69,7 +69,7 @@ void main() async {
   );
   await DesktopExe.instance.exportNotExists(
     name: 'Novel',
-    assetsIconPath: 'assets/logo_v2.jpg',
+    assetsIconPath: 'assets/logo_2.jpg',
   );
 
   if (TPlatform.isDesktop) {

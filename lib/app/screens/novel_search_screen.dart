@@ -242,7 +242,10 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 5,
           children: [
-            Text(title),
+            Text(
+              title,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             TTagsWrapView(values: list, onClicked: onClicked),
           ],
         ),

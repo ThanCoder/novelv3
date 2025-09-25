@@ -39,7 +39,7 @@ class ThemeServices with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     // init
     final brightness = WidgetsBinding.instance.window.platformBrightness;
-    Future.delayed(Duration(milliseconds: 900), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       _controller.add(ThemeModes.fromBrightness(brightness));
     });
   }

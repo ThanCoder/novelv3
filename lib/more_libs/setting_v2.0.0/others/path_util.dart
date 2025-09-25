@@ -121,4 +121,26 @@ class PathUtil {
     // old dir delete
     await oldDir.delete();
   }
+
+  static void renameDirSync({
+    required Directory oldDir,
+    required Directory newDir,
+  }) {
+    if (oldDir.path == newDir.path) return;
+    if (!oldDir.existsSync()) {
+      throw Exception('Old Folder Not Found!');
+    }
+    if (newDir.existsSync()) {
+      throw Exception('New Folder Already Exists');
+    }
+    // dir ဖန်တီး
+    newDir.createSync();
+    //file move
+    for (var file in oldDir.listSync(followLinks: false)) {
+      final newPath = '${newDir.path}/${file.getName()}';
+      file.renameSync(newPath);
+    }
+    // old dir delete
+    oldDir.deleteSync();
+  }
 }

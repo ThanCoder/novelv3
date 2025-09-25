@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/novel_home_list_styles.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import 'setting.dart';
@@ -18,6 +19,8 @@ class AppConfig {
   String customNovelContentImagePath;
   ThemeModes themeMode;
   bool isDarkMode;
+  NovelHomeListStyles homeListStyle;
+
   AppConfig({
     required this.customPath,
     required this.forwardProxyUrl,
@@ -30,6 +33,7 @@ class AppConfig {
     required this.customNovelContentImagePath,
     required this.themeMode,
     required this.isDarkMode,
+    required this.homeListStyle,
   });
 
   factory AppConfig.create({
@@ -45,6 +49,7 @@ class AppConfig {
     bool isDarkTheme = false,
     bool isDarkMode = false,
     ThemeModes themeMode = ThemeModes.system,
+    NovelHomeListStyles homeListStyle = NovelHomeListStyles.grid,
   }) {
     return AppConfig(
       customPath: customPath,
@@ -58,6 +63,7 @@ class AppConfig {
       isUseProxy: isUseProxy,
       themeMode: themeMode,
       isDarkMode: isDarkMode,
+      homeListStyle: homeListStyle,
     );
   }
 
@@ -73,6 +79,7 @@ class AppConfig {
     bool? isUseProxy,
     ThemeModes? themeMode,
     bool? isDarkMode,
+    NovelHomeListStyles? homeListStyle,
   }) {
     return AppConfig(
       customPath: customPath ?? this.customPath,
@@ -88,6 +95,7 @@ class AppConfig {
       isUseProxy: isUseProxy ?? this.isUseProxy,
       themeMode: themeMode ?? this.themeMode,
       isDarkMode: isDarkMode ?? this.isDarkMode,
+      homeListStyle: homeListStyle ?? this.homeListStyle,
     );
   }
 
@@ -105,11 +113,13 @@ class AppConfig {
       'isUseProxy': isUseProxy,
       'themeMode': themeMode.name,
       'isDarkMode': isDarkMode,
+      'homeListStyle': homeListStyle.name,
     };
   }
 
   factory AppConfig.fromMap(Map<String, dynamic> map) {
     final themeStr = map.getString(['themeMode']);
+    final homeListStyleStr = map.getString(['homeListStyle']);
 
     return AppConfig(
       customPath: map['customPath'] as String,
@@ -125,6 +135,7 @@ class AppConfig {
       isUseProxy: map['isUseProxy'] as bool,
       themeMode: ThemeModes.getName(themeStr),
       isDarkMode: map.getBool(['isDarkMode']),
+      homeListStyle: NovelHomeListStyles.getName(homeListStyleStr),
     );
   }
 

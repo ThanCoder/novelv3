@@ -10,6 +10,7 @@ import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
+import 'package:novel_v3/app/screens/content/novel_content_home_screen.dart';
 import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/screens/home/create_novel_website_info_result_dialog.dart';
@@ -18,6 +19,7 @@ import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/novel_home_list_styles.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage>
             return;
           }
         },
-        child: _getList(),
+        child: _getViews(),
       ),
     );
   }
@@ -98,54 +100,86 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _getList() {
+  Widget _getViews() {
     final provider = context.watch<NovelProvider>();
     final isLoading = provider.isLoading;
     final list = provider.getList;
+    if (isLoading) {
+      return Center(child: TLoaderRandom());
+    }
+
+    return RefreshIndicator.adaptive(
+      onRefresh: init,
+      child: CustomScrollView(
+        slivers: [
+          _getSliverAppBar(),
+          isLoading
+              ? SliverFillRemaining(child: TLoader.random())
+              : SliverToBoxAdapter(),
+          // list
+          ..._getListStyle(list),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _getListStyle(List<Novel> list) {
+    final style = Setting.getAppConfig.homeListStyle;
+    if (style == NovelHomeListStyles.list) {
+      return [_getList(list)];
+    }
+    if (style == NovelHomeListStyles.grid) {
+      return _getGridList(list);
+    }
+    return [_getList(list)];
+  }
+
+  Widget _getList(List<Novel> list) {
+    return SliverList.builder(
+      itemCount: list.length,
+      itemBuilder: (context, index) => NovelListItem(
+        novel: list[index],
+        onClicked: (novel) async {
+          await context.read<NovelProvider>().setCurrent(novel);
+          if (!context.mounted) return;
+          goRoute(context, builder: (context) => NovelContentHomeScreen());
+        },
+      ),
+    );
+  }
+
+  List<Widget> _getGridList(List<Novel> list) {
     final completedList = list.where((e) => e.isCompleted).toList();
     final onGoingList = list.where((e) => !e.isCompleted).toList();
     final adultList = list.where((e) => e.isAdult).toList();
     final randomList = List.of(list);
     randomList.shuffle();
 
-    if (isLoading) {
-      return Center(child: TLoaderRandom());
-    }
-    return RefreshIndicator.adaptive(
-      onRefresh: init,
-      child: CustomScrollView(
-        slivers: [
-          _getSliverAppBar(),
+    return [
+      SliverToBoxAdapter(child: _getRecentWidet()),
 
-          SliverToBoxAdapter(child: _getRecentWidet()),
-
-          SliverToBoxAdapter(
-            child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
-          ),
-          SliverToBoxAdapter(child: _getBookmarkWidet()),
-
-          SliverToBoxAdapter(
-            child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
-          ),
-
-          SliverToBoxAdapter(
-            child: NovelSeeAllView(
-              title: 'Completed စာစဥ်များ',
-              list: completedList,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: NovelSeeAllView(
-              title: 'OnGoing စာစဥ်များ',
-              list: onGoingList,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: NovelSeeAllView(title: 'Adult စာစဥ်များ', list: adultList),
-          ),
-        ],
+      SliverToBoxAdapter(
+        child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
       ),
-    );
+      SliverToBoxAdapter(child: _getBookmarkWidet()),
+
+      SliverToBoxAdapter(
+        child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
+      ),
+
+      SliverToBoxAdapter(
+        child: NovelSeeAllView(
+          title: 'Completed စာစဥ်များ',
+          list: completedList,
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: NovelSeeAllView(title: 'OnGoing စာစဥ်များ', list: onGoingList),
+      ),
+      SliverToBoxAdapter(
+        child: NovelSeeAllView(title: 'Adult စာစဥ်များ', list: adultList),
+      ),
+    ];
   }
 
   Widget _getSliverAppBar() {
@@ -223,6 +257,14 @@ class _HomePageState extends State<HomePage>
           },
         ),
         ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Home Style'),
+          onTap: () {
+            closeContext(context);
+            _showListStyle();
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.cleaning_services_rounded),
           title: Text('Clean Mangager'),
           onTap: () {
@@ -261,6 +303,48 @@ class _HomePageState extends State<HomePage>
 
   void _goCleanManagerScreen() {
     goRoute(context, builder: (context) => CleanManagerScreen());
+  }
+
+  void _showListStyle() {
+    final config = Setting.getAppConfig;
+    showTMenuBottomSheet(
+      context,
+      title: Text('Home List Style'),
+      children: [
+        ListTile(
+          title: Text('${NovelHomeListStyles.list.name.toCaptalize()} Style'),
+          trailing: Icon(
+            config.homeListStyle == NovelHomeListStyles.list
+                ? Icons.check_box_rounded
+                : Icons.check_box_outline_blank_rounded,
+          ),
+          onTap: () {
+            Setting.getAppConfigNotifier.value = config.copyWith(
+              homeListStyle: NovelHomeListStyles.list,
+            );
+            Setting.getAppConfigNotifier.value.save();
+            Navigator.pop(context);
+            setState(() {});
+          },
+        ),
+        ListTile(
+          title: Text('${NovelHomeListStyles.grid.name.toCaptalize()} Style'),
+          trailing: Icon(
+            config.homeListStyle == NovelHomeListStyles.grid
+                ? Icons.check_box_rounded
+                : Icons.check_box_outline_blank_rounded,
+          ),
+          onTap: () {
+            Setting.getAppConfigNotifier.value = config.copyWith(
+              homeListStyle: NovelHomeListStyles.grid,
+            );
+            Setting.getAppConfigNotifier.value.save();
+            Navigator.pop(context);
+            setState(() {});
+          },
+        ),
+      ],
+    );
   }
 
   // add main menu

@@ -126,7 +126,7 @@ Future<void> installN3DataTask(N3DataTask task) async {
       password: task.password,
     );
 
-    for (var file in archive.files) {
+    for (ArchiveFile file in archive.files) {
       if (!file.isFile) continue;
       // config file ကို ကျော်မယ်ဆိုရင်
       if (!task.isInstallConfigFiles) {
@@ -142,8 +142,12 @@ Future<void> installN3DataTask(N3DataTask task) async {
       if (!task.isInstallFileOverride && outFile.existsSync()) {
         continue;
       }
+      // direct write
       final output = OutputFileStream(outFile.path);
       file.writeContent(output);
+      // progress
+      // final data = file.content as List<int>;
+      // final total = data.length;
 
       await output.close();
     }

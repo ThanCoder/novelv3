@@ -101,6 +101,7 @@ class NovelProvider extends ChangeNotifier {
         .map((e) => e.trim())
         .toSet()
         .toList();
+    res.sort((a, b) => a.compareTo(b));
     return res;
   }
 }

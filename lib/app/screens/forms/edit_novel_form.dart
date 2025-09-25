@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -72,7 +74,6 @@ class _EditNovelFormState extends State<EditNovelForm> {
 
   @override
   Widget build(BuildContext context) {
-    final allTags = context.watch<NovelProvider>().getAllTags;
     return TScaffold(
       appBar: AppBar(title: Text('Edit: ${widget.novel.title}')),
       body: TScrollableColumn(
@@ -80,91 +81,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
           // cover
           TCoverChooser(coverPath: novel.getCoverPath),
           // fields
-          TTextField(
-            label: Text('Title'),
-            maxLines: 1,
-            controller: titleController,
-            isSelectedAll: true,
-            errorText: titleError,
-            focusNode: titleFocus,
-            onChanged: (value) {
-              if (value.isEmpty) return;
-              if (titleCheckTimer?.isActive ?? false) {
-                titleCheckTimer?.cancel();
-              }
-              // delay
-              titleCheckTimer = Timer(Duration(milliseconds: 1200), () {
-                if (_checkExistsNovelTitle(value)) {
-                  // ရှိနေရင်
-                  setState(() {
-                    titleError = 'ရှိနေပြီးသား ဖြစ်နေပါတယ်!...';
-                  });
-                } else {
-                  setState(() {
-                    titleError = null;
-                  });
-                }
-              });
-            },
-          ),
-          
-          TTextField(
-            label: Text('Author'),
-            maxLines: 1,
-            controller: authorController,
-            focusNode: authorFocus,
-            isSelectedAll: true,
-          ),
-          TTextField(
-            label: Text('Translator'),
-            maxLines: 1,
-            controller: translatorController,
-            focusNode: translatorFocus,
-            isSelectedAll: true,
-          ),
-          TTextField(
-            label: Text('MC'),
-            maxLines: 1,
-            controller: mcController,
-            focusNode: mcFocus,
-            isSelectedAll: true,
-          ),
-          SwitchListTile.adaptive(
-            title: Text('is Completed'),
-            value: novel.isCompleted,
-            onChanged: (value) {
-              novel.setCompleted(value);
-              setState(() {});
-            },
-          ),
-          SwitchListTile.adaptive(
-            title: Text('is Adult'),
-            value: novel.isAdult,
-            onChanged: (value) {
-              novel.setAdult(value);
-              setState(() {});
-            },
-          ),
-          // page urls
-          _getPageUrlWidget(),
-          // tags
-          TTagsWrapView(
-            title: Text('Tags'),
-            values: novel.getTags,
-            allTags: allTags,
-            onApply: (values) {
-              novel.setTags(values);
-              _clearFocus();
-              setState(() {});
-            },
-          ),
-
-          TTextField(
-            label: Text('Description'),
-            maxLines: null,
-            controller: descController,
-            focusNode: descFocus,
-          ),
+          _getForms(),
         ],
       ),
       floatingActionButton: isLoading
@@ -175,6 +92,100 @@ class _EditNovelFormState extends State<EditNovelForm> {
               onPressed: _onUpdate,
               child: Icon(Icons.save_as_rounded),
             ),
+    );
+  }
+
+  Widget _getForms() {
+    final allTags = context.watch<NovelProvider>().getAllTags;
+    return Column(
+      spacing: 10,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TTextField(
+          label: Text('Title'),
+          maxLines: 1,
+          controller: titleController,
+          isSelectedAll: true,
+          errorText: titleError,
+          focusNode: titleFocus,
+          onChanged: (value) {
+            if (value.isEmpty) return;
+            if (titleCheckTimer?.isActive ?? false) {
+              titleCheckTimer?.cancel();
+            }
+            // delay
+            titleCheckTimer = Timer(Duration(milliseconds: 1200), () {
+              if (_checkExistsNovelTitle(value)) {
+                // ရှိနေရင်
+                setState(() {
+                  titleError = 'ရှိနေပြီးသား ဖြစ်နေပါတယ်!...';
+                });
+              } else {
+                setState(() {
+                  titleError = null;
+                });
+              }
+            });
+          },
+        ),
+        TTextField(
+          label: Text('Author'),
+          maxLines: 1,
+          controller: authorController,
+          focusNode: authorFocus,
+          isSelectedAll: true,
+        ),
+        TTextField(
+          label: Text('Translator'),
+          maxLines: 1,
+          controller: translatorController,
+          focusNode: translatorFocus,
+          isSelectedAll: true,
+        ),
+        TTextField(
+          label: Text('MC'),
+          maxLines: 1,
+          controller: mcController,
+          focusNode: mcFocus,
+          isSelectedAll: true,
+        ),
+        SwitchListTile.adaptive(
+          title: Text('is Completed'),
+          value: novel.isCompleted,
+          onChanged: (value) {
+            novel.setCompleted(value);
+            setState(() {});
+          },
+        ),
+        SwitchListTile.adaptive(
+          title: Text('is Adult'),
+          value: novel.isAdult,
+          onChanged: (value) {
+            novel.setAdult(value);
+            setState(() {});
+          },
+        ),
+        // page urls
+        _getPageUrlWidget(),
+        // tags
+        TTagsWrapView(
+          title: Text('Tags'),
+          values: novel.getTags,
+          allTags: allTags,
+          onApply: (values) {
+            novel.setTags(values);
+            _clearFocus();
+            setState(() {});
+          },
+        ),
+
+        TTextField(
+          label: Text('Description'),
+          maxLines: null,
+          controller: descController,
+          focusNode: descFocus,
+        ),
+      ],
     );
   }
 
@@ -238,8 +249,6 @@ class _EditNovelFormState extends State<EditNovelForm> {
       final oldTitle = widget.novel.title;
       final newTitle = titleController.text.trim();
       if (newTitle.isEmpty) return;
-      // novel.title = newTitle;
-      await novel.setTitle(newTitle);
       // delay
 
       novel.setAuthor(authorController.text.trim());
@@ -247,6 +256,17 @@ class _EditNovelFormState extends State<EditNovelForm> {
       novel.setMC(mcController.text.trim());
       novel.setContent(descController.text.trim());
       novel.setAuthor(authorController.text.trim());
+      // rename
+      if (oldTitle != newTitle) {
+        // change new title
+        final oldPath = widget.novel.path;
+        final newPath = '${PathUtil.getSourcePath()}/$newTitle';
+        await PathUtil.renameDir(
+          oldDir: Directory(oldPath),
+          newDir: Directory(newPath),
+        );
+        novel = novel.copyWith(title: newTitle, path: newPath);
+      }
 
       if (!mounted) return;
       await context.read<NovelProvider>().update(novel, oldTitle);
@@ -259,7 +279,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
       setState(() {
         isLoading = false;
       });
-      NovelDirApp.instance.showMessage(context, e.toString());
+      showTMessageDialogError(context, e.toString());
     }
 
     // closeContext(context);

@@ -5,7 +5,7 @@ import '../novel_dir_app.dart';
 
 class NovelListItem extends StatelessWidget {
   Novel novel;
-  void Function(Novel novel) onClicked;
+  void Function(Novel novel)? onClicked;
   void Function(Novel novel)? onRightClicked;
   NovelListItem({
     super.key,
@@ -17,47 +17,40 @@ class NovelListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onClicked(novel),
-      onSecondaryTap: () {
-        if (onRightClicked == null) return;
-        onRightClicked!(novel);
-      },
+      onTap: () => onClicked?.call(novel),
+      onSecondaryTap: () => onRightClicked?.call(novel),
       onLongPress: () => onRightClicked?.call(novel),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
-          child: Row(
-            spacing: 8,
+          child: Wrap(
+            spacing: 5,
+            runSpacing: 5,
             children: [
               SizedBox(
                 width: 140,
                 height: 150,
                 child: TImage(source: novel.getCoverPath),
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 2,
-                  children: [
-                    Text(
-                      'T: ${novel.title}',
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    // Text('Size: ${novel.getSize}'),
-                    Row(
-                      children: [
-                        Icon(Icons.date_range),
-                        Text(
-                          novel.date.toParseTime(),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 2,
+                children: [
+                  Text(
+                    'T: ${novel.title}',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  Text('Author: ${novel.getAuthor}'),
+                  Text('Translator: ${novel.getTranslator}'),
+                  Text('MC: ${novel.getMC}'),
+                  Text(
+                    'Date: ${novel.date.toParseTime()}',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ],
           ),
