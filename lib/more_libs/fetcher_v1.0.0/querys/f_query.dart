@@ -1,13 +1,6 @@
 import 'package:t_html_parser/t_html_parser.dart';
 
 class FQuery {
-  final String selector;
-  final String? attr;
-  final bool isParentElement;
-  final bool isHtmlStyleText;
-  final bool isMultiSelector;
-  final String multiSelectorValueJoiner;
-  final int? index;
   FQuery({
     required this.selector,
     this.attr,
@@ -18,6 +11,46 @@ class FQuery {
     this.index,
   });
 
+  ///
+  /// querySelector `class,id`
+  ///
+  final String selector;
+
+  ///
+  /// element attribute `src,href,data-src` default `null`
+  ///
+  final String? attr;
+
+  ///
+  ///  if `isParentElement=true` : `selector not working`. else  `selector working`.
+  ///
+  final bool isParentElement;
+
+  ///
+  /// if `isHtmlStyleText=true` : `getHtmlTag and clean html tag` else `get text`
+  ///
+  final bool isHtmlStyleText;
+
+  ///
+  ///if `isMultiSelector=true` : `current element ကို querySelectorAll get` else `noting.`
+  ///
+  final bool isMultiSelector;
+
+  ///
+  /// if `isMultiSelector=true` : `List<String>.join(multiSelectorValueJoiner)` else `nothing`
+  ///
+  final String multiSelectorValueJoiner;
+
+  ///
+  /// if `index=0` : `current element ကို querySelectorAll and get index position` else `nothing`
+  ///
+  final int? index;
+
+  ///
+  /// get All result -> `String`
+  /// 
+  /// auto `String.tim()`
+  ///
   String getResult(Element ele) {
     if (isParentElement && ele.parent != null) {
       ele = ele.parent!;
@@ -64,3 +97,4 @@ class FQuery {
     }
   }
 }
+

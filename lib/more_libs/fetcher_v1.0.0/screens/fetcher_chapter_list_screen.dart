@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -120,6 +121,7 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
       ),
       trailing: _checkDownloadIcon(chapter.index),
       onTap: () => _goFetchWebChapter(chapter),
+      onLongPress: () => _showItemMenu(chapter),
     );
   }
 
@@ -290,5 +292,74 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
       if (!mounted) return;
       showTMessageDialogError(context, e.toString());
     }
+  }
+
+  // item menu
+  void _showItemMenu(WebChapter chapter) {
+    showTMenuBottomSheet(
+      context,
+
+      title: Text('Menu: Chapter ${chapter.index}'),
+      children: [
+        ListTile(
+          leading: Icon(Icons.edit),
+          title: Text('Chapter Current Chapter Number'),
+          onTap: () {
+            Navigator.pop(context);
+            _changeCurrentChapterNumber(chapter);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _changeCurrentChapterNumber(WebChapter chapter) {
+    showTReanmeDialog(
+      context,
+      barrierDismissible: false,
+      title: Text('Current Chapter Number'),
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      textInputType: TextInputType.number,
+      text: chapter.index.toString(),
+      submitText: 'Change',
+      onSubmit: (text) {
+        try {
+          if (text.isEmpty || int.tryParse(text) == null) return;
+          final currentPos = webChapterList.indexWhere(
+            (e) => e.index == chapter.index,
+          );
+          if (currentPos == -1) return;
+          int changedIndex = int.parse(text);
+
+          final res = reindexChapters(webChapterList, currentPos, changedIndex);
+          webChapterList = res.toList();
+          setState(() {});
+        } catch (e) {
+          showTMessageDialogError(context, e.toString());
+        }
+      },
+    );
+  }
+
+  List<WebChapter> reindexChapters(
+    List<WebChapter> list,
+    int currentPos,
+    int changedIndex,
+  ) {
+    return list.asMap().entries.map((entry) {
+      int i = entry.key;
+      var e = entry.value;
+
+      if (i < currentPos) {
+        // အရှေ့ဘက် => changedIndex - (currentPos - i)
+        return e.copyWith(index: changedIndex - (currentPos - i));
+      } else if (i == currentPos) {
+        // အလယ် => changedIndex
+        return e.copyWith(index: changedIndex);
+      } else {
+        // နောက်ဘက် => changedIndex + (i - currentPos)
+        return e.copyWith(index: changedIndex + (i - currentPos));
+      }
+    }).toList();
   }
 }

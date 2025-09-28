@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:t_html_parser/t_html_extensions.dart';
+import 'package:t_html_parser/t_html_parser.dart' as html;
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -31,6 +32,7 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
   List<SupportedWebSiteInterface> siteList = [];
   SupportedWebSiteInterface? currentSite;
   WebsiteInfoResult result = WebsiteInfoResult(url: '');
+  html.Element? currentElement;
 
   bool isIncludeTitle = true;
   bool isIncludeAuthor = true;
@@ -329,15 +331,15 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
         return;
       }
       final info = currentSite!.info;
-      final ele = html.toHtmlElement!;
+      currentElement = html.toHtmlElement!;
 
-      final title = info.titleQuery?.getResult(ele);
-      final engTitle = info.engTitleQuery?.getResult(ele);
-      final author = info.authorQuery?.getResult(ele);
-      final translator = info.translatorQuery?.getResult(ele);
-      final coverUrl = info.coverUrlQuery?.getResult(ele);
-      final description = info.descriptionQuery?.getResult(ele);
-      final tags = info.tagsQuery?.getResult(ele);
+      final title = info.titleQuery?.getResult(currentElement!);
+      final engTitle = info.engTitleQuery?.getResult(currentElement!);
+      final author = info.authorQuery?.getResult(currentElement!);
+      final translator = info.translatorQuery?.getResult(currentElement!);
+      final coverUrl = info.coverUrlQuery?.getResult(currentElement!);
+      final description = info.descriptionQuery?.getResult(currentElement!);
+      final tags = info.tagsQuery?.getResult(currentElement!);
       // set
       titleController.text = title ?? '';
       engTitleController.text = engTitle ?? '';
@@ -346,17 +348,6 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
       coverUrlController.text = coverUrl ?? '';
       descriptionController.text = description ?? '';
       tagsController.text = tags ?? '';
-
-      result = result.copyWith(
-        url: pageUrlController.text,
-        title: !isIncludeTitle ? null : title,
-        engTitle: engTitle,
-        author: !isIncludeAuthor ? null : author,
-        coverUrl: !isIncludeCoverUrl ? null : coverUrl,
-        translator: !isIncludeTranslator ? null : translator,
-        description: !isIncludeDesc ? null : description,
-        tags: !isIncludeTags ? null : tags,
-      );
 
       if (!mounted) return;
       isLoading = false;
@@ -373,6 +364,28 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
 
   void _onSave() {
     try {
+      if (currentElement == null) {
+        showTMessageDialogError(context, '`currentElement` is null');
+      }
+      final info = currentSite!.info;
+      final title = info.titleQuery?.getResult(currentElement!);
+      final engTitle = info.engTitleQuery?.getResult(currentElement!);
+      final author = info.authorQuery?.getResult(currentElement!);
+      final translator = info.translatorQuery?.getResult(currentElement!);
+      final coverUrl = info.coverUrlQuery?.getResult(currentElement!);
+      final description = info.descriptionQuery?.getResult(currentElement!);
+      final tags = info.tagsQuery?.getResult(currentElement!);
+
+      result = result.copyWith(
+        url: pageUrlController.text,
+        title: !isIncludeTitle ? null : title,
+        engTitle: engTitle,
+        author: !isIncludeAuthor ? null : author,
+        coverUrl: !isIncludeCoverUrl ? null : coverUrl,
+        translator: !isIncludeTranslator ? null : translator,
+        description: !isIncludeDesc ? null : description,
+        tags: !isIncludeTags ? null : tags,
+      );
       Navigator.pop(context);
       widget.onSaved?.call(result);
     } catch (e) {
