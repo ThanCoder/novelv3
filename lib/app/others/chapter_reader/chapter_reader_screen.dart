@@ -249,8 +249,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     if (isLoading) return;
 
     final pos = controller.position;
+    // scroll down
     if (controller.position.userScrollDirection == ScrollDirection.reverse) {
-      // scroll down
       if (lastScrollPos < pos.maxScrollExtent &&
           pos.maxScrollExtent == pos.pixels) {
         lastScrollPos = pos.maxScrollExtent;
@@ -258,9 +258,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       }
       // print('max: ${pos.maxScrollExtent}');
       // print(pos.pixels);
-    } else if (controller.position.userScrollDirection ==
+    }
+    // scroll up
+    else if (controller.position.userScrollDirection ==
         ScrollDirection.forward) {
-      // scroll up
       if (pos.pixels == 0) {
         await _getPrevChapter();
       }

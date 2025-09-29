@@ -414,7 +414,13 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         onSubmit: (text) {
           if (text.isEmpty || text == '0') return;
           try {
-            goPage(int.parse(text));
+            if (TPlatform.isMobile) {
+              Future.delayed(Duration(milliseconds: 900)).then((e) {
+                goPage(int.parse(text));
+              });
+            } else {
+              goPage(int.parse(text));
+            }
           } catch (e) {
             debugPrint(e.toString());
           }

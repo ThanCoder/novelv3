@@ -97,7 +97,7 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
       theme: theme,
       onChanged: (theme) {
         setState(() {
-          theme = theme;
+          this.theme = theme;
         });
       },
     );

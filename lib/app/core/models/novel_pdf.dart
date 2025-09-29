@@ -25,12 +25,13 @@ class NovelPdf {
     return path.getName();
   }
 
-  String get getBookmarkPath =>
-      '${path.getName(withExt: false)}.bookmark.config.json';
+  String get getParentPath => File(path).parent.path;
 
-  String get getConfigPath {
-    return path.replaceAll('.pdf', '-v3-config.json');
-  }
+  String get getBookmarkPath =>
+      '$getParentPath/${path.getName(withExt: false)}.bookmark.config.json';
+
+  String get getConfigPath =>
+      '$getParentPath/${path.getName(withExt: false)}.-v3-config.json';
 
   DateTime get getDate {
     final file = File(path);
@@ -44,11 +45,6 @@ class NovelPdf {
 
   String get getCoverPath {
     return '${PathUtil.getCachePath()}/$getTitle.png';
-  }
-
-  String get getParentPath {
-    final file = File(path);
-    return file.parent.path;
   }
 
   Future<NovelPdf> renameTitle(String title) async {
