@@ -91,13 +91,16 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     return SliverGrid.builder(
       itemCount: result.length,
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        mainAxisExtent: 220,
+        maxCrossAxisExtent: 180,
+        mainAxisExtent: 200,
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
       ),
-      itemBuilder: (context, index) =>
-          ShareGridItem(url: widget.url, novel: result[index]),
+      itemBuilder: (context, index) => ShareGridItem(
+        url: widget.url,
+        novel: result[index],
+        onClicked: widget.onClicked,
+      ),
     );
   }
 

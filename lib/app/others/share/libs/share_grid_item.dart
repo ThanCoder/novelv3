@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel.dart';
-import 'package:t_widgets/widgets/t_image.dart';
+import 'package:t_widgets/t_widgets_dev.dart';
 
 class ShareGridItem extends StatelessWidget {
   final String url;
@@ -24,6 +24,7 @@ class ShareGridItem extends StatelessWidget {
             Positioned.fill(
               child: TImage(
                 source: '$url/download?path=${novel.path}/cover.png',
+                // cachePath: PathUtil.getCachePath(),
               ),
             ),
             Positioned(

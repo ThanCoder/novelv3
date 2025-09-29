@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 export 'components/android_screen_orientation_chooser.dart';
 export 'components/pdf_bookmark_drawer.dart';
 export 'dialogs/pdf_reader_setting_dialog.dart';
-export 'types/pdf_bookmark_model.dart';
+export 'types/pdf_bookmark.dart';
 export 'types/pdf_config.dart';
 export 'screens/custom_pdf_reader_screen.dart';
 export 'screens/pdfrx_reader_screen.dart';

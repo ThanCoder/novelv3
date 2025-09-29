@@ -40,6 +40,9 @@ class DesktopExe {
 
       // write content
       final file = File(desktopFilePath);
+      // file ရှိနေရင် မထုတ်တော့ဘူး
+      if (file.existsSync()) return;
+
       final stringBuff = StringBuffer();
       stringBuff.writeln('[Desktop Entry]');
       stringBuff.writeln('Version=1.0');

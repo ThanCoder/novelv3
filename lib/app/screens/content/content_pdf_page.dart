@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/dialogs/edit_pdf_config_dialog.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/dialogs/edit_pdf_config_dialog.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -100,6 +100,12 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
       ),
       // separatorBuilder: (context, index) => Divider(),
     );
+  }
+
+  String get getNovelPath {
+    final novel = context.read<NovelProvider>().getCurrent;
+    if (novel == null) '';
+    return novel!.path;
   }
 
   // main menu
@@ -261,6 +267,14 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
         Padding(padding: const EdgeInsets.all(8.0), child: Text(pdf.getTitle)),
         Divider(),
         ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('အမည်ပြောင်းလဲမယ် (Rename)'),
+          onTap: () {
+            closeContext(context);
+            _renamePdf(pdf);
+          },
+        ),
+        ListTile(
           iconColor: Colors.orange,
           leading: Icon(Icons.restore),
           title: Text('အပြင်ကို ပြန်ရွှေ့ (Move)'),
@@ -311,6 +325,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     showCupertinoDialog(
       context: context,
       builder: (context) => EditPdfConfigDialog(
+        title: Text('PDF Config'),
         pdfConfig: PdfConfig.fromPath(pdf.getConfigPath),
         onUpdated: (updatedConfig) {
           updatedConfig.savePath(pdf.getConfigPath);
@@ -343,9 +358,22 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
     showTSnackBar(context, 'ကူးထုတ်ပြီးပါပြီ...');
   }
 
-  String get getNovelPath {
-    final novel = context.read<NovelProvider>().getCurrent;
-    if (novel == null) '';
-    return novel!.path;
+  void _renamePdf(NovelPdf pdf) {
+    showTReanmeDialog(
+      context,
+      text: pdf.path.getName(withExt: false),
+      barrierDismissible: false,
+      onSubmit: (text) async {
+        try {
+          if (text.isEmpty) return;
+          await pdf.renameTitle('${text.trim()}.pdf');
+          if (!mounted) return;
+          init();
+        } catch (e) {
+          if (!mounted) return;
+          showTMessageDialogError(context, e.toString());
+        }
+      },
+    );
   }
 }

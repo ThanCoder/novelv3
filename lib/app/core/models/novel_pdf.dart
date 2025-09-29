@@ -1,14 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+
 class NovelPdf {
-  String path;
+  final String path;
   NovelPdf({required this.path});
 
   factory NovelPdf.createPath(String path) {
     return NovelPdf(path: path);
+  }
+  NovelPdf copyWith({String? path}) {
+    return NovelPdf(path: path ?? this.path);
   }
 
   static bool isPdf(String path) {
@@ -21,7 +26,7 @@ class NovelPdf {
   }
 
   String get getBookmarkPath =>
-      '${path.getName(withExt: false)}.bookmark.config';
+      '${path.getName(withExt: false)}.bookmark.config.json';
 
   String get getConfigPath {
     return path.replaceAll('.pdf', '-v3-config.json');
@@ -46,10 +51,22 @@ class NovelPdf {
     return file.parent.path;
   }
 
+  Future<NovelPdf> renameTitle(String title) async {
+    final file = File(path);
+    final newPath = '${file.parent.path}/$title';
+    await file.rename(newPath);
+    final newPdf = copyWith(path: newPath);
+    // rename config
+    final configFile = File(getConfigPath);
+    if (configFile.existsSync()) {
+      await configFile.rename(newPdf.getConfigPath);
+    }
+    return newPdf;
+  }
+
   Future<void> rename(String newPath) async {
     final file = File(path);
     await file.rename(newPath);
-    path = newPath;
   }
 
   Future<void> copy(String newPath) async {

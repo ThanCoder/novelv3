@@ -5,12 +5,14 @@ import 'package:than_pkg/enums/screen_orientation_types.dart';
 import '../types/pdf_config.dart';
 
 class EditPdfConfigDialog extends StatefulWidget {
-  PdfConfig pdfConfig;
-  void Function(PdfConfig updatedConfig) onUpdated;
-  EditPdfConfigDialog({
+  final PdfConfig pdfConfig;
+  final Widget? title;
+  final void Function(PdfConfig updatedConfig) onUpdated;
+  const EditPdfConfigDialog({
     super.key,
     required this.pdfConfig,
     required this.onUpdated,
+    this.title,
   });
 
   @override
@@ -35,6 +37,7 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
+      title: widget.title,
       scrollable: true,
       content: Column(
         children: [

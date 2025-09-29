@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
 
 class PdfConfig {
   int page;

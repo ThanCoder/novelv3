@@ -4,7 +4,7 @@ import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.1.2/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';

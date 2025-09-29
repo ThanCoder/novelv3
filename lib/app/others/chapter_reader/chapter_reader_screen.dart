@@ -38,6 +38,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   bool isShowGetPrevChapter = true;
   Chapter? topChapter;
   bool isFullScreen = false;
+  bool canPop = true;
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   void initConfig() async {
     try {
       ThanPkg.platform.toggleKeepScreen(isKeep: config.isKeepScreening);
+      canPop = !config.isBackpressConfirm;
       setState(() {});
     } catch (e) {
       debugPrint('[ChapterReaderScreen:initConfig]: ${e.toString()}');
@@ -89,8 +91,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
+      canPop: canPop,
       onPopInvokedWithResult: (didPop, result) {
+        if (!canPop) {
+          _onBackConfirm();
+          return;
+        }
         WidgetsBinding.instance.addPostFrameCallback((_) {
           widget.onReaderClosed?.call(list.last);
           widget.onUpdateConfig?.call(config);
@@ -124,6 +130,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
                 leading: IconButton(
                   color: config.theme.fontColor,
                   onPressed: () {
+                    if (config.isBackpressConfirm) {
+                      _onBackConfirm();
+                      return;
+                    }
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.arrow_back),
@@ -319,5 +329,24 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         },
       ),
     );
+  }
+
+  // isBackconfig
+  void _onBackConfirm() {
+    try {
+      showTConfirmDialog(
+        context,
+        contentText: 'အပြင်ထွက်ချင်တာ သေချာပြီလား?',
+        submitText: 'ထွက်မယ်',
+        cancelText: 'မထွက်ဘူး',
+        onSubmit: () {
+          canPop = true;
+          setState(() {});
+          Navigator.pop(context);
+        },
+      );
+    } catch (e) {
+      debugPrint('[_onBackConfirm]: ${e.toString()}');
+    }
   }
 }
