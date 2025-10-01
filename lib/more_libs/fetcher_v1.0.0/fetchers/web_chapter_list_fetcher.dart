@@ -1,4 +1,6 @@
-import 'package:t_html_parser/t_html_extensions.dart';
+
+
+import 'package:t_html_parser/t_html_parser.dart';
 
 import '../interfaces/fetcher_interface.dart';
 import '../types/web_chapter.dart';

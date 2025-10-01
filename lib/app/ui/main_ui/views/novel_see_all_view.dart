@@ -1,44 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
+import '../../../novel_dir_app.dart';
 
-import '../novel_dir_app.dart';
-
-ValueNotifier<List<Novel>> novelSeeAllScreenNotifier = ValueNotifier([]);
-
-class NovelSeeAllScreen extends StatefulWidget {
+class NovelSeeAllView extends StatefulWidget {
   String title;
-  NovelSeeAllScreen({super.key, required this.title});
+  List<Novel> list;
+  EdgeInsetsGeometry padding;
+  NovelSeeAllView({
+    super.key,
+    required this.title,
+    required this.list,
+    this.padding = const EdgeInsets.all(8.0),
+  });
 
   @override
-  State<NovelSeeAllScreen> createState() => _NovelSeeAllScreenState();
+  State<NovelSeeAllView> createState() => _NovelSeeAllViewState();
 }
 
-class _NovelSeeAllScreenState extends State<NovelSeeAllScreen> {
+class _NovelSeeAllViewState extends State<NovelSeeAllView> {
+  List<Novel> list = [];
+  @override
+  void initState() {
+    list = widget.list;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: ValueListenableBuilder(
-        valueListenable: novelSeeAllScreenNotifier,
-        builder: (context, list, child) {
-          return GridView.builder(
-            itemCount: list.length,
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 180,
-              mainAxisExtent: 200,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-            ),
-            itemBuilder: (context, index) => NovelGridItem(
-              novel: list[index],
-              onClicked: (novel) => goNovelContentScreen(context, novel),
-              onRightClicked: _showItemMenu,
-            ),
-          );
-        },
+    return Padding(
+      padding: widget.padding,
+      child: SeeAllView<Novel>(
+        itemWidth: 140,
+        itemHeight: 160,
+        title: widget.title,
+        list: list,
+        showMoreButtonBottomPos: false,
+        onSeeAllClicked: (title, list) =>
+            goNovelSeeAllScreen(context, title, list),
+        gridItemBuilder: (context, item) => NovelGridItem(
+          novel: item,
+          onClicked: (novel) => goNovelContentScreen(context, novel),
+          onRightClicked: _showItemMenu,
+        ),
       ),
     );
   }

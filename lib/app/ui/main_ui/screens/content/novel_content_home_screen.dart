@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/screens/content/content_chapter_bookmark_page.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/content_chapter_bookmark_page.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'content_pdf_page.dart';
 import 'content_chapter_page.dart';

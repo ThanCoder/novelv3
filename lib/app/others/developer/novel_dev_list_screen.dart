@@ -7,7 +7,7 @@ import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_item.dart';
-import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';

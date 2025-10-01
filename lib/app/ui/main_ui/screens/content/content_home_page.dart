@@ -8,20 +8,20 @@ import 'package:novel_v3/app/others/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/routes_helper.dart';
-import 'package:novel_v3/app/screens/content/buttons/readed_button.dart';
-import 'package:novel_v3/app/screens/content/buttons/readed_recent_button.dart';
-import 'package:novel_v3/app/screens/content/content_image_wrapper.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/readed_button.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/readed_recent_button.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
-import 'package:novel_v3/app/screens/content/page_url_dialog.dart';
-import 'package:novel_v3/app/screens/forms/edit_chapter_screen.dart';
-import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/page_url_dialog.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_chapter_screen.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import '../../novel_dir_app.dart';
+import '../../../../novel_dir_app.dart';
 
 class ContentHomePage extends StatefulWidget {
   const ContentHomePage({super.key});

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import '../../novel_dir_app.dart';
+import '../../../../novel_dir_app.dart';
 
 class EditChapterScreen extends StatefulWidget {
   final String novelPath;

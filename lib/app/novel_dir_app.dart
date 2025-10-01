@@ -10,8 +10,8 @@ export 'services/index.dart';
 export 'core/models/index.dart';
 export 'providers/index.dart';
 export 'components/index.dart';
-export 'views/index.dart';
-export 'screens/index.dart';
+export 'ui/main_ui/views/index.dart';
+export 'ui/main_ui/screens/index.dart';
 export 'core/extensions/index.dart';
 
 class NovelDirApp {

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/index.dart';
 
-import '../../novel_dir_app.dart';
+import '../../../../novel_dir_app.dart';
 import 'content_image_wrapper.dart';
 
 class ContentChapterBookmarkPage extends StatefulWidget {

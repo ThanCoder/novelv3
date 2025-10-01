@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
-import 'package:t_html_parser/t_html_extensions.dart';
 import 'package:t_html_parser/t_html_parser.dart' as html;
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';

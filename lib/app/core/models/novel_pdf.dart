@@ -31,7 +31,7 @@ class NovelPdf {
       '$getParentPath/${path.getName(withExt: false)}.bookmark.config.json';
 
   String get getConfigPath =>
-      '$getParentPath/${path.getName(withExt: false)}.-v3-config.json';
+      '$getParentPath/${path.getName(withExt: false)}-v3-config.json';
 
   DateTime get getDate {
     final file = File(path);

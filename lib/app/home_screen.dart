@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/screens/home/more_page.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/home/more_page.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/screens/novel_v3_uploader_home_screen.dart';
 import 'package:t_widgets/widgets/index.dart';
 
-import 'screens/home/home_page.dart';
+import 'ui/main_ui/screens/home/home_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

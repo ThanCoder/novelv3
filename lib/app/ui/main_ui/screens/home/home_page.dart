@@ -10,11 +10,11 @@ import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
-import 'package:novel_v3/app/screens/content/novel_content_home_screen.dart';
-import 'package:novel_v3/app/screens/forms/edit_novel_form.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/novel_content_home_screen.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_screen.dart';
-import 'package:novel_v3/app/screens/home/create_novel_website_info_result_dialog.dart';
-import 'package:novel_v3/app/screens/scanners/pdf_scanner_screen.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/home/create_novel_website_info_result_dialog.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
@@ -25,7 +25,7 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import '../novel_search_screen.dart';
 import 'package:provider/provider.dart';
-import '../../novel_dir_app.dart';
+import '../../../../novel_dir_app.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

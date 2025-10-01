@@ -6,7 +6,7 @@ import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
 import 'package:novel_v3/app/routes_helper.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-import '../novel_dir_app.dart';
+import '../../../novel_dir_app.dart';
 
 typedef IsolatePerparingSearchListReturn = (
   List<Novel> novelList,

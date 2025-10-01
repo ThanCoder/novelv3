@@ -1,9 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:than_pkg/than_pkg.dart';
+
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class Novel {
   final String title;
@@ -257,4 +259,20 @@ class Novel {
 
   @override
   String toString() => 'Novel(title: $title, path: $path, date: $date)';
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'title': title,
+      'path': path,
+      'date': date.millisecondsSinceEpoch,
+    };
+  }
+
+  factory Novel.fromMap(Map<String, dynamic> map) {
+    return Novel(
+      title: map['title'] as String,
+      path: map['path'] as String,
+      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+    );
+  }
 }
