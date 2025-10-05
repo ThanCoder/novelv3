@@ -52,36 +52,42 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
               if (value.isEmpty && int.tryParse(value) == null) {
                 return;
               }
-              config.page = int.parse(value);
+              config = config.copyWith(page: int.parse(value));
             },
             onSubmitted: (_) => _onSubmit(),
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            _onSubmit();
-          },
-          child: Text('Update'),
-        ),
-      ],
+      actions: _getActions(),
     );
+  }
+
+  List<Widget> _getActions() {
+    return [
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Cancel'),
+      ),
+      TextButton(
+        onPressed: () {
+          _onSubmit();
+        },
+        child: Text('Update'),
+      ),
+    ];
   }
 
   void _onSubmit() {
     Navigator.pop(context);
     // reset
-    config.screenOrientation = ScreenOrientationTypes.portrait;
-    config.offsetDy = 0;
-    config.zoom = 0;
-    config.isPanLocked = false;
+    config = config.copyWith(
+      screenOrientation: ScreenOrientationTypes.portrait,
+      offsetDy: 0,
+      zoom: 0,
+      isPanLocked: false,
+    );
 
     widget.onUpdated(config);
   }

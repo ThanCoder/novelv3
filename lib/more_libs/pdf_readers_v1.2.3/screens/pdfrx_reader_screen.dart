@@ -211,9 +211,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             //theme mode
             IconButton(
               onPressed: () {
-                setState(() {
-                  config.isDarkMode = !config.isDarkMode;
-                });
+                config = config.copyWith(isDarkMode: !config.isDarkMode);
+                setState(() {});
               },
               icon: Icon(
                 config.isDarkMode ? Icons.light_mode : Icons.dark_mode,
@@ -222,9 +221,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             //pan axis lock
             IconButton(
               onPressed: () {
-                setState(() {
-                  config.isPanLocked = !config.isPanLocked;
-                });
+                config = config.copyWith(isPanLocked: !config.isPanLocked);
+                setState(() {});
               },
               icon: Icon(config.isPanLocked ? Icons.lock : Icons.lock_open),
             ),
@@ -308,6 +306,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   //pdf loaded
   void onPdfLoaded() async {
     try {
+      await Future.delayed(Duration(milliseconds: 1200));
+
       isLoading = false;
 
       await ThanPkg.platform.toggleFullScreen(
@@ -338,6 +338,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       if (!mounted) return;
       setState(() {});
     } catch (e) {
+      isLoading = false;
       if (!mounted) return;
       setState(() {});
       PdfReader.showDebugLog(
@@ -432,7 +433,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   void _setFullScreen(bool isFull) async {
     if (isLoading) return;
     if (config.isFullscreen == isFull) return;
-    config.isFullscreen = isFull;
+    config = config.copyWith(isFullscreen: isFull);
     double oldZoom = pdfController.currentZoom;
     Offset oldOffset = pdfController.centerPosition;
 
@@ -450,6 +451,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       builder: (context) => PdfReaderSettingDialog(
         config: config,
         onApply: (changedConfig) {
+          // check current page
+          if (currentPage != changedConfig.page) {
+            goPage(changedConfig.page);
+          }
           config = changedConfig;
           _saveConfig();
           _initConfig();
@@ -485,9 +490,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     try {
       //loading လုပ်နေရင် မသိမ်းဆည်းဘူး
       if (isLoading) return;
-      config.page = currentPage;
+
       if (widget.onConfigUpdated != null) {
-        widget.onConfigUpdated!(config);
+        widget.onConfigUpdated!(config.copyWith(page: currentPage));
       }
     } catch (e) {
       PdfReader.showDebugLog(

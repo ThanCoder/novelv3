@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
 
 import '../components/android_screen_orientation_chooser.dart';
 import '../types/pdf_config.dart';
@@ -20,25 +21,37 @@ class PdfReaderSettingDialog extends StatefulWidget {
 }
 
 class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
-  final mouseScrollWheelController = TextEditingController();
+  final scrollByMouseWheelController = TextEditingController();
   final scrollByArrowKeyController = TextEditingController();
-  late PdfConfig config;
+  final currentPageController = TextEditingController();
+  bool isDarkMode = false;
+  bool isTextSelection = false;
+  bool isShowScrollThumb = false;
+  bool isKeepScreen = false;
+  late ScreenOrientationTypes screenOrientation;
+  bool isOnBackpressConfirm = false;
+  bool isPanLocked = false;
+  bool isFullscreen = false;
 
   @override
   void initState() {
-    config = widget.config;
     super.initState();
     init();
   }
 
   void init() {
-    mouseScrollWheelController.text = config.scrollByMouseWheel.toString();
-    scrollByArrowKeyController.text = config.scrollByArrowKey.toString();
-  }
-
-  void _onApply() {
-    Navigator.pop(context);
-    widget.onApply(config);
+    scrollByMouseWheelController.text = widget.config.scrollByMouseWheel
+        .toString();
+    scrollByArrowKeyController.text = widget.config.scrollByArrowKey.toString();
+    currentPageController.text = widget.config.page.toString();
+    isDarkMode = widget.config.isDarkMode;
+    isTextSelection = widget.config.isTextSelection;
+    isShowScrollThumb = widget.config.isShowScrollThumb;
+    isKeepScreen = widget.config.isKeepScreen;
+    screenOrientation = widget.config.screenOrientation;
+    isOnBackpressConfirm = widget.config.isOnBackpressConfirm;
+    isPanLocked = widget.config.isPanLocked;
+    isFullscreen = widget.config.isFullscreen;
   }
 
   @override
@@ -51,14 +64,24 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              //current page
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TNumberField(
+                  label: Text('Current Page'),
+                  controller: currentPageController,
+                  maxLines: 1,
+                  onSubmitted: (_) => _onApply(),
+                ),
+              ),
               // dart mode
               TListTileWithDesc(
                 title: 'Dark Mode',
                 trailing: Switch(
-                  value: config.isDarkMode,
+                  value: isDarkMode,
                   onChanged: (value) {
                     setState(() {
-                      config.isDarkMode = value;
+                      isDarkMode = value;
                     });
                   },
                 ),
@@ -68,10 +91,10 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 title: 'Text Selection',
                 desc: 'PDF Text ကို ကူးယူနိုင်ခြင်း',
                 trailing: Switch(
-                  value: config.isTextSelection,
+                  value: isTextSelection,
                   onChanged: (value) {
                     setState(() {
-                      config.isTextSelection = value;
+                      isTextSelection = value;
                     });
                   },
                 ),
@@ -81,10 +104,10 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 title: 'Scroll Thumbnail',
                 desc: 'ဘေးဘက်ခြမ်းက Scroll Thumb',
                 trailing: Switch(
-                  value: config.isShowScrollThumb,
+                  value: isShowScrollThumb,
                   onChanged: (value) {
                     setState(() {
-                      config.isShowScrollThumb = value;
+                      isShowScrollThumb = value;
                     });
                   },
                 ),
@@ -94,10 +117,10 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 title: 'Keep Screen',
                 desc: 'Screen ကိုအမြဲတမ်းဖွင့်ထားခြင်း',
                 trailing: Switch(
-                  value: config.isKeepScreen,
+                  value: isKeepScreen,
                   onChanged: (value) {
                     setState(() {
-                      config.isKeepScreen = value;
+                      isKeepScreen = value;
                     });
                   },
                 ),
@@ -107,9 +130,9 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 title: 'Screen Orientation',
                 desc: 'Working in Android!',
                 trailing: AndroidScreenOrientationChooser(
-                  value: config.screenOrientation,
+                  value: screenOrientation,
                   onChanged: (type) {
-                    config.screenOrientation = type;
+                    screenOrientation = type;
                   },
                 ),
               ),
@@ -118,24 +141,24 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 title: 'On Backpress Confirm',
                 desc: 'Reader ထဲက ထွက်ရင် အတည်ပြုခြင်း',
                 trailing: Switch(
-                  value: config.isOnBackpressConfirm,
+                  value: isOnBackpressConfirm,
                   onChanged: (value) {
                     setState(() {
-                      config.isOnBackpressConfirm = value;
+                      isOnBackpressConfirm = value;
                     });
                   },
                 ),
               ),
-
               // optional
               const Divider(),
+
               TListTileWithDesc(
-                title: config.isPanLocked ? 'Locked' : 'UnLocked',
+                title: isPanLocked ? 'Locked' : 'UnLocked',
                 trailing: Switch.adaptive(
-                  value: config.isPanLocked,
+                  value: isPanLocked,
                   onChanged: (value) {
                     setState(() {
-                      config.isPanLocked = value;
+                      isPanLocked = value;
                     });
                   },
                 ),
@@ -144,10 +167,10 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               TListTileWithDesc(
                 title: 'FullScreen',
                 trailing: Switch.adaptive(
-                  value: config.isFullscreen,
+                  value: isFullscreen,
                   onChanged: (value) {
                     setState(() {
-                      config.isFullscreen = value;
+                      isFullscreen = value;
                     });
                   },
                 ),
@@ -158,7 +181,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                 title: 'Mouse Scroll',
                 trailing: Expanded(
                   child: TTextField(
-                    controller: mouseScrollWheelController,
+                    controller: scrollByMouseWheelController,
                     hintText: '1.2',
                     textInputType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -166,14 +189,6 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
                     ],
-                    onChanged: (value) {
-                      if (value.isEmpty) return;
-                      try {
-                        config.scrollByMouseWheel = double.parse(value);
-                      } catch (e) {
-                        debugPrint(e.toString());
-                      }
-                    },
                     onSubmitted: (v) => _onApply(),
                   ),
                 ),
@@ -191,14 +206,6 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
                     ],
-                    onChanged: (value) {
-                      if (value.isEmpty) return;
-                      try {
-                        config.scrollByArrowKey = double.parse(value);
-                      } catch (e) {
-                        debugPrint(e.toString());
-                      }
-                    },
                     onSubmitted: (v) => _onApply(),
                   ),
                 ),
@@ -226,5 +233,23 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
         child: const Text('Apply'),
       ),
     ];
+  }
+
+  void _onApply() {
+    Navigator.pop(context);
+    final config = widget.config.copyWith(
+      isDarkMode: isDarkMode,
+      isFullscreen: isFullscreen,
+      isKeepScreen: isKeepScreen,
+      isOnBackpressConfirm: isOnBackpressConfirm,
+      isPanLocked: isPanLocked,
+      isShowScrollThumb: isShowScrollThumb,
+      isTextSelection: isTextSelection,
+      screenOrientation: screenOrientation,
+      scrollByArrowKey: double.tryParse(scrollByArrowKeyController.text),
+      scrollByMouseWheel: double.tryParse(scrollByMouseWheelController.text),
+      page: int.tryParse(currentPageController.text),
+    );
+    widget.onApply(config);
   }
 }

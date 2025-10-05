@@ -8,22 +8,22 @@ import 'package:than_pkg/than_pkg.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
 
 class PdfConfig {
-  int page;
-  bool isDarkMode;
-  bool isPanLocked;
-  bool isShowScrollThumb;
-  double offsetDx;
-  double offsetDy;
-  double zoom;
-  bool isKeepScreen;
-  bool isTextSelection;
-  double scrollByMouseWheel;
-  ScreenOrientationTypes screenOrientation;
-  double scrollByArrowKey;
-  bool isOnBackpressConfirm;
-  bool isFullscreen;
+  final int page;
+  final bool isDarkMode;
+  final bool isPanLocked;
+  final bool isShowScrollThumb;
+  final double offsetDx;
+  final double offsetDy;
+  final double zoom;
+  final bool isKeepScreen;
+  final bool isTextSelection;
+  final double scrollByMouseWheel;
+  final ScreenOrientationTypes screenOrientation;
+  final double scrollByArrowKey;
+  final bool isOnBackpressConfirm;
+  final bool isFullscreen;
 
-  PdfConfig({
+  const PdfConfig({
     required this.page,
     required this.isDarkMode,
     required this.isPanLocked,

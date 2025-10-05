@@ -1,3 +1,8 @@
+## 3.2.1
+
+- Fixed `PDF Reader Config`
+- Added `PDF Recent DB`
+
 ## 3.1.0
 
 - Added Chapter Reader `Theme Mode`
