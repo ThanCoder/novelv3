@@ -50,6 +50,7 @@ void goPdfReader(BuildContext context, NovelPdf pdf) {
       bookmarkPath: pdf.getBookmarkPath,
       pdfConfig: PdfConfig.fromPath(pdf.getConfigPath),
       onConfigUpdated: (pdfConfig) {
+        //save config
         pdfConfig.savePath(pdf.getConfigPath);
       },
     ),

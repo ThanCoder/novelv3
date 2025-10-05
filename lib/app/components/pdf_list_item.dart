@@ -77,6 +77,13 @@ class _PdfListItemState extends State<PdfListItem> {
         cursor: SystemMouseCursors.click,
         child:
             Card(
+              color:
+                  PdfServices.isExistsRecent(
+                    novelId: widget.pdf.getParentPath.getName(),
+                    pdfName: widget.pdf.getTitle,
+                  )
+                  ? const Color.fromARGB(181, 42, 170, 157)
+                  : null,
               child: Row(
                 spacing: 8,
                 children: [

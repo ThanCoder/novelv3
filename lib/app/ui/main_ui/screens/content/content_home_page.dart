@@ -8,8 +8,10 @@ import 'package:novel_v3/app/others/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/page_button.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/readed_recent_button.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/recent_pdf_button.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/content_image_wrapper.dart';
 import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/page_url_dialog.dart';
@@ -144,11 +146,15 @@ class _ContentHomePageState extends State<ContentHomePage> {
           spacing: 5,
           runSpacing: 5,
           children: [
-            _getPageButton().animate().fadeIn(
+            PageButton().animate().fadeIn(
               delay: Duration(milliseconds: 400),
               duration: Duration(milliseconds: 900),
             ),
             ReadedRecentButton().animate().fadeIn(
+              delay: Duration(milliseconds: 400),
+              duration: Duration(milliseconds: 900),
+            ),
+            RecentPdfButton().animate().fadeIn(
               delay: Duration(milliseconds: 400),
               duration: Duration(milliseconds: 900),
             ),
@@ -171,36 +177,6 @@ class _ContentHomePageState extends State<ContentHomePage> {
       delay: Duration(milliseconds: 300),
       duration: Duration(milliseconds: 900),
     );
-  }
-
-  // page button
-  Widget _getPageButton() {
-    final novel = context.watch<NovelProvider>().getCurrent!;
-    final list = novel.getPageUrls;
-    if (list.isNotEmpty) {
-      return TextButton(
-        child: const Text('Page Url'),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => PageUrlDialog(
-              list: list,
-              onClicked: (url) {
-                try {
-                  ThanPkg.platform.launch(url);
-                } catch (e) {
-                  debugPrint(e.toString());
-                }
-              },
-              onRightClicked: (url) {
-                ThanPkg.appUtil.copyText(url);
-              },
-            ),
-          );
-        },
-      );
-    }
-    return SizedBox.shrink();
   }
 
   void _searchTags(String text) {

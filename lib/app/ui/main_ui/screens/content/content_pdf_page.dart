@@ -95,7 +95,16 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
       itemCount: list.length,
       itemBuilder: (context, index) => PdfListItem(
         pdf: list[index],
-        onClicked: (pdf) => NovelDirApp.instance.goPdfReader(context, pdf),
+        onClicked: (pdf) async {
+          // set recent
+          await PdfServices.setRecent(
+            novelId: pdf.getParentPath.getName(),
+            pdfName: pdf.getTitle,
+          );
+          if (!context.mounted) return;
+          setState(() {});
+          goPdfReader(context, pdf);
+        },
         onRightClicked: _showItemMenu,
       ),
       // separatorBuilder: (context, index) => Divider(),

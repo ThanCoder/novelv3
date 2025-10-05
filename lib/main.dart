@@ -19,7 +19,7 @@ void main() async {
 
   await Setting.instance.initSetting(
     appName: 'novel_v3',
-    versionLable: 'Novel V3 (Stable Release)',
+    versionLable: 'Novel V3',
   );
 
   await ThanPkg.instance.init();
@@ -87,6 +87,9 @@ void main() async {
       await windowManager.focus();
     });
   }
+
+  // ကြိုခေါ်ထာခြင်း
+  PdfServices.initRecentDB();
 
   runApp(
     MultiProvider(
