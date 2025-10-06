@@ -1,110 +1,63 @@
-import 'package:flutter/cupertino.dart';
-import '../extensions/uploader_file_extension.dart';
-import '../models/uploader_file.dart';
+import '../novel_v3_uploader.dart';
 
-import 'uploader_config_services.dart';
+class UploaderFileServices {
+  static final Map<String, DatabaseInterface<UploaderFile>> _dbCache = {};
 
-class UploaderFileServices extends ChangeNotifier {
-  static String getDBName(String novelId) {
-    return 'content_db/$novelId.db.json';
+  static void clearDBCache() {
+    _dbCache.clear();
+    _historyDBCache.clear();
   }
 
-  final List<UploaderFile> _list = [];
-
-  List<UploaderFile> get getList => _list;
-  bool isLoading = false;
-
-  Future<void> initList({required String novelId}) async {
-    isLoading = true;
-    notifyListeners();
-    _list.clear();
-
-    final configList = await UploaderConfigServices.getListConfig(
-      dbName: getDBName(novelId),
+  static DatabaseInterface<UploaderFile> getLocalDatabase(String novelId) {
+    final key = 'local-$novelId';
+    _dbCache[key] ??= DatabaseFactory.create<UploaderFile>(
+      type: DatabaseTypes.local,
+      novelId: novelId,
     );
-    for (var map in configList) {
-      _list.add(UploaderFile.fromMap(map));
-    }
-    _list.sortDate();
-
-    isLoading = false;
-    notifyListeners();
+    return _dbCache[key]!;
   }
 
-  Future<void> add(UploaderFile file) async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      _list.insert(0, file);
-
-      final mapList = _list.map((e) => e.toMap).toList();
-      await UploaderConfigServices.setListConfig(
-        dbName: getDBName(file.novelId),
-        mapList,
-        isPrettyJson: true,
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+  static DatabaseInterface<UploaderFile> getApiDatabase(String novelId) {
+    final key = 'api-$novelId';
+    _dbCache[key] ??= DatabaseFactory.create<UploaderFile>(
+      type: DatabaseTypes.api,
+      novelId: novelId,
+    );
+    return _dbCache[key]!;
   }
 
-  Future<void> delete(UploaderFile file) async {
-    // isLoading = true;
-    // notifyListeners();
-    try {
-      // await Future.delayed(Duration(seconds: 1));
-      // check already exists title
-      final findedIndex = _list.indexWhere((e) => e.name == file.name);
-      if (findedIndex == -1) {
-        // ရှိနေလို့
-        throw Exception('file not found!');
-      }
-      _list.removeAt(findedIndex);
-
-      final mapList = _list.map((e) => e.toMap).toList();
-      await UploaderConfigServices.setListConfig(
-        dbName: getDBName(file.novelId),
-        mapList,
-        isPrettyJson: true,
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      // isLoading = false;
-      notifyListeners();
-    }
+  static Future<List<UploaderFile>> getLocalList({
+    required String novelId,
+  }) async {
+    final list = await getLocalDatabase(novelId).getAll(query: {'id': novelId});
+    return list;
   }
 
-  Future<void> update(UploaderFile file) async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      // await Future.delayed(Duration(seconds: 1));
-      // check already exists title
-      final findedIndex = _list.indexWhere((e) => e.name == file.name);
-      if (findedIndex == -1) {
-        // ရှိနေလို့
-        throw Exception('file not found!');
-      }
-      _list[findedIndex] = file;
+  static Future<List<UploaderFile>> getApiList({
+    required String novelId,
+  }) async {
+    final list = await getApiDatabase(novelId).getAll(query: {'id': novelId});
+    return list;
+  }
 
-      // sort
-      _list.sortDate();
+  // history
+  static final Map<String, DatabaseInterface<UploaderFile>> _historyDBCache =
+      {};
+  static DatabaseInterface<UploaderFile> get getLocalHistoryDatabase {
+    final key = 'local';
+    _historyDBCache[key] ??= DatabaseFactory.create<UploaderFile>(
+      type: DatabaseTypes.local,
+      historyDatabase: true,
+    );
+    return _historyDBCache[key]!;
+  }
 
-      final mapList = _list.map((e) => e.toMap).toList();
-      await UploaderConfigServices.setListConfig(
-        dbName: getDBName(file.novelId),
-        mapList,
-        isPrettyJson: true,
-      );
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+  static DatabaseInterface<UploaderFile> get getApiHistoryDatabase {
+    final key = 'api';
+    _historyDBCache[key] ??= DatabaseFactory.create<UploaderFile>(
+      type: DatabaseTypes.api,
+      historyDatabase: true,
+    );
+    return _historyDBCache[key]!;
   }
 }

@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage>
           },
         ),
         ListTile(
-          leading: Icon(Icons.add),
+          leading: Icon(Icons.style),
           title: Text('Home Style'),
           onTap: () {
             closeContext(context);

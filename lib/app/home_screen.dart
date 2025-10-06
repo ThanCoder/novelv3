@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/home/more_page.dart';
-import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/screens/novel_v3_uploader_home_screen.dart';
+import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
+
 import 'package:t_widgets/widgets/index.dart';
 
 import 'ui/main_ui/screens/home/home_page.dart';
@@ -14,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
-  List<Widget> pages = [HomePage(), NovelV3UploaderHomeScreen(), MorePage()];
+  List<Widget> pages = [HomePage(), NovelV3Uploader.getHomeScreen, MorePage()];
   @override
   Widget build(BuildContext context) {
     return TScaffold(

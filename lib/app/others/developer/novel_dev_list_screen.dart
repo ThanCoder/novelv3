@@ -8,7 +8,9 @@ import 'package:novel_v3/app/novel_dir_app.dart';
 import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_item.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
-import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
+import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart'
+    as uploader
+    hide NovelExtension;
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -63,7 +65,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
 
   bool isLoading = false;
   bool isOnlineListLoading = false;
-  List<UploaderNovel> onlineList = [];
+  List<uploader.Novel> onlineList = [];
   List<Novel> localList = [];
   List<TSort> sortList = [];
   int currentSortId = TSort.getDateId;
@@ -102,7 +104,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       setState(() {
         isOnlineListLoading = true;
       });
-      onlineList = await OnlineNovelServices.getNovelList();
+      onlineList = await uploader.NovelServices.getApiDatabase.getAll();
 
       if (!mounted) return;
       setState(() {

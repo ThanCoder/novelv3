@@ -1,3 +1,5 @@
+const serverGitubRootUrl =
+    'https://raw.githubusercontent.com/ThanCoder/novel-v3-static-server/refs/heads/main/server';
 const serverGitubDatabaseUrl =
     'https://raw.githubusercontent.com/ThanCoder/novel-v3-static-server/refs/heads/main/server/main.db.json';
 const serverGithubImageUrl =

@@ -137,7 +137,7 @@ class HelperServices extends ChangeNotifier {
     List<HelperFile> list = [];
     try {
       final url = ServerFileServices.getHelperDBUrl('v3.main.db.json');
-      final json = await NovelV3Uploader.instance.onDownloadJson!(url);
+      final json = await NovelV3Uploader.instance.getContentFromUrl!(url);
       List<dynamic> resList = jsonDecode(json);
       list = resList.map((map) => HelperFile.fromMap(map)).toList();
     } catch (e) {

@@ -1,17 +1,11 @@
-import 'dart:io';
-
 import '../constants.dart';
 import '../novel_v3_uploader.dart';
 
 class ServerFileServices {
   static String getRootPath({bool absPath = true}) {
     // for custom server
-    final customServerDir = NovelV3Uploader.instance.getCustomServerPath();
-    if (customServerDir.isNotEmpty && Directory(customServerDir).existsSync()) {
-      return customServerDir;
-    }
-    var rootPath = absPath ? Directory.current.path : '';
-    return '$rootPath/server';
+    final customServerDir = NovelV3Uploader.instance.getLocalServerPath();
+    return customServerDir;
   }
 
   static String getImagePath({bool absPath = true}) {

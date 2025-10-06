@@ -1,7 +1,8 @@
 ## 3.2.1
 
-- Fixed `PDF Reader Config`
 - Added `PDF Recent DB`
+- Changed `Online UI`
+- Fixed `PDF Reader Config`
 
 ## 3.1.0
 
