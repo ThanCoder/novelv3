@@ -1,6 +1,6 @@
-# novel_v3
+# Novel V3
 
-## support platrom
+## Support platforms
 
 linux,android
 
@@ -11,9 +11,13 @@ linux,android
     sudo apt install ffmpeg //video thumbnail
 
 ## Linux screenshort
+<img width="608" height="595" alt="s1" src="https://github.com/user-attachments/assets/2fc9be60-a0d4-473f-9f7d-5c6d1c36b2aa" />
 
-![2025-02-08-141337_658x552_scrot](https://github.com/user-attachments/assets/ca62a3ab-58be-4166-8d7b-924bbcccf0c2)
+<img width="608" height="595" alt="s2" src="https://github.com/user-attachments/assets/4b9c1436-935b-4430-8aa4-aa94294dea4d" />
+
 
 ## Android screenshort
 
-![_Screenshot_20250208-142630](https://github.com/user-attachments/assets/5e01826d-c3c9-4abe-9e33-044f5de8f526)
+![s3](https://github.com/user-attachments/assets/ddee4cc6-ccf3-4acc-96a9-dc2d94d834e2)
+![s4](https://github.com/user-attachments/assets/78494dfb-116a-4508-b849-1261de57df95)
+
