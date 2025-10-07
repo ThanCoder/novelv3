@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/thancoder_about_widget.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -60,6 +61,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
               _getCustomPathWidget(),
               // custom image
               _getCustomNovelCoverWidet(),
+              //changelog && readme
+              ThancoderAboutWidget(),
             ],
           ),
         ),

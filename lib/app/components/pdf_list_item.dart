@@ -9,16 +9,18 @@ import 'package:than_pkg/types/src_dest_type.dart';
 import '../novel_dir_app.dart';
 
 class PdfListItem extends StatefulWidget {
-  NovelPdf pdf;
-  String? cachePath;
-  void Function(NovelPdf pdf) onClicked;
-  void Function(NovelPdf pdf)? onRightClicked;
-  PdfListItem({
+  final NovelPdf pdf;
+  final String? cachePath;
+  final bool isEnableRecent;
+  final void Function(NovelPdf pdf) onClicked;
+  final void Function(NovelPdf pdf)? onRightClicked;
+  const PdfListItem({
     super.key,
     required this.pdf,
     required this.onClicked,
     this.onRightClicked,
     this.cachePath,
+    this.isEnableRecent = false,
   });
 
   @override
@@ -78,10 +80,11 @@ class _PdfListItemState extends State<PdfListItem> {
         child:
             Card(
               color:
-                  PdfServices.isExistsRecent(
-                    novelId: widget.pdf.getParentPath.getName(),
-                    pdfName: widget.pdf.getTitle,
-                  )
+                  widget.isEnableRecent &&
+                      PdfServices.isExistsRecent(
+                        novelId: widget.pdf.getParentPath.getName(),
+                        pdfName: widget.pdf.getTitle,
+                      )
                   ? const Color.fromARGB(181, 42, 170, 157)
                   : null,
               child: Row(

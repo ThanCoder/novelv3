@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/dialogs/edit_pdf_config_dialog.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
@@ -39,12 +40,28 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   late PdfConfig config;
   bool isCanGoBack = true;
   int delayMiliSec = 200;
+  late final PdfViewer pdfViewer;
 
   @override
   void initState() {
+    super.initState();
     keyboardListenerFocus.requestFocus();
     config = widget.pdfConfig;
-    super.initState();
+    if (widget.sourcePath.startsWith('http')) {
+      //is online
+      pdfViewer = PdfViewer.uri(
+        Uri.parse(widget.sourcePath),
+        controller: pdfController,
+        params: getParams(),
+      );
+    } else {
+      pdfViewer = PdfViewer.file(
+        widget.sourcePath,
+        controller: pdfController,
+        params: getParams(),
+      );
+    }
+
     _initConfig();
   }
 
@@ -87,6 +104,13 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     );
   }
 
+  Widget _getCurrentPdfReader() {
+    if (widget.sourcePath.isEmpty) {
+      return const Center(child: Text('Path Not Found!'));
+    }
+    return pdfViewer;
+  }
+
   PdfViewerParams getParams() => PdfViewerParams(
     margin: 0,
     scrollByMouseWheel: config.scrollByMouseWheel,
@@ -124,7 +148,23 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     },
     //loading
     loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
-      return Center(child: TLoaderRandom(isDarkMode: config.isDarkMode));
+      return Center(child: TLoader.random(isDarkMode: config.isDarkMode));
+    },
+    //pdf ready
+    onViewerReady: (document, controller) {
+      if (!initCalled) {
+        loadedPdfController = controller;
+        onPdfLoaded();
+        initCalled = true;
+      }
+    },
+    onViewSizeChanged: (viewSize, oldViewSize, controller) {
+      final offset = pdfController.centerPosition;
+      config = config.copyWith(
+        zoom: pdfController.currentZoom,
+        offsetDx: offset.dx,
+        offsetDy: offset.dy,
+      );
     },
     //page changed
     onPageChanged: (pageNumber) {
@@ -135,20 +175,14 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           offsetDx: offset.dx,
           offsetDy: offset.dy,
         );
-        setState(() {
-          currentPage = pageNumber ?? 1;
-          pageCount = pdfController.pageCount;
-        });
+
+        currentPage = pageNumber ?? 1;
+        pageCount = pdfController.pageCount;
+        setState(() {});
       } catch (e) {
         debugPrint('onPageChanged: ${e.toString()}');
       }
     },
-    //pdf ready
-    onViewerReady: (document, controller) {
-      loadedPdfController = controller;
-      onPdfLoaded();
-    },
-
     viewerOverlayBuilder: config.isShowScrollThumb
         ? (context, size, handleLinkTap) => [
             // Add vertical scroll thumb on viewer's right side
@@ -255,6 +289,11 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
                 config.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
               ),
             ),
+            // config
+            IconButton(
+              onPressed: _showConfigSettingDialog,
+              icon: const Icon(Icons.tune_rounded),
+            ),
             //setting
             IconButton(
               onPressed: _showSetting,
@@ -264,26 +303,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         ),
       ),
     );
-  }
-
-  Widget _getCurrentPdfReader() {
-    if (widget.sourcePath.isEmpty) {
-      return const Center(child: Text('Path Not Found!'));
-    }
-    if (widget.sourcePath.startsWith('http')) {
-      //is online
-      return PdfViewer.uri(
-        Uri.parse(widget.sourcePath),
-        controller: pdfController,
-        params: getParams(),
-      );
-    } else {
-      return PdfViewer.file(
-        widget.sourcePath,
-        controller: pdfController,
-        params: getParams(),
-      );
-    }
   }
 
   Widget _getColorFilteredPdfReader() {
@@ -316,9 +335,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       pageCount = pdfController.pageCount;
       final oldConfig = widget.pdfConfig;
 
-      if (oldConfig.zoom != 0 &&
-          oldConfig.offsetDx != 0 &&
-          oldConfig.offsetDy != 0) {
+      if (oldConfig.zoom != 0 && oldConfig.offsetDx != 0) {
         await pdfController.goToPage(pageNumber: oldConfig.page);
 
         final newOffset = Offset(
@@ -445,6 +462,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     });
   }
 
+  // setting
   void _showSetting() {
     showDialog(
       context: context,
@@ -456,6 +474,24 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             goPage(changedConfig.page);
           }
           config = changedConfig;
+          _saveConfig();
+          _initConfig();
+        },
+      ),
+    );
+  }
+
+  void _showConfigSettingDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => EditPdfConfigDialog(
+        pdfConfig: config,
+        onUpdated: (updatedConfig) {
+          // check current page
+          if (currentPage != updatedConfig.page) {
+            goPage(updatedConfig.page);
+          }
+          config = updatedConfig;
           _saveConfig();
           _initConfig();
         },

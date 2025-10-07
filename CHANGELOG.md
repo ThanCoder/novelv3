@@ -1,5 +1,6 @@
 ## 3.2.1
 
+- Added `PDF Reader` -> ` pdfrx: ^2.1.25`
 - Added `PDF Recent DB`
 - Changed `Online UI`
 - Fixed `PDF Reader Config`

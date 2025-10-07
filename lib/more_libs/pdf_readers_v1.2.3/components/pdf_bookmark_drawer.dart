@@ -43,8 +43,8 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Drawer(
+    return Drawer(
+      child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CustomScrollView(

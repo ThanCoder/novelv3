@@ -23,7 +23,6 @@ class PdfReaderSettingDialog extends StatefulWidget {
 class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
   final scrollByMouseWheelController = TextEditingController();
   final scrollByArrowKeyController = TextEditingController();
-  final currentPageController = TextEditingController();
   bool isDarkMode = false;
   bool isTextSelection = false;
   bool isShowScrollThumb = false;
@@ -43,7 +42,6 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
     scrollByMouseWheelController.text = widget.config.scrollByMouseWheel
         .toString();
     scrollByArrowKeyController.text = widget.config.scrollByArrowKey.toString();
-    currentPageController.text = widget.config.page.toString();
     isDarkMode = widget.config.isDarkMode;
     isTextSelection = widget.config.isTextSelection;
     isShowScrollThumb = widget.config.isShowScrollThumb;
@@ -64,16 +62,6 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              //current page
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TNumberField(
-                  label: Text('Current Page'),
-                  controller: currentPageController,
-                  maxLines: 1,
-                  onSubmitted: (_) => _onApply(),
-                ),
-              ),
               // dart mode
               TListTileWithDesc(
                 title: 'Dark Mode',
@@ -151,8 +139,9 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               ),
               // optional
               const Divider(),
-
+              //lock
               TListTileWithDesc(
+                leading: Icon(isPanLocked ? Icons.lock : Icons.lock_open),
                 title: isPanLocked ? 'Locked' : 'UnLocked',
                 trailing: Switch.adaptive(
                   value: isPanLocked,
@@ -165,6 +154,9 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               ),
               // fullscreen
               TListTileWithDesc(
+                leading: Icon(
+                  isFullscreen ? Icons.fullscreen : Icons.fullscreen_exit,
+                ),
                 title: 'FullScreen',
                 trailing: Switch.adaptive(
                   value: isFullscreen,
@@ -178,6 +170,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
 
               //mouse wheel
               TListTileWithDesc(
+                leading: Icon(Icons.mouse),
                 title: 'Mouse Scroll',
                 trailing: Expanded(
                   child: TTextField(
@@ -195,6 +188,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               ),
               //mouse wheel
               TListTileWithDesc(
+                leading: Icon(Icons.keyboard),
                 title: 'Keyboard Scroll Speed',
                 trailing: Expanded(
                   child: TTextField(
@@ -248,7 +242,6 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
       screenOrientation: screenOrientation,
       scrollByArrowKey: double.tryParse(scrollByArrowKeyController.text),
       scrollByMouseWheel: double.tryParse(scrollByMouseWheelController.text),
-      page: int.tryParse(currentPageController.text),
     );
     widget.onApply(config);
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../setting.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AppCurrentVersion extends StatelessWidget {
@@ -14,9 +13,8 @@ class AppCurrentVersion extends StatelessWidget {
         if (snapshot.hasData && data != null) {
           return Card(
             child: ListTile(
-              title: Text(
-                'Current Version: ${data.version} ${Setting.versionLable}',
-              ),
+              leading: Icon(Icons.new_releases),
+              title: Text('Current Version: `${data.version}`'),
             ),
           );
         }

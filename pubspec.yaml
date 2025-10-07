@@ -10,25 +10,26 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  dio: ^5.8.0+1
-  pdfrx: ^2.1.15
+  dio: ^5.9.0
+  pdfrx: ^2.1.25
   than_pkg: ^4.5.2
   t_widgets: ^1.5.1
   desktop_drop: ^0.6.1
   uuid: ^4.5.1
   provider: ^6.1.5+1
   archive: ^4.0.7
-  t_html_parser: ^1.1.0
+  t_html_parser: ^1.1.1
   t_server: ^2.2.0
   flutter_animate: ^4.5.2
-  t_client: ^0.0.6
+  t_client: ^0.1.6
+  flutter_markdown: ^0.7.7+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  change_app_package_name: ^1.4.0
+  change_app_package_name: ^1.5.0
   # dart run change_app_package_name:main [com.new.package.name]
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.4
   # dart run flutter_launcher_icons
   flutter_lints: ^5.0.0
 
@@ -44,6 +45,8 @@ flutter:
     - assets/
     - assets/app_helper/
     - .env
+    - CHANGELOG.md
+    - README.md
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

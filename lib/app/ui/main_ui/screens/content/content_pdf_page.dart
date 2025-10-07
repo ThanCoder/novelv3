@@ -95,6 +95,7 @@ class _ContentPdfPageState extends State<ContentPdfPage> {
       itemCount: list.length,
       itemBuilder: (context, index) => PdfListItem(
         pdf: list[index],
+        isEnableRecent: list.length > 1,
         onClicked: (pdf) async {
           // set recent
           await PdfServices.setRecent(
