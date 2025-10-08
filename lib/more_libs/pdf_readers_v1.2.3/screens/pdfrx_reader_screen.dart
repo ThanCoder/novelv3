@@ -44,23 +44,11 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
 
   @override
   void initState() {
+    // set config
+    config = widget.pdfConfig;
+    pdfViewer = _getPdfViewer();
     super.initState();
     keyboardListenerFocus.requestFocus();
-    config = widget.pdfConfig;
-    if (widget.sourcePath.startsWith('http')) {
-      //is online
-      pdfViewer = PdfViewer.uri(
-        Uri.parse(widget.sourcePath),
-        controller: pdfController,
-        params: getParams(),
-      );
-    } else {
-      pdfViewer = PdfViewer.file(
-        widget.sourcePath,
-        controller: pdfController,
-        params: getParams(),
-      );
-    }
 
     _initConfig();
   }
@@ -104,18 +92,39 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     );
   }
 
+  PdfViewer _getPdfViewer() {
+    if (widget.sourcePath.startsWith('http')) {
+      //is online
+      return PdfViewer.uri(
+        Uri.parse(widget.sourcePath),
+        controller: pdfController,
+        params: getParams(),
+        // initialPageNumber: currentPage,
+      );
+    } else {
+      return PdfViewer.file(
+        widget.sourcePath,
+        controller: pdfController,
+        params: getParams(),
+        // initialPageNumber: currentPage,
+      );
+    }
+  }
+
   Widget _getCurrentPdfReader() {
     if (widget.sourcePath.isEmpty) {
       return const Center(child: Text('Path Not Found!'));
     }
     return pdfViewer;
+    // return _getPdfViewer();
   }
 
   PdfViewerParams getParams() => PdfViewerParams(
     margin: 0,
     scrollByMouseWheel: config.scrollByMouseWheel,
     scaleEnabled: config.isPanLocked == false,
-    panAxis: config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+    // panAxis: config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+    panAxis: PanAxis.vertical,
     textSelectionParams: PdfTextSelectionParams(
       enabled: config.isTextSelection,
     ),
@@ -169,6 +178,8 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     //page changed
     onPageChanged: (pageNumber) {
       try {
+        if ((pageNumber ?? 1) == currentPage) return;
+
         final offset = pdfController.centerPosition;
         config = config.copyWith(
           zoom: pdfController.currentZoom,
@@ -253,13 +264,13 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
               ),
             ),
             //pan axis lock
-            IconButton(
-              onPressed: () {
-                config = config.copyWith(isPanLocked: !config.isPanLocked);
-                setState(() {});
-              },
-              icon: Icon(config.isPanLocked ? Icons.lock : Icons.lock_open),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     config = config.copyWith(isPanLocked: !config.isPanLocked);
+            //     setState(() {});
+            //   },
+            //   icon: Icon(config.isPanLocked ? Icons.lock : Icons.lock_open),
+            // ),
             //zoom
             IconButton(
               onPressed: () {
@@ -469,10 +480,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       builder: (context) => PdfReaderSettingDialog(
         config: config,
         onApply: (changedConfig) {
-          // check current page
-          if (currentPage != changedConfig.page) {
-            goPage(changedConfig.page);
-          }
           config = changedConfig;
           _saveConfig();
           _initConfig();
@@ -486,6 +493,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       context: context,
       builder: (context) => EditPdfConfigDialog(
         pdfConfig: config,
+        allClearOtherConfig: false,
         onUpdated: (updatedConfig) {
           // check current page
           if (currentPage != updatedConfig.page) {

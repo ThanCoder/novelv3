@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/components/add_website_result_dialog.dart';
+import 'package:novel_v3/app/components/description_widget.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_action.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
@@ -170,9 +171,11 @@ class _ContentHomePageState extends State<ContentHomePage> {
     if (novel.getContent.isEmpty) {
       return SizedBox.shrink();
     }
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SelectableText(novel.getContent, style: TextStyle(fontSize: 16)),
+    return DescriptionWidget(
+      text: novel.getContent,
+      onClicked: (url) {
+        ThanPkg.platform.launch(url);
+      },
     ).animate().fadeIn(
       delay: Duration(milliseconds: 300),
       duration: Duration(milliseconds: 900),

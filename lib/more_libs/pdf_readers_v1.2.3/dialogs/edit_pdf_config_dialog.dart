@@ -7,12 +7,14 @@ import '../types/pdf_config.dart';
 class EditPdfConfigDialog extends StatefulWidget {
   final PdfConfig pdfConfig;
   final Widget? title;
+  final bool allClearOtherConfig;
   final void Function(PdfConfig updatedConfig) onUpdated;
   const EditPdfConfigDialog({
     super.key,
     required this.pdfConfig,
     required this.onUpdated,
     this.title,
+    this.allClearOtherConfig = true,
   });
 
   @override
@@ -83,10 +85,12 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
     Navigator.pop(context);
     // reset
     config = config.copyWith(
-      screenOrientation: ScreenOrientationTypes.portrait,
-      offsetDy: 0,
-      zoom: 0,
-      isPanLocked: false,
+      screenOrientation: !widget.allClearOtherConfig
+          ? null
+          : ScreenOrientationTypes.portrait,
+      offsetDy: !widget.allClearOtherConfig ? null : 0,
+      zoom: !widget.allClearOtherConfig ? null : 0,
+      isPanLocked: !widget.allClearOtherConfig ? null : false,
     );
 
     widget.onUpdated(config);

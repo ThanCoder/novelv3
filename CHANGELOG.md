@@ -1,6 +1,13 @@
+## 3.3.1
+
+- Added `Novel Description` ကို ့`https://` တိုက်ရိုက် ဖွင့်လို့ရပြီ။
+- Some Error `pdfrx` new version မှာ error အချို့ ရှိနေပြီးတော့ ဖြေရှင်းလို့မရသေး။
+- Fixed `PDF Reader` -> Zoom ပြသနာ
+- Added `PDF Reader` -> `pdfrx: ^2.1.25`
+- Added `App Info`
+
 ## 3.2.1
 
-- Added `PDF Reader` -> ` pdfrx: ^2.1.25`
 - Added `PDF Recent DB`
 - Changed `Online UI`
 - Fixed `PDF Reader Config`
