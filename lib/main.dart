@@ -12,7 +12,7 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import 'more_libs/app_helpers/app_help_button.dart';
-import 'app/novel_dir_app.dart';
+import 'app/ui/novel_dir_app.dart';
 import 'more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
 
 void main() async {

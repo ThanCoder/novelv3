@@ -4,7 +4,7 @@ import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.da
 
 import 'package:t_widgets/widgets/index.dart';
 
-import 'ui/main_ui/screens/home/home_page.dart';
+import 'main_ui/screens/home/home_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -18,7 +18,7 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
 
   @override
   void initState() {
-    _themeSub = ThemeServices().onBrightnessChanged.listen((data) {
+    _themeSub = ThemeServices.instance.onBrightnessChanged.listen((data) {
       final oldConfig = Setting.getAppConfigNotifier.value;
       if (oldConfig.themeMode == ThemeModes.system &&
           oldConfig.isDarkMode != data.isDarkMode) {
@@ -28,6 +28,8 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
         Setting.getAppConfigNotifier.value = newConfig;
       }
     });
+    ThemeServices.instance.init();
+
     super.initState();
   }
 

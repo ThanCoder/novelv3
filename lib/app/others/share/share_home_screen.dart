@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_receive_url_form_dialog.dart';
-import 'package:novel_v3/app/others/share/novel_receive_screen.dart';
-import 'package:novel_v3/app/others/share/novel_share_screen.dart';
+import 'package:novel_v3/app/others/share/receive/novel_receive_screen.dart';
+import 'package:novel_v3/app/others/share/send/novel_share_screen.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/recent_db.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-class ShareScreen extends StatefulWidget {
-  const ShareScreen({super.key});
+class ShareHomeScreen extends StatefulWidget {
+  const ShareHomeScreen({super.key});
 
   @override
-  State<ShareScreen> createState() => _ShareScreenState();
+  State<ShareHomeScreen> createState() => _ShareHomeScreenState();
 }
 
-class _ShareScreenState extends State<ShareScreen> {
+class _ShareHomeScreenState extends State<ShareHomeScreen> {
   @override
   void initState() {
     super.initState();
@@ -80,7 +80,7 @@ class _ShareScreenState extends State<ShareScreen> {
           pre.setString(key, connectedUrl);
         },
         onSuccess: (url) {
-          goRoute(context, builder: (context) => NovelReceiveScreen(url: url));
+          goRoute(context, builder: (context) => NovelReceiveScreen(hostUrl: url));
         },
       ),
     );

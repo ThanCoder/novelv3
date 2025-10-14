@@ -15,6 +15,9 @@ class ShareNovel {
     required this.date,
   });
 
+  String getCoverPath(String hostUrl) =>
+      '$hostUrl/download?path=$path/cover.png';
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,

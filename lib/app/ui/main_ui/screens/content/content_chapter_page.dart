@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/components/chapter_list_item.dart';
-import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/components/chapter_list_item.dart';
+import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/page_url_dialog.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/extensions/index.dart';
 
-import '../../../../novel_dir_app.dart';
+import '../../../novel_dir_app.dart';
 import 'content_image_wrapper.dart';
 
 class ContentChapterPage extends StatefulWidget {

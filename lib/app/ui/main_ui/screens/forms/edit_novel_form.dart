@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/novel_dir_app.dart';
-import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';

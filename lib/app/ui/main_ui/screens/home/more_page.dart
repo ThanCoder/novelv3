@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_scanner.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/scanners/pdf_scanner_screen.dart';
-import 'package:novel_v3/app/others/share/share_screen.dart';
+import 'package:novel_v3/app/others/share/share_home_screen.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/thancoder_about_widget.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -65,7 +65,7 @@ class _MorePageState extends State<MorePage> {
       title: 'Novel Share',
       desc: 'Novel မျှဝေမယ်',
       onClick: () {
-        goRoute(context, builder: (context) => ShareScreen());
+        goRoute(context, builder: (context) => ShareHomeScreen());
       },
     );
   }

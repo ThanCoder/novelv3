@@ -57,6 +57,16 @@ class ThancoderAboutWidget extends StatelessWidget {
             ThanPkg.platform.launch('https://t.me/thancoder_novel');
           },
         ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.new_releases),
+          title: Text('App Release'),
+          onTap: () {
+            ThanPkg.platform.launch(
+              'https://github.com/ThanCoder/novelv3/releases',
+            );
+          },
+        ),
       ],
     );
   }

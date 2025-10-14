@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-import '../../../novel_dir_app.dart';
+import '../../novel_dir_app.dart';
 
 ValueNotifier<List<Novel>> novelSeeAllScreenNotifier = ValueNotifier([]);
 

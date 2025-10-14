@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
 import 'package:novel_v3/more_libs/json_database_v1.0.0/json_database.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';

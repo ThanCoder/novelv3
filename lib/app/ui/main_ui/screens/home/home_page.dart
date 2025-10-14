@@ -25,7 +25,7 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import '../novel_search_screen.dart';
 import 'package:provider/provider.dart';
-import '../../../../novel_dir_app.dart';
+import '../../../novel_dir_app.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

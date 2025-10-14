@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 import 'package:novel_v3/app/others/share/libs/novel_share_services.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
@@ -28,6 +28,8 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
   static List<Novel> novelList = [];
 
   void init() async {
+    ThanPkg.platform.toggleKeepScreen(isKeep: true);
+
     _initWifiList();
     TServer.instance.get('/download', (req) {
       final path = req.getQueryParameters['path'] ?? '';
@@ -62,6 +64,7 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
 
   @override
   void dispose() {
+    ThanPkg.platform.toggleKeepScreen(isKeep: false);
     super.dispose();
   }
 

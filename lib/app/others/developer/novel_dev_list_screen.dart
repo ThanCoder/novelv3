@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 import 'package:novel_v3/app/others/developer/novel_config_export_dialog.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_item.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../routes_helper.dart';
+import '../../ui/routes_helper.dart';
 
 class NovelDevListScreen extends StatefulWidget {
   const NovelDevListScreen({super.key});

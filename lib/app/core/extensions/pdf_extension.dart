@@ -1,4 +1,4 @@
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 
 extension PdfExtension on List<NovelPdf> {
   void sortTitle({bool aToZ = true}) {

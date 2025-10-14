@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/novel_dir_app.dart';
-import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 

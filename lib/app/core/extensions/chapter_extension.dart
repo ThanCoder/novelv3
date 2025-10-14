@@ -1,4 +1,4 @@
-import '../../novel_dir_app.dart';
+import '../../ui/novel_dir_app.dart';
 
 extension ChapterExtension on List<Chapter> {
   void sortNumber({bool isSmallerTop = true}) {

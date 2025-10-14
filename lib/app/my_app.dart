@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_server/core/t_server.dart';
 
-import 'home_screen.dart';
+import 'ui/home_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

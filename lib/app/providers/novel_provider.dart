@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_widgets/t_widgets.dart';
-import '../novel_dir_app.dart';
+import '../ui/novel_dir_app.dart';
 
 class NovelProvider extends ChangeNotifier {
   final List<Novel> _list = [];

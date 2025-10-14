@@ -4,7 +4,7 @@ import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../../components/status_text.dart';
+import '../../ui/components/status_text.dart';
 
 typedef NovelDevListItemOnClickCallback = void Function(Novel novel);
 typedef NovelDevListItemOnExistsTitle = bool Function(Novel novel);
@@ -39,8 +39,8 @@ class NovelDevListItem extends StatelessWidget {
                 spacing: 8,
                 children: [
                   SizedBox(
-                    width: 140,
-                    height: 150,
+                    width: 90,
+                    height: 120,
                     child: TImage(source: novel.getCoverPath),
                   ),
                   Expanded(
@@ -48,11 +48,10 @@ class NovelDevListItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
                       children: [
-                        Text(
-                          'T: ${novel.title}',
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 13),
+                        _getRowTile(
+                          text: novel.title,
+                          iconData: Icons.title,
+                          fontWeight: FontWeight.bold,
                         ),
                         FutureBuilder(
                           future: novel.getAllSizeLabel(),
@@ -62,21 +61,18 @@ class NovelDevListItem extends StatelessWidget {
                               return Text('Size: တွက်ချက်နေပါတယ်...');
                             }
                             if (asyncSnapshot.hasData) {
-                              return Text('Size: ${asyncSnapshot.data ?? ''}');
+                              return _getRowTile(
+                                text: asyncSnapshot.data ?? '',
+                                iconData: Icons.sd_storage,
+                              );
                             }
                             return SizedBox.shrink();
                           },
                         ),
                         // date
-                        Row(
-                          children: [
-                            Icon(Icons.date_range),
-                            Text(
-                              novel.date.toParseTime(),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ],
+                        _getRowTile(
+                          text: novel.date.toParseTime(),
+                          iconData: Icons.date_range,
                         ),
 
                         // status
@@ -101,6 +97,26 @@ class NovelDevListItem extends StatelessWidget {
               duration: Duration(milliseconds: 900),
             ),
       ),
+    );
+  }
+
+  Widget _getRowTile({
+    required IconData iconData,
+    required String text,
+    FontWeight? fontWeight,
+  }) {
+    return Row(
+      children: [
+        Icon(iconData),
+        Expanded(
+          child: Text(
+            text,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 11, fontWeight: fontWeight),
+          ),
+        ),
+      ],
     );
   }
 

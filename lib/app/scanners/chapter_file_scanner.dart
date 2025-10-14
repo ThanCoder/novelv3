@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 
 import '../core/interfaces/file_scanner_interface.dart';
 

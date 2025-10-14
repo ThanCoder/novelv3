@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:novel_v3/app/components/add_website_result_dialog.dart';
-import 'package:novel_v3/app/components/description_widget.dart';
+import 'package:novel_v3/app/ui/components/add_website_result_dialog.dart';
+import 'package:novel_v3/app/ui/components/description_widget.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_action.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_export_dialog.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
-import 'package:novel_v3/app/routes_helper.dart';
+import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/page_button.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/readed_button.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/buttons/readed_recent_button.dart';
@@ -24,7 +24,7 @@ import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import '../../../../novel_dir_app.dart';
+import '../../../novel_dir_app.dart';
 
 class ContentHomePage extends StatefulWidget {
   const ContentHomePage({super.key});

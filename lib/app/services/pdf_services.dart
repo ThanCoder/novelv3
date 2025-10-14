@@ -3,7 +3,7 @@ import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import '../novel_dir_app.dart';
+import '../ui/novel_dir_app.dart';
 
 class PdfServices {
   static Future<List<NovelPdf>> getScanList() async {
@@ -21,9 +21,8 @@ class PdfServices {
   }
 
   static TRecentDB get getRecentDB {
-    _recentDB ??= TRecentDB(
-      root: PathUtil.getDatabasePath(name: 'pdf.recent.db.json'),
-    );
+    _recentDB ??= TRecentDB()
+      ..setRootPath(PathUtil.getDatabasePath(name: 'pdf.recent.db.json'));
     return _recentDB!;
   }
 

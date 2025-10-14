@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_grid_item.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel_extension.dart';
-import 'package:novel_v3/app/others/share/novel_content_screen.dart';
-import 'package:novel_v3/app/others/share/novel_search_screen.dart';
+import 'package:novel_v3/app/others/share/receive/novel_content_screen.dart';
+import 'package:novel_v3/app/others/share/receive/novel_search_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class NovelReceiveScreen extends StatefulWidget {
-  final String url;
-  const NovelReceiveScreen({super.key, required this.url});
+  final String hostUrl;
+  const NovelReceiveScreen({super.key, required this.hostUrl});
 
   @override
   State<NovelReceiveScreen> createState() => _NovelReceiveScreenState();
@@ -43,7 +43,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
       setState(() {
         isLoading = true;
       });
-      final res = await dio.get('${widget.url}/api');
+      final res = await dio.get('${widget.hostUrl}/api');
       List<dynamic> jsonList = jsonDecode(res.data.toString());
       list = jsonList.map((e) => ShareNovel.fromMap(e)).toList();
 
@@ -112,13 +112,13 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     return SliverGrid.builder(
       itemCount: list.length,
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        mainAxisExtent: 220,
+        maxCrossAxisExtent: 170,
+        mainAxisExtent: 200,
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
       ),
       itemBuilder: (context, index) => ShareGridItem(
-        url: widget.url,
+        hostUrl: widget.hostUrl,
         novel: list[index],
         onClicked: _goContentPage,
       ),
@@ -175,7 +175,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     goRoute(
       context,
       builder: (context) => NovelSearchScreen(
-        url: widget.url,
+        hostUrl: widget.hostUrl,
         list: list,
         onClicked: _goContentPage,
       ),
@@ -185,7 +185,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
   void _goContentPage(ShareNovel novel) {
     goRoute(
       context,
-      builder: (context) => NovelContentScreen(url: widget.url, novel: novel),
+      builder: (context) => NovelContentScreen(hostUrl: widget.hostUrl, novel: novel),
     );
   }
 }

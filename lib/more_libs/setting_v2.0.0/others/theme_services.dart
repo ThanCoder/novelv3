@@ -34,17 +34,37 @@ enum ThemeModes {
   }
 }
 
+// class ThemeListener {
+//   static final ThemeListener instance = ThemeListener._();
+//   ThemeListener._();
+//   factory ThemeListener() => instance;
+
+//   StreamSubscription<ThemeModes>? _themeSub;
+//   StreamSubscription<ThemeModes> getStreamSubscription(){
+//     _themeSub ??= ThemeServices().onBrightnessChanged;
+//   }
+// }
+
 class ThemeServices with WidgetsBindingObserver {
-  ThemeServices() {
-    WidgetsBinding.instance.addObserver(this);
-    // init
-    final brightness = WidgetsBinding.instance.window.platformBrightness;
-    Future.delayed(Duration(milliseconds: 500), () {
-      _controller.add(ThemeModes.fromBrightness(brightness));
-    });
-  }
+  static final ThemeServices instance = ThemeServices._();
+  ThemeServices._();
+  factory ThemeServices() => instance;
+
   final _controller = StreamController<ThemeModes>.broadcast();
   Stream<ThemeModes> get onBrightnessChanged => _controller.stream;
+
+  // ThemeServices() {
+  //   WidgetsBinding.instance.addObserver(this);
+  //   // init
+  //   Future.delayed(Duration(milliseconds: 500), () {
+  //     init();
+  //   });
+  // }
+
+  void init() {
+    final brightness = WidgetsBinding.instance.window.platformBrightness;
+    _controller.add(ThemeModes.fromBrightness(brightness));
+  }
 
   @override
   void didChangePlatformBrightness() {

@@ -3,12 +3,12 @@ import 'package:novel_v3/app/others/share/libs/share_novel.dart';
 import 'package:t_widgets/t_widgets_dev.dart';
 
 class ShareGridItem extends StatelessWidget {
-  final String url;
+  final String hostUrl;
   final ShareNovel novel;
   final void Function(ShareNovel novel)? onClicked;
   const ShareGridItem({
     super.key,
-    required this.url,
+    required this.hostUrl,
     required this.novel,
     this.onClicked,
   });
@@ -19,55 +19,54 @@ class ShareGridItem extends StatelessWidget {
       onTap: () => onClicked?.call(novel),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: TImage(
-                source: '$url/download?path=${novel.path}/cover.png',
-                // cachePath: PathUtil.getCachePath(),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(169, 22, 22, 22),
-                ),
-                child: Text(
-                  novel.title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    overflow: TextOverflow.ellipsis,
-                    color: Colors.white,
-                  ),
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: _getStatus(
-                novel.isCompleted ? 'Completed' : 'OnGoing',
-                bgColor: novel.isCompleted
-                    ? const Color.fromARGB(255, 4, 121, 109)
-                    : const Color.fromARGB(255, 7, 97, 92),
-              ),
-            ),
-            !novel.isAdult
-                ? SizedBox.shrink()
-                : Positioned(
-                    right: 0,
-                    top: 0,
-                    child: _getStatus(
-                      'Adult',
-                      bgColor: const Color.fromARGB(255, 165, 30, 20),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Positioned.fill(
+                      child: TImage(
+                        source: '$hostUrl/download?path=${novel.path}/cover.png',
+                        // cachePath: PathUtil.getCachePath(),
+                      ),
                     ),
-                  ),
-          ],
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: _getStatus(
+                        novel.isCompleted ? 'Completed' : 'OnGoing',
+                        bgColor: novel.isCompleted
+                            ? const Color.fromARGB(255, 4, 121, 109)
+                            : const Color.fromARGB(255, 7, 97, 92),
+                      ),
+                    ),
+                    !novel.isAdult
+                        ? SizedBox.shrink()
+                        : Positioned(
+                            right: 0,
+                            top: 0,
+                            child: _getStatus(
+                              'Adult',
+                              bgColor: const Color.fromARGB(255, 165, 30, 20),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+              Text(
+                novel.title,
+                style: TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis),
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -80,7 +79,12 @@ class ShareGridItem extends StatelessWidget {
         color: bgColor,
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 13)),
+      child: Text(
+        text,
+        style: TextStyle(color: Colors.white, fontSize: 11),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

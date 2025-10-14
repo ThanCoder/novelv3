@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../novel_dir_app.dart';
+import '../ui/novel_dir_app.dart';
 
 class FolderFileServices {
   static String getSourcePath({String? name}) {

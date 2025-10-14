@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_db.dart';
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
 

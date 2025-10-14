@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/extensions/pdf_extension.dart';
 import 'package:t_widgets/t_sort/index.dart';
-import '../novel_dir_app.dart';
+import '../ui/novel_dir_app.dart';
 
 class PdfProvider extends ChangeNotifier {
   final List<NovelPdf> _list = [];

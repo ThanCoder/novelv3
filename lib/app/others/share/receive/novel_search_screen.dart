@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_grid_item.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-import 'libs/share_novel.dart';
+import '../libs/share_novel.dart';
 
 class NovelSearchScreen extends StatefulWidget {
-  final String url;
+  final String hostUrl;
   final List<ShareNovel> list;
   final void Function(ShareNovel novel)? onClicked;
   const NovelSearchScreen({
     super.key,
-    required this.url,
+    required this.hostUrl,
     required this.list,
     this.onClicked,
   });
@@ -97,7 +97,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
         crossAxisSpacing: 5,
       ),
       itemBuilder: (context, index) => ShareGridItem(
-        url: widget.url,
+        hostUrl: widget.hostUrl,
         novel: result[index],
         onClicked: widget.onClicked,
       ),

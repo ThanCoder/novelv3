@@ -2,19 +2,24 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/others/share/client_download_manager.dart';
+import 'package:novel_v3/app/others/share/receive/client_download_manager.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file_extension.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+import 'package:novel_v3/app/others/share/receive/content_list.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class NovelContentScreen extends StatefulWidget {
-  final String url;
+  final String hostUrl;
   final ShareNovel novel;
-  const NovelContentScreen({super.key, required this.url, required this.novel});
+  const NovelContentScreen({
+    super.key,
+    required this.hostUrl,
+    required this.novel,
+  });
 
   @override
   State<NovelContentScreen> createState() => _NovelContentScreenState();
@@ -45,7 +50,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         isLoading = true;
       });
       final res = await dio.get(
-        '${widget.url}/dir/api?path=${widget.novel.path}',
+        '${widget.hostUrl}/dir/api?path=${widget.novel.path}',
       );
       List<dynamic> jsonList = List<dynamic>.from(res.data);
       list = jsonList.map((e) => ShareDirFile.fromMap(e)).toList();
@@ -66,19 +71,51 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return TScaffold(
-      body: RefreshIndicator.adaptive(
-        onRefresh: init,
-        child: CustomScrollView(slivers: [_getAppBar(), _getListWidget()]),
+    return DefaultTabController(
+      length: 4,
+      child: TScaffold(
+        body: isLoading
+            ? Center(child: TLoader.random())
+            : NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [_getAppBar(), _getHeader()];
+                },
+                body: _getTabView(),
+              ),
       ),
     );
   }
 
   Widget _getAppBar() {
+    final size = MediaQuery.of(context).size;
     return SliverAppBar(
       title: Text('Content: ${widget.novel.title}'),
-      snap: true,
-      floating: true,
+      // snap: true,
+      // floating: true,
+      expandedHeight: size.height * .6,
+      flexibleSpace: Stack(
+        fit: StackFit.expand,
+        children: [
+          TImage(source: widget.novel.getCoverPath(widget.hostUrl)),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Setting.getAppConfig.isDarkMode
+                      ? Colors.black.withValues(alpha: .5)
+                      : Colors.white.withValues(alpha: .5),
+                  Colors.transparent,
+                  Setting.getAppConfig.isDarkMode
+                      ? Colors.black.withValues(alpha: .5)
+                      : Colors.white.withValues(alpha: .5),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()
@@ -92,83 +129,33 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     );
   }
 
-  Widget _getListWidget() {
-    if (isLoading) {
-      return SliverFillRemaining(child: TLoader.random());
-    }
-    if (list.isEmpty) {
-      return SliverFillRemaining(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('List is Empty'),
-              IconButton(onPressed: init, icon: Icon(Icons.refresh)),
-            ],
-          ),
-        ),
-      );
-    }
-    return SliverList.builder(
-      itemCount: list.length,
-      itemBuilder: (context, index) => _getListItem(list[index]),
+  Widget _getHeader() {
+    return SliverAppBar(
+      automaticallyImplyLeading: false,
+      toolbarHeight: 5,
+      bottom: TabBar(
+        isScrollable: true,
+        tabs: [
+          Tab(text: 'အားလုံး'),
+          Tab(text: 'PDF'),
+          Tab(text: 'Chapter'),
+          Tab(text: 'Config'),
+        ],
+      ),
     );
   }
 
-  Widget _getListItem(ShareDirFile file) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 5,
-          children: [
-            SizedBox(
-              width: 100,
-              height: 120,
-              child: TCacheImage(
-                url: '${widget.url}/cover?path=${file.path}',
-                cachePath: PathUtil.getCachePath(),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 5,
-              children: [
-                Text(
-                  file.name,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Text('Size: ${file.size}'),
-                file.mime.isEmpty
-                    ? SizedBox()
-                    : Row(
-                        children: [
-                          Icon(Icons.file_present_outlined),
-                          Text('Type: ${file.mime}'),
-                        ],
-                      ),
-                Row(
-                  children: [
-                    Icon(Icons.date_range),
-                    Text('ရက်စွဲ: ${file.date.toParseTime()}'),
-                  ],
-                ),
-                Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => _onDowload(file),
-                      child: Row(
-                        children: [Icon(Icons.download), Text('Download')],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+  Widget _getTabView() {
+    final pdfList = list.where((e) => e.mime.endsWith('pdf')).toList();
+    final chapterList = list.where((e) => e.isChapterFile).toList();
+    final configList = list.where((e) => e.isConfigFile).toList();
+    return TabBarView(
+      children: [
+        ContentList(hostUrl: widget.hostUrl, list: list),
+        ContentList(hostUrl: widget.hostUrl, list: pdfList),
+        ContentList(hostUrl: widget.hostUrl, list: chapterList),
+        ContentList(hostUrl: widget.hostUrl, list: configList),
+      ],
     );
   }
 
@@ -231,29 +218,6 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     );
   }
 
-  void _onDowload(ShareDirFile file) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => TMultiDownloaderDialog(
-        manager: ClientDownloadManager(
-          token: TClientToken(isCancelFileDelete: false),
-          saveDir: Directory(PathUtil.getOutPath()),
-        ),
-        urls: ['${widget.url}/download?path=${file.path}'],
-      ),
-
-      // DownloaderDialog(
-      //   url: '${widget.url}/download?path=${file.path}',
-      //   saveFullPath: PathUtil.getOutPath(name: file.name),
-      //   filename: file.name,
-      //   onSuccess: () {
-      //     showTSnackBar(context, 'Downloaded');
-      //   },
-      // ),
-    );
-  }
-
   void _allDownloadConfirm() {
     showTConfirmDialog(
       context,
@@ -276,16 +240,10 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
           token: TClientToken(isCancelFileDelete: false),
           saveDir: Directory(novelPath),
         ),
-        urls: list.map((e) => '${widget.url}/download?path=${e.path}').toList(),
+        urls: list
+            .map((e) => '${widget.hostUrl}/download?path=${e.path}')
+            .toList(),
       ),
-
-      //  MultiDownloaderDialog(
-      //   downloadUrlList: list
-      //       .map((e) => '${widget.url}/download?path=${e.path}')
-      //       .toList(),
-      //   outDir: Directory(novelPath),
-      //   onClosed: (errorMsg) {},
-      // ),
     );
   }
 }

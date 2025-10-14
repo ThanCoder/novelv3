@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:archive/archive.dart';
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 

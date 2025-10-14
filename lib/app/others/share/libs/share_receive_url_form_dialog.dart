@@ -96,12 +96,17 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
     return Column(
       children: List.generate(hostAddress.length, (index) {
         final address = hostAddress[index];
-        return ListTile(
-          title: Text(address),
-          onTap: () {
-            urlController.text = address;
-            _checkHost();
-          },
+        return Column(
+          children: [
+            ListTile(
+              title: Text(address),
+              onTap: () {
+                urlController.text = address;
+                _checkHost();
+              },
+            ),
+            Divider(),
+          ],
         );
       }),
     );

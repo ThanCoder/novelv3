@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:novel_v3/app/novel_dir_app.dart';
+import 'package:novel_v3/app/ui/novel_dir_app.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel.dart';
 import 'package:than_pkg/than_pkg.dart';
