@@ -23,39 +23,65 @@ class NovelListItem extends StatelessWidget {
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
-          child: Wrap(
+          child: Row(
             spacing: 5,
-            runSpacing: 5,
             children: [
               SizedBox(
-                width: 140,
-                height: 150,
+                width: 100,
+                height: 130,
                 child: TImage(source: novel.getCoverPath),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 2,
-                children: [
-                  Text(
-                    'T: ${novel.title}',
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 13),
-                  ),
-                  Text('Author: ${novel.getAuthor}'),
-                  Text('Translator: ${novel.getTranslator}'),
-                  Text('MC: ${novel.getMC}'),
-                  Text(
-                    'Date: ${novel.date.toParseTime()}',
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 2,
+                  children: [
+                    _getRowTile(
+                      iconData: Icons.title,
+                      text: novel.title,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    _getRowTile(
+                      text: 'Author: ${novel.getAuthor}',
+                      iconData: Icons.edit,
+                    ),
+                    _getRowTile(
+                      text: novel.getTranslator,
+                      iconData: Icons.translate,
+                    ),
+                    _getRowTile(text: novel.getMC, iconData: Icons.person),
+                    _getRowTile(
+                      iconData: Icons.date_range,
+                      text: novel.date.toParseTime(),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _getRowTile({
+    IconData? iconData,
+    required String text,
+    FontWeight? fontWeight,
+  }) {
+    return Row(
+      children: [
+        iconData == null ? SizedBox.fromSize() : Icon(iconData),
+        Expanded(
+          child: Text(
+            text,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12, fontWeight: fontWeight),
+          ),
+        ),
+      ],
     );
   }
 }

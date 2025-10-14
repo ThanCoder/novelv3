@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:novel_v3/app/ui/components/list_row_item.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -91,8 +92,8 @@ class _PdfListItemState extends State<PdfListItem> {
                 spacing: 8,
                 children: [
                   SizedBox(
-                    width: 140,
-                    height: 150,
+                    width: 110,
+                    height: 130,
                     child: isLoading
                         ? TLoaderRandom()
                         : Container(
@@ -110,18 +111,18 @@ class _PdfListItemState extends State<PdfListItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 2,
                       children: [
-                        Text(
-                          'T: ${widget.pdf.getTitle}',
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 13),
+                        ListRowItem(
+                          text: widget.pdf.getTitle,
+                          iconData: Icons.title,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text('Size: ${widget.pdf.getSize}'),
-                        Row(
-                          children: [
-                            Icon(Icons.date_range),
-                            Text(widget.pdf.getDate.toParseTime()),
-                          ],
+                        ListRowItem(
+                          text: widget.pdf.getSize,
+                          iconData: Icons.sd_storage,
+                        ),
+                        ListRowItem(
+                          text: widget.pdf.getDate.toParseTime(),
+                          iconData: Icons.date_range,
                         ),
                       ],
                     ),

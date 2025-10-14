@@ -120,9 +120,6 @@ class NovelDevListItem extends StatelessWidget {
     );
   }
 
-  // Widget _getTagWidget() {
-  //   return TTagsWrapView(values: novel.getTags, type: TTagsTypes.text);
-  // }
 
   Widget _getStatusWidget() {
     return Wrap(

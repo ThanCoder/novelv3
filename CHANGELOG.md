@@ -1,5 +1,9 @@
 # 3.3.1
 
+<!-- - Fixed `Theme` -> `Theme Choser ပြောင်းလဲရင် auto မပြောင်းလဲခြင်း` -->
+
+- Changed `Novel Home List Style` -> ကိုပြင်ဆင်ခြင်း
+- Changed `PDF List Style` -> ကိုပြင်ဆင်ခြင်း
 - Added `ThanCoder About Widget` -> `App Release`
 - Added `PDF Reader` -> `pdfrx: ^2.2.0`
 - Added `Novel Share Screen` -> `Keep Screen On`
