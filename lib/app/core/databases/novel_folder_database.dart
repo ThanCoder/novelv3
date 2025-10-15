@@ -13,10 +13,7 @@ class NovelFolderDatabase extends FolderDatabase<Novel> {
       );
 
   @override
-  Future<void> add(Novel value) {
-    // TODO: implement add
-    throw UnimplementedError();
-  }
+  Future<void> add(Novel value) async {}
 
   @override
   Novel? from(FileSystemEntity file) {
@@ -27,8 +24,11 @@ class NovelFolderDatabase extends FolderDatabase<Novel> {
   }
 
   @override
-  Future<void> update(String id, Novel value) {
-    // TODO: implement update
+  Future<void> update(String id, Novel value) async {}
+  
+  @override
+  Future<Novel?> getById({required String id}) {
+    // TODO: implement getById
     throw UnimplementedError();
   }
 }

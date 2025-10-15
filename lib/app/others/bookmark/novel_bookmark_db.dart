@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:novel_v3/app/core/interfaces/index.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_data.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/more_libs/json_database_v1.0.0/json_database.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/path_util.dart';
 
-class NovelBookmarkDB extends JsonDBInterface<NovelBookmarkData> {
+class NovelBookmarkDB extends JsonDatabase<NovelBookmarkData> {
   static NovelBookmarkDB? _instance;
 
   static NovelBookmarkDB getInstance() {
@@ -14,14 +14,11 @@ class NovelBookmarkDB extends JsonDBInterface<NovelBookmarkData> {
   }
 
   NovelBookmarkDB()
-    : super(
-        JsonIO.instance,
-        '${PathUtil.getLibaryPath()}/novel_bookmark.db.json',
-      );
+    : super(root: '${PathUtil.getLibaryPath()}/novel_bookmark.db.json');
 
   Future<List<Novel>> getNovelList() async {
     // await Future.delayed(Duration(seconds: 3));
-    final list = await get();
+    final list = await getAll();
 
     return list
         .where(
@@ -33,7 +30,7 @@ class NovelBookmarkDB extends JsonDBInterface<NovelBookmarkData> {
   }
 
   Future<void> toggleNovel(Novel novel) async {
-    final list = await get();
+    final list = await getAll();
     final index = list.indexWhere((e) => e.title == novel.title);
     if (index == -1) {
       // မရှိ
@@ -46,12 +43,17 @@ class NovelBookmarkDB extends JsonDBInterface<NovelBookmarkData> {
   }
 
   @override
-  NovelBookmarkData fromMap(Map<String, dynamic> map) {
+  NovelBookmarkData from(Map<String, dynamic> map) {
     return NovelBookmarkData.fromMap(map);
   }
 
   @override
-  Map<String, dynamic> toMap(NovelBookmarkData value) {
+  String getId(NovelBookmarkData value) {
+    return value.title;
+  }
+
+  @override
+  Map<String, dynamic> to(NovelBookmarkData value) {
     return value.toMap();
   }
 }

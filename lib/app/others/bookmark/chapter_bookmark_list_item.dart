@@ -3,14 +3,16 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/others/bookmark/chapter_bookmark_data.dart';
 
 class ChapterBookmarkListItem extends StatelessWidget {
-  ChapterBookmarkData bookmark;
-  void Function(ChapterBookmarkData bookmark) onClicked;
-  void Function(ChapterBookmarkData bookmark)? onRightClicked;
-  ChapterBookmarkListItem({
+  final ChapterBookmarkData bookmark;
+  final void Function(ChapterBookmarkData bookmark) onClicked;
+  final void Function(ChapterBookmarkData bookmark)? onRightClicked;
+  final void Function(ChapterBookmarkData bookmark)? onDeleteClicked;
+  const ChapterBookmarkListItem({
     super.key,
     required this.bookmark,
     required this.onClicked,
     this.onRightClicked,
+    this.onDeleteClicked,
   });
 
   @override
@@ -40,6 +42,11 @@ class ChapterBookmarkListItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                  IconButton(
+                    color: Colors.red,
+                    onPressed: () => onDeleteClicked?.call(bookmark),
+                    icon: Icon(Icons.delete),
                   ),
                 ],
               ),

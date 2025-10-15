@@ -93,6 +93,10 @@ void main() async {
 
   // ကြိုခေါ်ထာခြင်း
   PdfServices.initRecentDB();
+  //share recent
+  await TRecentDB.getInstance.init(
+    rootPath: PathUtil.getCachePath(name: 'share-recent.db.json'),
+  );
 
   runApp(
     MultiProvider(

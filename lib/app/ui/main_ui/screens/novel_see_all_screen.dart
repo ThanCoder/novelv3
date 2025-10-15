@@ -27,8 +27,8 @@ class _NovelSeeAllScreenState extends State<NovelSeeAllScreen> {
           return GridView.builder(
             itemCount: list.length,
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 180,
-              mainAxisExtent: 200,
+              maxCrossAxisExtent: 120,
+              mainAxisExtent: 160,
               mainAxisSpacing: 4,
               crossAxisSpacing: 4,
             ),

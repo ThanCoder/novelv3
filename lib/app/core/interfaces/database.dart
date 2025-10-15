@@ -9,7 +9,8 @@ abstract class Database<T> {
   final Storage storage;
   Database({required this.root, required this.storage});
 
-  Future<List<T>> getAll({Map<String, dynamic> query = const {}});
+  Future<List<T>> getAll({Map<String, dynamic>? query});
+  Future<T?> getById({required String id});
   Future<void> add(T value);
   Future<void> update(String id, T value);
   Future<void> delete(String id);

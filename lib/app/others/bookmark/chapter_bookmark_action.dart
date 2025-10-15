@@ -38,7 +38,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
       final novel = context.read<NovelProvider>().getCurrent!;
       final list = await ChapterBookmarkDB.instance(
         novel.getChapterBookmarkPath,
-      ).getCacheList(key: novel.title);
+      ).getAll();
 
       final index = list.indexWhere((e) => e.chapter == widget.chapter.number);
       isExists = index != -1;

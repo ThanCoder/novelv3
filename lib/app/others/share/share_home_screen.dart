@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_receive_url_form_dialog.dart';
 import 'package:novel_v3/app/others/share/receive/novel_receive_screen.dart';
 import 'package:novel_v3/app/others/share/send/novel_share_screen.dart';
-import 'package:novel_v3/more_libs/json_database_v1.0.0/recent_db.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/t_database/index.dart';
 
 class ShareHomeScreen extends StatefulWidget {
   const ShareHomeScreen({super.key});
@@ -64,11 +63,8 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
   }
 
   void _goReceiveScreen() async {
-    final pre = await RecentDB.getInstance(
-      dbPath: PathUtil.getCachePath(name: 'share-recent.db.json'),
-    );
     String key = 'share-host-address';
-    String url = pre.getString(key);
+    final url = TRecentDB.getInstance.getString(key);
 
     if (!mounted) return;
     showDialog(
@@ -77,10 +73,13 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
       builder: (context) => ShareReceiveUrlFormDialog(
         recentUrl: url,
         onConnectedUrl: (connectedUrl) {
-          pre.setString(key, connectedUrl);
+          TRecentDB.getInstance.putString(key, connectedUrl);
         },
         onSuccess: (url) {
-          goRoute(context, builder: (context) => NovelReceiveScreen(hostUrl: url));
+          goRoute(
+            context,
+            builder: (context) => NovelReceiveScreen(hostUrl: url),
+          );
         },
       ),
     );

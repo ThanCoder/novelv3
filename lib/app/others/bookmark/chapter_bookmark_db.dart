@@ -1,9 +1,9 @@
-import 'package:novel_v3/more_libs/json_database_v1.0.0/json_database.dart';
+import 'package:novel_v3/app/core/interfaces/index.dart';
+
 import 'chapter_bookmark_data.dart';
 
-class ChapterBookmarkDB extends JsonDBInterface<ChapterBookmarkData> {
-  ChapterBookmarkDB._(String bookmarkPath)
-    : super(JsonIO.instance, bookmarkPath);
+class ChapterBookmarkDB extends JsonDatabase<ChapterBookmarkData> {
+  ChapterBookmarkDB._(String bookmarkPath) : super(root: bookmarkPath);
 
   static final Map<String, ChapterBookmarkDB> _instance = {};
 
@@ -24,7 +24,7 @@ class ChapterBookmarkDB extends JsonDBInterface<ChapterBookmarkData> {
     if (_caheList.containsKey(key)) {
       _caheList[key] ?? [];
     } else {
-      _caheList[key] = await get();
+      _caheList[key] = await getAll(query: {'isUsedCache': false});
     }
     return _caheList[key] ?? [];
   }
@@ -46,12 +46,17 @@ class ChapterBookmarkDB extends JsonDBInterface<ChapterBookmarkData> {
   }
 
   @override
-  ChapterBookmarkData fromMap(Map<String, dynamic> map) {
+  ChapterBookmarkData from(Map<String, dynamic> map) {
     return ChapterBookmarkData.fromMap(map);
   }
 
   @override
-  Map<String, dynamic> toMap(ChapterBookmarkData value) {
+  String getId(ChapterBookmarkData value) {
+    return value.chapter.toString();
+  }
+
+  @override
+  Map<String, dynamic> to(ChapterBookmarkData value) {
     return value.toMap();
   }
 }

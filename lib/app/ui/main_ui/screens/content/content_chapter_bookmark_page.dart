@@ -48,7 +48,7 @@ class _ContentChapterBookmarkPageState
       final novel = context.read<NovelProvider>().getCurrent;
       if (novel == null) return;
       final db = ChapterBookmarkDB.instance(novel.getChapterBookmarkPath);
-      final res = await db.get();
+      final res = await db.getAll(query: {'isUsedCache': false});
       // filter
       list = res
           .where((e) => Chapter.isChapterExists(novel.path, e.chapter))
@@ -125,6 +125,7 @@ class _ContentChapterBookmarkPageState
         bookmark: list[index],
         onClicked: (bookmark) => _goTextReader(bookmark),
         onRightClicked: _showItemMenu,
+        onDeleteClicked: _removeBookmark,
       ),
       separatorBuilder: (context, index) => Divider(),
     );
@@ -190,7 +191,7 @@ class _ContentChapterBookmarkPageState
     // remove db
     ChapterBookmarkDB.instance(
       novel.getChapterBookmarkPath,
-    ).delete(index, book);
+    ).delete(book.chapter.toString());
   }
 
   // void _goEditBookmark(ChapterBookmarkData book) {

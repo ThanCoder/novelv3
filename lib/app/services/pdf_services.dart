@@ -22,7 +22,7 @@ class PdfServices {
 
   static TRecentDB get getRecentDB {
     _recentDB ??= TRecentDB()
-      ..setRootPath(PathUtil.getDatabasePath(name: 'pdf.recent.db.json'));
+      ..init(rootPath: PathUtil.getDatabasePath(name: 'pdf.recent.db.json'));
     return _recentDB!;
   }
 

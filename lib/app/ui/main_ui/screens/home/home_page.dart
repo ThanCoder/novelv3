@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/interfaces/database.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/others/clean_manager/clean_manager_screen.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
-import 'package:novel_v3/app/others/recents/novel_recent_data.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/content/novel_content_home_screen.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
@@ -17,7 +17,6 @@ import 'package:novel_v3/app/ui/main_ui/screens/home/create_novel_website_info_r
 import 'package:novel_v3/app/ui/main_ui/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
-import 'package:novel_v3/more_libs/json_database_v1.0.0/database_listener.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/others/novel_home_list_styles.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -34,8 +33,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    implements DatabaseListener<NovelRecentData> {
+class _HomePageState extends State<HomePage> with DatabaseListener {
   @override
   void initState() {
     super.initState();
@@ -49,9 +47,9 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  //novel recent db listener
   @override
-  void onChanged(NovelRecentData? value) {
+  void onDatabaseChanged(DatabaseListenerEvent event, {String? id}) {
+    if (!mounted || id == null) return;
     setState(() {});
   }
 
