@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -151,7 +153,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
           return;
         }
       }
-      final oldPath = config.customPath;
+      // final oldPath = config.customPath;
 
       //set custom path
       config.customPath = customPathTextController.text;
@@ -163,11 +165,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         isChanged = false;
       });
       Setting.instance.showMessage(context, 'Config Saved');
-      // custome path ပြောင်လဲလား စစ်ဆေးမယ်
-      if (oldPath != customPathTextController.text) {
-        // app refresh
-        Setting.restartApp(context);
-      }
+
+      await context.read<NovelProvider>().initList(isCached: false);
     } catch (e) {
       Setting.showDebugLog(e.toString(), tag: 'AppSettingScreen:_saveConfig');
     }

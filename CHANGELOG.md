@@ -1,7 +1,8 @@
-# 3.3.1
+# 3.4.2
 
 <!-- - Fixed `Theme` -> `Theme Choser ပြောင်းလဲရင် auto မပြောင်းလဲခြင်း` -->
 
+- Added `AssetsHelper` -> `အကူအညီ`
 - Changed `Novel Home List Style` -> ကိုပြင်ဆင်ခြင်း
 - Changed `PDF List Style` -> ကိုပြင်ဆင်ခြင်း
 - Added `ThanCoder About Widget` -> `App Release`

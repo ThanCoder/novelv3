@@ -37,6 +37,7 @@ class Setting {
   static bool isAppRefreshConfigPathChanged = true;
   late String appName;
   OnShowMessageCallback? onShowMessage;
+  VoidCallback? onDatabasePathChanged;
 
   Future<void> initSetting({
     required String appName,
@@ -44,6 +45,7 @@ class Setting {
     OnShowMessageCallback? onShowMessage,
     bool isAppRefreshConfigPathChanged = false,
     String versionLable = '',
+    VoidCallback? onDatabasePathChanged,
   }) async {
     try {
       Setting.isShowDebugLog = isShowDebugLog;
@@ -51,6 +53,7 @@ class Setting {
       Setting.versionLable = versionLable;
       this.appName = appName;
       this.onShowMessage = onShowMessage;
+      this.onDatabasePathChanged = onDatabasePathChanged;
 
       final rootPath = await ThanPkg.platform.getAppRootPath();
       final externalPath = await ThanPkg.platform.getAppExternalPath();

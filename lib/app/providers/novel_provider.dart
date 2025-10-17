@@ -12,12 +12,12 @@ class NovelProvider extends ChangeNotifier {
   List<Novel> get getList => _list;
   Novel? get getCurrent => _novel;
 
-  Future<void> initList() async {
+  Future<void> initList({bool isCached = true}) async {
     isLoading = true;
     notifyListeners();
     _list.clear();
 
-    final res = await NovelServices.getList();
+    final res = await NovelServices.getList(isCached: isCached);
     _list.addAll(res);
 
     sortList();

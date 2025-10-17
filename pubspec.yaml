@@ -2,7 +2,7 @@ name: novel_v3
 description: "WebNovel App"
 repository: https://github.com/ThanCoder/novelv3
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 3.3.1
+version: 3.4.2
 
 environment:
   sdk: ^3.9.0
@@ -43,7 +43,12 @@ flutter:
 
   assets:
     - assets/
-    - assets/app_helper/
+    - assets/how_to_install_n3_data_manager/
+    - assets/how_to_install_n3_data_form_static_server/
+    - assets/show_to_use_pdf_reader/
+    - assets/how_to_share_data/
+    - assets/how_to_receive_data/
+    - assets/how_to_export_n3_data/
     - .env
     - CHANGELOG.md
     - README.md

@@ -15,6 +15,11 @@ class AppCurrentVersion extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.new_releases),
               title: Text('Current Version: `${data.version}`'),
+              onTap: () {
+                ThanPkg.platform.launch(
+                  'https://github.com/ThanCoder/novelv3/releases',
+                );
+              },
             ),
           );
         }
