@@ -28,7 +28,7 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
         Setting.getAppConfigNotifier.value = newConfig;
       }
     });
-    ThemeServices.instance.init();
+    ThemeServices.instance.check();
 
     super.initState();
   }

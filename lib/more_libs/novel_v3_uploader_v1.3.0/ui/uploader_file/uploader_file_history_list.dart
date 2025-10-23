@@ -57,7 +57,6 @@ class _UploaderFileHistoryPageState extends State<UploaderFileHistoryPage>
 
   @override
   Widget build(BuildContext context) {
-    print(list);
     return TSeeAllView<UploaderFile>(
       title: 'Content Files အသစ်များ',
       list: list,

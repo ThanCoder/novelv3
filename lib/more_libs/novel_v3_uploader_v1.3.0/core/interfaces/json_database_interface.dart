@@ -78,7 +78,6 @@ abstract class JsonDatabaseInterface<T> extends DatabaseInterface<T> {
 
   @override
   Future<T?> getOne({Map<String, dynamic> query = const {}}) {
-    // TODO: implement getOne
     throw UnimplementedError();
   }
 }

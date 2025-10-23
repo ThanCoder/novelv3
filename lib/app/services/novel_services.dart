@@ -1,20 +1,36 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
+import 'package:novel_v3/app/core/databases/novel_folder_database.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:than_pkg/extensions/index.dart';
 import '../ui/novel_dir_app.dart';
 
 class NovelServices {
+  static NovelFolderDatabase? _cache;
+
+  static void clearCache() {
+    _cache = null;
+  }
+
+  static NovelFolderDatabase get getDB {
+    if (_cache != null && _cache!.root != PathUtil.getSourcePath()) {
+      _cache = null;
+    }
+    _cache ??= NovelFolderDatabase();
+    return _cache!;
+  }
+
   static Future<List<Novel>> getList({
     bool isAllCalc = false,
     bool isCached = true,
   }) async {
-    final rootPath = FolderFileServices.getSourcePath();
+    // print('path: ${PathUtil.getSourcePath()}');
+    // print('db: ${getDB.root}');
     if (isAllCalc) {
-      return await getNovelAllCal(rootPath);
+      return await getNovelAllCal(getDB.root);
     } else {
-      return await FileScannerFactory.getScanner<Novel>().getList(rootPath);
+      return await getDB.getAll(query: {'isUsedCache': isCached});
     }
   }
 

@@ -8,20 +8,20 @@ import 'setting.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class AppConfig {
-  String customPath;
-  String forwardProxyUrl;
-  String browserForwardProxyUrl;
-  String proxyUrl;
-  String hostUrl;
-  bool isUseCustomPath;
-  bool isUseForwardProxy;
-  bool isUseProxy;
-  String customNovelContentImagePath;
-  ThemeModes themeMode;
-  bool isDarkMode;
-  NovelHomeListStyles homeListStyle;
+  final String customPath;
+  final String forwardProxyUrl;
+  final String browserForwardProxyUrl;
+  final String proxyUrl;
+  final String hostUrl;
+  final bool isUseCustomPath;
+  final bool isUseForwardProxy;
+  final bool isUseProxy;
+  final String customNovelContentImagePath;
+  final ThemeModes themeMode;
+  final bool isDarkMode;
+  final NovelHomeListStyles homeListStyle;
 
-  AppConfig({
+  const AppConfig({
     required this.customPath,
     required this.forwardProxyUrl,
     required this.browserForwardProxyUrl,
@@ -146,7 +146,7 @@ class AppConfig {
       final contents = JsonEncoder.withIndent(' ').convert(toMap());
       await file.writeAsString(contents);
       // appConfigNotifier.value = this;
-      Setting.instance.initSetConfigFile();
+      await Setting.instance.initSetConfigFile();
     } catch (e) {
       Setting.showDebugLog(e.toString(), tag: 'AppConfig:save');
     }

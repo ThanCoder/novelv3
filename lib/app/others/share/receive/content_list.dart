@@ -40,7 +40,6 @@ class _ContentListState extends State<ContentList> {
               height: 80,
               child: TCacheImage(
                 url: '${widget.hostUrl}/cover?path=${file.path}',
-                cachePath: PathUtil.getCachePath(),
               ),
             ),
             Expanded(

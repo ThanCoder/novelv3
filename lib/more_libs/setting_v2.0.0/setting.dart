@@ -89,11 +89,16 @@ class Setting {
   Future<void> initSetConfigFile() async {
     try {
       final config = await AppConfig.getConfig();
-      appConfigNotifier.value = config;
+
       //custom path
       if (config.isUseCustomPath && config.customPath.isNotEmpty) {
         appRootPath = config.customPath;
+      } else {
+        final rootPath = await ThanPkg.platform.getAppRootPath();
+        appRootPath = PathUtil.createDir('$rootPath/.$appName');
       }
+      // set noti
+      appConfigNotifier.value = config;
     } catch (e) {
       showDebugLog(e.toString(), tag: 'Setting:_initAppConfig');
     }

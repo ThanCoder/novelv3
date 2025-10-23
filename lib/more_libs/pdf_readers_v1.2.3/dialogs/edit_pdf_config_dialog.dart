@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/enums/screen_orientation_types.dart';
 import '../types/pdf_config.dart';
 
 class EditPdfConfigDialog extends StatefulWidget {
@@ -85,11 +84,6 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
     Navigator.pop(context);
     // reset
     config = config.copyWith(
-      screenOrientation: !widget.allClearOtherConfig
-          ? null
-          : ScreenOrientationTypes.portrait,
-      offsetDy: !widget.allClearOtherConfig ? null : 0,
-      zoom: !widget.allClearOtherConfig ? null : 0,
       isPanLocked: !widget.allClearOtherConfig ? null : false,
     );
 

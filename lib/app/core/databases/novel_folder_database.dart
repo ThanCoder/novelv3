@@ -6,14 +6,7 @@ import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class NovelFolderDatabase extends FolderDatabase<Novel> {
-  NovelFolderDatabase()
-    : super(
-        root: PathUtil.getSourcePath(),
-        storage: FileStorage(root: PathUtil.getSourcePath()),
-      );
-
-  @override
-  Future<void> add(Novel value) async {}
+  NovelFolderDatabase() : super(root: PathUtil.getSourcePath());
 
   @override
   Novel? from(FileSystemEntity file) {
@@ -24,11 +17,7 @@ class NovelFolderDatabase extends FolderDatabase<Novel> {
   }
 
   @override
-  Future<void> update(String id, Novel value) async {}
-  
-  @override
-  Future<Novel?> getById({required String id}) {
-    // TODO: implement getById
-    throw UnimplementedError();
+  String getId(Novel value) {
+    return value.title;
   }
 }

@@ -53,23 +53,23 @@ class ThemeServices with WidgetsBindingObserver {
   final _controller = StreamController<ThemeModes>.broadcast();
   Stream<ThemeModes> get onBrightnessChanged => _controller.stream;
 
-  // ThemeServices() {
-  //   WidgetsBinding.instance.addObserver(this);
-  //   // init
-  //   Future.delayed(Duration(milliseconds: 500), () {
-  //     init();
-  //   });
-  // }
-
   void init() {
-    final brightness = WidgetsBinding.instance.window.platformBrightness;
+    WidgetsBinding.instance.addObserver(this);
+    // initial check
+    check();
+  }
+
+  void check() {
+    // Android <10, Linux မှာ အမြဲ light ဖြစ်နိုင်တယ်
+    final brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
     _controller.add(ThemeModes.fromBrightness(brightness));
   }
 
   @override
   void didChangePlatformBrightness() {
-    final brightness = WidgetsBinding.instance.window.platformBrightness;
-    _controller.add(ThemeModes.fromBrightness(brightness));
+    // OS theme ပြောင်းတာ detect
+    check();
   }
 
   void dispose() {

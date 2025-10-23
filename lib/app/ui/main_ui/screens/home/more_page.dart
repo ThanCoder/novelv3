@@ -3,7 +3,7 @@ import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_scanner.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/others/share/share_home_screen.dart';
-import 'package:novel_v3/more_libs/assets_helper/assets_helper.dart';
+import 'package:novel_v3/more_libs/general_static_server/ui/tutorial/tutorial_buttons.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/thancoder_about_widget.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -26,7 +26,7 @@ class _MorePageState extends State<MorePage> {
           Setting.getThemeSwitcherWidget,
           Setting.getSettingListTileWidget,
           Divider(),
-          AssetsHelper.instance.getListTile,
+          TutorialListTileButton(),
           Divider(),
           Setting.getCurrentVersionWidget,
           Setting.getCacheManagerWidget,

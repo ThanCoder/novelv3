@@ -620,18 +620,18 @@ packages:
     dependency: "direct main"
     description:
       name: pdfrx
-      sha256: f422218ee50e786b0eca346c0c010ca92b1af337083d8fe32fa65a722722023b
+      sha256: b1173b9cca472a62e02fe0debfb90e47b2f1dad87afa33605180b53f86edce00
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.4"
   pdfrx_engine:
     dependency: transitive
     description:
       name: pdfrx_engine
-      sha256: "1fb77d7e9fb99f7b3f4412f63314bb7e8084b9a79827fe90201b20fa6cf173b7"
+      sha256: "52bb9651885e8c9b2d339eeabcd424574b5b880f9d431dfbe3201d593267562c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   petitparser:
     dependency: transitive
     description:
@@ -889,10 +889,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: ad9d71e850c5d9cfd4caf70cfb6c059ef21cc255edcebdcc8f24c2d166c9f4ab
+      sha256: "901db1fbf0663a85c2f3cace3c2c9cb376e54982da73d9013cb861f884049809"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.1"
+    version: "1.5.2"
   tar:
     dependency: transitive
     description:

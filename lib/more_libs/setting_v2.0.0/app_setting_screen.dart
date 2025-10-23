@@ -89,7 +89,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
             value: config.isUseCustomPath,
             onChanged: (value) {
               setState(() {
-                config.isUseCustomPath = value!;
+                config = config.copyWith(isUseCustomPath: value!);
                 isChanged = true;
               });
             },
@@ -130,7 +130,6 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         maxLines: 1,
         isSelectedAll: true,
         onChanged: (value) {
-          config.customNovelContentImagePath = value;
           setState(() {
             isChanged = true;
           });
@@ -154,11 +153,18 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         }
       }
       // final oldPath = config.customPath;
+      config = config.copyWith(
+        customNovelContentImagePath: customContentImageCoverPathController.text,
+        customPath: customPathTextController.text,
+      );
 
-      //set custom path
-      config.customPath = customPathTextController.text;
       //save
       await config.save();
+
+      if (config.customPath != customPathTextController.text) {
+        Setting.instance.onDatabasePathChanged?.call();
+      }
+      // await Future.delayed(Duration(seconds: 1));
 
       if (!mounted) return;
       setState(() {

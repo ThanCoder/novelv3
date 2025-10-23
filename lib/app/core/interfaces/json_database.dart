@@ -8,7 +8,7 @@ import 'package:than_pkg/than_pkg.dart';
 abstract class JsonDatabase<T> extends Database<T> {
   final JsonIO io = JsonIO.instance;
 
-  JsonDatabase({required super.root}) : super(storage: FileStorage(root: ''));
+  JsonDatabase({required super.root}) : super();
 
   T from(Map<String, dynamic> map);
   Map<String, dynamic> to(T value);

@@ -27,7 +27,7 @@ class OnlineNovelGridItem extends StatelessWidget {
                 url: novel.coverUrl,
                 fit: BoxFit.fill,
                 width: double.infinity,
-                cachePath: NovelV3Uploader.instance.imageCachePath,
+               
               ),
             ),
             Container(

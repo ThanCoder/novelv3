@@ -31,10 +31,7 @@ class OnlineNovelListItem extends StatelessWidget {
                 SizedBox(
                   width: 120,
                   height: 150,
-                  child: TCacheImage(
-                    url: novel.coverUrl,
-                    cachePath: NovelV3Uploader.instance.imageCachePath,
-                  ),
+                  child: TCacheImage(url: novel.coverUrl),
                 ),
                 Column(
                   // mainAxisAlignment: MainAxisAlignment.start,

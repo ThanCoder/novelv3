@@ -13,7 +13,6 @@ class PdfConfig {
   final bool isPanLocked;
   final bool isShowScrollThumb;
   final double offsetDx;
-  final double offsetDy;
   final double zoom;
   final bool isKeepScreen;
   final bool isTextSelection;
@@ -29,7 +28,6 @@ class PdfConfig {
     required this.isPanLocked,
     required this.isShowScrollThumb,
     required this.offsetDx,
-    required this.offsetDy,
     required this.zoom,
     required this.isKeepScreen,
     required this.isTextSelection,
@@ -46,7 +44,6 @@ class PdfConfig {
     bool? isPanLocked,
     bool? isShowScrollThumb,
     double? offsetDx,
-    double? offsetDy,
     double? zoom,
     bool? isKeepScreen,
     bool? isTextSelection,
@@ -62,7 +59,6 @@ class PdfConfig {
       isPanLocked: isPanLocked ?? this.isPanLocked,
       isShowScrollThumb: isShowScrollThumb ?? this.isShowScrollThumb,
       offsetDx: offsetDx ?? this.offsetDx,
-      offsetDy: offsetDy ?? this.offsetDy,
       zoom: zoom ?? this.zoom,
       isKeepScreen: isKeepScreen ?? this.isKeepScreen,
       isTextSelection: isTextSelection ?? this.isTextSelection,
@@ -80,7 +76,6 @@ class PdfConfig {
     bool isPanLocked = false,
     bool? isShowScrollThumb,
     double offsetDx = 0,
-    double offsetDy = 0,
     double zoom = 0,
     bool isKeepScreen = false,
     bool isTextSelection = false,
@@ -96,7 +91,6 @@ class PdfConfig {
       isPanLocked: isPanLocked,
       isShowScrollThumb: isShowScrollThumb ?? TPlatform.isDesktop,
       offsetDx: offsetDx,
-      offsetDy: offsetDy,
       zoom: zoom,
       isKeepScreen: isKeepScreen,
       isTextSelection: isTextSelection,
@@ -138,14 +132,13 @@ class PdfConfig {
       page: MapServices.getInt(map, ['page'], defaultValue: 1),
 
       isDarkMode: MapServices.getBool(map, ['isDarkMode']),
-      isPanLocked: MapServices.getBool(map, ['isPanLocked']),
-      isShowScrollThumb: MapServices.getBool(map, ['isShowScrollThumb']),
+      isPanLocked: false, //MapServices.getBool(map, ['isPanLocked']),
+      isShowScrollThumb: TPlatform
+          .isDesktop, //MapServices.getBool(map, ['isShowScrollThumb']),
       isFullscreen: MapServices.getBool(map, ['isFullscreen']),
       isKeepScreen: MapServices.getBool(map, ['isKeepScreen']),
-      isTextSelection: MapServices.getBool(map, ['isTextSelection']),
+      isTextSelection: false, // MapServices.getBool(map, ['isTextSelection']),
       isOnBackpressConfirm: MapServices.getBool(map, ['isOnBackpressConfirm']),
-
-      offsetDy: MapServices.getDouble(map, ['offsetDy']),
       offsetDx: MapServices.getDouble(map, ['offsetDx']),
       scrollByMouseWheel: MapServices.getDouble(map, [
         'scrollByMouseWheel',
@@ -165,7 +158,6 @@ class PdfConfig {
       'isPanLocked': isPanLocked,
       'isShowScrollThumb': isShowScrollThumb,
       'offsetDx': offsetDx,
-      'offsetDy': offsetDy,
       'zoom': zoom,
       'isKeepScreen': isKeepScreen,
       'isTextSelection': isTextSelection,

@@ -4,7 +4,6 @@ import 'package:than_pkg/than_pkg.dart';
 import '../../../novel_v3_uploader.dart';
 import '../../components/index.dart';
 import '../../components/see_all_screen.dart';
-import '../../components/status_text.dart';
 import '../../uploader_file/uploader_file_page.dart';
 import '../novel_content_ui_switcher.dart';
 

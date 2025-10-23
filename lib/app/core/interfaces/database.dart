@@ -2,12 +2,15 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'storage.dart';
+mixin DatabaseListener {
+  void onDatabaseChanged(DatabaseListenerEvent event, {String? id});
+}
+
+enum DatabaseListenerEvent { saved, add, update, delete }
 
 abstract class Database<T> {
   final String root;
-  final Storage storage;
-  Database({required this.root, required this.storage});
+  Database({required this.root});
 
   Future<List<T>> getAll({Map<String, dynamic>? query});
   Future<T?> getById({required String id});
@@ -39,8 +42,4 @@ abstract class Database<T> {
   }
 }
 
-mixin DatabaseListener {
-  void onDatabaseChanged(DatabaseListenerEvent event, {String? id});
-}
 
-enum DatabaseListenerEvent { saved, add, update, delete }

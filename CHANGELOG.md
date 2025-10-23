@@ -2,7 +2,9 @@
 
 <!-- - Fixed `Theme` -> `Theme Choser ပြောင်းလဲရင် auto မပြောင်းလဲခြင်း` -->
 
-- Added `AssetsHelper` -> `အကူအညီ`
+- Fixed `App Root Path` -> `App Root Path ပြောင်းရင် ချက်ချင်းမရတဲ့ Error ပြင်လိုက်ပါပြီ`
+- Added `PDF Reader` -> `pdfrx: ^2.2.4`
+- Added `General Static Server` -> `အကူအညီ`
 - Changed `Novel Home List Style` -> ကိုပြင်ဆင်ခြင်း
 - Changed `PDF List Style` -> ကိုပြင်ဆင်ခြင်း
 - Added `ThanCoder About Widget` -> `App Release`
@@ -12,7 +14,6 @@
 - Added `Novel Description` ကို`https://` တိုက်ရိုက် ဖွင့်လို့ရပြီ။
 - Some Error `pdfrx` new version မှာ error အချို့ ရှိနေပြီးတော့ ဖြေရှင်းလို့မရသေး။
 - Fixed `PDF Reader` -> Zoom ပြသနာ
-- Added `PDF Reader` -> `pdfrx: ^2.1.25`
 - Added `App Info`
 
 ## 3.2.1

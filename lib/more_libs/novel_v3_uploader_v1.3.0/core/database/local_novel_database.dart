@@ -25,7 +25,6 @@ class LocalNovelDatabase extends LocalDatabaseInterface<Novel> {
   
   @override
   Future<Novel?> getOne({Map<String, dynamic> query = const {}}) {
-    // TODO: implement getOne
     throw UnimplementedError();
   }
 }

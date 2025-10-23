@@ -4,6 +4,8 @@ import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
+import 'package:novel_v3/more_libs/general_static_server/constants.dart';
+import 'package:novel_v3/more_libs/general_static_server/general_server.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/constants.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
@@ -11,16 +13,24 @@ import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import 'more_libs/app_helpers/app_help_button.dart';
 import 'app/ui/novel_dir_app.dart';
-import 'more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart';
+import 'more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart'
+    hide NovelServices;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // call theme
+  ThemeServices.instance.init();
 
   await Setting.instance.initSetting(
     appName: 'novel_v3',
     versionLable: 'Novel V3',
+    onShowMessage: (context, message) {
+      showTSnackBar(context, message);
+    },
+    onDatabasePathChanged: () {
+      NovelServices.clearCache();
+    },
   );
 
   await ThanPkg.instance.init();
@@ -47,10 +57,20 @@ void main() async {
       final res = await dio.get(url);
       return res.data.toString();
     },
-    appBarActions: [AppHelpButton()],
+    appBarActions: [],
     getLocalServerPath: () => '',
     getApiServerUrl: () => serverGitubRootUrl,
   );
+  // general static server
+  await GeneralServer.instance.init(
+    getApiServerUrl: () => apiServerUrl,
+    getLocalServerPath: () => localServerPath,
+    getContentFromUrl: (url) async {
+      final res = await dio.get(url);
+      return res.data.toString();
+    },
+  );
+
   // local novel
   await NovelDirApp.instance.init(
     getAppCachePath: () => PathUtil.getCachePath(),
