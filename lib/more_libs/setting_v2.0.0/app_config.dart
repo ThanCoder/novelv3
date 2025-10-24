@@ -49,7 +49,7 @@ class AppConfig {
     bool isDarkTheme = false,
     bool isDarkMode = false,
     ThemeModes themeMode = ThemeModes.system,
-    NovelHomeListStyles homeListStyle = NovelHomeListStyles.grid,
+    NovelHomeListStyles homeListStyle = NovelHomeListStyles.defaultStyle,
   }) {
     return AppConfig(
       customPath: customPath,

@@ -20,4 +20,11 @@ class NovelFolderDatabase extends FolderDatabase<Novel> {
   String getId(Novel value) {
     return value.title;
   }
+
+  @override
+  Future<Novel?> getById({required String id}) async {
+    final dir = Directory('$root/$id');
+    if (!dir.existsSync()) return null;
+    return Novel.fromPath(dir.path);
+  }
 }

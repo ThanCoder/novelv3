@@ -1,4 +1,8 @@
-# 3.4.2
+# 3.5.0
+
+- Added `Home Style` -> `Novel Home Page Style အသစ်ထည့်ခြင်း`
+
+## 3.4.2
 
 <!-- - Fixed `Theme` -> `Theme Choser ပြောင်းလဲရင် auto မပြောင်းလဲခြင်း` -->
 

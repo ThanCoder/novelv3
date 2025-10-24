@@ -258,7 +258,7 @@ class Novel {
   }
 
   @override
-  String toString() => 'Novel(title: $title, path: $path, date: $date)';
+  String toString() => 'title: $title';
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

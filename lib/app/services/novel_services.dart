@@ -10,6 +10,10 @@ class NovelServices {
   static NovelFolderDatabase? _cache;
 
   static void clearCache() {
+    if (_cache != null) {
+      _cache!.clearListener();
+      _cache!.clearCacheList();
+    }
     _cache = null;
   }
 
@@ -33,43 +37,6 @@ class NovelServices {
       return await getDB.getAll(query: {'isUsedCache': isCached});
     }
   }
-
-  // static Future<List<Novel>> getCacheList() async {
-  //   List<Novel> list = [];
-  //   try {
-  //     final rootPath = FolderFileServices.getSourcePath();
-  //     final dbFile = File(PathUtil.getCachePath(name: 'folder.db.json'));
-  //     final rootDir = Directory(rootPath);
-  //     // ရှိနေရင်
-  //     if (dbFile.existsSync()) {
-  //       // check db type
-  //       try {
-  //         final map = jsonDecode(await dbFile.readAsString());
-  //         final db = NovelFolderCache.fromMap(map);
-  //         if (rootDir.getDate.millisecondsSinceEpoch == db.dateInt) {
-  //           return db.list;
-  //         }
-  //       } catch (e) {
-  //         debugPrint(
-  //           '[NovelServices:getCacheList:dbFile.existsSync] ${e.toString()}',
-  //         );
-  //       }
-  //     }
-  //     list = await FileScannerFactory.getScanner<Novel>().getList(rootPath);
-  //     // set db
-  //     final db = NovelFolderCache(
-  //       dateInt: File(rootPath).getDate.millisecondsSinceEpoch,
-  //       list: list,
-  //     );
-  //     await dbFile.writeAsString(jsonEncode(db.toMap()));
-  //     // await dbFile.writeAsString(
-  //     //   JsonEncoder.withIndent(' ').convert(db.toMap()),
-  //     // );
-  //   } catch (e) {
-  //     debugPrint('[NovelServices:getCacheList]: ${e.toString()}');
-  //   }
-  //   return list;
-  // }
 
   static Future<List<Novel>> getNovelAllCal(String rootPath) async {
     final dir = Directory(rootPath);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:t_widgets/t_widgets.dart';
 import '../ui/novel_dir_app.dart';
 
@@ -15,9 +16,11 @@ class NovelProvider extends ChangeNotifier {
   Future<void> initList({bool isCached = true}) async {
     isLoading = true;
     notifyListeners();
-    _list.clear();
 
-    final res = await NovelServices.getList(isCached: isCached);
+    _list.clear();
+    final res = await NovelServices.getDB.getAll(
+      query: {'isUsedCache': isCached},
+    );
     _list.addAll(res);
 
     sortList();
@@ -28,6 +31,7 @@ class NovelProvider extends ChangeNotifier {
 
   void add(Novel novel) {
     _list.insert(0, novel);
+    NovelServices.getDB.add(novel);
     notifyListeners();
   }
 
@@ -72,7 +76,9 @@ class NovelProvider extends ChangeNotifier {
           .toList();
       novelSeeAllScreenNotifier.value = res;
 
-      await novel.deleteAll();
+      await NovelServices.getDB.delete(novel.title);
+      // remove recent
+      await NovelRecentDB.getInstance().delete(novel.title);
     } catch (e) {
       NovelDirApp.showDebugLog(e.toString(), tag: 'NovelProvider:delete');
     }

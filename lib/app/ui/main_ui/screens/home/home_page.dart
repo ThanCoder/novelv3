@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/interfaces/database.dart';
-import 'package:novel_v3/app/others/bookmark/novel_bookmark_db.dart';
 import 'package:novel_v3/app/others/clean_manager/clean_manager_screen.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
-import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
-import 'package:novel_v3/app/ui/main_ui/screens/content/novel_content_home_screen.dart';
+import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/others/developer/novel_dev_list_screen.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/home/create_novel_website_info_result_dialog.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/home/home_list_style_menu.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/home/style_pages/home_grid_style.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/home/style_pages/home_list_style.dart';
+import 'package:novel_v3/app/ui/main_ui/screens/home/style_pages/home_style.dart';
 import 'package:novel_v3/app/ui/main_ui/screens/scanners/pdf_scanner_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
@@ -50,11 +52,12 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
   @override
   void onDatabaseChanged(DatabaseListenerEvent event, {String? id}) {
     if (!mounted || id == null) return;
-    setState(() {});
+    // init(isUsedCache: false);
+    // print('del');
   }
 
-  Future<void> init() async {
-    await context.read<NovelProvider>().initList();
+  Future<void> init({bool isUsedCache = true}) async {
+    await context.read<NovelProvider>().initList(isCached: isUsedCache);
     if (!mounted) return;
     await context.read<NovelBookmarkProvider>().initList();
   }
@@ -62,6 +65,7 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _getAppbar(),
       body: DropTarget(
         enable: true,
         onDragDone: (details) {
@@ -86,6 +90,27 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
     );
   }
 
+  AppBar _getAppbar() {
+    return AppBar(
+      title: Text('Novel V3'),
+      // backgroundColor: config.isDarkMode
+      //     ? Colors.black.withValues(alpha: 0.9)
+      //     : Colors.white.withValues(alpha: 0.9),
+      actions: [
+        _getSearchButton(),
+        !TPlatform.isDesktop
+            ? SizedBox.shrink()
+            : IconButton(
+                onPressed: () => init(isUsedCache: false),
+                icon: Icon(Icons.refresh_sharp),
+              ),
+
+        IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
+        IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
+      ],
+    );
+  }
+
   Widget _getSearchButton() {
     return IconButton(
       onPressed: () {
@@ -99,146 +124,27 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
   }
 
   Widget _getViews() {
-    final provider = context.watch<NovelProvider>();
-    final isLoading = provider.isLoading;
-    final list = provider.getList;
-    if (isLoading) {
+    if (context.watch<NovelProvider>().isLoading) {
       return Center(child: TLoaderRandom());
     }
 
-    return RefreshIndicator.adaptive(
-      onRefresh: init,
-      child: CustomScrollView(
-        slivers: [
-          _getSliverAppBar(),
-          isLoading
-              ? SliverFillRemaining(child: TLoader.random())
-              : SliverToBoxAdapter(),
-          // list
-          ..._getListStyle(list),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _getListStyle(List<Novel> list) {
-    final style = Setting.getAppConfig.homeListStyle;
-    if (style == NovelHomeListStyles.list) {
-      return [_getList(list)];
-    }
-    if (style == NovelHomeListStyles.grid) {
-      return _getGridList(list);
-    }
-    return [_getList(list)];
-  }
-
-  Widget _getList(List<Novel> list) {
-    return SliverList.builder(
-      itemCount: list.length,
-      itemBuilder: (context, index) => NovelListItem(
-        novel: list[index],
-        onClicked: (novel) async {
-          await context.read<NovelProvider>().setCurrent(novel);
-          if (!context.mounted) return;
-          goRoute(context, builder: (context) => NovelContentHomeScreen());
-        },
-      ),
-    );
-  }
-
-  List<Widget> _getGridList(List<Novel> list) {
-    final completedList = list.where((e) => e.isCompleted).toList();
-    final onGoingList = list.where((e) => !e.isCompleted).toList();
-    final adultList = list.where((e) => e.isAdult).toList();
-    final randomList = List.of(list);
-    randomList.shuffle();
-
-    return [
-      SliverToBoxAdapter(child: _getRecentWidet()),
-
-      SliverToBoxAdapter(
-        child: NovelSeeAllView(title: 'Latest စာစဥ်များ', list: list),
-      ),
-      SliverToBoxAdapter(child: _getBookmarkWidet()),
-
-      SliverToBoxAdapter(
-        child: NovelSeeAllView(title: 'ကျပန်း စာစဥ်များ', list: randomList),
-      ),
-
-      SliverToBoxAdapter(
-        child: NovelSeeAllView(
-          title: 'Completed စာစဥ်များ',
-          list: completedList,
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: NovelSeeAllView(title: 'OnGoing စာစဥ်များ', list: onGoingList),
-      ),
-      SliverToBoxAdapter(
-        child: NovelSeeAllView(title: 'Adult စာစဥ်များ', list: adultList),
-      ),
-    ];
-  }
-
-  Widget _getSliverAppBar() {
     return ValueListenableBuilder(
       valueListenable: Setting.getAppConfigNotifier,
-      builder: (context, config, child) {
-        return SliverAppBar(
-          title: Text('Novel V3'),
-          snap: true,
-          floating: true,
-          backgroundColor: config.isDarkMode
-              ? Colors.black.withValues(alpha: 0.9)
-              : Colors.white.withValues(alpha: 0.9),
-          actions: [
-            _getSearchButton(),
-
-            IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
-            IconButton(
-              onPressed: _showMenu,
-              icon: Icon(Icons.more_vert_rounded),
-            ),
-          ],
-        );
+      builder: (context, value, child) {
+        return _getListStyle();
       },
     );
   }
 
-  Widget _getBookmarkWidet() {
-    return FutureBuilder(
-      future: NovelBookmarkDB.getInstance().getNovelList(),
-      builder: (context, asyncSnapshot) {
-        if (asyncSnapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: TLoaderRandom());
-        }
-        if (asyncSnapshot.hasData) {
-          return NovelSeeAllView(
-            title: 'မှတ်သားထားသော',
-            list: asyncSnapshot.data ?? [],
-          );
-        }
-        return SizedBox.shrink();
-      },
-    );
-  }
-
-  Widget _getRecentWidet() {
-    return FutureBuilder(
-      future: NovelRecentDB.getInstance().getNovelList(),
-      builder: (context, asyncSnapshot) {
-        if (asyncSnapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: TLoaderRandom());
-        }
-        if (asyncSnapshot.hasData) {
-          return NovelSeeAllView(
-            title: 'မကြာခင်က',
-            list: asyncSnapshot.data ?? [],
-          );
-        }
-        return SizedBox.shrink();
-      },
-    );
+  Widget _getListStyle() {
+    final style = Setting.getAppConfig.homeListStyle;
+    if (style == NovelHomeListStyles.list) {
+      return HomeListStyle();
+    }
+    if (style == NovelHomeListStyles.grid) {
+      return HomeGridStyle();
+    }
+    return HomeStyle();
   }
 
   // main menu
@@ -303,46 +209,9 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
     goRoute(context, builder: (context) => CleanManagerScreen());
   }
 
+  // style
   void _showListStyle() {
-    final config = Setting.getAppConfig;
-    showTMenuBottomSheet(
-      context,
-      title: Text('Home List Style'),
-      children: [
-        ListTile(
-          title: Text('${NovelHomeListStyles.list.name.toCaptalize()} Style'),
-          trailing: Icon(
-            config.homeListStyle == NovelHomeListStyles.list
-                ? Icons.check_box_rounded
-                : Icons.check_box_outline_blank_rounded,
-          ),
-          onTap: () {
-            Setting.getAppConfigNotifier.value = config.copyWith(
-              homeListStyle: NovelHomeListStyles.list,
-            );
-            Setting.getAppConfigNotifier.value.save();
-            Navigator.pop(context);
-            setState(() {});
-          },
-        ),
-        ListTile(
-          title: Text('${NovelHomeListStyles.grid.name.toCaptalize()} Style'),
-          trailing: Icon(
-            config.homeListStyle == NovelHomeListStyles.grid
-                ? Icons.check_box_rounded
-                : Icons.check_box_outline_blank_rounded,
-          ),
-          onTap: () {
-            Setting.getAppConfigNotifier.value = config.copyWith(
-              homeListStyle: NovelHomeListStyles.grid,
-            );
-            Setting.getAppConfigNotifier.value.save();
-            Navigator.pop(context);
-            setState(() {});
-          },
-        ),
-      ],
-    );
+    showTModalBottomSheet(context, child: HomeListStyleMenu());
   }
 
   // add main menu
