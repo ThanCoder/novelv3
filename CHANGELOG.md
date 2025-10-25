@@ -1,5 +1,6 @@
 # 3.5.0
 
+- Fixed `Novel Share` -> `Novel Share Send Json` မှာ String ဖြစ်နေခြင်း
 - Added `Home Style` -> `Novel Home Page Style အသစ်ထည့်ခြင်း`
 
 ## 3.4.2

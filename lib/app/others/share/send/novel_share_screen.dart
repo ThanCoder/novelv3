@@ -46,6 +46,7 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
     });
     TServer.instance.get('/api', (req) {
       req.sendJson(NovelShareServices.getJson(novelList));
+      // req.sendJson(jsonEncode({'hello': 'than'}));
     });
     TServer.instance.get('/cover', (req) async {
       final filePath = req.getQueryParameters['path'] ?? '';

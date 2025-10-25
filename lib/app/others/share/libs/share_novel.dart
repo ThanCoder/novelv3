@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 class ShareNovel {
   String title;
   String path;
@@ -37,9 +34,4 @@ class ShareNovel {
       date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
     );
   }
-
-  String toJson() => JsonEncoder.withIndent(' ').convert(toMap());
-
-  factory ShareNovel.fromJson(String source) =>
-      ShareNovel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

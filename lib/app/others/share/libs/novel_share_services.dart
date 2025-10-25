@@ -15,15 +15,17 @@ class NovelShareServices {
             isAdult: e.isAdult,
             isCompleted: e.isCompleted,
             date: e.date,
-          ),
+          ).toMap(),
         )
         .toList();
-    return JsonEncoder.withIndent(' ').convert(jsonList);
+    // return JsonEncoder.withIndent(' ').convert(jsonList);
+    return jsonEncode(jsonList);
   }
 
   static String getDirJson(List<ShareDirFile> files) {
     final jsonList = files.map((e) => e.toMap()).toList();
-    return JsonEncoder.withIndent(' ').convert(jsonList);
+    // return JsonEncoder.withIndent(' ').convert(jsonList);
+    return jsonEncode(jsonList);
   }
 
   static String getHomeHtml(List<Novel> list) {
