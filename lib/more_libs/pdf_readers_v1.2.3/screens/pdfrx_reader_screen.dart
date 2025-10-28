@@ -37,9 +37,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   int oldPageNumber = 0;
   int pageCount = 0;
   bool initCalled = false;
-  late PdfConfig config;
-  bool isCanGoBack = true;
   int delayMiliSec = 200;
+  bool isCanGoBack = true;
+  late PdfConfig config;
   late final PdfViewer pdfViewer;
 
   @override
@@ -323,13 +323,13 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         isFullScreen: config.isFullscreen,
       );
       pageCount = pdfController.pageCount;
-      final oldConfig = widget.pdfConfig;
+      final oldConfig = widget.pdfConfig.copyWith();
 
       if (oldConfig.zoom != 0 && oldConfig.offsetDx != 0) {
         await pdfController.goToPage(pageNumber: oldConfig.page);
 
         final newOffset = Offset(
-          oldConfig.offsetDx,
+          pdfController.centerPosition.dx, //oldConfig.offsetDx,
           pdfController.centerPosition.dy,
         );
         await pdfController.setZoom(newOffset, oldConfig.zoom);

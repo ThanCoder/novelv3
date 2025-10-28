@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/receive/client_download_manager.dart';
 import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
@@ -34,13 +34,14 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
 
   bool isLoading = false;
   List<ShareDirFile> list = [];
-  final Dio dio = Dio(
-    BaseOptions(
-      sendTimeout: Duration(seconds: 8),
-      connectTimeout: Duration(seconds: 8),
-      receiveTimeout: Duration(seconds: 8),
-    ),
-  );
+  // final Dio dio = Dio(
+  //   BaseOptions(
+  //     sendTimeout: Duration(seconds: 8),
+  //     connectTimeout: Duration(seconds: 8),
+  //     receiveTimeout: Duration(seconds: 8),
+  //   ),
+  // );
+  final client = TClient();
   int sortId = 0;
   bool sortIsAsc = true;
 
@@ -49,10 +50,10 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
       setState(() {
         isLoading = true;
       });
-      final res = await dio.get(
+      final res = await client.get(
         '${widget.hostUrl}/dir/api?path=${widget.novel.path}',
       );
-      List<dynamic> jsonList = List<dynamic>.from(res.data);
+      List<dynamic> jsonList = jsonDecode(res.data.toString());
       list = jsonList.map((e) => ShareDirFile.fromMap(e)).toList();
       if (!mounted) return;
       setState(() {
@@ -76,11 +77,16 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
       child: TScaffold(
         body: isLoading
             ? Center(child: TLoader.random())
-            : NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [_getAppBar(), _getHeader()];
-                },
-                body: _getTabView(),
+            : CustomScrollView(
+                slivers: [
+                  _getAppBar(),
+                  _getHeader(),
+                  // SliverToBoxAdapter(child: _getTabView()),
+                  SliverFillRemaining(
+                    fillOverscroll: true,
+                    child: _getTabView(),
+                  ),
+                ],
               ),
       ),
     );
@@ -92,7 +98,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
       title: Text('Content: ${widget.novel.title}'),
       // snap: true,
       // floating: true,
-      expandedHeight: size.height * .6,
+      expandedHeight: size.height * .5,
       flexibleSpace: Stack(
         fit: StackFit.expand,
         children: [
@@ -133,6 +139,9 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: 5,
+      snap: true,
+      floating: true,
+      pinned: false,
       bottom: TabBar(
         isScrollable: true,
         tabs: [
@@ -150,6 +159,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     final chapterList = list.where((e) => e.isChapterFile).toList();
     final configList = list.where((e) => e.isConfigFile).toList();
     return TabBarView(
+      // physics: NeverScrollableScrollPhysics(),
       children: [
         ContentList(hostUrl: widget.hostUrl, list: list),
         ContentList(hostUrl: widget.hostUrl, list: pdfList),

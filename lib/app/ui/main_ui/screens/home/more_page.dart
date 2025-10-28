@@ -45,6 +45,7 @@ class _MorePageState extends State<MorePage> {
   Widget _getPdfScannerWidget() {
     return TListTileWithDesc(
       title: 'PDF Scanner',
+      desc: 'PDF Reader',
       onClick: () {
         goRoute(
           context,

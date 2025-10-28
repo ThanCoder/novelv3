@@ -22,7 +22,8 @@ class _ContentListState extends State<ContentList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      primary: false,
+      // primary: false,
+      // physics: NeverScrollableScrollPhysics(),
       itemCount: widget.list.length,
       itemBuilder: (context, index) => _getListItem(widget.list[index]),
     );

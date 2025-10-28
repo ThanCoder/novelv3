@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_grid_item.dart';
 import 'package:novel_v3/app/others/share/libs/share_novel.dart';
@@ -8,6 +7,7 @@ import 'package:novel_v3/app/others/share/libs/share_novel_extension.dart';
 import 'package:novel_v3/app/others/share/receive/novel_content_screen.dart';
 import 'package:novel_v3/app/others/share/receive/novel_search_screen.dart';
 import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -30,20 +30,16 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
   bool isLoading = false;
   int sortId = 0;
   bool sortIsAsc = true;
-  final Dio dio = Dio(
-    BaseOptions(
-      sendTimeout: Duration(seconds: 8),
-      connectTimeout: Duration(seconds: 8),
-      receiveTimeout: Duration(seconds: 8),
-    ),
-  );
+  final client = TClient();
+  final tags = ['Latest', 'Completed', 'OnGoing', 'Adult', 'Not Adult'];
+  String currentTag = 'Latest';
 
   Future<void> init() async {
     try {
       setState(() {
         isLoading = true;
       });
-      final res = await dio.get('${widget.hostUrl}/api');
+      final res = await client.get('${widget.hostUrl}/api');
       List<dynamic> jsonList = jsonDecode(res.data.toString());
       list = jsonList.map((e) => ShareNovel.fromMap(e)).toList();
 
@@ -68,7 +64,12 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     return TScaffold(
       body: RefreshIndicator.adaptive(
         onRefresh: init,
-        child: CustomScrollView(slivers: [_getAppBar(), _getListWidget()]),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: CustomScrollView(
+            slivers: [_getAppBar(), _getTags(), _getListWidget()],
+          ),
+        ),
       ),
     );
   }
@@ -85,6 +86,31 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
         IconButton(onPressed: _onSearch, icon: Icon(Icons.search)),
         IconButton(onPressed: _showSortDialog, icon: Icon(Icons.sort)),
       ],
+    );
+  }
+
+  Widget _getTags() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: tags
+              .map(
+                (e) => TChip(
+                  avatar: currentTag == e ? Icon(Icons.check) : null,
+                  title: Text(e),
+                  onClick: () {
+                    setState(() {
+                      currentTag = e;
+                    });
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 
@@ -109,17 +135,37 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
         ),
       );
     }
+    // tags
+    final result = list.where((e) {
+      if (currentTag == 'OnGoing' && !e.isCompleted) {
+        return true;
+      }
+      if (currentTag == 'Completed' && e.isCompleted) {
+        return true;
+      }
+      if (currentTag == 'Adult' && e.isAdult) {
+        return true;
+      }
+
+      if (currentTag == 'Not Adult' && !e.isAdult) {
+        return true;
+      }
+      if (currentTag == 'Latest') {
+        return true;
+      }
+      return false;
+    }).toList();
     return SliverGrid.builder(
-      itemCount: list.length,
+      itemCount: result.length,
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 170,
-        mainAxisExtent: 200,
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 5,
+        maxCrossAxisExtent: 130,
+        mainAxisExtent: 160,
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
       ),
       itemBuilder: (context, index) => ShareGridItem(
         hostUrl: widget.hostUrl,
-        novel: list[index],
+        novel: result[index],
         onClicked: _goContentPage,
       ),
     );
@@ -185,7 +231,8 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
   void _goContentPage(ShareNovel novel) {
     goRoute(
       context,
-      builder: (context) => NovelContentScreen(hostUrl: widget.hostUrl, novel: novel),
+      builder: (context) =>
+          NovelContentScreen(hostUrl: widget.hostUrl, novel: novel),
     );
   }
 }

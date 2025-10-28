@@ -32,7 +32,8 @@ class ShareGridItem extends StatelessWidget {
                   children: [
                     Positioned.fill(
                       child: TImage(
-                        source: '$hostUrl/download?path=${novel.path}/cover.png',
+                        source:
+                            '$hostUrl/download?path=${novel.path}/cover.png',
                         // cachePath: PathUtil.getCachePath(),
                       ),
                     ),

@@ -1,5 +1,8 @@
 # 3.5.0
 
+- Fixed `Novel Share` -> `Novel Receive` Data လက်ခံမရခြင်း Error ကိုပြင်ဆင်ခြင်း
+- Added `PDF Scanner` -> `Infomation dialog` ထည့်သွင်းခြင်း
+- Fixed `PDF Reader` -> `Zoom မမှန်တာကို ပြင်လိုက်ပါပြီ`
 - Fixed `Novel Share` -> `Novel Share Send Json` မှာ String ဖြစ်နေခြင်း
 - Added `Home Style` -> `Novel Home Page Style အသစ်ထည့်ခြင်း`
 

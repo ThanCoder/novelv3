@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/extensions/pdf_extension.dart';
 import 'package:novel_v3/app/ui/novel_dir_app.dart';
@@ -155,6 +157,14 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
         Padding(padding: const EdgeInsets.all(8.0), child: Text(pdf.getTitle)),
         Divider(),
         ListTile(
+          leading: Icon(Icons.info),
+          title: Text('Infomation'),
+          onTap: () {
+            closeContext(context);
+            _showInfo(pdf);
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.edit_document),
           title: Text('Rename'),
           onTap: () {
@@ -171,6 +181,44 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
             _deleteConfirm(pdf);
           },
         ),
+      ],
+    );
+  }
+
+  void _showInfo(NovelPdf pdf) {
+    final mime = lookupMimeType(pdf.path);
+    showTMenuBottomSheet(
+      context,
+      title: Text('အချက်အလက်များ'),
+      children: [
+        Row(
+          children: [
+            Icon(Icons.title),
+            Expanded(child: Text(pdf.getTitle)),
+          ],
+        ),
+        mime == null
+            ? SizedBox.shrink()
+            : Row(children: [Text('MimeType: '), Text(mime)]),
+        Row(
+          children: [
+            Icon(Icons.sd_card),
+            Expanded(child: Text(pdf.getSize)),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(Icons.date_range),
+            Expanded(child: Text(pdf.getDate.toParseTime())),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(Icons.folder),
+            Expanded(child: Text(File(pdf.path).parent.path)),
+          ],
+        ),
+        SizedBox(height: 30),
       ],
     );
   }
