@@ -8,6 +8,7 @@ import 'package:novel_v3/app/ui/main_ui/screens/forms/edit_novel_form.dart';
 import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets_dev.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class HomeListStyle extends StatefulWidget {
   const HomeListStyle({super.key});
@@ -32,6 +33,17 @@ class _HomeListStyleState extends State<HomeListStyle> {
   void initState() {
     filterName = filter.first;
     super.initState();
+    init();
+  }
+
+  void init() async {
+    final name = TRecentDB.getInstance.getString(
+      'home-list-style-filter-name',
+      def: filter.first,
+    );
+    setState(() {
+      filterName = name;
+    });
   }
 
   @override
@@ -40,7 +52,12 @@ class _HomeListStyleState extends State<HomeListStyle> {
     if (list.isEmpty) {
       return _getEmptyList();
     }
-    return CustomScrollView(slivers: [_getHeader(), _getList(list)]);
+    return RefreshIndicator.adaptive(
+      onRefresh: () async {
+        context.read<NovelProvider>().initList(isCached: false);
+      },
+      child: CustomScrollView(slivers: [_getHeader(), _getList(list)]),
+    );
   }
 
   Widget _getEmptyList() {
@@ -77,6 +94,10 @@ class _HomeListStyleState extends State<HomeListStyle> {
                 setState(() {
                   filterName = name;
                 });
+                TRecentDB.getInstance.putString(
+                  'home-list-style-filter-name',
+                  name,
+                );
               },
             );
           }),

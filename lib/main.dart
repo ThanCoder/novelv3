@@ -115,7 +115,7 @@ void main() async {
   PdfServices.initRecentDB();
   //share recent
   await TRecentDB.getInstance.init(
-    rootPath: PathUtil.getCachePath(name: 'share-recent.db.json'),
+    rootPath: PathUtil.getConfigPath(name: 'share-recent.db.json'),
   );
 
   runApp(

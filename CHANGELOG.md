@@ -1,5 +1,9 @@
 # 3.5.0
 
+- Added `GetStart Screen` -> ထည့်သွင်းထားခြင်း
+- Updated `PDF Reader` -> `pdfrx: ^2.2.8`
+- Fixed `PDF Reader` -> `Some PDF` အချို့ PDF Files တွေက ဖတ်ရတာအဆင်မပြေတာကို ဖြေရှင်းပေးထားပါတယ်။
+- Fixed `PDF Reader` -> `Setting` အလုပ်မလုပ်တဲ့ Setting တွေပြန်သုံးရပါပြီ။
 - Fixed `Novel Share` -> `Novel Receive` Data လက်ခံမရခြင်း Error ကိုပြင်ဆင်ခြင်း
 - Added `PDF Scanner` -> `Infomation dialog` ထည့်သွင်းခြင်း
 - Fixed `PDF Reader` -> `Zoom မမှန်တာကို ပြင်လိုက်ပါပြီ`

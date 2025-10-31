@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:t_widgets/widgets/t_loader.dart';
 import 'package:novel_v3/more_libs/general_static_server/core/models/tutorial.dart';
 import 'package:novel_v3/more_libs/general_static_server/general_server.dart';
 import 'package:novel_v3/more_libs/general_static_server/services/tutorial_services.dart';

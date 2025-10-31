@@ -11,9 +11,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   dio: ^5.9.0
-  pdfrx: ^2.2.4
+  pdfrx: ^2.2.8
   than_pkg: ^4.5.3
-  t_widgets: ^1.5.2
+  t_widgets: ^1.7.4
   desktop_drop: ^0.6.1
   uuid: ^4.5.1
   provider: ^6.1.5+1

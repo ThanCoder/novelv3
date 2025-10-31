@@ -123,30 +123,23 @@ class PdfConfig {
   }
 
   factory PdfConfig.fromMap(Map<String, dynamic> map) {
-    final screenOrientationStr = MapServices.getString(map, [
-      'screenOrientation',
-    ]);
+    final screenOrientationStr = map.getString(['screenOrientation']);
     return PdfConfig(
       screenOrientation: ScreenOrientationTypes.getType(screenOrientationStr),
-
-      page: MapServices.getInt(map, ['page'], defaultValue: 1),
-
-      isDarkMode: MapServices.getBool(map, ['isDarkMode']),
-      isPanLocked: false, //MapServices.getBool(map, ['isPanLocked']),
-      isShowScrollThumb: TPlatform
-          .isDesktop, //MapServices.getBool(map, ['isShowScrollThumb']),
-      isFullscreen: MapServices.getBool(map, ['isFullscreen']),
-      isKeepScreen: MapServices.getBool(map, ['isKeepScreen']),
-      isTextSelection: false, // MapServices.getBool(map, ['isTextSelection']),
-      isOnBackpressConfirm: MapServices.getBool(map, ['isOnBackpressConfirm']),
-      offsetDx: MapServices.getDouble(map, ['offsetDx']),
-      scrollByMouseWheel: MapServices.getDouble(map, [
-        'scrollByMouseWheel',
-      ], defaultValue: 1.2),
-      zoom: MapServices.getDouble(map, ['zoom']),
-      scrollByArrowKey: MapServices.getDouble(map, [
-        'scrollByArrowKey',
-      ], defaultValue: 50),
+      page: map.getInt(['page'], def: 1),
+      isDarkMode: map.getBool(['isDarkMode']),
+      isPanLocked: map.getBool(['isPanLocked'], def: true),
+      isShowScrollThumb: map.getBool([
+        'isShowScrollThumb',
+      ], def: TPlatform.isDesktop),
+      isFullscreen: map.getBool(['isFullscreen']),
+      isKeepScreen: map.getBool(['isKeepScreen']),
+      isTextSelection: map.getBool(['isTextSelection']),
+      isOnBackpressConfirm: map.getBool(['isOnBackpressConfirm']),
+      offsetDx: map.getDouble(['offsetDx']),
+      scrollByMouseWheel: map.getDouble(['scrollByMouseWheel'], def: 1.2),
+      zoom: map.getDouble(['zoom']),
+      scrollByArrowKey: map.getDouble(['scrollByArrowKey'], def: 50),
     );
   }
 

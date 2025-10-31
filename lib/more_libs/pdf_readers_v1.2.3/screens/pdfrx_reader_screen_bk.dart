@@ -9,13 +9,13 @@ import 'package:than_pkg/than_pkg.dart';
 
 import '../pdf_reader.dart';
 
-class PdfrxReaderScreen extends StatefulWidget {
+class PdfrxReaderScreenBk extends StatefulWidget {
   PdfConfig pdfConfig;
   String sourcePath;
   String title;
   void Function(PdfConfig pdfConfig)? onConfigUpdated;
   String? bookmarkPath;
-  PdfrxReaderScreen({
+  PdfrxReaderScreenBk({
     super.key,
     required this.sourcePath,
     required this.pdfConfig,
@@ -25,10 +25,10 @@ class PdfrxReaderScreen extends StatefulWidget {
   });
 
   @override
-  State<PdfrxReaderScreen> createState() => _PdfrxReaderScreenState();
+  State<PdfrxReaderScreenBk> createState() => _PdfrxReaderScreenBkState();
 }
 
-class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
+class _PdfrxReaderScreenBkState extends State<PdfrxReaderScreenBk> {
   PdfViewerController pdfController = PdfViewerController();
   PdfViewerController? loadedPdfController;
   final keyboardListenerFocus = FocusNode();
@@ -40,15 +40,13 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   int delayMiliSec = 200;
   bool isCanGoBack = true;
   late PdfConfig config;
-  late PdfViewer pdfViewer;
-  double oldZoom = 1;
+  late final PdfViewer pdfViewer;
 
   @override
   void initState() {
     // set config
     config = widget.pdfConfig;
     oldPageNumber = config.page;
-    currentPage = config.page;
     pdfViewer = _getPdfViewer();
     super.initState();
     keyboardListenerFocus.requestFocus();
@@ -102,14 +100,14 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         Uri.parse(widget.sourcePath),
         controller: pdfController,
         params: getParams(),
-        initialPageNumber: currentPage,
+        // initialPageNumber: currentPage,
       );
     } else {
       return PdfViewer.file(
         widget.sourcePath,
         controller: pdfController,
         params: getParams(),
-        initialPageNumber: currentPage,
+        // initialPageNumber: currentPage,
       );
     }
   }
@@ -125,13 +123,11 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   PdfViewerParams getParams() => PdfViewerParams(
     margin: 0,
     scrollByMouseWheel: config.scrollByMouseWheel,
-    scaleEnabled: true, //config.isPanLocked == false,
-    panAxis: config.isPanLocked
-        ? PanAxis.vertical
-        : PanAxis.free, //config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+    scaleEnabled: true, // config.isPanLocked == false,
+    panAxis: PanAxis
+        .vertical, //config.isPanLocked ? PanAxis.vertical : PanAxis.free,
     textSelectionParams: PdfTextSelectionParams(
       enabled: config.isTextSelection,
-      showContextMenuAutomatically: true,
     ),
     pageDropShadow: null,
     useAlternativeFitScaleAsMinScale: false,
@@ -165,7 +161,13 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       return Center(child: TLoader.random(isDarkMode: config.isDarkMode));
     },
     //pdf ready
-    onViewerReady: _onViewerReady,
+    onViewerReady: (document, controller) {
+      if (!initCalled) {
+        loadedPdfController = controller;
+        _onPdfLoaded();
+        initCalled = true;
+      }
+    },
     onViewSizeChanged: (viewSize, oldViewSize, controller) {
       final offset = pdfController.centerPosition;
       config = config.copyWith(
@@ -316,24 +318,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     );
   }
 
-  // viewer ready
-  void _onViewerReady(document, controller) async {
-    if (!initCalled) {
-      loadedPdfController = controller;
-      _onPdfLoaded();
-      initCalled = true;
-      return;
-    }
-    // config setting changed
-    await Future.delayed(Duration(milliseconds: 1200));
-
-    final newOffset = Offset(
-      pdfController.centerPosition.dx, //oldConfig.offsetDx,
-      pdfController.centerPosition.dy,
-    );
-    await pdfController.setZoom(newOffset, oldZoom);
-  }
-
   //pdf loaded
   void _onPdfLoaded() async {
     try {
@@ -344,16 +328,28 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       });
 
       pageCount = pdfController.pageCount;
-      final oldConfig = widget.pdfConfig;
+      final oldConfig = widget.pdfConfig.copyWith();
 
-      if (oldConfig.zoom != 0) {
+      if (oldConfig.zoom != 0 && oldConfig.offsetDx != 0) {
+        await pdfController.goToPage(pageNumber: oldConfig.page);
+
         final newOffset = Offset(
           pdfController.centerPosition.dx, //oldConfig.offsetDx,
           pdfController.centerPosition.dy,
         );
         await pdfController.setZoom(newOffset, oldConfig.zoom);
+        // test
+        await Future.delayed(Duration(milliseconds: 1200));
+        if (currentPage != oldConfig.page) {
+          _onPdfLoaded();
+        }
       } else {
-        // await goPage(oldConfig.page);
+        await goPage(oldConfig.page);
+        // test
+        await Future.delayed(Duration(milliseconds: 1200));
+        if (currentPage != oldConfig.page) {
+          _onPdfLoaded();
+        }
       }
 
       // pdfController.
@@ -365,7 +361,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       setState(() {});
       PdfReader.showDebugLog(
         e.toString(),
-        tag: 'PdfrxReaderScreen:onPdfLoaded',
+        tag: 'PdfrxReaderScreenBk:onPdfLoaded',
       );
     }
   }
@@ -412,7 +408,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     } catch (e) {
       PdfReader.showDebugLog(
         e.toString(),
-        tag: 'PdfrxReaderScreen:_initConfig',
+        tag: 'PdfrxReaderScreenBk:_initConfig',
       );
     }
   }
@@ -488,8 +484,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
 
   // setting
   void _showSetting() {
-    final oldConfig = config.copyWith();
-
     showDialog(
       context: context,
       builder: (context) => PdfReaderSettingDialog(
@@ -498,28 +492,9 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           config = changedConfig;
           _saveConfig();
           _initConfig();
-          // reset viewer
-          if (config.isShowScrollThumb != oldConfig.isShowScrollThumb) {
-            _resetViewer();
-          }
-          if (config.isTextSelection != oldConfig.isTextSelection) {
-            _resetViewer();
-          }
-          if (config.isPanLocked != oldConfig.isPanLocked) {
-            _resetViewer();
-          }
         },
       ),
     );
-  }
-
-  void _resetViewer() async {
-    try {
-      oldZoom = pdfController.currentZoom;
-      pdfViewer = _getPdfViewer();
-    } catch (e) {
-      debugPrint('[_resetViewer]: ${e.toString()}');
-    }
   }
 
   void _onBackpress() async {
@@ -560,7 +535,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     } catch (e) {
       PdfReader.showDebugLog(
         e.toString(),
-        tag: 'PdfrxReaderScreen:_saveConfig',
+        tag: 'PdfrxReaderScreenBk:_saveConfig',
       );
     }
   }
