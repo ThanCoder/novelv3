@@ -1,5 +1,6 @@
 # 3.5.0
 
+- Added `Package[pubspec.yaml]`
 - Added `GetStart Screen` -> ထည့်သွင်းထားခြင်း
 - Updated `PDF Reader` -> `pdfrx: ^2.2.8`
 - Fixed `PDF Reader` -> `Some PDF` အချို့ PDF Files တွေက ဖတ်ရတာအဆင်မပြေတာကို ဖြေရှင်းပေးထားပါတယ်။

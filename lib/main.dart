@@ -60,6 +60,7 @@ void main() async {
     appBarActions: [],
     getLocalServerPath: () => '',
     getApiServerUrl: () => serverGitubRootUrl,
+    appLabelText: 'Novel Api',
   );
   // general static server
   await GeneralServer.instance.init(
