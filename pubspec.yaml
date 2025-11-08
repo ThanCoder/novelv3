@@ -2,7 +2,7 @@ name: novel_v3
 description: "WebNovel App"
 repository: https://github.com/ThanCoder/novelv3
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 3.5.0
+version: 3.6.0
 
 environment:
   sdk: ^3.9.0
@@ -12,7 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   dio: ^5.9.0
   pdfrx: ^2.2.8
-  than_pkg: ^4.5.3
+  than_pkg: ^5.0.0
   t_widgets: ^1.7.4
   desktop_drop: ^0.6.1
   uuid: ^4.5.1
@@ -36,7 +36,7 @@ dev_dependencies:
 # dev lib
 flutter_launcher_icons:
   android: "launcher_icon"
-  image_path: "assets/logo_2.jpg"
+  image_path: "assets/logo_3.jpg"
 
 flutter:
   uses-material-design: true
@@ -47,4 +47,3 @@ flutter:
     - CHANGELOG.md
     - README.md
     - pubspec.yaml
-

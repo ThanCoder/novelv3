@@ -1,4 +1,10 @@
-# 3.5.0
+# 3.6.0
+
+- Changed `App Icon` ပြောင်းလဲခြင်း
+- Added `AddAutoMultiChapterScreen`
+- Upgraded `Flutter (Channel stable, 3.35.7)`
+
+## 3.5.0
 
 - Added `Package[pubspec.yaml]`
 - Added `GetStart Screen` -> ထည့်သွင်းထားခြင်း

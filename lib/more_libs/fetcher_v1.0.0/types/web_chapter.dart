@@ -3,6 +3,7 @@ class WebChapter {
   final String title;
   final String url;
   final int index;
+  bool isSelected = false;
   WebChapter({required this.title, required this.url, required this.index});
 
   @override

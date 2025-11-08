@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/add_auto_multi_chapter_form_dialog.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/add_auto_multi_chapter_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -63,7 +65,15 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Fetcher Chapter List'),
-          actions: [_getSort()],
+          actions: [
+            _getSort(),
+            webChapterList.isEmpty
+                ? SizedBox.shrink()
+                : IconButton(
+                    onPressed: _showMenu,
+                    icon: Icon(Icons.more_vert_rounded),
+                  ),
+          ],
         ),
         body: _getView(),
         floatingActionButton: isLoading
@@ -292,6 +302,53 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
       if (!mounted) return;
       showTMessageDialogError(context, e.toString());
     }
+  }
+
+  void _showAddAutoMultiChapterForm() {
+    if (webChapterList.isEmpty) return;
+    int start = webChapterList.first.index;
+    int end = webChapterList.last.index;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AddAutoMultiChapterFormDialog(
+        start: start,
+        end: end,
+        onSubmit: _addAudoMultiChapter,
+      ),
+    );
+  }
+
+  void _addAudoMultiChapter(int start, int end) {
+    List<WebChapter> chapterList = webChapterList.sublist(start - 1, end);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddAutoMultiChapterScreen(
+          chapterList: chapterList,
+          webChapterListFetcher: currentSite!.webChapterList!,
+          saveDir: Directory(widget.sourceDirPath),
+        ),
+      ),
+    );
+  }
+
+  //menu
+  void _showMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Auto Multiple Chapter'),
+          onTap: () {
+            Navigator.pop(context);
+            _showAddAutoMultiChapterForm();
+          },
+        ),
+      ],
+    );
   }
 
   // item menu
