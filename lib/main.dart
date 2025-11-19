@@ -38,7 +38,7 @@ void main() async {
   final dio = Dio();
 
   await TWidgets.instance.init(
-    defaultImageAssetsPath: 'assets/logo_2.jpg',
+    defaultImageAssetsPath: 'assets/logo_3.jpg',
     getDarkMode: () => Setting.getAppConfig.isDarkMode,
     onDownloadImage: (url, savePath) async {
       await dio.download(url, savePath);
@@ -93,7 +93,7 @@ void main() async {
   );
   await DesktopExe.instance.exportNotExists(
     name: 'Novel',
-    assetsIconPath: 'assets/logo_2.jpg',
+    assetsIconPath: 'assets/logo_3.jpg',
   );
 
   if (TPlatform.isDesktop) {

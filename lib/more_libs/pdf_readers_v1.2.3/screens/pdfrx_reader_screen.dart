@@ -125,10 +125,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
   PdfViewerParams getParams() => PdfViewerParams(
     margin: 0,
     scrollByMouseWheel: config.scrollByMouseWheel,
-    scaleEnabled: true, //config.isPanLocked == false,
-    panAxis: config.isPanLocked
+    scaleEnabled: true, //config.isLockScreen == false,
+    panAxis: config.isLockScreen
         ? PanAxis.vertical
-        : PanAxis.free, //config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+        : PanAxis.free, //config.isLockScreen ? PanAxis.vertical : PanAxis.free,
     textSelectionParams: PdfTextSelectionParams(
       enabled: config.isTextSelection,
       showContextMenuAutomatically: true,
@@ -247,10 +247,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             //pan axis lock
             // IconButton(
             //   onPressed: () {
-            //     config = config.copyWith(isPanLocked: !config.isPanLocked);
+            //     config = config.copyWith(isLockScreen: !config.isLockScreen);
             //     setState(() {});
             //   },
-            //   icon: Icon(config.isPanLocked ? Icons.lock : Icons.lock_open),
+            //   icon: Icon(config.isLockScreen ? Icons.lock : Icons.lock_open),
             // ),
             //zoom
             IconButton(
@@ -505,7 +505,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           if (config.isTextSelection != oldConfig.isTextSelection) {
             _resetViewer();
           }
-          if (config.isPanLocked != oldConfig.isPanLocked) {
+          if (config.isLockScreen != oldConfig.isLockScreen) {
             _resetViewer();
           }
         },

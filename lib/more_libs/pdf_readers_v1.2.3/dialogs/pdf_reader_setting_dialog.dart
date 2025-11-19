@@ -29,7 +29,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
   bool isKeepScreen = false;
   late ScreenOrientationTypes screenOrientation;
   bool isOnBackpressConfirm = false;
-  bool isPanLocked = false;
+  bool isLockScreen = false;
   bool isFullscreen = false;
 
   @override
@@ -48,7 +48,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
     isKeepScreen = widget.config.isKeepScreen;
     screenOrientation = widget.config.screenOrientation;
     isOnBackpressConfirm = widget.config.isOnBackpressConfirm;
-    isPanLocked = widget.config.isPanLocked;
+    isLockScreen = widget.config.isLockScreen;
     isFullscreen = widget.config.isFullscreen;
   }
 
@@ -141,13 +141,13 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
               const Divider(),
               //lock
               TListTileWithDesc(
-                leading: Icon(isPanLocked ? Icons.lock : Icons.lock_open),
-                title: isPanLocked ? 'Locked' : 'UnLocked',
+                leading: Icon(isLockScreen ? Icons.lock : Icons.lock_open),
+                title: isLockScreen ? 'Locked' : 'UnLocked',
                 trailing: Switch.adaptive(
-                  value: isPanLocked,
+                  value: isLockScreen,
                   onChanged: (value) {
                     setState(() {
-                      isPanLocked = value;
+                      isLockScreen = value;
                     });
                   },
                 ),
@@ -236,7 +236,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
       isFullscreen: isFullscreen,
       isKeepScreen: isKeepScreen,
       isOnBackpressConfirm: isOnBackpressConfirm,
-      isPanLocked: isPanLocked,
+      isLockScreen: isLockScreen,
       isShowScrollThumb: isShowScrollThumb,
       isTextSelection: isTextSelection,
       screenOrientation: screenOrientation,

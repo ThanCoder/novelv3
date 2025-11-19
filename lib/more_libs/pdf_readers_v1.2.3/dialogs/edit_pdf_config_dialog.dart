@@ -84,7 +84,7 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
     Navigator.pop(context);
     // reset
     config = config.copyWith(
-      isPanLocked: !widget.allClearOtherConfig ? null : false,
+      isLockScreen: !widget.allClearOtherConfig ? null : false,
     );
 
     widget.onUpdated(config);

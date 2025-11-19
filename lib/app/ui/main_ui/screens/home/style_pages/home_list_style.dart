@@ -19,13 +19,13 @@ class HomeListStyle extends StatefulWidget {
 
 class _HomeListStyleState extends State<HomeListStyle> {
   final List<String> filter = [
+    'Recent',
+    'Book Mark',
     'Latest',
     'Completed',
     'OnGoing',
     'Adult',
     'Not Adult',
-    'Recent',
-    'Book Mark',
   ];
   String? filterName;
 
@@ -82,25 +82,28 @@ class _HomeListStyleState extends State<HomeListStyle> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-          runSpacing: 3,
-          spacing: 3,
-          children: List.generate(filter.length, (index) {
-            final name = filter[index];
-            return TChip(
-              avatar: name == filterName ? Icon(Icons.check) : null,
-              title: Text(name),
-              onClick: () {
-                setState(() {
-                  filterName = name;
-                });
-                TRecentDB.getInstance.putString(
-                  'home-list-style-filter-name',
-                  name,
-                );
-              },
-            );
-          }),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            // runSpacing: 3,
+            spacing: 3,
+            children: List.generate(filter.length, (index) {
+              final name = filter[index];
+              return TChip(
+                avatar: name == filterName ? Icon(Icons.check) : null,
+                title: Text(name),
+                onClick: () {
+                  setState(() {
+                    filterName = name;
+                  });
+                  TRecentDB.getInstance.putString(
+                    'home-grid-style-filter-name',
+                    name,
+                  );
+                },
+              );
+            }),
+          ),
         ),
       ),
     );

@@ -10,7 +10,7 @@ import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
 class PdfConfig {
   final int page;
   final bool isDarkMode;
-  final bool isPanLocked;
+  final bool isLockScreen;
   final bool isShowScrollThumb;
   final double offsetDx;
   final double zoom;
@@ -25,7 +25,7 @@ class PdfConfig {
   const PdfConfig({
     required this.page,
     required this.isDarkMode,
-    required this.isPanLocked,
+    required this.isLockScreen,
     required this.isShowScrollThumb,
     required this.offsetDx,
     required this.zoom,
@@ -41,7 +41,7 @@ class PdfConfig {
   PdfConfig copyWith({
     int? page,
     bool? isDarkMode,
-    bool? isPanLocked,
+    bool? isLockScreen,
     bool? isShowScrollThumb,
     double? offsetDx,
     double? zoom,
@@ -56,7 +56,7 @@ class PdfConfig {
     return PdfConfig(
       page: page ?? this.page,
       isDarkMode: isDarkMode ?? this.isDarkMode,
-      isPanLocked: isPanLocked ?? this.isPanLocked,
+      isLockScreen: isLockScreen ?? this.isLockScreen,
       isShowScrollThumb: isShowScrollThumb ?? this.isShowScrollThumb,
       offsetDx: offsetDx ?? this.offsetDx,
       zoom: zoom ?? this.zoom,
@@ -73,7 +73,7 @@ class PdfConfig {
   factory PdfConfig.create({
     int page = 1,
     bool isDarkMode = false,
-    bool isPanLocked = false,
+    bool isLockScreen = false,
     bool? isShowScrollThumb,
     double offsetDx = 0,
     double zoom = 0,
@@ -88,7 +88,7 @@ class PdfConfig {
     return PdfConfig(
       page: page,
       isDarkMode: isDarkMode,
-      isPanLocked: isPanLocked,
+      isLockScreen: isLockScreen,
       isShowScrollThumb: isShowScrollThumb ?? TPlatform.isDesktop,
       offsetDx: offsetDx,
       zoom: zoom,
@@ -128,7 +128,7 @@ class PdfConfig {
       screenOrientation: ScreenOrientationTypes.getType(screenOrientationStr),
       page: map.getInt(['page'], def: 1),
       isDarkMode: map.getBool(['isDarkMode']),
-      isPanLocked: map.getBool(['isPanLocked'], def: true),
+      isLockScreen: map.getBool(['isLockScreen'], def: true),
       isShowScrollThumb: map.getBool([
         'isShowScrollThumb',
       ], def: TPlatform.isDesktop),
@@ -148,7 +148,7 @@ class PdfConfig {
     return <String, dynamic>{
       'page': page,
       'isDarkMode': isDarkMode,
-      'isPanLocked': isPanLocked,
+      'isLockScreen': isLockScreen,
       'isShowScrollThumb': isShowScrollThumb,
       'offsetDx': offsetDx,
       'zoom': zoom,

@@ -123,9 +123,9 @@ class _PdfrxReaderScreenBkState extends State<PdfrxReaderScreenBk> {
   PdfViewerParams getParams() => PdfViewerParams(
     margin: 0,
     scrollByMouseWheel: config.scrollByMouseWheel,
-    scaleEnabled: true, // config.isPanLocked == false,
+    scaleEnabled: true, // config.isLockScreen == false,
     panAxis: PanAxis
-        .vertical, //config.isPanLocked ? PanAxis.vertical : PanAxis.free,
+        .vertical, //config.isLockScreen ? PanAxis.vertical : PanAxis.free,
     textSelectionParams: PdfTextSelectionParams(
       enabled: config.isTextSelection,
     ),
@@ -249,10 +249,10 @@ class _PdfrxReaderScreenBkState extends State<PdfrxReaderScreenBk> {
             //pan axis lock
             // IconButton(
             //   onPressed: () {
-            //     config = config.copyWith(isPanLocked: !config.isPanLocked);
+            //     config = config.copyWith(isLockScreen: !config.isLockScreen);
             //     setState(() {});
             //   },
-            //   icon: Icon(config.isPanLocked ? Icons.lock : Icons.lock_open),
+            //   icon: Icon(config.isLockScreen ? Icons.lock : Icons.lock_open),
             // ),
             //zoom
             IconButton(
