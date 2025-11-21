@@ -49,11 +49,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     config = widget.pdfConfig;
     oldPageNumber = config.page;
     currentPage = config.page;
+    _initConfig();
     pdfViewer = _getPdfViewer();
     super.initState();
     keyboardListenerFocus.requestFocus();
-
-    _initConfig();
   }
 
   @override
@@ -103,6 +102,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         controller: pdfController,
         params: getParams(),
         initialPageNumber: currentPage,
+        useProgressiveLoading: config.useProgressiveLoading,
       );
     } else {
       return PdfViewer.file(
@@ -110,6 +110,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         controller: pdfController,
         params: getParams(),
         initialPageNumber: currentPage,
+        useProgressiveLoading: config.useProgressiveLoading,
       );
     }
   }
@@ -160,6 +161,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
     errorBannerBuilder: (context, error, stackTrace, documentRef) {
       return const Center(child: Text('pdf error'));
     },
+
     //loading
     loadingBannerBuilder: (context, bytesDownloaded, totalBytes) {
       return Center(child: TLoader.random(isDarkMode: config.isDarkMode));
@@ -507,6 +509,10 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           }
           if (config.isLockScreen != oldConfig.isLockScreen) {
             _resetViewer();
+          }
+          if (config.useProgressiveLoading != oldConfig.useProgressiveLoading) {
+            _resetViewer();
+            print('restart');
           }
         },
       ),

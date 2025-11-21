@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import 'package:novel_v3/more_libs/pdf_readers_v1.2.3/pdf_reader.dart';
+import 'package:novel_v3/more_libs/pdf_readers_v1.3.3/pdf_reader.dart';
 
 class PdfConfig {
   final int page;
@@ -21,6 +21,7 @@ class PdfConfig {
   final double scrollByArrowKey;
   final bool isOnBackpressConfirm;
   final bool isFullscreen;
+  final bool useProgressiveLoading;
 
   const PdfConfig({
     required this.page,
@@ -36,6 +37,7 @@ class PdfConfig {
     required this.scrollByArrowKey,
     required this.isOnBackpressConfirm,
     required this.isFullscreen,
+    required this.useProgressiveLoading,
   });
 
   PdfConfig copyWith({
@@ -52,6 +54,7 @@ class PdfConfig {
     double? scrollByArrowKey,
     bool? isOnBackpressConfirm,
     bool? isFullscreen,
+    bool? useProgressiveLoading,
   }) {
     return PdfConfig(
       page: page ?? this.page,
@@ -67,13 +70,15 @@ class PdfConfig {
       scrollByArrowKey: scrollByArrowKey ?? this.scrollByArrowKey,
       isOnBackpressConfirm: isOnBackpressConfirm ?? this.isOnBackpressConfirm,
       isFullscreen: isFullscreen ?? this.isFullscreen,
+      useProgressiveLoading:
+          useProgressiveLoading ?? this.useProgressiveLoading,
     );
   }
 
   factory PdfConfig.create({
     int page = 1,
     bool isDarkMode = false,
-    bool isLockScreen = false,
+    bool isLockScreen = true,
     bool? isShowScrollThumb,
     double offsetDx = 0,
     double zoom = 0,
@@ -84,6 +89,7 @@ class PdfConfig {
     double scrollByMouseWheel = 1.2,
     double scrollByArrowKey = 50,
     ScreenOrientationTypes screenOrientation = ScreenOrientationTypes.portrait,
+    bool useProgressiveLoading = true,
   }) {
     return PdfConfig(
       page: page,
@@ -99,6 +105,7 @@ class PdfConfig {
       scrollByArrowKey: scrollByArrowKey,
       isOnBackpressConfirm: isOnBackpressConfirm,
       isFullscreen: isFullscreen,
+      useProgressiveLoading: useProgressiveLoading,
     );
   }
 
@@ -125,6 +132,7 @@ class PdfConfig {
   factory PdfConfig.fromMap(Map<String, dynamic> map) {
     final screenOrientationStr = map.getString(['screenOrientation']);
     return PdfConfig(
+      useProgressiveLoading: map.getBool(['useProgressiveLoading'], def: true),
       screenOrientation: ScreenOrientationTypes.getType(screenOrientationStr),
       page: map.getInt(['page'], def: 1),
       isDarkMode: map.getBool(['isDarkMode']),
@@ -159,6 +167,7 @@ class PdfConfig {
       'scrollByArrowKey': scrollByArrowKey,
       'isOnBackpressConfirm': isOnBackpressConfirm,
       'isFullscreen': isFullscreen,
+      'useProgressiveLoading': useProgressiveLoading,
     };
   }
 

@@ -1,5 +1,7 @@
 # 3.6.0
 
+- Added `PDF Reader` -> `useProgressiveLoading` Option
+- Updated `PDF Reader` -> `pdfrx: ^2.2.16`
 - Changed `App Icon` ပြောင်းလဲခြင်း
 - Added `AddAutoMultiChapterScreen`
 - Upgraded `Flutter (Channel stable, 3.35.7)`

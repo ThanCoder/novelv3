@@ -41,6 +41,7 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
       title: widget.title,
       scrollable: true,
       content: Column(
+        spacing: 4,
         children: [
           TTextField(
             label: Text('Page Index'),
@@ -56,6 +57,17 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
               config = config.copyWith(page: int.parse(value));
             },
             onSubmitted: (_) => _onSubmit(),
+          ),
+          Card(
+            child: SwitchListTile.adaptive(
+              title: Text('Progressive Loading'),
+              subtitle: Text('PDF Viewer Loading Page Count'),
+              value: config.useProgressiveLoading,
+              onChanged: (value) {
+                config = config.copyWith(useProgressiveLoading: value);
+                setState(() {});
+              },
+            ),
           ),
         ],
       ),
@@ -84,7 +96,7 @@ class _EditPdfConfigDialogState extends State<EditPdfConfigDialog> {
     Navigator.pop(context);
     // reset
     config = config.copyWith(
-      isLockScreen: !widget.allClearOtherConfig ? null : false,
+      isLockScreen: !widget.allClearOtherConfig ? null : true,
     );
 
     widget.onUpdated(config);

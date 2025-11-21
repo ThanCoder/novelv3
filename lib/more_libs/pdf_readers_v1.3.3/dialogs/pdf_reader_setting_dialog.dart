@@ -31,6 +31,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
   bool isOnBackpressConfirm = false;
   bool isLockScreen = false;
   bool isFullscreen = false;
+  bool useProgressiveLoading = true;
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
     isOnBackpressConfirm = widget.config.isOnBackpressConfirm;
     isLockScreen = widget.config.isLockScreen;
     isFullscreen = widget.config.isFullscreen;
+    useProgressiveLoading = widget.config.useProgressiveLoading;
   }
 
   @override
@@ -134,6 +136,17 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
                     setState(() {
                       isOnBackpressConfirm = value;
                     });
+                  },
+                ),
+              ),
+              Card(
+                child: SwitchListTile.adaptive(
+                  title: Text('Progressive Loading'),
+                  subtitle: Text('PDF Viewer Loading Page Count'),
+                  value: useProgressiveLoading,
+                  onChanged: (value) {
+                    useProgressiveLoading = value;
+                    setState(() {});
                   },
                 ),
               ),
@@ -242,6 +255,7 @@ class _PdfReaderSettingDialogState extends State<PdfReaderSettingDialog> {
       screenOrientation: screenOrientation,
       scrollByArrowKey: double.tryParse(scrollByArrowKeyController.text),
       scrollByMouseWheel: double.tryParse(scrollByMouseWheelController.text),
+      useProgressiveLoading: useProgressiveLoading,
     );
     widget.onApply(config);
   }
