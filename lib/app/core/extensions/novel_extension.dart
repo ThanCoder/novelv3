@@ -3,15 +3,15 @@ import 'package:novel_v3/app/core/models/novel.dart';
 extension NovelExtension on List<Novel> {
   void sortN3Data({bool isExported = true}) {
     sort((a, b) {
-      if (isExported) {
-        //ထုတ်ပြီးသား
-        if (a.isExistsNovelData() && !b.isExistsNovelData()) return -1;
-        if (!a.isExistsNovelData() && b.isExistsNovelData()) return 1;
-      } else {
-        //မထုတ်ရသေး
-        if (a.isExistsNovelData() && !b.isExistsNovelData()) return 1;
-        if (!a.isExistsNovelData() && b.isExistsNovelData()) return -1;
-      }
+      // if (isExported) {
+      //   //ထုတ်ပြီးသား
+      //   if (a.isExistsNovelData() && !b.isExistsNovelData()) return -1;
+      //   if (!a.isExistsNovelData() && b.isExistsNovelData()) return 1;
+      // } else {
+      //   //မထုတ်ရသေး
+      //   if (a.isExistsNovelData() && !b.isExistsNovelData()) return 1;
+      //   if (!a.isExistsNovelData() && b.isExistsNovelData()) return -1;
+      // }
       return 0;
     });
   }
@@ -34,9 +34,9 @@ extension NovelExtension on List<Novel> {
   void sortCompleted({bool isCompleted = true}) {
     sort((a, b) {
       if (isCompleted) {
-        return a.isCompleted ? -1 : 1;
+        return a.meta.isCompleted ? -1 : 1;
       } else {
-        return a.isCompleted ? 1 : -1;
+        return a.meta.isCompleted ? 1 : -1;
       }
     });
   }
@@ -44,9 +44,9 @@ extension NovelExtension on List<Novel> {
   void sortAdult({bool isAdult = true}) {
     sort((a, b) {
       if (isAdult) {
-        return a.isAdult ? -1 : 1;
+        return a.meta.isAdult ? -1 : 1;
       } else {
-        return a.isAdult ? 1 : -1;
+        return a.meta.isAdult ? 1 : -1;
       }
     });
   }

@@ -89,7 +89,7 @@ class PdfConfig {
     double scrollByMouseWheel = 1.2,
     double scrollByArrowKey = 50,
     ScreenOrientationTypes screenOrientation = ScreenOrientationTypes.portrait,
-    bool useProgressiveLoading = true,
+    bool useProgressiveLoading = false,
   }) {
     return PdfConfig(
       page: page,
@@ -132,7 +132,7 @@ class PdfConfig {
   factory PdfConfig.fromMap(Map<String, dynamic> map) {
     final screenOrientationStr = map.getString(['screenOrientation']);
     return PdfConfig(
-      useProgressiveLoading: map.getBool(['useProgressiveLoading'], def: true),
+      useProgressiveLoading: map.getBool(['useProgressiveLoading'], def: false),
       screenOrientation: ScreenOrientationTypes.getType(screenOrientationStr),
       page: map.getInt(['page'], def: 1),
       isDarkMode: map.getBool(['isDarkMode']),

@@ -4,7 +4,7 @@
 - Updated `PDF Reader` -> `pdfrx: ^2.2.16`
 - Changed `App Icon` ပြောင်းလဲခြင်း
 - Added `AddAutoMultiChapterScreen`
-- Upgraded `Flutter (Channel stable, 3.35.7)`
+- Upgraded `Flutter (Channel stable, 3.38.3) - Dart SDK version: 3.10.1 (stable)`
 
 ## 3.5.0
 
