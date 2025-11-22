@@ -512,7 +512,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
           }
           if (config.useProgressiveLoading != oldConfig.useProgressiveLoading) {
             _resetViewer();
-            print('restart');
           }
         },
       ),

@@ -16,6 +16,7 @@ class NovelGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print('Adult :${novel.meta.isAdult}');
     return GestureDetector(
       onTap: () => onClicked(novel),
       onSecondaryTap: () => onRightClicked?.call(novel),
@@ -47,13 +48,13 @@ class NovelGridItem extends StatelessWidget {
                       left: 0,
                       top: 0,
                       child: StatusText(
-                        bgColor: novel.isCompleted
+                        bgColor: novel.meta.isCompleted
                             ? StatusText.completedColor
                             : StatusText.onGoingColor,
-                        text: novel.isCompleted ? 'Completed' : 'OnGoing',
+                        text: novel.meta.isCompleted ? 'Completed' : 'OnGoing',
                       ),
                     ),
-                    novel.isAdult
+                    novel.meta.isAdult
                         ? Positioned(
                             right: 0,
                             top: 0,

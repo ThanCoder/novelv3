@@ -21,19 +21,19 @@ class _ReadedButtonState extends State<ReadedButton> {
     }
     return TextButton(
       child: Text(
-        'Readed: ${novel.getReaded}',
+        'Readed: ${novel.meta.readed}',
       ).animate().rotate(duration: Duration(milliseconds: 800)),
       onPressed: () {
         showTReanmeDialog(
           barrierDismissible: false,
           context,
           title: Text('ပြင်ဆင်ခြင်း'),
-          text: novel.getReaded,
+          text: novel.meta.readed.toString(),
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           textInputType: TextInputType.number,
           submitText: 'Update',
           onSubmit: (text) async {
-            novel.setReaded(text);
+            // novel.setReaded(text);
             await Future.delayed(Duration(milliseconds: 500));
             if (!context.mounted) return;
             context.read<NovelProvider>().refreshNotifier();

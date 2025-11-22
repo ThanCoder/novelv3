@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -76,7 +77,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       setState(() {
         isLoading = true;
       });
-      localList = await NovelServices.getList(isAllCalc: true);
+      // localList = await NovelServices.getList(isAllCalc: true);
 
       _onSortList();
 
@@ -368,7 +369,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
               '${PathUtil.getOutPath()}/${novel.title}.config.json',
             );
             // config
-            await file.writeAsString(await novel.getConfigJson());
+            await file.writeAsString(jsonEncode(novel.toMap()));
             // cover
             if (isIncludeCover) {
               final coverFile = File('${novel.path}/cover.png');

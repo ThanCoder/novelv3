@@ -59,43 +59,10 @@ class NovelMeta {
     }
   }
 
-  static Future<NovelMeta> _getOldConfig(String novelPath) async {
-    final authorFile = File(pathJoin(novelPath, 'author'));
-    final readedFile = File(pathJoin(novelPath, 'readed'));
-    final translatorFile = File(pathJoin(novelPath, 'translator'));
-    final mcFile = File(pathJoin(novelPath, 'mc'));
-    final isAdultFile = File(pathJoin(novelPath, 'is-adult'));
-    final isCompletedFile = File(pathJoin(novelPath, 'is-completed'));
-    final descFile = File(pathJoin(novelPath, 'content'));
-    final pageUrlsFile = File(pathJoin(novelPath, 'link'));
-    final tagsFile = File(pathJoin(novelPath, 'tags'));
-
-    int readed = 0;
-    final title = novelPath.getName();
-    if (readedFile.existsSync()) {
-      readed = int.tryParse(await readedFile.readAsString()) ?? 0;
-    }
-    return NovelMeta(
-      title: title,
-      author: authorFile.existsSync()
-          ? await authorFile.readAsString()
-          : 'Unknown',
-      mc: mcFile.existsSync() ? await mcFile.readAsString() : 'Unknown',
-      translator: translatorFile.existsSync()
-          ? await translatorFile.readAsString()
-          : null,
-      desc: descFile.existsSync() ? await descFile.readAsString() : '',
-      otherTitleList: [],
-      isAdult: isAdultFile.existsSync(),
-      isCompleted: isCompletedFile.existsSync(),
-      pageUrls: pageUrlsFile.existsSync()
-          ? _getListFromString(await pageUrlsFile.readAsString())
-          : [],
-      tags: tagsFile.existsSync()
-          ? _getListFromString(await tagsFile.readAsString())
-          : [],
-      readed: readed,
-    );
+  Future<void> save(String novelPath) async {
+    final metaFile = File(pathJoin(novelPath, metaName));
+    final contents = jsonEncode(toMap());
+    await metaFile.writeAsString(contents);
   }
 
   static List<String> _getListFromString(String value) {
@@ -158,19 +125,82 @@ class NovelMeta {
           : null,
       mc: map['mc'] as String,
       desc: map['desc'] as String,
-      otherTitleList: List<String>.from(
-        (map['otherTitleList'] as List<String>),
-      ),
+      otherTitleList: List<String>.from((map['otherTitleList'] ?? [])),
       isAdult: map['isAdult'] as bool,
       isCompleted: map['isCompleted'] as bool,
-      pageUrls: List<String>.from((map['pageUrls'] as List<String>)),
-      tags: List<String>.from((map['tags'] as List<String>)),
+      pageUrls: List<String>.from((map['pageUrls'] ?? [])),
+      tags: List<String>.from((map['tags'] ?? [])),
       readed: map['readed'] as int,
     );
   }
 
-  String toJson() => json.encode(toMap());
+  static Future<NovelMeta> _getOldConfig(String novelPath) async {
+    final authorFile = File(pathJoin(novelPath, 'author'));
+    final readedFile = File(pathJoin(novelPath, 'readed'));
+    final translatorFile = File(pathJoin(novelPath, 'translator'));
+    final mcFile = File(pathJoin(novelPath, 'mc'));
+    final isAdultFile = File(pathJoin(novelPath, 'is-adult'));
+    final isCompletedFile = File(pathJoin(novelPath, 'is-completed'));
+    final descFile = File(pathJoin(novelPath, 'content'));
+    final pageUrlsFile = File(pathJoin(novelPath, 'link'));
+    final tagsFile = File(pathJoin(novelPath, 'tags'));
 
-  factory NovelMeta.fromJson(String source) =>
-      NovelMeta.fromMap(json.decode(source) as Map<String, dynamic>);
+    int readed = 0;
+    final title = novelPath.getName();
+    if (readedFile.existsSync()) {
+      readed = int.tryParse(await readedFile.readAsString()) ?? 0;
+    }
+    final meta = NovelMeta(
+      title: title,
+      author: authorFile.existsSync()
+          ? await authorFile.readAsString()
+          : 'Unknown',
+      mc: mcFile.existsSync() ? await mcFile.readAsString() : 'Unknown',
+      translator: translatorFile.existsSync()
+          ? await translatorFile.readAsString()
+          : null,
+      desc: descFile.existsSync() ? await descFile.readAsString() : '',
+      otherTitleList: [],
+      isAdult: isAdultFile.existsSync(),
+      isCompleted: isCompletedFile.existsSync(),
+      pageUrls: pageUrlsFile.existsSync()
+          ? _getListFromString(await pageUrlsFile.readAsString())
+          : [],
+      tags: tagsFile.existsSync()
+          ? _getListFromString(await tagsFile.readAsString())
+          : [],
+      readed: readed,
+    );
+    // delete
+    if (mcFile.existsSync()) {
+      await mcFile.delete();
+    }
+    if (readedFile.existsSync()) {
+      await readedFile.delete();
+    }
+    if (authorFile.existsSync()) {
+      await authorFile.delete();
+    }
+    if (translatorFile.existsSync()) {
+      await translatorFile.delete();
+    }
+    if (isAdultFile.existsSync()) {
+      await isAdultFile.delete();
+    }
+    if (isCompletedFile.existsSync()) {
+      await isCompletedFile.delete();
+    }
+    if (descFile.existsSync()) {
+      await descFile.delete();
+    }
+    if (pageUrlsFile.existsSync()) {
+      await pageUrlsFile.delete();
+    }
+    if (tagsFile.existsSync()) {
+      await tagsFile.delete();
+    }
+    await meta.save(novelPath);
+
+    return meta;
+  }
 }

@@ -12,8 +12,8 @@ class NovelShareServices {
           (e) => ShareNovel(
             title: e.title,
             path: e.path,
-            isAdult: e.isAdult,
-            isCompleted: e.isCompleted,
+            isAdult: e.meta.isAdult,
+            isCompleted: e.meta.isCompleted,
             date: e.date,
           ).toMap(),
         )
@@ -40,8 +40,8 @@ class NovelShareServices {
    <img alt="cover" src="/cover?path=${e.getCoverPath}" />
   <div class="title">${e.title}</div>
   <div class="top">
-    ${e.isAdult ? '<div class="top-left">IsAdult</div>' : ''}
-    <div class="top-right">${e.isCompleted ? 'OnGoing' : 'Completed'}</div>
+    ${e.meta.isAdult ? '<div class="top-left">IsAdult</div>' : ''}
+    <div class="top-right">${e.meta.isCompleted ? 'OnGoing' : 'Completed'}</div>
   </div>
   </a>
   </div>

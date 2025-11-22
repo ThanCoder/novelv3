@@ -13,7 +13,7 @@ class PageButton extends StatelessWidget {
     if (novel == null) {
       return SizedBox.shrink();
     }
-    final list = novel.getPageUrls;
+    final list = novel.meta.pageUrls;
     if (list.isNotEmpty) {
       return TextButton(
         child: const Text('Page Url'),

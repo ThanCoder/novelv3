@@ -33,14 +33,15 @@ class NovelRecentDB extends JsonDatabase<NovelRecentData> {
   }
 
   Future<List<Novel>> getNovelList() async {
-    final list = await getAll();
-    return list
-        .where(
-          (e) =>
-              Directory('${PathUtil.getSourcePath()}/${e.title}').existsSync(),
-        )
-        .map((e) => Novel.createTitle(e.title))
-        .toList();
+    return [];
+    // final list = await getAll();
+    // return list
+    //     .where(
+    //       (e) =>
+    //           Directory('${PathUtil.getSourcePath()}/${e.title}').existsSync(),
+    //     )
+    //     .map((e) => Novel.createTitle(e.title))
+    //     .toList();
   }
 
   @override

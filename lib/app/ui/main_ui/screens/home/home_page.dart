@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/interfaces/database.dart';
@@ -265,10 +263,11 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
         return null;
       },
       text: 'Untitled',
-      onSubmit: (text) {
+      onSubmit: (text) async {
         if (text.isEmpty) return;
-        final novel = Novel.createTitle(text.trim());
+        final novel = await Novel.createTitle(text.trim());
         provider.add(novel);
+        if (!mounted) return;
         goRoute(context, builder: (context) => EditNovelForm(novel: novel));
       },
     );
@@ -308,22 +307,22 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
       },
       onSubmit: (text) async {
         if (text.isEmpty) return;
-        try {
-          final novel = Novel.createTitle(text.trim());
-          // delay
-          await Future.delayed(Duration(milliseconds: 500));
-          // copy cover
-          final pdfCoverFile = File(pdf.getCoverPath);
-          await pdfCoverFile.copy(novel.getCoverPath);
-          // move pdf file
-          await pdf.rename('${novel.path}/${pdf.getTitle}');
+        // try {
+        //   final novel = Novel.createTitle(text.trim());
+        //   // delay
+        //   await Future.delayed(Duration(milliseconds: 500));
+        //   // copy cover
+        //   final pdfCoverFile = File(pdf.getCoverPath);
+        //   await pdfCoverFile.copy(novel.getCoverPath);
+        //   // move pdf file
+        //   await pdf.rename('${novel.path}/${pdf.getTitle}');
 
-          provider.add(novel);
-          if (!mounted) return;
-          goRoute(context, builder: (context) => EditNovelForm(novel: novel));
-        } catch (e) {
-          NovelDirApp.showDebugLog(e.toString());
-        }
+        //   provider.add(novel);
+        //   if (!mounted) return;
+        //   goRoute(context, builder: (context) => EditNovelForm(novel: novel));
+        // } catch (e) {
+        //   NovelDirApp.showDebugLog(e.toString());
+        // }
       },
     );
   }

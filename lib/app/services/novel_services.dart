@@ -1,74 +1,21 @@
 import 'dart:io';
-import 'dart:isolate';
 
-import 'package:novel_v3/app/core/databases/novel_folder_database.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
-import 'package:than_pkg/extensions/index.dart';
-import '../ui/novel_dir_app.dart';
+import 'package:novel_v3/app/core/extensions/novel_extension.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class NovelServices {
-  static NovelFolderDatabase? _cache;
-
-  static void clearCache() {
-    if (_cache != null) {
-      _cache!.clearListener();
-      _cache!.clearCacheList();
+  static Future<List<Novel>> getList() async {
+    final dir = Directory(PathUtil.getSourcePath());
+    List<Novel> list = [];
+    for (var file in dir.listSync(followLinks: false)) {
+      if (!file.isDirectory) continue;
+      final novel = await Novel.fromPath(file.path);
+      list.add(novel);
     }
-    _cache = null;
-  }
-
-  static NovelFolderDatabase get getDB {
-    if (_cache != null && _cache!.root != PathUtil.getSourcePath()) {
-      _cache = null;
-    }
-    _cache ??= NovelFolderDatabase();
-    return _cache!;
-  }
-
-  static Future<List<Novel>> getList({
-    bool isAllCalc = false,
-    bool isCached = true,
-  }) async {
-    // print('path: ${PathUtil.getSourcePath()}');
-    // print('db: ${getDB.root}');
-    if (isAllCalc) {
-      return await getNovelAllCal(getDB.root);
-    } else {
-      return await getDB.getAll(query: {'isUsedCache': isCached});
-    }
-  }
-
-  static Future<List<Novel>> getNovelAllCal(String rootPath) async {
-    final dir = Directory(rootPath);
-    if (!dir.existsSync()) return [];
-
-    return await Isolate.run<List<Novel>>(() async {
-      List<Novel> list = [];
-
-      for (var file in dir.listSync(followLinks: false)) {
-        if (!file.isDirectory) continue;
-
-        final novel = Novel.fromPath(file.path);
-        // cal desc
-        final desFile = File(novel.getContentPath);
-        if (desFile.existsSync()) {
-          final lines = desFile.readAsLinesSync();
-          novel.cacheIsExistsDesc = lines.isNotEmpty;
-        }
-        // all file size
-        int size = 0;
-        final dir = Directory(novel.path);
-        for (var file in dir.listSync(followLinks: false)) {
-          if (!file.isFile) continue;
-          size += file.getSize;
-        }
-        novel.cacheSize = size;
-        // add novel
-        list.add(novel);
-      }
-      // sort
-      list.sortDate();
-      return list;
-    });
+    // sort
+    list.sortDate();
+    return list;
   }
 }

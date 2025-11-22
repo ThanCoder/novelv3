@@ -123,16 +123,16 @@ class _HomeGridStyleState extends State<HomeGridStyle> {
     }
     if (filterName != null && filterName != 'Latest') {
       res = list.where((e) {
-        if (filterName == 'Completed' && e.isCompleted) {
+        if (filterName == 'Completed' && e.meta.isCompleted) {
           return true;
         }
-        if (filterName == 'OnGoing' && !e.isCompleted) {
+        if (filterName == 'OnGoing' && !e.meta.isCompleted) {
           return true;
         }
-        if (filterName == 'Adult' && e.isAdult) {
+        if (filterName == 'Adult' && e.meta.isAdult) {
           return true;
         }
-        if (filterName == 'Not Adult' && !e.isAdult) {
+        if (filterName == 'Not Adult' && !e.meta.isAdult) {
           return true;
         }
         return false;

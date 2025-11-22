@@ -187,7 +187,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     showDialog(
       context: context,
       builder: (context) => PageUrlDialog(
-        list: novel.getPageUrls,
+        list: novel.meta.pageUrls,
         onClicked: (url) {
           goRoute(
             context,
@@ -259,7 +259,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     try {
       final novel = context.read<NovelProvider>().getCurrent;
       if (novel == null) return;
-      final readed = novel.getReadedNumber;
+      final readed = novel.meta.readed;
       if (chapter.number <= readed) return;
       //ကြီးနေတယ်ဆိုရင်
       showTConfirmDialog(
@@ -271,7 +271,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
         submitText: 'သိမ်းမယ်',
         cancelText: 'မသိမ်းဘူး',
         onSubmit: () {
-          novel.setReaded(chapter.number.toString());
+          // novel.setReaded(chapter.number.toString());
           setState(() {});
         },
       );

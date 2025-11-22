@@ -18,9 +18,7 @@ class NovelProvider extends ChangeNotifier {
     notifyListeners();
 
     _list.clear();
-    final res = await NovelServices.getDB.getAll(
-      query: {'isUsedCache': isCached},
-    );
+    final res = await NovelServices.getList();
     _list.addAll(res);
 
     sortList();
@@ -31,7 +29,7 @@ class NovelProvider extends ChangeNotifier {
 
   void add(Novel novel) {
     _list.insert(0, novel);
-    NovelServices.getDB.add(novel);
+    // NovelServices.getDB.add(novel);
     notifyListeners();
   }
 
@@ -41,7 +39,7 @@ class NovelProvider extends ChangeNotifier {
   }
 
   Future<void> refreshCurrentNovel(String path) async {
-    _novel = Novel.fromPath(path);
+    _novel = await Novel.fromPath(path);
     notifyListeners();
   }
 
@@ -53,10 +51,14 @@ class NovelProvider extends ChangeNotifier {
     try {
       _novel = updatedNovel;
       notifyListeners();
-
       final index = _list.indexWhere((e) => e.title == oldTitle);
       if (index == -1) return;
+      // _list.removeAt(index);
+      // notifyListeners();
+      // _list.insert(index, updatedNovel);
       _list[index] = updatedNovel;
+
+      await Future.delayed(Duration.zero);
 
       notifyListeners();
     } catch (e) {
@@ -76,7 +78,8 @@ class NovelProvider extends ChangeNotifier {
           .toList();
       novelSeeAllScreenNotifier.value = res;
 
-      await NovelServices.getDB.delete(novel.title);
+      await novel.deleteForever();
+
       // remove recent
       await NovelRecentDB.getInstance().delete(novel.title);
     } catch (e) {
@@ -103,7 +106,7 @@ class NovelProvider extends ChangeNotifier {
   // all tags
   List<String> get getAllTags {
     final res = _list
-        .expand((e) => e.getTags)
+        .expand((e) => e.meta.tags)
         .map((e) => e.trim())
         .toSet()
         .toList();

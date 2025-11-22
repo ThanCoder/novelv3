@@ -64,6 +64,7 @@ class _GetstartScreenState extends State<GetstartScreen>
             TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 18, 62, 100),
+                foregroundColor: Colors.white,
               ),
               onPressed: () {
                 TRecentDB.getInstance.putBool('read-getstart', true);

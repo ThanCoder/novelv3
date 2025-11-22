@@ -132,21 +132,21 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
   void _onSearch(String text) async {
     // list ကို sendable အဖြစ် serialize
     // final listMap = list.map((e) => e.toMap()).toList();
-    final upper = text.toUpperCase();
+    // final upper = text.toUpperCase();
 
     resultList = list.where((e) {
-      if (e.title.toUpperCase().contains(upper)) {
-        return true;
-      }
-      if (e.getMC.toUpperCase().contains(upper)) {
-        return true;
-      }
-      if (e.getAuthor.toUpperCase().contains(upper)) {
-        return true;
-      }
-      if (e.getTranslator.toUpperCase().contains(upper)) {
-        return true;
-      }
+      // if (e.title.toUpperCase().contains(upper)) {
+      //   return true;
+      // }
+      // if (e.getMC.toUpperCase().contains(upper)) {
+      //   return true;
+      // }
+      // if (e.getAuthor.toUpperCase().contains(upper)) {
+      //   return true;
+      // }
+      // if (e.getTranslator.toUpperCase().contains(upper)) {
+      //   return true;
+      // }
       return false;
     }).toList();
     // sort
@@ -191,7 +191,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       'Author',
       authorList,
       onClicked: (text) {
-        final res = list.where((e) => e.getAuthor == text).toList();
+        final res = list.where((e) => e.meta.author == text).toList();
         goNovelSeeAllScreen(context, text, res);
       },
     );
@@ -202,7 +202,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       'Translator',
       translatorList,
       onClicked: (text) {
-        final res = list.where((e) => e.getTranslator == text).toList();
+        final res = list.where((e) => e.meta.translator == text).toList();
         goNovelSeeAllScreen(context, text, res);
       },
     );
@@ -213,7 +213,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       'MC',
       mcList,
       onClicked: (text) {
-        final res = list.where((e) => e.getMC == text).toList();
+        final res = list.where((e) => e.meta.mc == text).toList();
         goNovelSeeAllScreen(context, text, res);
       },
     );
@@ -224,7 +224,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       'Tags',
       tagsList,
       onClicked: (text) {
-        final res = list.where((e) => e.getTagContent.contains(text)).toList();
+        final res = list.where((e) => e.meta.desc.contains(text)).toList();
         goNovelSeeAllScreen(context, text, res);
       },
     );
@@ -263,11 +263,11 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       final list = await FileScannerFactory.getScanner<Novel>().getList(
         rootPath,
       );
-      final author = list.map((e) => e.getAuthor).toSet().toList();
-      final translator = list.map((e) => e.getTranslator).toSet().toList();
-      final mc = list.map((e) => e.getMC).toSet().toList();
+      final author = list.map((e) => e.meta.author).toSet().toList();
+      final translator = list.map((e) => e.meta.translator?? '').toSet().toList();
+      final mc = list.map((e) => e.meta.mc).toSet().toList();
       final tags = list
-          .expand((e) => e.getTags)
+          .expand((e) => e.meta.tags)
           .map((e) => e.trim())
           .toSet()
           .toList();

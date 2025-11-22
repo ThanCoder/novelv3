@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -68,17 +69,17 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
         // tags
         SliverToBoxAdapter(child: _getBottoms()),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TTagsWrapView(
-              title: novel.getTags.isEmpty ? null : Text('Tags'),
-              type: TTagsTypes.text,
-              values: novel.getTags,
-              onClicked: _searchTags,
-            ),
-          ),
-        ),
+        // SliverToBoxAdapter(
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: TTagsWrapView(
+        //       title: novel.getTags.isEmpty ? null : Text('Tags'),
+        //       type: TTagsTypes.text,
+        //       values: novel.getTags,
+        //       onClicked: _searchTags,
+        //     ),
+        //   ),
+        // ),
         SliverToBoxAdapter(child: _getDesc()),
       ],
     );
@@ -94,7 +95,11 @@ class _ContentHomePageState extends State<ContentHomePage> {
           spacing: 5,
           runSpacing: 5,
           children: [
-            TImage(source: novel.getCoverPath, width: 180, height: 200),
+            SizedBox(
+              width: 180,
+              height: 200,
+              child: TImage(source: novel.getCoverPath),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 5,
@@ -106,9 +111,11 @@ class _ContentHomePageState extends State<ContentHomePage> {
                   },
                   child: Text('T: ${novel.title}'),
                 ),
-                Text('Author: ${novel.getAuthor}'),
-                Text('Translator: ${novel.getTranslator}'),
-                Text('MC: ${novel.getMC}'),
+                Text('Author: ${novel.meta.author}'),
+                novel.meta.translator == null
+                    ? SizedBox.fromSize()
+                    : Text('Translator: ${novel.meta.translator}'),
+                Text('MC: ${novel.meta.mc}'),
                 Text('ရက်စွဲ: ${novel.date.toParseTime()}'),
                 // status
                 Wrap(
@@ -116,12 +123,12 @@ class _ContentHomePageState extends State<ContentHomePage> {
                   runSpacing: 5,
                   children: [
                     StatusText(
-                      bgColor: novel.isCompleted
+                      bgColor: novel.meta.isCompleted
                           ? StatusText.completedColor
                           : StatusText.onGoingColor,
-                      text: novel.isCompleted ? 'Completed' : 'OnGoing',
+                      text: novel.meta.isCompleted ? 'Completed' : 'OnGoing',
                     ),
-                    novel.isAdult
+                    novel.meta.isAdult
                         ? StatusText(
                             text: 'Adult',
                             bgColor: StatusText.adultColor,
@@ -168,11 +175,11 @@ class _ContentHomePageState extends State<ContentHomePage> {
 
   Widget _getDesc() {
     final novel = context.watch<NovelProvider>().getCurrent!;
-    if (novel.getContent.isEmpty) {
+    if (novel.meta.desc.isEmpty) {
       return SizedBox.shrink();
     }
     return DescriptionWidget(
-      text: novel.getContent,
+      text: novel.meta.desc,
       onClicked: (url) {
         ThanPkg.platform.launch(url);
       },
@@ -180,12 +187,6 @@ class _ContentHomePageState extends State<ContentHomePage> {
       delay: Duration(milliseconds: 300),
       duration: Duration(milliseconds: 900),
     );
-  }
-
-  void _searchTags(String text) {
-    final list = context.read<NovelProvider>().getList;
-    final res = list.where((e) => e.getTagContent.contains(text)).toList();
-    goNovelSeeAllScreen(context, text, res);
   }
 
   // main menu
@@ -275,7 +276,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
     showDialog(
       context: context,
       builder: (context) => PageUrlDialog(
-        list: novel.getPageUrls,
+        list: novel.meta.pageUrls,
         onClicked: (url) {
           goRoute(
             context,
@@ -368,7 +369,7 @@ class _ContentHomePageState extends State<ContentHomePage> {
               '${PathUtil.getOutPath()}/${novel.title}.config.json',
             );
             // config
-            await file.writeAsString(await novel.getConfigJson());
+            await file.writeAsString(jsonEncode(novel.toMap()));
             // cover
             if (isIncludeCover) {
               final coverFile = File('${novel.path}/cover.png');

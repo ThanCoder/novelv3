@@ -127,12 +127,12 @@ class NovelDevListItem extends StatelessWidget {
       runSpacing: 5,
       children: [
         StatusText(
-          bgColor: novel.isCompleted
+          bgColor: novel.meta.isCompleted
               ? StatusText.completedColor
               : StatusText.onGoingColor,
-          text: novel.isCompleted ? 'Completed' : 'OnGoing',
+          text: novel.meta.isCompleted ? 'Completed' : 'OnGoing',
         ),
-        novel.isAdult
+        novel.meta.isAdult
             ? StatusText(bgColor: StatusText.adultColor, text: 'Adult')
             : SizedBox.shrink(),
         !novel.cacheIsExistsDesc

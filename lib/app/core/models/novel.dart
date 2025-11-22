@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'dart:io';
 
 import 'package:than_pkg/than_pkg.dart';
@@ -11,7 +9,7 @@ class Novel {
   final String title;
   final String path;
   final DateTime date;
-  final NovelMeta meta;
+  NovelMeta meta;
   int cacheSize = 0;
   bool cacheIsExistsDesc = false;
   bool cacheIsOnlineExists = false;
@@ -39,10 +37,26 @@ class Novel {
     );
   }
 
+  Future<void> setMeta(NovelMeta newMeta) async {
+    meta = newMeta;
+    await meta.save(path);
+  }
+
+  Future<void> deleteForever() async {
+    await PathUtil.deleteDir(Directory(path));
+  }
+
+  bool isExistsNovelData() {
+    return false;
+  }
+
+  bool get isN3DataExported => false;
+
   int get getSizeInt {
     return cacheSize;
   }
 
+  String get getCoverPath => '$path/cover.png';
   String get getContentPath => '$path/content';
   String get getChapterBookmarkPath => '$path/fav_list2.json';
 
@@ -78,9 +92,6 @@ class Novel {
       'path': path,
       'date': date.millisecondsSinceEpoch,
       'meta': meta.toMap(),
-      'cacheSize': cacheSize,
-      'cacheIsExistsDesc': cacheIsExistsDesc,
-      'cacheIsOnlineExists': cacheIsOnlineExists,
     };
   }
 

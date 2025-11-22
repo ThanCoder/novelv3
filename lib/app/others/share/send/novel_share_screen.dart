@@ -57,7 +57,7 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
     });
 
     // get novel
-    novelList = await NovelServices.getList();
+    // novelList = await NovelServices.getList();
     novelList.sortDate();
     if (!mounted) return;
     setState(() {});

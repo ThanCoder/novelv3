@@ -28,7 +28,6 @@ class _EditNovelFormState extends State<EditNovelForm> {
   final authorFocus = FocusNode();
   final translatorFocus = FocusNode();
   final mcFocus = FocusNode();
-  late Novel novel;
   bool isLoading = false;
   List<Novel> existsList = [];
   String? titleError;
@@ -36,7 +35,6 @@ class _EditNovelFormState extends State<EditNovelForm> {
 
   @override
   void initState() {
-    novel = widget.novel;
     super.initState();
     init();
   }
@@ -57,17 +55,26 @@ class _EditNovelFormState extends State<EditNovelForm> {
     super.dispose();
   }
 
+  bool isAdult = false;
+  bool isCompleted = false;
+  List<String> tags = [];
+  List<String> pageUrls = [];
+  // init
   void init() {
-    titleController.text = novel.title;
-    descController.text = novel.getContent;
-    authorController.text = novel.getAuthor;
-    translatorController.text = novel.getTranslator;
-    mcController.text = novel.getMC;
+    titleController.text = widget.novel.title;
+    descController.text = widget.novel.meta.desc;
+    authorController.text = widget.novel.meta.author;
+    translatorController.text = widget.novel.meta.translator ?? 'Unknown';
+    mcController.text = widget.novel.meta.mc;
+    isAdult = widget.novel.meta.isAdult;
+    isCompleted = widget.novel.meta.isCompleted;
+    tags = widget.novel.meta.tags;
+    pageUrls = widget.novel.meta.pageUrls;
     // init exists list
     existsList = context
         .read<NovelProvider>()
         .getList
-        .where((e) => e.title != novel.title)
+        .where((e) => e.title != widget.novel.title)
         .toList();
     // remove current novel
   }
@@ -79,7 +86,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
       body: TScrollableColumn(
         children: [
           // cover
-          TCoverChooser(coverPath: novel.getCoverPath),
+          TCoverChooser(coverPath: widget.novel.getCoverPath),
           // fields
           _getForms(),
         ],
@@ -151,34 +158,34 @@ class _EditNovelFormState extends State<EditNovelForm> {
         ),
         SwitchListTile.adaptive(
           title: Text('is Completed'),
-          value: novel.isCompleted,
+          value: isCompleted,
           onChanged: (value) {
-            novel.setCompleted(value);
+            isCompleted = value;
             setState(() {});
           },
         ),
         SwitchListTile.adaptive(
           title: Text('is Adult'),
-          value: novel.isAdult,
+          value: isAdult,
           onChanged: (value) {
-            novel.setAdult(value);
+            isAdult = value;
             setState(() {});
           },
         ),
         // page urls
         _getPageUrlWidget(),
+
         // tags
         TTagsWrapView(
           title: Text('Tags'),
-          values: novel.getTags,
+          values: tags,
           allTags: allTags,
           onApply: (values) {
-            novel.setTags(values);
+            tags = values;
             _clearFocus();
             setState(() {});
           },
         ),
-
         TTextField(
           label: Text('Description'),
           maxLines: null,
@@ -192,7 +199,7 @@ class _EditNovelFormState extends State<EditNovelForm> {
   Widget _getPageUrlWidget() {
     return TTagsWrapView(
       title: Text('Page Urls'),
-      values: novel.getPageUrls,
+      values: pageUrls,
       onAddButtonClicked: () {
         showTReanmeDialog(
           context,
@@ -211,16 +218,14 @@ class _EditNovelFormState extends State<EditNovelForm> {
             _clearFocus();
           },
           onSubmit: (url) {
-            final res = novel.getPageUrls;
-            res.add(url);
-            novel.setPageUrls(res);
+            pageUrls.add(url);
             _clearFocus();
             setState(() {});
           },
         );
       },
       onApply: (values) {
-        novel.setPageUrls(values);
+        pageUrls = values;
         setState(() {});
       },
     );
@@ -246,30 +251,37 @@ class _EditNovelFormState extends State<EditNovelForm> {
       });
       await Future.delayed(Duration(milliseconds: 900));
 
-      final oldTitle = widget.novel.title;
+      String savedPath = '${PathUtil.getSourcePath()}/${widget.novel.title}';
       final newTitle = titleController.text.trim();
       if (newTitle.isEmpty) return;
-      // delay
 
-      novel.setAuthor(authorController.text.trim());
-      novel.setTranslator(translatorController.text.trim());
-      novel.setMC(mcController.text.trim());
-      novel.setContent(descController.text.trim());
-      novel.setAuthor(authorController.text.trim());
-      // rename
-      if (oldTitle != newTitle) {
+      if (savedPath != newTitle) {
         // change new title
         final oldPath = widget.novel.path;
-        final newPath = '${PathUtil.getSourcePath()}/$newTitle';
+        savedPath = '${PathUtil.getSourcePath()}/$newTitle';
         await PathUtil.renameDir(
           oldDir: Directory(oldPath),
-          newDir: Directory(newPath),
+          newDir: Directory(savedPath),
         );
-        novel = novel.copyWith(title: newTitle, path: newPath);
       }
+      final novel = widget.novel.copyWith(title: newTitle, path: savedPath);
+      final newMeta = novel.meta.copyWith(
+        title: newTitle,
+        author: authorController.text.trim(),
+        mc: mcController.text.trim(),
+        desc: descController.text.trim(),
+        isAdult: isAdult,
+        isCompleted: isCompleted,
+        pageUrls: pageUrls,
+        tags: tags,
+      );
+      novel.setMeta(newMeta);
 
       if (!mounted) return;
-      await context.read<NovelProvider>().update(novel, oldTitle);
+      setState(() {
+        isLoading = false;
+      });
+      await context.read<NovelProvider>().update(novel, widget.novel.title);
       if (!mounted) return;
 
       closeContext(context);

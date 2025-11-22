@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:novel_v3/app/core/interfaces/index.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_data.dart';
@@ -18,15 +17,16 @@ class NovelBookmarkDB extends JsonDatabase<NovelBookmarkData> {
 
   Future<List<Novel>> getNovelList() async {
     // await Future.delayed(Duration(seconds: 3));
-    final list = await getAll();
+    // final list = await getAll();
 
-    return list
-        .where(
-          (e) =>
-              Directory('${PathUtil.getSourcePath()}/${e.title}').existsSync(),
-        )
-        .map((e) => Novel.createTitle(e.title))
-        .toList();
+    // return list
+    //     .where(
+    //       (e) =>
+    //           Directory('${PathUtil.getSourcePath()}/${e.title}').existsSync(),
+    //     )
+    //     .map((e) => Novel.createTitle(e.title))
+    //     .toList();
+    return [];
   }
 
   Future<void> toggleNovel(Novel novel) async {

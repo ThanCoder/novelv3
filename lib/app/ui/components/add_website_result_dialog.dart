@@ -53,18 +53,18 @@ class _AddWebsiteResultDialogState extends State<AddWebsiteResultDialog> {
           savePath: '$sourcePath/cover.png',
         );
       }
-      if (result.description != null) {
-        novel.setContent(result.description!);
-      }
-      if (result.author != null) {
-        novel.setAuthor(result.author!);
-      }
-      if (result.translator != null) {
-        novel.setTranslator(result.translator!);
-      }
-      if (result.tags != null) {
-        novel.setTagContent(result.tags!);
-      }
+      // if (result.description != null) {
+      //   novel.setContent(result.description!);
+      // }
+      // if (result.author != null) {
+      //   novel.setAuthor(result.author!);
+      // }
+      // if (result.translator != null) {
+      //   novel.setTranslator(result.translator!);
+      // }
+      // if (result.tags != null) {
+      //   novel.setTagContent(result.tags!);
+      // }
 
       // success
       widget.onLoaded?.call(sourcePath);

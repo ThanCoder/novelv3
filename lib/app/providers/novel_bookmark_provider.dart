@@ -15,9 +15,10 @@ class NovelBookmarkProvider extends ChangeNotifier {
     _list.clear();
 
     final res = await NovelBookmarkServices.getList();
-    final novelList = res
-        .map((e) => Novel.fromPath('${PathUtil.getSourcePath()}/$e'))
-        .toList();
+    List<Novel> novelList = [];
+    for (var path in res) {
+      novelList.add(await Novel.fromPath('${PathUtil.getSourcePath()}/$path'));
+    }
     _list.addAll(novelList);
 
     // await Future.delayed(Duration(seconds: 3));

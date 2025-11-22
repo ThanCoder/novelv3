@@ -29,7 +29,7 @@ void main() async {
       showTSnackBar(context, message);
     },
     onDatabasePathChanged: () {
-      NovelServices.clearCache();
+      // NovelServices.clearCache();
     },
   );
 
@@ -108,7 +108,7 @@ void main() async {
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
-      await windowManager.focus();
+      // await windowManager.focus();
     });
   }
 

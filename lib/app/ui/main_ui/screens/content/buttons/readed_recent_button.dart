@@ -18,7 +18,7 @@ class _ReadedRecentButtonState extends State<ReadedRecentButton> {
     if (novel == null) {
       return SizedBox.shrink();
     }
-    final chapterNum = novel.getReadedNumber;
+    final chapterNum = novel.meta.readed;
     final path = '${novel.path}/$chapterNum';
     if (!Chapter.isChapterExists(novel.path, chapterNum)) {
       return SizedBox.shrink();
@@ -40,7 +40,7 @@ class _ReadedRecentButtonState extends State<ReadedRecentButton> {
     try {
       final novel = context.read<NovelProvider>().getCurrent;
       if (novel == null) return;
-      final readed = novel.getReadedNumber;
+      final readed = novel.meta.readed;
       if (chapter.number <= readed) return;
       //ကြီးနေတယ်ဆိုရင်
       showTConfirmDialog(
@@ -52,7 +52,7 @@ class _ReadedRecentButtonState extends State<ReadedRecentButton> {
         submitText: 'သိမ်းမယ်',
         cancelText: 'မသိမ်းဘူး',
         onSubmit: () {
-          novel.setReaded(chapter.number.toString());
+          // novel.setReaded(chapter.number.toString());
           context.read<NovelProvider>().refreshNotifier();
           setState(() {});
         },

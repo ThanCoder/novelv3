@@ -49,7 +49,7 @@ class _ContentImageWrapperState extends State<ContentImageWrapper> {
                   }
                   return TImage(
                     source: novel.getCoverPath,
-                    defaultAssetsPath: 'assets/logo_2.jpg',
+                    defaultAssetsPath: 'assets/logo_3.jpg',
                   );
                 },
               ),

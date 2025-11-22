@@ -21,9 +21,9 @@ class _HomeStyleState extends State<HomeStyle> {
   @override
   Widget build(BuildContext context) {
     final list = context.watch<NovelProvider>().getList;
-    final completedList = list.where((e) => e.isCompleted).toList();
-    final onGoingList = list.where((e) => !e.isCompleted).toList();
-    final adultList = list.where((e) => e.isAdult).toList();
+    final completedList = list.where((e) => e.meta.isCompleted).toList();
+    final onGoingList = list.where((e) => !e.meta.isCompleted).toList();
+    final adultList = list.where((e) => e.meta.isAdult).toList();
     final randomList = List.of(list);
     randomList.shuffle();
     if (list.isEmpty) {

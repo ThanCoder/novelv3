@@ -43,14 +43,14 @@ class NovelListItem extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                     _getRowTile(
-                      text: 'Author: ${novel.getAuthor}',
+                      text: 'Author: ${novel.meta.author}',
                       iconData: Icons.edit,
                     ),
                     _getRowTile(
-                      text: novel.getTranslator,
+                      text: novel.meta.translator?? '',
                       iconData: Icons.translate,
                     ),
-                    _getRowTile(text: novel.getMC, iconData: Icons.person),
+                    _getRowTile(text: novel.meta.mc, iconData: Icons.person),
                     _getRowTile(
                       iconData: Icons.date_range,
                       text: novel.date.toParseTime(),
