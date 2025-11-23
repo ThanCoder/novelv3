@@ -28,6 +28,9 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
+  bool multiSelected = false;
+  List<int> selectedChapter = [];
+
   Future<void> init() async {
     final novel = context.read<NovelProvider>().getCurrent;
     if (novel == null) return;
@@ -42,6 +45,7 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
     return ContentImageWrapper(
       appBarAction: [
+        ..._getMultiAction(list),
         _getSortAction(),
         IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert_rounded)),
       ],
@@ -51,6 +55,26 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
       sliverBuilder: (context, novel) => [_getSliverList(list)],
       onRefresh: init,
     );
+  }
+
+  List<Widget> _getMultiAction(List<Chapter> allChapterList) {
+    if (!multiSelected) return [];
+    final isAllChecked = allChapterList.length == selectedChapter.length;
+    return [
+      IconButton(
+        onPressed: () {
+          if (isAllChecked) {
+            // uncheck
+            selectedChapter.clear();
+          } else {
+            // all check
+            selectedChapter = allChapterList.map((e) => e.number).toList();
+          }
+          setState(() {});
+        },
+        icon: Icon(isAllChecked ? Icons.clear_all_rounded : Icons.check),
+      ),
+    ];
   }
 
   Widget _getSortAction() {
@@ -95,9 +119,21 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     return SliverList.separated(
       itemCount: list.length,
       itemBuilder: (context, index) => ChapterListItem(
+        isChecked: multiSelected
+            ? selectedChapter.contains(list[index].number)
+            : null,
+        onCheckChanged: (isChecked) {
+          final chapter = list[index].number;
+          if (selectedChapter.contains(chapter)) {
+            selectedChapter.remove(chapter);
+          } else {
+            selectedChapter.add(chapter);
+          }
+          setState(() {});
+        },
         chapter: list[index],
         onClicked: (chapter) => _goTextReader(chapter),
-        onRightClicked: _showItemMenu,
+        onRightClicked: multiSelected ? _showMultiItemMenu : _showItemMenu,
       ),
       separatorBuilder: (context, index) => Divider(),
     );
@@ -131,6 +167,72 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
             closeContext(context);
 
             _goMultiChapterFetcher();
+          },
+        ),
+      ],
+    );
+  }
+
+  // item menu
+  void _showItemMenu(Chapter chapter) {
+    showTMenuBottomSheet(
+      context,
+      title: Text('Chapter: ${chapter.number}'),
+      children: [
+        ListTile(
+          leading: Icon(Icons.check_box),
+          title: Text('Multi Selected'),
+          onTap: () {
+            closeContext(context);
+            setState(() {
+              multiSelected = true;
+            });
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit'),
+          onTap: () {
+            closeContext(context);
+            _goEditChapter(chapter: chapter);
+          },
+        ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever_rounded),
+          title: Text('Delete Forever!'),
+          onTap: () {
+            closeContext(context);
+            _deleteForever(chapter);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showMultiItemMenu(Chapter chapter) {
+    showTMenuBottomSheet(
+      context,
+      title: Text('Selected Multi (Count: ${selectedChapter.length})'),
+      children: [
+        ListTile(
+          leading: Icon(Icons.close),
+          title: Text('Close Multi'),
+          onTap: () {
+            closeContext(context);
+            selectedChapter.clear();
+            setState(() {
+              multiSelected = false;
+            });
+          },
+        ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever),
+          title: Text('Delete Chapter'),
+          onTap: () {
+            closeContext(context);
+            _deleteMultiForever();
           },
         ),
       ],
@@ -211,39 +313,25 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
     );
   }
 
-  // item menu
-  void _showItemMenu(Chapter chapter) {
-    showTMenuBottomSheet(
-      context,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('Chapter: ${chapter.number}'),
-        ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.edit_document),
-          title: Text('Edit'),
-          onTap: () {
-            closeContext(context);
-            _goEditChapter(chapter: chapter);
-          },
-        ),
-        ListTile(
-          iconColor: Colors.red,
-          leading: Icon(Icons.delete_forever_rounded),
-          title: Text('Delete Forever!'),
-          onTap: () {
-            closeContext(context);
-            _deleteForever(chapter);
-          },
-        ),
-      ],
-    );
-  }
-
   void _deleteForever(Chapter chapter) {
     context.read<ChapterProvider>().delete(chapter);
+  }
+
+  void _deleteMultiForever() {
+    showTConfirmDialog(
+      context,
+      barrierDismissible: false,
+      contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+      submitText: 'Delete Forever',
+      onSubmit: () async {
+        await context.read<ChapterProvider>().deleteMulti(selectedChapter);
+        if (!mounted) return;
+        selectedChapter.clear();
+        setState(() {
+          multiSelected = false;
+        });
+      },
+    );
   }
 
   // go text reader
@@ -257,7 +345,8 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
 
   void _checkLastChapter(Chapter chapter) {
     try {
-      final novel = context.read<NovelProvider>().getCurrent;
+      final provider = context.read<NovelProvider>();
+      final novel = provider.getCurrent;
       if (novel == null) return;
       final readed = novel.meta.readed;
       if (chapter.number <= readed) return;
@@ -270,8 +359,9 @@ class _ContentChapterPageState extends State<ContentChapterPage> {
             'သိမ်းဆည်းထားသော Chapter:`$readed`\nဖတ်ပြီးသွားတဲ့ Chapter:`${chapter.number}`',
         submitText: 'သိမ်းမယ်',
         cancelText: 'မသိမ်းဘူး',
-        onSubmit: () {
-          // novel.setReaded(chapter.number.toString());
+        onSubmit: () async {
+          await provider.setMeta(novel.meta.copyWith(readed: chapter.number));
+          if (!mounted) return;
           setState(() {});
         },
       );

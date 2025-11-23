@@ -1,5 +1,6 @@
 # 3.6.0
 
+- Changed `Android Package Name` -> `thancoder.nv3.app`
 - Added `PDF Reader` -> `useProgressiveLoading` Option
 - Updated `PDF Reader` -> `pdfrx: ^2.2.16`
 - Changed `App Icon` ပြောင်းလဲခြင်း

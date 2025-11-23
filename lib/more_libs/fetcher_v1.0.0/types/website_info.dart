@@ -28,7 +28,7 @@ class WebsiteInfoResult {
   final String? author;
   final String? translator;
   final String? description;
-  final String? tags;
+  final List<String>? tags;
   WebsiteInfoResult({
     required this.url,
     this.title,
@@ -48,7 +48,7 @@ class WebsiteInfoResult {
     String? author,
     String? translator,
     String? description,
-    String? tags,
+    List<String>? tags,
   }) {
     return WebsiteInfoResult(
       url: url ?? this.url,

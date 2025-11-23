@@ -7,83 +7,85 @@ class ThancoderAboutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 5,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "App Info",
-            style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+    return Card(
+      child: Column(
+        spacing: 5,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "App Info",
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
-        ListTile(
-          leading: Icon(Icons.history),
-          title: Text('CHANGELOG'),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MarkdownReader(
-                  assetFileName: 'CHANGELOG.md',
-                  title: Text('CHANGELOG'),
+          ListTile(
+            leading: Icon(Icons.history),
+            title: Text('CHANGELOG'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MarkdownReader(
+                    assetFileName: 'CHANGELOG.md',
+                    title: Text('CHANGELOG'),
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.menu_book),
-          title: Text('README'),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MarkdownReader(
-                  assetFileName: 'README.md',
-                  title: Text('README'),
+              );
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.menu_book),
+            title: Text('README'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MarkdownReader(
+                    assetFileName: 'README.md',
+                    title: Text('README'),
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.menu_book),
-          title: Text('Package[pubspec.yaml]'),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MarkdownReader(
-                  assetFileName: 'pubspec.yaml',
-                  title: Text('Package[pubspec.yaml]'),
+              );
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.menu_book),
+            title: Text('Package[pubspec.yaml]'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MarkdownReader(
+                    assetFileName: 'pubspec.yaml',
+                    title: Text('Package[pubspec.yaml]'),
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.telegram),
-          title: Text('Developer'),
-          onTap: () {
-            ThanPkg.platform.launch('https://t.me/thancoder_novel');
-          },
-        ),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.new_releases),
-          title: Text('App Release'),
-          onTap: () {
-            ThanPkg.platform.launch(
-              'https://github.com/ThanCoder/novelv3/releases',
-            );
-          },
-        ),
-      ],
+              );
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.telegram),
+            title: Text('Developer'),
+            onTap: () {
+              ThanPkg.platform.launch('https://t.me/thancoder_novel');
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.new_releases),
+            title: Text('App Release'),
+            onTap: () {
+              ThanPkg.platform.launch(
+                'https://github.com/ThanCoder/novelv3/releases',
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

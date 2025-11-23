@@ -58,6 +58,19 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteMulti(List<int> list) async {
+    for (var chapterNumber in list) {
+      final index = _list.indexWhere((e) => e.number == chapterNumber);
+      if (index == -1) return;
+      final chapter = _list[index];
+      // del file
+      await chapter.delete();
+      // remove ui
+      _list.removeAt(index);
+    }
+    notifyListeners();
+  }
+
   void setSort(int id, bool isAsc) {
     currentSortId = id;
     isSortAsc = isAsc;

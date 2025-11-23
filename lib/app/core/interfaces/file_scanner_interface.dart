@@ -26,7 +26,7 @@ abstract class FileScannerInterface<T> {
           // if (isAllCalc) {
           //   // တွက်ပြီးထည့်မယ်
           //   final descLines = await File(T.getContentPath).readAsLines();
-          //   T.cacheIsExistsDesc = descLines.isNotEmpty;
+          //   T.isExistsDesc = descLines.isNotEmpty;
           //   // calc all size
           //   T.cacheSize = await T.getAllSize();
           // }

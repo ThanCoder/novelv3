@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
@@ -10,6 +9,7 @@ import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/constants.dart';
 import 'package:novel_v3/more_libs/pdf_readers_v1.3.3/pdf_reader.dart';
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:provider/provider.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -18,7 +18,7 @@ import 'more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart'
     hide NovelServices;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  await ThanPkg.instance.init();
   // call theme
   ThemeServices.instance.init();
 
@@ -33,15 +33,13 @@ void main() async {
     },
   );
 
-  await ThanPkg.instance.init();
-
-  final dio = Dio();
+  final client = TClient();
 
   await TWidgets.instance.init(
     defaultImageAssetsPath: 'assets/logo_3.jpg',
     getDarkMode: () => Setting.getAppConfig.isDarkMode,
     onDownloadImage: (url, savePath) async {
-      await dio.download(url, savePath);
+      await client.download(url, savePath: savePath);
     },
   );
   await PdfReader.instance.init(
@@ -54,7 +52,7 @@ void main() async {
   await NovelV3Uploader.instance.init(
     isShowDebugLog: true,
     getContentFromUrl: (url) async {
-      final res = await dio.get(url);
+      final res = await client.get(url);
       return res.data.toString();
     },
     appBarActions: [],
@@ -67,7 +65,7 @@ void main() async {
     getApiServerUrl: () => apiServerUrl,
     getLocalServerPath: () => localServerPath,
     getContentFromUrl: (url) async {
-      final res = await dio.get(url);
+      final res = await client.get(url);
       return res.data.toString();
     },
   );
@@ -84,7 +82,7 @@ void main() async {
   // fetcher
   await Fetcher.instance.init(
     onGetHtmlContent: (url) async {
-      final res = await dio.get(url);
+      final res = await client.get(url);
       return res.data.toString();
     },
     onShowErrorMessage: (context, message) {

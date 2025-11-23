@@ -373,7 +373,11 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
       final translator = info.translatorQuery?.getResult(currentElement!);
       final coverUrl = info.coverUrlQuery?.getResult(currentElement!);
       final description = info.descriptionQuery?.getResult(currentElement!);
-      final tags = info.tagsQuery?.getResult(currentElement!);
+      final tagsString = info.tagsQuery?.getResult(currentElement!);
+      List<String> tags = [];
+      if (tagsString != null) {
+        tags = tagsString.split(',').toList();
+      }
 
       result = result.copyWith(
         url: pageUrlController.text,

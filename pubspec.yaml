@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  dio: ^5.9.0
   pdfrx: ^2.2.16
   than_pkg: ^5.0.0
   t_widgets: ^1.8.5

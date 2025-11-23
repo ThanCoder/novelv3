@@ -113,7 +113,7 @@ class _AddAutoMultiChapterScreenState extends State<AddAutoMultiChapterScreen> {
             });
           },
         ),
-        downloadingChapter != null
+        downloadingChapter != null && !isDownloadingStop
             ? Text('Chapter: `${downloadingChapter!.index}` Downloading....')
             : SizedBox.shrink(),
         Divider(),

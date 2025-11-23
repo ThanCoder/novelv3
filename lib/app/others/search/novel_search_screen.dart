@@ -6,7 +6,7 @@ import 'package:novel_v3/app/core/factorys/file_scanner_factory.dart';
 import 'package:novel_v3/app/ui/routes_helper.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-import '../../novel_dir_app.dart';
+import '../../ui/novel_dir_app.dart';
 
 typedef IsolatePerparingSearchListReturn = (
   List<Novel> novelList,
@@ -53,7 +53,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       });
 
       final (novelList, author, translator, mc, tags) =
-          await getPreparingSearchList();
+          await _getPreparingSearchList();
 
       // sort
       author.sort((a, b) => a.compareTo(b));
@@ -132,21 +132,22 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
   void _onSearch(String text) async {
     // list ကို sendable အဖြစ် serialize
     // final listMap = list.map((e) => e.toMap()).toList();
-    // final upper = text.toUpperCase();
+    final upper = text.toUpperCase();
 
     resultList = list.where((e) {
-      // if (e.title.toUpperCase().contains(upper)) {
-      //   return true;
-      // }
-      // if (e.getMC.toUpperCase().contains(upper)) {
-      //   return true;
-      // }
-      // if (e.getAuthor.toUpperCase().contains(upper)) {
-      //   return true;
-      // }
-      // if (e.getTranslator.toUpperCase().contains(upper)) {
-      //   return true;
-      // }
+      if (e.title.toUpperCase().contains(upper)) {
+        return true;
+      }
+      if (e.meta.mc.toUpperCase().contains(upper)) {
+        return true;
+      }
+      if (e.meta.author.toUpperCase().contains(upper)) {
+        return true;
+      }
+      if (e.meta.translator != null &&
+          e.meta.translator!.toUpperCase().contains(upper)) {
+        return true;
+      }
       return false;
     }).toList();
     // sort
@@ -178,10 +179,12 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
     }
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: _getAuthorList()),
-        SliverToBoxAdapter(child: _getTranslatorList()),
-        SliverToBoxAdapter(child: _getTagsList()),
-        SliverToBoxAdapter(child: _getMCList()),
+        SliverToBoxAdapter(child: authorList.isEmpty ? null : _getAuthorList()),
+        SliverToBoxAdapter(
+          child: translatorList.isEmpty ? null : _getTranslatorList(),
+        ),
+        SliverToBoxAdapter(child: tagsList.isEmpty ? null : _getTagsList()),
+        SliverToBoxAdapter(child: mcList.isEmpty ? null : _getMCList()),
       ],
     );
   }
@@ -252,27 +255,30 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
       ),
     );
   }
+}
 
-  //static
-  static Future<IsolatePerparingSearchListReturn>
-  getPreparingSearchList() async {
-    final rootPath = FolderFileServices.getSourcePath();
+///
+/// ### Return (novelList, author, translator, mc, tags)
+///
+Future<IsolatePerparingSearchListReturn> _getPreparingSearchList() async {
+  final rootPath = FolderFileServices.getSourcePath();
 
-    //final (novelList, author, translator, mc, tags) =
-    return await Isolate.run<IsolatePerparingSearchListReturn>(() async {
-      final list = await FileScannerFactory.getScanner<Novel>().getList(
-        rootPath,
-      );
-      final author = list.map((e) => e.meta.author).toSet().toList();
-      final translator = list.map((e) => e.meta.translator?? '').toSet().toList();
-      final mc = list.map((e) => e.meta.mc).toSet().toList();
-      final tags = list
-          .expand((e) => e.meta.tags)
-          .map((e) => e.trim())
-          .toSet()
-          .toList();
-      final result = (list, author, translator, mc, tags);
-      return result;
-    });
-  }
+  //final (novelList, author, translator, mc, tags) =
+  return await Isolate.run<IsolatePerparingSearchListReturn>(() async {
+    final list = await FileScannerFactory.getScanner<Novel>().getList(rootPath);
+    final author = list.map((e) => e.meta.author).toSet().toList();
+    final translator = list
+        .where((e) => e.meta.translator != null)
+        .map((e) => e.meta.translator ?? '')
+        .toSet()
+        .toList();
+    final mc = list.map((e) => e.meta.mc).toSet().toList();
+    final tags = list
+        .expand((e) => e.meta.tags)
+        .map((e) => e.trim())
+        .toSet()
+        .toList();
+    final result = (list, author, translator, mc, tags);
+    return result;
+  });
 }

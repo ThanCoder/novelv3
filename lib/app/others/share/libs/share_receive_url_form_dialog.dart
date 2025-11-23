@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -31,8 +31,8 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
   bool isLoading = false;
   List<String> hostAddress = [];
   String? errorText;
-  Dio dio = Dio(
-    BaseOptions(
+  TClient client = TClient(
+    options: TClientOptions(
       sendTimeout: Duration(seconds: 3),
       connectTimeout: Duration(seconds: 3),
       receiveTimeout: Duration(seconds: 3),
@@ -119,7 +119,7 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
       });
       final url = 'http://${urlController.text}:${TServer.instance.getPort}';
 
-      await dio.get(url);
+      await client.get(url);
 
       if (!mounted) return;
 

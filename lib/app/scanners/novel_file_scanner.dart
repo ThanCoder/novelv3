@@ -21,7 +21,7 @@ class NovelFileScanner extends FileScannerInterface<Novel> {
     if (isAllCalc) {
       // တွက်ပြီးထည့်မယ်
       // final descLines = await File(novel.getContentPath).readAsLines();
-      // novel.cacheIsExistsDesc = descLines.isNotEmpty;
+      // novel.isExistsDesc = descLines.isNotEmpty;
       // // calc all size
       // novel.cacheSize = await novel.getAllSize();
     }

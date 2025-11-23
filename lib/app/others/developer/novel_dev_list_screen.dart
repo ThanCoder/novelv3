@@ -77,7 +77,7 @@ class _NovelDevListScreenState extends State<NovelDevListScreen> {
       setState(() {
         isLoading = true;
       });
-      // localList = await NovelServices.getList(isAllCalc: true);
+      localList = await NovelServices.getList();
 
       _onSortList();
 

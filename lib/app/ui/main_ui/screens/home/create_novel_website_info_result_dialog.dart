@@ -38,11 +38,12 @@ class _CreateNovelWebsiteInfoResultDialogState
         await dir.create();
       }
       final novel = await Novel.fromPath(dir.path);
+      var newMeta = novel.meta;
 
       if (result.url.isNotEmpty) {
         final urls = novel.meta.pageUrls;
         urls.insert(0, result.url);
-        // novel.setPageUrls(urls.toSet().toList());
+        newMeta = newMeta.copyWith(pageUrls: urls.toSet().toList());
       }
 
       // download cover
@@ -54,18 +55,13 @@ class _CreateNovelWebsiteInfoResultDialogState
         );
       }
 
-      // if (result.description != null) {
-      //   novel.setContent(result.description!);
-      // }
-      // if (result.author != null) {
-      //   novel.setAuthor(result.author!);
-      // }
-      // if (result.translator != null) {
-      //   novel.setTranslator(result.translator!);
-      // }
-      // if (result.tags != null) {
-      //   novel.setTagContent(result.tags!);
-      // }
+      newMeta = newMeta.copyWith(
+        desc: result.description,
+        author: result.author,
+        translator: result.translator,
+        tags: result.tags,
+      );
+      await novel.setMeta(newMeta);
 
       if (!mounted) return;
       Navigator.pop(context);

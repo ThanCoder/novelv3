@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/interfaces/database.dart';
@@ -22,7 +24,7 @@ import 'package:novel_v3/more_libs/setting_v2.0.0/others/novel_home_list_styles.
 import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import '../novel_search_screen.dart';
+import '../../../../others/search/novel_search_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../novel_dir_app.dart';
 
@@ -307,22 +309,20 @@ class _HomePageState extends State<HomePage> with DatabaseListener {
       },
       onSubmit: (text) async {
         if (text.isEmpty) return;
-        // try {
-        //   final novel = Novel.createTitle(text.trim());
-        //   // delay
-        //   await Future.delayed(Duration(milliseconds: 500));
-        //   // copy cover
-        //   final pdfCoverFile = File(pdf.getCoverPath);
-        //   await pdfCoverFile.copy(novel.getCoverPath);
-        //   // move pdf file
-        //   await pdf.rename('${novel.path}/${pdf.getTitle}');
+        try {
+          final novel = await Novel.createTitle(text.trim());
+          // copy cover
+          final pdfCoverFile = File(pdf.getCoverPath);
+          await pdfCoverFile.copy(novel.getCoverPath);
+          // move pdf file
+          await pdf.rename('${novel.path}/${pdf.getTitle}');
 
-        //   provider.add(novel);
-        //   if (!mounted) return;
-        //   goRoute(context, builder: (context) => EditNovelForm(novel: novel));
-        // } catch (e) {
-        //   NovelDirApp.showDebugLog(e.toString());
-        // }
+          provider.add(novel);
+          if (!mounted) return;
+          goRoute(context, builder: (context) => EditNovelForm(novel: novel));
+        } catch (e) {
+          NovelDirApp.showDebugLog(e.toString());
+        }
       },
     );
   }

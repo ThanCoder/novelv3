@@ -120,7 +120,6 @@ class NovelDevListItem extends StatelessWidget {
     );
   }
 
-
   Widget _getStatusWidget() {
     return Wrap(
       spacing: 5,
@@ -135,7 +134,7 @@ class NovelDevListItem extends StatelessWidget {
         novel.meta.isAdult
             ? StatusText(bgColor: StatusText.adultColor, text: 'Adult')
             : SizedBox.shrink(),
-        !novel.cacheIsExistsDesc
+        !novel.isExistsDesc
             ? StatusText(
                 bgColor: const Color.fromARGB(255, 102, 87, 22),
                 text: 'Description မရှိပါ',

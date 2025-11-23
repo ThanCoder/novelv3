@@ -11,7 +11,6 @@ class Novel {
   final DateTime date;
   NovelMeta meta;
   int cacheSize = 0;
-  bool cacheIsExistsDesc = false;
   bool cacheIsOnlineExists = false;
 
   Novel({
@@ -50,6 +49,8 @@ class Novel {
     return false;
   }
 
+  bool get isExistsDesc => meta.desc.isNotEmpty;
+
   bool get isN3DataExported => false;
 
   int get getSizeInt {
@@ -57,7 +58,6 @@ class Novel {
   }
 
   String get getCoverPath => '$path/cover.png';
-  String get getContentPath => '$path/content';
   String get getChapterBookmarkPath => '$path/fav_list2.json';
 
   Future<String> getAllSizeLabel() async {

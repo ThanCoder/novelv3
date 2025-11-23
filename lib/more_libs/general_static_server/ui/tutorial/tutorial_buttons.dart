@@ -23,15 +23,17 @@ class TutorialListTileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.help_outline),
-      title: Text('အကူအညီများ'),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TutorialApiHomeScreen()),
-        );
-      },
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.help_outline),
+        title: Text('အကူအညီများ'),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TutorialApiHomeScreen()),
+          );
+        },
+      ),
     );
   }
 }

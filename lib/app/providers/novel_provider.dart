@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/models/novel_meta.dart';
 import 'package:novel_v3/app/others/recents/novel_recent_db.dart';
 import 'package:t_widgets/t_widgets.dart';
 import '../ui/novel_dir_app.dart';
@@ -35,6 +36,12 @@ class NovelProvider extends ChangeNotifier {
 
   Future<void> setCurrent(Novel novel) async {
     _novel = novel;
+    notifyListeners();
+  }
+
+  Future<void> setMeta(NovelMeta meta) async {
+    if (_novel == null) return;
+    await _novel!.setMeta(meta);
     notifyListeners();
   }
 

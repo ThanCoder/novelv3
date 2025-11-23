@@ -20,12 +20,12 @@ extension NovelExtension on List<Novel> {
     sort((a, b) {
       if (isAdded) {
         //ထုတ်ပြီးသား
-        if (a.cacheIsExistsDesc && !b.cacheIsExistsDesc) return -1;
-        if (!a.cacheIsExistsDesc && b.cacheIsExistsDesc) return 1;
+        if (a.isExistsDesc && !b.isExistsDesc) return -1;
+        if (!a.isExistsDesc && b.isExistsDesc) return 1;
       } else {
         //မထုတ်ရသေး
-        if (a.cacheIsExistsDesc && !b.cacheIsExistsDesc) return 1;
-        if (!a.cacheIsExistsDesc && b.cacheIsExistsDesc) return -1;
+        if (a.isExistsDesc && !b.isExistsDesc) return 1;
+        if (!a.isExistsDesc && b.isExistsDesc) return -1;
       }
       return 0;
     });
