@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:archive/archive.dart';
-import 'package:novel_v3/app/ui/novel_dir_app.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+import 'package:novel_v3/app/others/n3_data/constants.dart';
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class N3Data {
@@ -76,7 +76,7 @@ class N3Data {
         await inputStream.close();
         return title.trim();
       } catch (e) {
-        NovelDirApp.showDebugLog(e.toString(), tag: 'N3Data:getDataTitle');
+        // NovelDirApp.showDebugLog(e.toString(), tag: 'N3Data:getDataTitle');
       }
       return null;
     });
@@ -86,7 +86,7 @@ class N3Data {
   Future<void> saveCover(String savedPath) async {
     final saveFile = File(savedPath);
     if (saveFile.existsSync()) return;
-    final password = NovelDirApp.instance.onGetN3DataPassword();
+    final password = getSecretKey();
 
     // Zip file ကို read
     await Isolate.run(() async {
@@ -110,7 +110,7 @@ class N3Data {
         }
         await inputStream.close();
       } catch (e) {
-        NovelDirApp.showDebugLog(e.toString(), tag: 'N3Data:saveCover');
+        // NovelDirApp.showDebugLog(e.toString(), tag: 'N3Data:saveCover');
         final saveFile = File(savedPath);
         if (saveFile.existsSync()) {
           await saveFile.delete();

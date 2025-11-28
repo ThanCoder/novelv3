@@ -1,92 +1,65 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
+import 'package:t_db/t_db.dart';
 
-import 'package:than_pkg/than_pkg.dart';
-
-class Chapter {
-  int number;
-  String path;
-  Chapter({required this.number, required this.path});
-
-  factory Chapter.createPath(String path) {
-    final number = int.parse(path.getName());
-    return Chapter(number: number, path: path);
-  }
-
-  String get getNovelPath {
-    return Directory(path).parent.path;
-  }
-
-  String getTitle({int readLine = 0}) {
-    final file = File(path);
-    if (file.existsSync()) {
-      final lines = file.readAsLinesSync();
-      if (lines.isEmpty || lines.length < readLine) {
-        return '';
-      }
-      return lines[readLine];
-    }
-    return '';
-  }
-
-  String get getContents {
-    final file = File(path);
-    if (file.existsSync()) {
-      return file.readAsStringSync();
-    }
-    return '';
-  }
-
-  Chapter? get getNextChapter {
-    final oldChapter = File(path);
-    final file = File('${oldChapter.parent.path}/${number + 1}');
-    if (file.existsSync()) {
-      return Chapter.createPath(file.path);
-    }
-    return null;
-  }
-
-  Chapter? get getPrevChapter {
-    if (number == 0) return null;
-
-    final oldChapter = File(path);
-    final file = File('${oldChapter.parent.path}/${number - 1}');
-    if (file.existsSync()) {
-      return Chapter.createPath(file.path);
-    }
-    return null;
-  }
-
-  Future<void> setContent(String text) async {
-    final file = File(path);
-    await file.writeAsString(text);
-  }
-
-  Future<void> delete() async {
-    final file = File(path);
-    if (!file.existsSync()) return;
-    await file.delete();
-  }
-
-  // static
-  static Chapter? createFromPath(String path) {
-    final file = File(path);
-    if (!file.existsSync()) return null;
-    return Chapter.createPath(path);
-  }
-
-  static bool isChapter(String path) {
-    final number = int.tryParse(path.getName());
-    return number == null ? false : true;
-  }
-
-  static bool isChapterExists(String novelPath, int chapter) {
-    final file = File('$novelPath/$chapter');
-    return file.existsSync();
+class ChapterAdapter extends TDAdapter<Chapter> {
+  @override
+  Chapter fromMap(Map<String, dynamic> map) {
+    return Chapter.fromMap(map);
   }
 
   @override
-  String toString() {
-    return 'ChapterNumber: $number';
+  int getId(Chapter value) {
+    return value.autoId;
+  }
+
+  @override
+  int getUniqueFieldId() {
+    return 1;
+  }
+
+  @override
+  Map<String, dynamic> toMap(Chapter value) {
+    return value.toMap();
+  }
+}
+
+class Chapter {
+  final int autoId;
+  final int number;
+  final String title;
+  final DateTime date;
+  Chapter({
+    this.autoId = 0,
+    required this.number,
+    required this.title,
+    required this.date,
+  });
+
+  Chapter copyWith({int? autoId, int? number, String? title, DateTime? date}) {
+    return Chapter(
+      autoId: autoId ?? this.autoId,
+      number: number ?? this.number,
+      title: title ?? this.title,
+      date: date ?? this.date,
+    );
+  }
+
+  static bool isChapterFile(String title) => int.tryParse(title) != null;
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'autoId': autoId,
+      'number': number,
+      'title': title,
+      'date': date.millisecondsSinceEpoch,
+    };
+  }
+
+  factory Chapter.fromMap(Map<String, dynamic> map) {
+    return Chapter(
+      autoId: map['autoId'] as int,
+      number: map['number'] as int,
+      title: map['title'] as String,
+      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+    );
   }
 }

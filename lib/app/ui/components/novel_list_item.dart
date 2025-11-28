@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:t_widgets/widgets/index.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import '../novel_dir_app.dart';
 
 class NovelListItem extends StatelessWidget {
-  Novel novel;
-  void Function(Novel novel)? onClicked;
-  void Function(Novel novel)? onRightClicked;
-  NovelListItem({
+  final Novel novel;
+  final void Function(Novel novel)? onClicked;
+  final void Function(Novel novel)? onRightClicked;
+  const NovelListItem({
     super.key,
     required this.novel,
-    required this.onClicked,
+    this.onClicked,
     this.onRightClicked,
   });
 
@@ -18,70 +18,109 @@ class NovelListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onClicked?.call(novel),
-      onSecondaryTap: () => onRightClicked?.call(novel),
       onLongPress: () => onRightClicked?.call(novel),
+      onSecondaryTap: () => onRightClicked?.call(novel),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
-          child: Row(
-            spacing: 5,
-            children: [
-              SizedBox(
-                width: 100,
-                height: 130,
-                child: TImage(source: novel.getCoverPath),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 2,
-                  children: [
-                    _getRowTile(
-                      iconData: Icons.title,
-                      text: novel.title,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    _getRowTile(
-                      text: 'Author: ${novel.meta.author}',
-                      iconData: Icons.edit,
-                    ),
-                    _getRowTile(
-                      text: novel.meta.translator?? '',
-                      iconData: Icons.translate,
-                    ),
-                    _getRowTile(text: novel.meta.mc, iconData: Icons.person),
-                    _getRowTile(
-                      iconData: Icons.date_range,
-                      text: novel.date.toParseTime(),
-                    ),
-                  ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              spacing: 3,
+              children: [
+                SizedBox(
+                  width: 100,
+                  height: 120,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: TImage(source: novel.getCoverPath),
+                      ),
+                      Positioned.fill(
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.1),
+                        ),
+                      ),
+                      Positioned(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(
+                            Icons.person_add_outlined,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(
+                            !novel.meta.isCompleted
+                                ? Icons.check_circle
+                                : Icons.incomplete_circle,
+                            color: novel.meta.isCompleted
+                                ? Colors.green
+                                : Colors.blue,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 3,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.title),
+                          Expanded(
+                            child: Text(
+                              novel.title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.person),
+                          Expanded(child: Text(novel.meta.author)),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.sd_card),
+                          Expanded(
+                            child: Text(novel.getSize().toFileSizeLabel()),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.date_range),
+                          Expanded(child: Text(novel.getDate.toParseTime())),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _getRowTile({
-    IconData? iconData,
-    required String text,
-    FontWeight? fontWeight,
-  }) {
-    return Row(
-      children: [
-        iconData == null ? SizedBox.fromSize() : Icon(iconData),
-        Expanded(
-          child: Text(
-            text,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 12, fontWeight: fontWeight),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -15,11 +15,7 @@ import 'package:flutter/widgets.dart';
   */
 
 class DesktopExe {
-  static final DesktopExe instance = DesktopExe._();
-  DesktopExe._();
-  factory DesktopExe() => instance;
-
-  Future<void> exportNotExists({
+  static Future<void> exportDesktopIcon({
     required String name,
     required String assetsIconPath,
     String? customDesktopFilePath,
@@ -61,7 +57,7 @@ class DesktopExe {
 
       await file.writeAsString(stringBuff.toString());
     } catch (e) {
-      debugPrint('[DesktopExe:exportNotExists]: ${e.toString()}');
+      debugPrint('[DesktopExe:exportDesktopIcon]: ${e.toString()}');
     }
   }
 }

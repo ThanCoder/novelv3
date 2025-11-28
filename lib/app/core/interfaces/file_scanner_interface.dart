@@ -1,40 +1,44 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:novel_v3/app/core/utils.dart';
+import 'package:than_pkg/than_pkg.dart';
+
 abstract class FileScannerInterface<T> {
-  void onError(String message);
   Future<T?> onParseFile(FileSystemEntity file);
 
-  Future<List<T>> getList(String path) async {
+  Future<List<T>> scan() async {
+    final scanList = await getScannerPath();
+    final filterList = getScannerFilterNames();
+
     return await Isolate.run<List<T>>(() async {
       List<T> list = [];
-      try {
-        final dir = Directory(path);
-        if (!dir.existsSync()) {
-          onError('[not found!]: $path');
-          return list;
-        }
-        // found
+      Future<void> scanDir(Directory dir) async {
         for (var file in dir.listSync(followLinks: false)) {
-          final res = await onParseFile(file);
-          if (res == null) continue;
-          list.add(res);
-          // // dir မဟုတ်ရင် ကျော်မယ်
-          // if (file.statSync().type != FileSystemEntityType.directory) continue;
-          // // dir ပဲယူမယ်
-          // final T = T.fromPath(file.path);
-          // if (isAllCalc) {
-          //   // တွက်ပြီးထည့်မယ်
-          //   final descLines = await File(T.getContentPath).readAsLines();
-          //   T.isExistsDesc = descLines.isNotEmpty;
-          //   // calc all size
-          //   T.cacheSize = await T.getAllSize();
-          // }
-          // list.add(T);
+          final name = file.path.split('/').last;
+          // dir အနေမှာ စစ်မယ်
+          //. စရင် ကျော်မယ်
+          if (name.startsWith('.')) continue;
+          // list ထဲက ဟာတွေကျော်မယ်
+          if (filterList.contains(name)) continue;
+
+          if (file.isFile) {
+            final res = await onParseFile(file);
+            // null ဆိုရင် ကျော်မယ်
+            if (res == null) continue;
+            list.add(res);
+          } else if (file.isDirectory) {
+            // scan လုပ်မယ်
+            scanDir(Directory(file.path));
+          }
         }
-        // sort
-      } catch (e) {
-        onError(e.toString());
+      }
+
+      // scan
+      for (var path in scanList) {
+        final dir = Directory(path);
+        if (!dir.isDirectory) continue;
+        await scanDir(dir);
       }
       return list;
     });

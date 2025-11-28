@@ -1,107 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/my_app.dart';
-import 'package:novel_v3/app/providers/novel_bookmark_provider.dart';
-import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
-import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
-import 'package:novel_v3/more_libs/general_static_server/constants.dart';
-import 'package:novel_v3/more_libs/general_static_server/general_server.dart';
-import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/constants.dart';
-import 'package:novel_v3/more_libs/pdf_readers_v1.3.3/pdf_reader.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
+import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/models/chapter_content.dart';
+import 'package:novel_v3/app/core/providers/chapter_provider.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/core/providers/pdf_provider.dart';
+import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
 import 'package:provider/provider.dart';
-import 'package:t_client/t_client.dart';
+import 'package:t_db/t_db.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-
-import 'app/ui/novel_dir_app.dart';
-import 'more_libs/novel_v3_uploader_v1.3.0/novel_v3_uploader.dart'
-    hide NovelServices;
+import 'package:novel_v3/app/my_app.dart';
+import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
+import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main() async {
   await ThanPkg.instance.init();
-  // call theme
-  ThemeServices.instance.init();
 
-  await Setting.instance.initSetting(
-    appName: 'novel_v3',
-    versionLable: 'Novel V3',
-    onShowMessage: (context, message) {
+  await Setting.instance.init(
+    appName: 'NV 3',
+    releaseUrl: 'https://github.com/ThanCoder/novelv3/releases',
+    onSettingSaved: (context, message) {
       showTSnackBar(context, message);
     },
-    onDatabasePathChanged: () {
-      // NovelServices.clearCache();
-    },
   );
-
-  final client = TClient();
 
   await TWidgets.instance.init(
+    initialThemeServices: true,
     defaultImageAssetsPath: 'assets/logo_3.jpg',
-    getDarkMode: () => Setting.getAppConfig.isDarkMode,
-    onDownloadImage: (url, savePath) async {
-      await client.download(url, savePath: savePath);
-    },
+    getDarkMode: () => Setting.getAppConfig.isDarkTheme,
   );
   await PdfReader.instance.init(
-    getDarkTheme: () => Setting.getAppConfig.isDarkMode,
-    showMessage: (context, msg) {
-      showTSnackBar(context, msg);
-    },
+    getDarkTheme: () => Setting.getAppConfig.isDarkTheme,
   );
-  //static server
-  await NovelV3Uploader.instance.init(
-    isShowDebugLog: true,
-    getContentFromUrl: (url) async {
-      final res = await client.get(url);
-      return res.data.toString();
-    },
-    appBarActions: [],
-    getLocalServerPath: () => '',
-    getApiServerUrl: () => serverGitubRootUrl,
-    appLabelText: 'Novel Api',
-  );
-  // general static server
-  await GeneralServer.instance.init(
-    getApiServerUrl: () => apiServerUrl,
-    getLocalServerPath: () => localServerPath,
-    getContentFromUrl: (url) async {
-      final res = await client.get(url);
-      return res.data.toString();
-    },
-  );
-
-  // local novel
-  await NovelDirApp.instance.init(
-    getAppCachePath: () => PathUtil.getCachePath(),
-    getRootDirPath: () => Setting.appRootPath,
-    onGetN3DataPassword: () => NovelDirApp.getSecretKey,
-    onShowMessage: (context, message) {
-      showTSnackBar(context, message);
-    },
-  );
-  // fetcher
-  await Fetcher.instance.init(
-    onGetHtmlContent: (url) async {
-      final res = await client.get(url);
-      return res.data.toString();
-    },
-    onShowErrorMessage: (context, message) {
-      showTMessageDialogError(context, message);
-    },
-  );
-  await DesktopExe.instance.exportNotExists(
-    name: 'Novel',
-    assetsIconPath: 'assets/logo_3.jpg',
-  );
+  // db
+  final db = TDB.getInstance();
+  db.setAdapter<Chapter>(ChapterAdapter());
+  db.setAdapter<ChapterContent>(ChapterContentAdapter());
 
   if (TPlatform.isDesktop) {
-    WindowOptions windowOptions = const WindowOptions(
+    await DesktopExe.exportDesktopIcon(
+      name: Setting.instance.appName,
+      assetsIconPath: 'assets/logo_3.jpg',
+    );
+
+    WindowOptions windowOptions = WindowOptions(
       size: Size(602, 568), // စတင်ဖွင့်တဲ့အချိန် window size
 
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
       center: false,
-      title: "Novel V3",
+      title: Setting.instance.appName,
     );
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -109,23 +57,14 @@ void main() async {
       // await windowManager.focus();
     });
   }
-
-  // ကြိုခေါ်ထာခြင်း
-  PdfServices.initRecentDB();
-  //share recent
-  await TRecentDB.getInstance.init(
-    rootPath: PathUtil.getConfigPath(name: 'share-recent.db.json'),
-  );
-
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => NovelProvider()),
-        ChangeNotifierProvider(create: (context) => NovelBookmarkProvider()),
-        ChangeNotifierProvider(create: (context) => ChapterProvider()),
         ChangeNotifierProvider(create: (context) => PdfProvider()),
+        ChangeNotifierProvider(create: (context) => ChapterProvider()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

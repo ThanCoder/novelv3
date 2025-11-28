@@ -4,11 +4,11 @@ import 'dart:isolate';
 
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/app/others/n3_data/constants.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/others/index.dart';
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/than_pkg.dart';
-
-import '../../ui/novel_dir_app.dart';
 
 typedef ProgressCallback = Function(double progress);
 typedef ErrorCallback = Function(String message);
@@ -42,7 +42,7 @@ class N3DataWorker {
     final task = N3DataTask(
       zipPath: '${PathUtil.getOutPath()}/${novel.title}.${N3Data.getExt}',
       novelPath: novel.path,
-      password: NovelDirApp.instance.onGetN3DataPassword(),
+      password: getSecretKey(),
     );
     await Isolate.run(() async {
       await exportN3DataTask(task);
@@ -64,9 +64,7 @@ class N3DataWorker {
         zipPath: '${PathUtil.getOutPath()}/${novel.title}.${N3Data.getExt}',
         novelPath: novel.path,
         sendPort: receivePort.sendPort,
-        password: isSetPassword
-            ? NovelDirApp.instance.onGetN3DataPassword()
-            : null,
+        password: isSetPassword ? getSecretKey() : null,
       );
 
       receivePort.listen((message) {
@@ -102,7 +100,7 @@ class N3DataWorker {
     final task = N3DataTask(
       zipPath: n3Data.path,
       novelPath: '${PathUtil.getSourcePath()}/$dataTitle',
-      password: NovelDirApp.instance.onGetN3DataPassword(),
+      password: getSecretKey(),
       isInstallConfigFiles: isInstallConfigFiles,
       isInstallFileOverride: isInstallFileOverride,
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:novel_v3/app/others/bookmark/chapter_bookmark_action.dart';
+import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/core/services/chapter_services.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
-import 'package:novel_v3/app/ui/novel_dir_app.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -65,7 +67,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       setState(() {
         isInitLoading = true;
       });
-      allList = await ChapterServices.getList(widget.chapter.getNovelPath);
+      final novelPath = context.read<NovelProvider>().currentNovel!.path;
+      allList = await ChapterServices().getAll(novelPath);
       allList.sort((a, b) => a.number.compareTo(b.number));
       if (!mounted) return;
       setState(() {
@@ -169,24 +172,24 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         spacing: 5,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          ChapterBookmarkAction(
-            theme: config.theme,
-            chapter: item,
-            title: 'BookMark',
-          ),
+          // ChapterBookmarkAction(
+          //   theme: config.theme,
+          //   chapter: item,
+          //   title: 'BookMark',
+          // ),
           Text(
-            item.getContents,
+            '${item.number}',
             style: TextStyle(
               fontSize: config.fontSize,
               color: config.theme.fontColor,
             ),
           ),
           // bookmark
-          ChapterBookmarkAction(
-            theme: config.theme,
-            chapter: item,
-            title: 'BookMark',
-          ),
+          // ChapterBookmarkAction(
+          //   theme: config.theme,
+          //   chapter: item,
+          //   title: 'BookMark',
+          // ),
         ],
       ),
     );

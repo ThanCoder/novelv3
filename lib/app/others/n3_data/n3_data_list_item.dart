@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
-import 'package:novel_v3/more_libs/setting_v2.0.0/setting.dart';
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
+import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
-import '../../ui/novel_dir_app.dart';
 
 class N3DataListItem extends StatefulWidget {
   N3Data n3data;
@@ -44,7 +44,7 @@ class _N3DataListItemState extends State<N3DataListItem> {
         isLoading = false;
       });
     } catch (e) {
-      NovelDirApp.showDebugLog(e.toString(), tag: 'N3DataListItem:init');
+      // NovelDirApp.showDebugLog(e.toString(), tag: 'N3DataListItem:init');
       if (!mounted) return;
       setState(() {
         isLoading = false;
@@ -71,7 +71,7 @@ class _N3DataListItemState extends State<N3DataListItem> {
                     ? TLoaderRandom()
                     : Container(
                         decoration: BoxDecoration(
-                          color: Setting.getAppConfig.isDarkMode
+                          color: Setting.getAppConfig.isDarkTheme
                               ? Colors.white
                               : null,
                           borderRadius: BorderRadius.circular(5),

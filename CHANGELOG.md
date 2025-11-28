@@ -1,4 +1,8 @@
-# 3.6.0
+# 4.0.0
+
+- Changed `New UI`,`Changed Core Code`,`Change Database`
+
+## 3.6.0
 
 - Changed `Android Package Name` -> `thancoder.nv3.app`
 - Added `PDF Reader` -> `useProgressiveLoading` Option

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/routes.dart';
 import 'n3_data.dart';
-import 'package:novel_v3/more_libs/novel_v3_uploader_v1.3.0/routes_helper.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 import 'n3_data_worker.dart';

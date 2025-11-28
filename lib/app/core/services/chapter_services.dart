@@ -1,0 +1,36 @@
+import 'dart:io';
+
+import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:than_pkg/extensions/file_system_entity_extension.dart';
+
+class ChapterServices {
+  static final ChapterServices instance = ChapterServices._();
+  ChapterServices._();
+  factory ChapterServices() => instance;
+
+  Future<List<Chapter>> getAll(String novelPath) async {
+    List<Chapter> list = [];
+    final dir = Directory(novelPath);
+    if (!dir.existsSync()) return list;
+    // check db
+    final chapterDBFile = File('$novelPath/chapters.db');
+    if (chapterDBFile.existsSync()) {
+      return list;
+    }
+    // not exists
+    for (var file in dir.listSync(followLinks: false)) {
+      if (!file.isFile) continue;
+      final title = file.getName();
+      if (!Chapter.isChapterFile(title)) continue;
+      list.add(
+        Chapter(
+          number: int.parse(title),
+          title: 'Untitled',
+          date: file.getDate,
+        ),
+      );
+    }
+
+    return list;
+  }
+}
