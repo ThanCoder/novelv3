@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class GetstartScreen extends StatefulWidget {
@@ -53,7 +54,7 @@ class _GetstartScreenState extends State<GetstartScreen>
     }
     return Scaffold(
       appBar: AppBar(title: Text('Get Start')),
-      body: ListView(
+      body: TScrollableColumn(
         children: [_getStoragePermission(), Divider(), _getChangeLog()],
       ),
       bottomNavigationBar: Padding(
