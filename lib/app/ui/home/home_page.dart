@@ -47,6 +47,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getListWidget() {
+    if (getProvider.list.isEmpty) {
+      return SliverFillRemaining(child: Center(child: Text('Empty List!')));
+    }
     return SliverList.builder(
       itemCount: getProvider.list.length,
       itemBuilder: (context, index) => _getListItem(getProvider.list[index]),

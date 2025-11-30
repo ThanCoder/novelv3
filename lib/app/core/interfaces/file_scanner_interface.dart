@@ -15,8 +15,8 @@ abstract class FileScannerInterface<T> {
     final res = await Isolate.run<List<T>>(() async {
       List<T> list = [];
       Future<void> scanDir(Directory dir) async {
-        for (var file in dir.listSync(followLinks: false)) {
-          final name = file.path.split('/').last;
+        for (var file in dir.listSync(followLinks: true)) {
+          final name = file.getName();
           // dir အနေမှာ စစ်မယ်
           //. စရင် ကျော်မယ်
           if (name.startsWith('.')) continue;
@@ -30,7 +30,7 @@ abstract class FileScannerInterface<T> {
             list.add(res);
           } else if (file.isDirectory) {
             // scan လုပ်မယ်
-            scanDir(Directory(file.path));
+            await scanDir(Directory(file.path));
           }
         }
       }

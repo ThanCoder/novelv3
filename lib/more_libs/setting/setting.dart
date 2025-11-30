@@ -86,6 +86,7 @@ class Setting {
       appConfigPath = PathUtil.createDir('$rootPath/.$packageName');
       appRootPath = appConfigPath;
       appExternalPath = externalPath ?? '';
+      PathUtil.getSourcePath();
 
       await reSetConfig();
     } catch (e) {

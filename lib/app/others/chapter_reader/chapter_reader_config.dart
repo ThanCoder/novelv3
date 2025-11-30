@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:than_pkg/services/t_map.dart';
 
 import 'package:novel_v3/app/others/chapter_reader/reader_theme.dart';
@@ -29,13 +30,16 @@ class ChapterReaderConfig {
     double paddingY = 5,
     bool isKeepScreening = false,
     bool isBackpressConfirm = false,
+    ReaderTheme? theme,
   }) {
     return ChapterReaderConfig(
       fontSize: fontSize,
       paddingX: paddingX,
       paddingY: paddingY,
       isKeepScreening: isKeepScreening,
-      theme: ReaderTheme.defaultLightTheme,
+      theme: Setting.getAppConfig.isDarkTheme
+          ? ReaderTheme.defaultDarkTheme
+          : ReaderTheme.defaultLightTheme,
       isBackpressConfirm: isBackpressConfirm,
     );
   }

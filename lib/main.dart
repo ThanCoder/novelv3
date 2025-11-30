@@ -29,6 +29,14 @@ void main() async {
     defaultImageAssetsPath: 'assets/logo_3.jpg',
     getDarkMode: () => Setting.getAppConfig.isDarkTheme,
   );
+  // for theme
+  Setting.getAppConfigNotifier.value = Setting.getAppConfigNotifier.value
+      .copyWith(
+        isDarkTheme:
+            TThemeServices.instance.currentBrightness == Brightness.dark
+            ? true
+            : false,
+      );
   await PdfReader.instance.init(
     getDarkTheme: () => Setting.getAppConfig.isDarkTheme,
   );

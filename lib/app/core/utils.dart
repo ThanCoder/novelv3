@@ -14,7 +14,7 @@ Future<List<String>> getScannerPath() async {
     list.add('$rootPath/Downloads');
   }
   if (Platform.isAndroid) {
-    list.add(rootPath);
+    list.add('/storage/emulated/0');
   }
   return list;
 }
