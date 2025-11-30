@@ -27,19 +27,32 @@ class Chapter {
   final int number;
   final String title;
   final DateTime date;
+  String? novelPath;
+  String? content;
   Chapter({
     this.autoId = 0,
     required this.number,
     required this.title,
     required this.date,
+    this.novelPath,
+    this.content,
   });
 
-  Chapter copyWith({int? autoId, int? number, String? title, DateTime? date}) {
+  Chapter copyWith({
+    int? autoId,
+    int? number,
+    String? title,
+    DateTime? date,
+    String? novelPath,
+    String? content,
+  }) {
     return Chapter(
       autoId: autoId ?? this.autoId,
       number: number ?? this.number,
       title: title ?? this.title,
       date: date ?? this.date,
+      novelPath: novelPath ?? this.novelPath,
+      content: content ?? this.content,
     );
   }
 

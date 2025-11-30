@@ -5,6 +5,7 @@ import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -16,10 +17,18 @@ class ChapterPage extends StatefulWidget {
 }
 
 class _ChapterPageState extends State<ChapterPage> {
+  final controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Future<void> init() async {
@@ -34,7 +43,7 @@ class _ChapterPageState extends State<ChapterPage> {
     return Scaffold(
       body: getProvider.isLoading
           ? Center(child: TLoader.random())
-          : CustomScrollView(slivers: [_getList()]),
+          : CustomScrollView(controller: controller, slivers: [_getList()]),
     );
   }
 
@@ -52,11 +61,17 @@ class _ChapterPageState extends State<ChapterPage> {
         title: Text('${chapter.number}: ${chapter.title}', maxLines: 1),
         // trailing: Icon(Icons.bookmark),
         onTap: () {
+          final configPath = PathUtil.getConfigPath(
+            name: 'chapter.config.json',
+          );
           goRoute(
             context,
             builder: (context) => ChapterReaderScreen(
               chapter: chapter,
-              config: ChapterReaderConfig.create(),
+              config: ChapterReaderConfig.fromPath(configPath),
+              onUpdateConfig: (updatedConfig) {
+                updatedConfig.savePath(configPath);
+              },
             ),
           );
         },

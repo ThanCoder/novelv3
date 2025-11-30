@@ -18,10 +18,18 @@ class PdfPage extends StatefulWidget {
 }
 
 class _PdfPageState extends State<PdfPage> {
+  final controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Future<void> init() async {
@@ -36,7 +44,7 @@ class _PdfPageState extends State<PdfPage> {
     return Scaffold(
       body: getProvider.isLoading
           ? Center(child: TLoader.random())
-          : CustomScrollView(slivers: [_getList()]),
+          : CustomScrollView(controller: controller, slivers: [_getList()]),
     );
   }
 
@@ -67,7 +75,7 @@ class _PdfPageState extends State<PdfPage> {
                 height: 120,
                 child: PdfCoverThumbnailImage(
                   pdfFile: file,
-                  savePath: file.getCovePath,
+                  savePath: file.getCoverPath,
                 ),
               ),
               Expanded(

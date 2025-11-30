@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/others/n3_data/n3_data_extension.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_list_item.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_confirm_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
@@ -25,7 +26,8 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
 
   bool isLoading = false;
   List<N3Data> n3DataList = [];
-  int currentSortId = 101;
+  int currentSortId = TSort.getDateId;
+  bool isSortAsc = false;
 
   Future<void> init() async {
     try {
@@ -61,7 +63,7 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
       appBar: AppBar(
         title: Text('N3 Data Scanner'),
         actions: [
-          // SortComponent(value: sortType, onChanged: _onSort),
+          _getSortWidget(),
           TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
               : SizedBox.shrink(),
@@ -107,15 +109,32 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
     );
   }
 
+  Widget _getSortWidget() {
+    return IconButton(
+      onPressed: () {
+        showTSortDialog(
+          context,
+          currentId: currentSortId,
+          isAsc: isSortAsc,
+          sortDialogCallback: (id, isAsc) {
+            currentSortId = id;
+            isSortAsc = isAsc;
+            _onSort();
+          },
+        );
+      },
+      icon: Icon(Icons.sort),
+    );
+  }
+
   void _onSort() {
-    // if (sort.title == 'title') {
-    //   n3DataList.sortTitle(aToZ: sort.isAsc);
-    // }
-    // if (sort.title == 'date') {
-    //   n3DataList.sortDate(isNewest: !sort.isAsc);
-    // }
-    // sortType = sort;
-    // setState(() {});
+    if (currentSortId == TSort.getTitleId) {
+      n3DataList.sortTitle(aToZ: isSortAsc);
+    }
+    if (currentSortId == TSort.getDateId) {
+      n3DataList.sortDate(isNewest: !isSortAsc);
+    }
+    setState(() {});
   }
 
   void _showItemOnClickMenu(N3Data n3data) {

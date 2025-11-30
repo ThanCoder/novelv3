@@ -6,12 +6,13 @@ import 'package:than_pkg/than_pkg.dart';
 
 abstract class FileScannerInterface<T> {
   Future<T?> onParseFile(FileSystemEntity file);
+  void onSort(List<T> list) {}
 
   Future<List<T>> scan() async {
     final scanList = await getScannerPath();
     final filterList = getScannerFilterNames();
 
-    return await Isolate.run<List<T>>(() async {
+    final res = await Isolate.run<List<T>>(() async {
       List<T> list = [];
       Future<void> scanDir(Directory dir) async {
         for (var file in dir.listSync(followLinks: false)) {
@@ -42,5 +43,8 @@ abstract class FileScannerInterface<T> {
       }
       return list;
     });
+    onSort(res);
+
+    return res;
   }
 }

@@ -27,10 +27,20 @@ class ChapterServices {
           number: int.parse(title),
           title: 'Untitled',
           date: file.getDate,
+          novelPath: novelPath,
         ),
       );
     }
 
     return list;
+  }
+
+  Future<String?> getContent(Chapter chapter) async {
+    if (chapter.novelPath == null) return null;
+    final file = File('${chapter.novelPath}/${chapter.number}');
+    if (!file.existsSync()) {
+      return null;
+    }
+    return await file.readAsString();
   }
 }

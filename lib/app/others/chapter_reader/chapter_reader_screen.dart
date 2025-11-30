@@ -52,6 +52,14 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     init();
   }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    ThanPkg.platform.toggleKeepScreen(isKeep: false);
+    super.dispose();
+  }
+
   void initConfig() async {
     try {
       ThanPkg.platform.toggleKeepScreen(isKeep: config.isKeepScreening);
@@ -81,14 +89,6 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       });
       showTMessageDialogError(context, e.toString());
     }
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    ThanPkg.platform.toggleFullScreen(isFullScreen: false);
-    ThanPkg.platform.toggleKeepScreen(isKeep: false);
-    super.dispose();
   }
 
   @override
@@ -177,13 +177,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           //   chapter: item,
           //   title: 'BookMark',
           // ),
-          Text(
-            '${item.number}',
-            style: TextStyle(
-              fontSize: config.fontSize,
-              color: config.theme.fontColor,
-            ),
-          ),
+          _getContentWidget(item, index),
           // bookmark
           // ChapterBookmarkAction(
           //   theme: config.theme,
@@ -192,6 +186,35 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           // ),
         ],
       ),
+    );
+  }
+
+  Widget _getContentWidget(Chapter chapter, int index) {
+    if (chapter.content != null) {
+      return Text(
+        'Chapter: ${chapter.number}\n${chapter.content}',
+        style: TextStyle(
+          fontSize: config.fontSize,
+          color: config.theme.fontColor,
+        ),
+      );
+    }
+    return FutureBuilder(
+      future: ChapterServices.instance.getContent(chapter),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: TLoader());
+        }
+        final text = snapshot.data ?? '';
+        list[index] = chapter.copyWith(content: text);
+        return Text(
+          'Chapter: ${chapter.number}\n$text',
+          style: TextStyle(
+            fontSize: config.fontSize,
+            color: config.theme.fontColor,
+          ),
+        );
+      },
     );
   }
 

@@ -23,7 +23,7 @@ class PdfFile {
   }
 
   int get getSize => File(path).getSize;
-  String get getCovePath =>
+  String get getCoverPath =>
       PathUtil.getCachePath(name: '${path.getName(withExt: false)}-cover.png');
 
   static bool isPdfFile(String path) => path.endsWith('.pdf');

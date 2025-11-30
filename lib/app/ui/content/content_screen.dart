@@ -74,11 +74,6 @@ class _ContentScreenState extends State<ContentScreen> {
   }
 
   Widget _getAppbar() {
-    return SliverAppBar(
-      title: Text('Content'),
-      floating: true,
-      snap: true,
-      pinned: false,
-    );
+    return SliverAppBar(floating: true, snap: true, pinned: false);
   }
 }
