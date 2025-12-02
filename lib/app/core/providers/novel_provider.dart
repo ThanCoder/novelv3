@@ -54,4 +54,16 @@ class NovelProvider extends ChangeNotifier {
     await Future.delayed(Duration.zero);
     notifyListeners();
   }
+
+  Future<void> deleteForever(Novel novel) async {
+    final index = list.indexWhere((e) => e.path == novel.path);
+    if (index == -1) return;
+    list.removeAt(index);
+    final dir = Directory(novel.path);
+    if (dir.existsSync()) {
+      await PathUtil.deleteDir(dir);
+    }
+    await Future.delayed(Duration.zero);
+    notifyListeners();
+  }
 }

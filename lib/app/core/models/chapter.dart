@@ -37,6 +37,18 @@ class Chapter {
     this.novelPath,
     this.content,
   });
+  factory Chapter.create({
+    required int number,
+    String title = 'Untitled',
+    String? content,
+  }) {
+    return Chapter(
+      number: number,
+      title: title,
+      date: DateTime.now(),
+      content: content,
+    );
+  }
 
   Chapter copyWith({
     int? autoId,

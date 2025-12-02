@@ -5,9 +5,11 @@ import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ChapterPage extends StatefulWidget {
   const ChapterPage({super.key});
@@ -31,9 +33,9 @@ class _ChapterPageState extends State<ChapterPage> {
     super.dispose();
   }
 
-  Future<void> init() async {
+  Future<void> init({bool isUsedCache = true}) async {
     final novelPath = context.read<NovelProvider>().currentNovel!.path;
-    context.read<ChapterProvider>().init(novelPath);
+    context.read<ChapterProvider>().init(novelPath, isUsedCache: isUsedCache);
   }
 
   ChapterProvider get getProvider => context.watch<ChapterProvider>();
@@ -43,7 +45,25 @@ class _ChapterPageState extends State<ChapterPage> {
     return Scaffold(
       body: getProvider.isLoading
           ? Center(child: TLoader.random())
-          : CustomScrollView(controller: controller, slivers: [_getList()]),
+          : CustomScrollView(
+              controller: controller,
+              slivers: [_getAppbar(), _getList()],
+            ),
+    );
+  }
+
+  Widget _getAppbar() {
+    return SliverAppBar(
+      automaticallyImplyLeading: false,
+      actions: [
+        !TPlatform.isDesktop
+            ? SizedBox.shrink()
+            : IconButton(
+                onPressed: () => init(isUsedCache: false),
+                icon: Icon(Icons.refresh),
+              ),
+        ChapterMenuActions(),
+      ],
     );
   }
 

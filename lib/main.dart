@@ -5,7 +5,9 @@ import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/core/providers/pdf_provider.dart';
 import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:provider/provider.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_db/t_db.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -23,6 +25,7 @@ void main() async {
       showTSnackBar(context, message);
     },
   );
+  final client = TClient();
 
   await TWidgets.instance.init(
     initialThemeServices: true,
@@ -47,6 +50,13 @@ void main() async {
   final db = TDB.getInstance();
   db.setAdapter<Chapter>(ChapterAdapter());
   db.setAdapter<ChapterContent>(ChapterContentAdapter());
+  // fetcher
+  Fetcher.instance.init(
+    onGetHtmlContent: (url) async {
+      final res = await client.get(url);
+      return res.data.toString();
+    },
+  );
 
   if (TPlatform.isDesktop) {
     await DesktopExe.exportDesktopIcon(
