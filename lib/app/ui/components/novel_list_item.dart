@@ -41,19 +41,23 @@ class NovelListItem extends StatelessWidget {
                           color: Colors.black.withValues(alpha: 0.1),
                         ),
                       ),
-                      Positioned(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.7),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Icon(
-                            Icons.person_add_outlined,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                        ),
-                      ),
+                      // adult
+                      !novel.meta.isAdult
+                          ? SizedBox.shrink()
+                          : Positioned(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.7),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Icon(
+                                  Icons.person_add_outlined,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                      // completed
                       Positioned(
                         right: 0,
                         child: Container(
@@ -62,7 +66,7 @@ class NovelListItem extends StatelessWidget {
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Icon(
-                            !novel.meta.isCompleted
+                            novel.meta.isCompleted
                                 ? Icons.check_circle
                                 : Icons.incomplete_circle,
                             color: novel.meta.isCompleted

@@ -32,8 +32,9 @@ class _PdfPageState extends State<PdfPage> {
     super.dispose();
   }
 
+  late String novelPath;
   Future<void> init() async {
-    final novelPath = context.read<NovelProvider>().currentNovel!.path;
+    novelPath = context.read<NovelProvider>().currentNovel!.path;
     context.read<PdfProvider>().init(novelPath);
   }
 
@@ -57,13 +58,8 @@ class _PdfPageState extends State<PdfPage> {
 
   Widget _getListItem(PdfFile file) {
     return GestureDetector(
-      onTap: () => goRoute(
-        context,
-        builder: (context) => PdfrxReaderScreen(
-          sourcePath: file.path,
-          pdfConfig: PdfConfig.create(),
-        ),
-      ),
+      onTap: () => _goReader(file),
+
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
@@ -110,6 +106,21 @@ class _PdfPageState extends State<PdfPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _goReader(PdfFile pdf) {
+    final configPath = PdfFile.getConfigPath(novelPath);
+    goRoute(
+      context,
+      builder: (context) => PdfrxReaderScreen(
+        sourcePath: pdf.path,
+        title: pdf.title,
+        pdfConfig: PdfConfig.fromPath(PdfFile.getConfigPath(novelPath)),
+        onConfigUpdated: (pdfConfig) {
+          pdfConfig.savePath(configPath);
+        },
       ),
     );
   }

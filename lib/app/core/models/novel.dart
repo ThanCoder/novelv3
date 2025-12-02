@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:novel_v3/app/core/models/novel_meta.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+import 'package:novel_v3/app/core/models/novel_meta.dart';
 
 class Novel {
   final String title;
@@ -39,6 +41,20 @@ class Novel {
       path: path,
       meta: meta,
       date: dir.getDate,
+    );
+  }
+
+  Novel copyWith({
+    String? title,
+    String? path,
+    NovelMeta? meta,
+    DateTime? date,
+  }) {
+    return Novel(
+      title: title ?? this.title,
+      path: path ?? this.path,
+      meta: meta ?? this.meta,
+      date: date ?? this.date,
     );
   }
 }

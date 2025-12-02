@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_extension.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_list_item.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_install_confirm_dialog.dart';
@@ -6,6 +7,7 @@ import 'package:novel_v3/app/others/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_services.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
+import 'package:provider/provider.dart';
 import 'n3_data.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -184,6 +186,8 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
               onSuccess: () {
                 setState(() {});
                 showTSnackBar(context, '${n3data.getTitle}: သွင်းပြီးပါပြီ');
+                // refresh all novel
+                context.read<NovelProvider>().init(isUsedCache: false);
               },
             ),
           );
