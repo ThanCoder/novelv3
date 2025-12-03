@@ -5,8 +5,9 @@ import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
-import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
+import 'package:novel_v3/app/ui/content/chapter_list_item.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
+import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -70,30 +71,22 @@ class _ChapterPageState extends State<ChapterPage> {
   Widget _getList() {
     return SliverList.builder(
       itemCount: getProvider.list.length,
-      itemBuilder: (context, index) => _getListItem(getProvider.list[index]),
+      itemBuilder: (context, index) => ChapterListItem(
+        chapter: (getProvider.list[index]),
+        onClicked: _goReaderPage,
+      ),
     );
   }
 
-  Widget _getListItem(Chapter chapter) {
-    return Card(
-      child: ListTile(
-        leading: Icon(Icons.article),
-        title: Text('${chapter.number}: ${chapter.title}', maxLines: 1),
-        // trailing: Icon(Icons.bookmark),
-        onTap: () {
-          final configPath = PathUtil.getConfigPath(
-            name: 'chapter.config.json',
-          );
-          goRoute(
-            context,
-            builder: (context) => ChapterReaderScreen(
-              chapter: chapter,
-              config: ChapterReaderConfig.fromPath(configPath),
-              onUpdateConfig: (updatedConfig) {
-                updatedConfig.savePath(configPath);
-              },
-            ),
-          );
+  void _goReaderPage(Chapter chapter) {
+    final configPath = PathUtil.getConfigPath(name: 'chapter.config.json');
+    goRoute(
+      context,
+      builder: (context) => ChapterReaderScreen(
+        chapter: chapter,
+        config: ChapterReaderConfig.fromPath(configPath),
+        onUpdateConfig: (updatedConfig) {
+          updatedConfig.savePath(configPath);
         },
       ),
     );

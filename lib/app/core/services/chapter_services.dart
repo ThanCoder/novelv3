@@ -35,12 +35,17 @@ class ChapterServices {
     return list;
   }
 
-  Future<String?> getContent(Chapter chapter) async {
-    if (chapter.novelPath == null) return null;
-    final file = File('${chapter.novelPath}/${chapter.number}');
+  Future<String?> getContent(int chapterNumber, String novelPath) async {
+    final file = File('$novelPath/$chapterNumber');
     if (!file.existsSync()) {
       return null;
     }
     return await file.readAsString();
+  }
+
+  Future<void> setChapter(Chapter chapter) async {
+    if (chapter.novelPath == null) return;
+    final file = File('${chapter.novelPath}/${chapter.number}');
+    await file.writeAsString(chapter.content ?? '');
   }
 }

@@ -23,14 +23,31 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> add(Chapter chapter) async {
+    chapter = chapter.copyWith(novelPath: currentNovelPath);
     list.add(chapter);
-
+    await ChapterServices.instance.setChapter(chapter);
     notifyListeners();
   }
 
   bool isExistsNumber(int number) {
     final index = list.indexWhere((e) => e.number == number);
     return index != -1;
+  }
+
+  Future<String?> getContent(int chapterNumber) async {
+    final content = await ChapterServices.instance.getContent(
+      chapterNumber,
+      currentNovelPath!,
+    );
+    return content;
+  }
+
+  Future<void> setChapter(Chapter chapter) async {
+    await ChapterServices.instance.setChapter(chapter);
+
+    int index = list.indexWhere((e) => e.number == chapter.number);
+    if (index == -1) return;
+    list[index] = chapter;
   }
 
   int get getLatestChapter => list.isEmpty ? 0 : list.last.number;

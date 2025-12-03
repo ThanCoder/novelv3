@@ -81,12 +81,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-
   // item menu
-  void _onItemMenu(novel) {
+  void _onItemMenu(Novel novel) {
     showTMenuBottomSheetSingle(
       context,
+      title: Text(novel.title),
       child: NovelItemMenuActions(novel: novel),
     );
   }

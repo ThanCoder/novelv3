@@ -40,13 +40,13 @@ class _ThemeModesChooserState extends State<ThemeModesChooser> {
                         ),
                       )
                       .toList(),
-                  onChanged: (value) {
+                  onChanged: (value) async {
                     final newConfig = config.copyWith(
                       themeMode: value,
-                      isDarkTheme: value!.isDarkMode,
+                      isDarkTheme: value == TThemeModes.dark ? true : false,
                     );
                     Setting.getAppConfigNotifier.value = newConfig;
-                    newConfig.save();
+                    await newConfig.save();
                     TThemeServices.instance.checkCurrentTheme();
 
                     if (!mounted) return;

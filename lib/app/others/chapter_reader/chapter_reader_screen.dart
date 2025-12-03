@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/core/services/chapter_services.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
@@ -41,11 +42,13 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   Chapter? topChapter;
   bool isFullScreen = false;
   bool canPop = true;
+  late ChapterProvider provider;
 
   @override
   void initState() {
     config = widget.config;
     list.add(widget.chapter);
+    provider = context.read<ChapterProvider>();
     controller.addListener(_onScroll);
     super.initState();
     initConfig();
@@ -200,7 +203,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       );
     }
     return FutureBuilder(
-      future: ChapterServices.instance.getContent(chapter),
+      future: provider.getContent(chapter.number),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: TLoader());

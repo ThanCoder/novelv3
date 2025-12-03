@@ -5,6 +5,7 @@ import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/content/page_url_dialog.dart';
+import 'package:novel_v3/app/ui/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_list_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_screen.dart';
@@ -77,16 +78,16 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
   }
 
   void _goEditChapter({Chapter? chapter}) {
-    // goRoute(
-    //   context,
-    //   builder: (context) => EditChapterScreen(
-    //     novelPath: novel.path,
-    //     chapter: chapter,
-    //     onClosed: () {
-    //       init();
-    //     },
-    //   ),
-    // );
+    goRoute(
+      context,
+      builder: (context) => EditChapterScreen(
+        novelPath: novel.path,
+        chapter: chapter,
+        onClosed: () {
+          init();
+        },
+      ),
+    );
   }
 
   void _goFetcher() {
