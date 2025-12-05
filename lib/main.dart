@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/core/models/chapter_content.dart';
+import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/core/providers/pdf_provider.dart';
@@ -73,6 +74,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => NovelProvider()),
         ChangeNotifierProvider(create: (context) => PdfProvider()),
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
+        ChangeNotifierProvider(create: (context) => ChapterBookmarkProvider()),
       ],
       child: const MyApp(),
     ),

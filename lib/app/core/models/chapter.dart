@@ -41,12 +41,14 @@ class Chapter {
     required int number,
     String title = 'Untitled',
     String? content,
+    String? novelPath,
   }) {
     return Chapter(
       number: number,
       title: title,
       date: DateTime.now(),
       content: content,
+      novelPath: novelPath,
     );
   }
 

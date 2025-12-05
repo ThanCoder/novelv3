@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:novel_v3/app/core/providers/chapter_provider.dart';
+import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
+import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
-import 'package:novel_v3/app/ui/content/chapter_list_item.dart';
+import 'package:novel_v3/app/ui/content/chapter_bookmark_list_item.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-class ChapterPage extends StatefulWidget {
-  const ChapterPage({super.key});
+class ChapterBookmarkPage extends StatefulWidget {
+  const ChapterBookmarkPage({super.key});
 
   @override
-  State<ChapterPage> createState() => _ChapterPageState();
+  State<ChapterBookmarkPage> createState() => _ChapterPageState();
 }
 
-class _ChapterPageState extends State<ChapterPage> {
+class _ChapterPageState extends State<ChapterBookmarkPage> {
   final controller = ScrollController();
 
   @override
@@ -34,12 +35,13 @@ class _ChapterPageState extends State<ChapterPage> {
     super.dispose();
   }
 
-  Future<void> init({bool isUsedCache = true}) async {
+  Future<void> init() async {
     final novelPath = context.read<NovelProvider>().currentNovel!.path;
-    context.read<ChapterProvider>().init(novelPath, isUsedCache: isUsedCache);
+    context.read<ChapterBookmarkProvider>().init(novelPath);
   }
 
-  ChapterProvider get getProvider => context.watch<ChapterProvider>();
+  ChapterBookmarkProvider get getProvider =>
+      context.watch<ChapterBookmarkProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +61,7 @@ class _ChapterPageState extends State<ChapterPage> {
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()
-            : IconButton(
-                onPressed: () => init(isUsedCache: false),
-                icon: Icon(Icons.refresh),
-              ),
+            : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
         ChapterMenuActions(),
       ],
     );
@@ -81,14 +80,19 @@ class _ChapterPageState extends State<ChapterPage> {
     }
     return SliverList.builder(
       itemCount: getProvider.list.length,
-      itemBuilder: (context, index) => ChapterListItem(
-        chapter: (getProvider.list[index]),
+      itemBuilder: (context, index) => ChapterBookmarkListItem(
+        bookmark: (getProvider.list[index]),
         onClicked: _goReaderPage,
       ),
     );
   }
 
-  void _goReaderPage(Chapter chapter) {
+  void _goReaderPage(ChapterBookmark bookmark) {
+    final chapter = Chapter.create(
+      number: bookmark.chapter,
+      title: bookmark.title,
+    );
+
     final configPath = PathUtil.getConfigPath(name: 'chapter.config.json');
     goRoute(
       context,

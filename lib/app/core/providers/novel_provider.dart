@@ -16,7 +16,7 @@ class NovelProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    list = await NovelServices.instance.getAll();
+    list = await NovelServices.getAll();
 
     isLoading = false;
     notifyListeners();

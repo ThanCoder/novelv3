@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/content/chapter_bookmark_toggle_button.dart';
 import 'package:novel_v3/app/ui/forms/edit_chapter_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -31,7 +32,7 @@ class _ChapterListItemState extends State<ChapterListItem> {
           '${widget.chapter.number}: ${widget.chapter.title}',
           maxLines: 1,
         ),
-        // trailing: Icon(Icons.bookmark),
+        trailing: ChapterBookmarkToggleButton(chatper: widget.chapter),
         onTap: () => widget.onClicked?.call(widget.chapter),
         onLongPress: () => _showItemMenu(widget.chapter),
       ),

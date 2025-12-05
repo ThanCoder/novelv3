@@ -10,7 +10,7 @@ class PdfProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    list = await PdfServices.instance.getAll(novelPath);
+    list = await PdfServices.getAll(novelPath);
 
     isLoading = false;
     notifyListeners();

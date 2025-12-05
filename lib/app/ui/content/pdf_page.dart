@@ -50,6 +50,16 @@ class _PdfPageState extends State<PdfPage> {
   }
 
   Widget _getList() {
+    if (getProvider.list.isEmpty) {
+      return SliverFillRemaining(
+        child: Center(
+          child: Text(
+            'List Empty!...',
+            style: TextTheme.of(context).headlineMedium,
+          ),
+        ),
+      );
+    }
     return SliverList.builder(
       itemCount: getProvider.list.length,
       itemBuilder: (context, index) => _getListItem(getProvider.list[index]),

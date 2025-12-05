@@ -97,9 +97,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
 
-        final novel = await NovelServices.instance.createNovelWithTitle(
-          text.trim(),
-        );
+        final novel = await NovelServices.createNovelWithTitle(text.trim());
         if (novel == null) {
           if (!mounted) return;
           showTMessageDialogError(

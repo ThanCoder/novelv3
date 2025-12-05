@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/ui/content/chapter_bookmark_page.dart';
 import 'package:novel_v3/app/ui/content/chapter_page.dart';
 import 'package:novel_v3/app/ui/content/content_cover.dart';
 import 'package:novel_v3/app/ui/content/content_home_page.dart';
@@ -17,7 +19,18 @@ class ContentScreen extends StatefulWidget {
 class _ContentScreenState extends State<ContentScreen> {
   NovelProvider get getNovelProvider => context.watch<NovelProvider>();
 
-  Novel? get currentNovel => getNovelProvider.currentNovel;
+  Novel? get currentNovel => context.read<NovelProvider>().currentNovel;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
+  }
+
+  void init() {
+    if (currentNovel == null) return;
+    context.read<ChapterBookmarkProvider>().init(currentNovel!.path);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +41,7 @@ class _ContentScreenState extends State<ContentScreen> {
       );
     }
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -43,14 +56,20 @@ class _ContentScreenState extends State<ContentScreen> {
               bottom: TabBar(
                 tabs: [
                   Tab(text: 'Content', icon: Icon(Icons.description)),
-                  Tab(text: 'Chapter', icon: Icon(Icons.article)),
                   Tab(text: 'PDF', icon: Icon(Icons.picture_as_pdf_rounded)),
+                  Tab(text: 'Chapter', icon: Icon(Icons.article)),
+                  Tab(text: 'Bookmark', icon: Icon(Icons.bookmark)),
                 ],
               ),
             ),
           ],
           body: TabBarView(
-            children: [ContentHomePage(), ChapterPage(), PdfPage()],
+            children: [
+              ContentHomePage(),
+              PdfPage(),
+              ChapterPage(),
+              ChapterBookmarkPage(),
+            ],
           ),
         ),
       ),

@@ -79,7 +79,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         isInitLoading = true;
       });
       final novelPath = context.read<NovelProvider>().currentNovel!.path;
-      allList = await ChapterServices().getAll(novelPath);
+      allList = await ChapterServices.getAll(novelPath);
       allList.sort((a, b) => a.number.compareTo(b.number));
       if (!mounted) return;
       setState(() {
