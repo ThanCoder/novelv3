@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/content/chapter_bookmark_toggle_button.dart';
@@ -51,6 +52,14 @@ class _ChapterListItemState extends State<ChapterListItem> {
             _goEditPage(chapter);
           },
         ),
+        ListTile(
+          leading: Icon(Icons.delete_forever),
+          title: Text('Delete Forever'),
+          onTap: () {
+            closeContext(context);
+            _deleteConfirm(chapter);
+          },
+        ),
       ],
     );
   }
@@ -61,6 +70,17 @@ class _ChapterListItemState extends State<ChapterListItem> {
       context,
       builder: (context) =>
           EditChapterScreen(novelPath: novelPath, chapter: chapter),
+    );
+  }
+
+  void _deleteConfirm(Chapter chapter) {
+    showTConfirmDialog(
+      context,
+      contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+      submitText: 'Delete Forever',
+      onSubmit: () {
+        context.read<ChapterProvider>().delete(chapter);
+      },
     );
   }
 }

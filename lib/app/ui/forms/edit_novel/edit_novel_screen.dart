@@ -78,7 +78,7 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
               onSubmitted: (value) => _onUpdate(),
             ),
             TTextField(
-              label: Text('စာရေးသူ'),
+              label: Text('စာရေးဆရာ'),
               maxLines: 1,
               controller: authorController,
             ),

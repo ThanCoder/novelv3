@@ -44,4 +44,12 @@ class ChapterServices {
     final file = File('${chapter.novelPath}/${chapter.number}');
     await file.writeAsString(chapter.content ?? '');
   }
+
+  static Future<void> delete(Chapter chapter) async {
+    if (chapter.novelPath == null) return;
+    final file = File('${chapter.novelPath}/${chapter.number}');
+    if (file.existsSync()) {
+      await file.delete();
+    }
+  }
 }

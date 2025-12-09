@@ -47,6 +47,11 @@ void main() async {
   final db = TDB.getInstance();
   db.setAdapter<Chapter>(ChapterAdapter());
   db.setAdapter<ChapterContent>(ChapterContentAdapter());
+  // recent
+  await TRecentDB.getInstance.init(
+    rootPath: PathUtil.getConfigPath(name: 'recent.db.json'),
+  );
+
   // fetcher
   Fetcher.instance.init(
     onGetHtmlContent: (url) async {

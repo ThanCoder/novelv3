@@ -34,12 +34,14 @@ class _ChapterPageState extends State<ChapterPage> {
     super.dispose();
   }
 
+  String? novelPath;
   Future<void> init({bool isUsedCache = true}) async {
-    final novelPath = context.read<NovelProvider>().currentNovel!.path;
+    novelPath = context.read<NovelProvider>().currentNovel!.path;
     await context.read<ChapterProvider>().init(
-      novelPath,
+      novelPath!,
       isUsedCache: isUsedCache,
     );
+    setState(() {});
   }
 
   ChapterProvider get getProvider => context.watch<ChapterProvider>();
@@ -65,6 +67,12 @@ class _ChapterPageState extends State<ChapterPage> {
       pinned: false,
       floating: true,
       snap: true,
+      title: _getRecentName() == ''
+          ? null
+          : TextButton(
+              onPressed: _goRecentChapter,
+              child: Text('Recent Chapter'),
+            ),
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()
@@ -97,8 +105,42 @@ class _ChapterPageState extends State<ChapterPage> {
     );
   }
 
-  void _goReaderPage(Chapter chapter) {
+  // recent
+  String _getRecentName() {
+    if (novelPath != null) {
+      final recent = TRecentDB.getInstance.getString(
+        'recent-chapter-name:${novelPath!.getName()}',
+      );
+      if (recent.isEmpty) return '';
+      return recent;
+    }
+    return '';
+  }
+
+  void _goRecentChapter() async {
+    final list = context.read<ChapterProvider>().list;
+    final index = list.indexWhere(
+      (e) => e.number.toString() == _getRecentName(),
+    );
+    if (index == -1) {
+      TRecentDB.getInstance.delete(
+        'recent-chapter-name:${novelPath!.getName()}',
+      );
+      setState(() {});
+      return;
+    }
+    _goReaderPage(list[index]);
+  }
+
+  void _goReaderPage(Chapter chapter) async {
     final configPath = PathUtil.getConfigPath(name: 'chapter.config.json');
+    // set recent
+    await TRecentDB.getInstance.putString(
+      'recent-chapter-name:${novelPath!.getName()}',
+      chapter.number.toString(),
+    );
+    if (!mounted) return;
+    setState(() {});
     goRoute(
       context,
       builder: (context) => ChapterReaderScreen(
@@ -106,6 +148,15 @@ class _ChapterPageState extends State<ChapterPage> {
         config: ChapterReaderConfig.fromPath(configPath),
         onUpdateConfig: (updatedConfig) {
           updatedConfig.savePath(configPath);
+        },
+        onReaderClosed: (lastChapter) async {
+          // set recent
+          await TRecentDB.getInstance.putString(
+            'recent-chapter-name:${novelPath!.getName()}',
+            lastChapter.number.toString(),
+          );
+          if (!mounted) return;
+          setState(() {});
         },
       ),
     );

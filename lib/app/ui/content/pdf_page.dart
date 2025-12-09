@@ -32,10 +32,11 @@ class _PdfPageState extends State<PdfPage> {
     super.dispose();
   }
 
-  late String novelPath;
+  String? novelPath;
   Future<void> init() async {
     novelPath = context.read<NovelProvider>().currentNovel!.path;
-    await context.read<PdfProvider>().init(novelPath);
+    await context.read<PdfProvider>().init(novelPath!);
+    setState(() {});
   }
 
   PdfProvider get getProvider => context.watch<PdfProvider>();
@@ -61,12 +62,19 @@ class _PdfPageState extends State<PdfPage> {
       pinned: false,
       floating: true,
       snap: true,
+      title: _getRecentButton(),
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()
             : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
       ],
     );
+  }
+
+  Widget? _getRecentButton() {
+    return _getRecentName() == ''
+        ? null
+        : TextButton(onPressed: _goRecentPdf, child: Text('Recent PDF'));
   }
 
   Widget _getList() {
@@ -89,10 +97,12 @@ class _PdfPageState extends State<PdfPage> {
   Widget _getListItem(PdfFile file) {
     return GestureDetector(
       onTap: () => _goReader(file),
-
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
+          color: _getRecentName() == file.title
+              ? const Color.fromARGB(45, 33, 149, 243)
+              : null,
           child: Row(
             spacing: 4,
             children: [
@@ -140,18 +150,50 @@ class _PdfPageState extends State<PdfPage> {
     );
   }
 
-  void _goReader(PdfFile pdf) {
-    final configPath = PdfFile.getConfigPath(novelPath);
+  String _getRecentName() {
+    if (novelPath != null) {
+      final recent = TRecentDB.getInstance.getString(
+        'recent-pdf-name:${novelPath!.getName()}',
+      );
+      if (recent.isEmpty) return '';
+      return recent;
+    }
+    return '';
+  }
+
+  void _goReader(PdfFile pdf) async {
+    if (novelPath == null) return;
+    final configPath = PdfFile.getConfigPath(novelPath!);
+    // set recent
+    await TRecentDB.getInstance.putString(
+      'recent-pdf-name:${novelPath!.getName()}',
+      pdf.title,
+    );
+    if (!mounted) return;
+    setState(() {});
     goRoute(
       context,
       builder: (context) => PdfrxReaderScreen(
         sourcePath: pdf.path,
         title: pdf.title,
-        pdfConfig: PdfConfig.fromPath(PdfFile.getConfigPath(novelPath)),
-        onConfigUpdated: (pdfConfig) {
+        pdfConfig: PdfConfig.fromPath(PdfFile.getConfigPath(novelPath!)),
+        onConfigUpdated: (pdfConfig) async {
           pdfConfig.savePath(configPath);
+          if (!mounted) return;
+          setState(() {});
         },
       ),
     );
+  }
+
+  void _goRecentPdf() async {
+    final list = context.read<PdfProvider>().list;
+    final index = list.indexWhere((e) => e.title == _getRecentName());
+    if (index == -1) {
+      TRecentDB.getInstance.delete('recent-pdf-name:${novelPath!.getName()}');
+      setState(() {});
+      return;
+    }
+    _goReader(list[index]);
   }
 }

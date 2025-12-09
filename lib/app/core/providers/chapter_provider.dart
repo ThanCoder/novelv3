@@ -29,6 +29,14 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> delete(Chapter chapter) async {
+    final index = list.indexWhere((e) => e.number == chapter.number);
+    if (index == -1) return;
+    list.removeAt(index);
+    await ChapterServices.delete(chapter);
+    notifyListeners();
+  }
+
   bool isExistsNumber(int number) {
     final index = list.indexWhere((e) => e.number == number);
     return index != -1;
@@ -43,11 +51,14 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> setChapter(Chapter chapter) async {
-    await ChapterServices.setChapter(chapter);
-
     int index = list.indexWhere((e) => e.number == chapter.number);
-    if (index == -1) return;
+    if (index == -1) {
+      await add(chapter);
+      return;
+    }
     list[index] = chapter;
+    await ChapterServices.setChapter(chapter);
+    notifyListeners();
   }
 
   int get getLatestChapter => list.isEmpty ? 0 : list.last.number;
