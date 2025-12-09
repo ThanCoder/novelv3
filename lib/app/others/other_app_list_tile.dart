@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_scanner_screen.dart';
 import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/app/others/pdf_scanner/pdf_scanner_screen.dart';
+import 'package:novel_v3/app/others/share/share_home_screen.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
@@ -20,6 +21,7 @@ class OtherAppListTile extends StatelessWidget {
             Text('Other Apps', style: TextStyle(fontSize: 17)),
 
             ListTile(
+              leading: Icon(Icons.file_present),
               title: Text('N3 Data Scanner'),
               onTap: () {
                 goRoute(context, builder: (context) => N3DataScannerScreen());
@@ -27,6 +29,7 @@ class OtherAppListTile extends StatelessWidget {
             ),
             Divider(),
             ListTile(
+              leading: Icon(Icons.picture_as_pdf_rounded),
               title: Text('PDF Scanner'),
               onTap: () {
                 goRoute(
@@ -49,6 +52,14 @@ class OtherAppListTile extends StatelessWidget {
                     },
                   ),
                 );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.share),
+              title: Text('Novel Share'),
+              onTap: () {
+                goRoute(context, builder: (context) => ShareHomeScreen());
               },
             ),
           ],

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:t_widgets/theme/t_theme_services.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:novel_v3/more_libs/setting/app_config.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
+import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ThemeModesChooser extends StatefulWidget {
   const ThemeModesChooser({super.key});
@@ -28,13 +29,13 @@ class _ThemeModesChooserState extends State<ThemeModesChooser> {
             ValueListenableBuilder(
               valueListenable: Setting.getAppConfigNotifier,
               builder: (context, config, child) {
-                return DropdownButton<TThemeModes>(
+                return DropdownButton<ThemeMode>(
                   padding: EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(4),
                   value: config.themeMode,
-                  items: TThemeModes.values
+                  items: ThemeMode.values
                       .map(
-                        (e) => DropdownMenuItem<TThemeModes>(
+                        (e) => DropdownMenuItem<ThemeMode>(
                           value: e,
                           child: Text(e.name.toCaptalize()),
                         ),
@@ -43,12 +44,13 @@ class _ThemeModesChooserState extends State<ThemeModesChooser> {
                   onChanged: (value) async {
                     final newConfig = config.copyWith(
                       themeMode: value,
-                      isDarkTheme: value == TThemeModes.dark ? true : false,
+                      isDarkTheme: value!.isDarkTheme,
                     );
                     Setting.getAppConfigNotifier.value = newConfig;
                     await newConfig.save();
-                    TThemeServices.instance.checkCurrentTheme();
-
+                    if (newConfig.themeMode == ThemeMode.system) {
+                      PBrightnessServices.instance.checkCurrentTheme();
+                    }
                     if (!mounted) return;
                     setState(() {});
                   },

@@ -35,7 +35,7 @@ class _PdfPageState extends State<PdfPage> {
   late String novelPath;
   Future<void> init() async {
     novelPath = context.read<NovelProvider>().currentNovel!.path;
-    context.read<PdfProvider>().init(novelPath);
+    await context.read<PdfProvider>().init(novelPath);
   }
 
   PdfProvider get getProvider => context.watch<PdfProvider>();
@@ -45,7 +45,27 @@ class _PdfPageState extends State<PdfPage> {
     return Scaffold(
       body: getProvider.isLoading
           ? Center(child: TLoader.random())
-          : CustomScrollView(controller: controller, slivers: [_getList()]),
+          : RefreshIndicator.adaptive(
+              onRefresh: init,
+              child: CustomScrollView(
+                controller: controller,
+                slivers: [_getAppbar(), _getList()],
+              ),
+            ),
+    );
+  }
+
+  Widget _getAppbar() {
+    return SliverAppBar(
+      automaticallyImplyLeading: false,
+      pinned: false,
+      floating: true,
+      snap: true,
+      actions: [
+        !TPlatform.isDesktop
+            ? SizedBox.shrink()
+            : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
+      ],
     );
   }
 

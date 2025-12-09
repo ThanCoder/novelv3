@@ -36,7 +36,10 @@ class _ChapterPageState extends State<ChapterPage> {
 
   Future<void> init({bool isUsedCache = true}) async {
     final novelPath = context.read<NovelProvider>().currentNovel!.path;
-    context.read<ChapterProvider>().init(novelPath, isUsedCache: isUsedCache);
+    await context.read<ChapterProvider>().init(
+      novelPath,
+      isUsedCache: isUsedCache,
+    );
   }
 
   ChapterProvider get getProvider => context.watch<ChapterProvider>();
@@ -46,9 +49,12 @@ class _ChapterPageState extends State<ChapterPage> {
     return Scaffold(
       body: getProvider.isLoading
           ? Center(child: TLoader.random())
-          : CustomScrollView(
-              controller: controller,
-              slivers: [_getAppbar(), _getList()],
+          : RefreshIndicator.adaptive(
+              onRefresh: () async => init(isUsedCache: false),
+              child: CustomScrollView(
+                controller: controller,
+                slivers: [_getAppbar(), _getList()],
+              ),
             ),
     );
   }
@@ -56,6 +62,9 @@ class _ChapterPageState extends State<ChapterPage> {
   Widget _getAppbar() {
     return SliverAppBar(
       automaticallyImplyLeading: false,
+      pinned: false,
+      floating: true,
+      snap: true,
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()

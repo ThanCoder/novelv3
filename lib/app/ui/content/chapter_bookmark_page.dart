@@ -8,7 +8,6 @@ import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/content/chapter_bookmark_list_item.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -37,7 +36,7 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
 
   Future<void> init() async {
     final novelPath = context.read<NovelProvider>().currentNovel!.path;
-    context.read<ChapterBookmarkProvider>().init(novelPath);
+    await context.read<ChapterBookmarkProvider>().init(novelPath);
   }
 
   ChapterBookmarkProvider get getProvider =>
@@ -48,9 +47,12 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
     return Scaffold(
       body: getProvider.isLoading
           ? Center(child: TLoader.random())
-          : CustomScrollView(
-              controller: controller,
-              slivers: [_getAppbar(), _getList()],
+          : RefreshIndicator.adaptive(
+              onRefresh: init,
+              child: CustomScrollView(
+                controller: controller,
+                slivers: [_getAppbar(), _getList()],
+              ),
             ),
     );
   }
@@ -58,11 +60,13 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
   Widget _getAppbar() {
     return SliverAppBar(
       automaticallyImplyLeading: false,
+      pinned: false,
+      floating: true,
+      snap: true,
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()
             : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
-        ChapterMenuActions(),
       ],
     );
   }

@@ -897,10 +897,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: "4a41fd8573b3187628e0dc4decdedcbdc725bf643d477d046c95b5294032db5d"
+      sha256: "52a71d7f1f125631f046ea336471b4d0a36cbe914ef49fcef9a9bb97b4437da2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.6"
+    version: "2.0.2"
   tar:
     dependency: transitive
     description:

@@ -12,7 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   pdfrx: ^2.2.16
   than_pkg: ^5.0.0
-  t_widgets: ^1.9.6
+  t_widgets: ^2.0.2
   desktop_drop: ^0.6.1
   uuid: ^4.5.1
   provider: ^6.1.5+1

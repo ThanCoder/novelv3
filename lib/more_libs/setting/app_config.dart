@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:t_widgets/theme/t_theme_services.dart';
+import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import 'setting.dart';
@@ -16,7 +16,7 @@ class AppConfig {
   bool isUseForwardProxy;
   bool isUseProxy;
   bool isDarkTheme;
-  TThemeModes themeMode;
+  ThemeMode themeMode;
   AppConfig({
     required this.customPath,
     required this.forwardProxyUrl,
@@ -40,7 +40,7 @@ class AppConfig {
     bool isUseForwardProxy = false,
     bool isUseProxy = false,
     bool isDarkTheme = false,
-    TThemeModes themeMode = TThemeModes.system,
+    ThemeMode themeMode = ThemeMode.system,
   }) {
     return AppConfig(
       customPath: customPath,
@@ -66,7 +66,7 @@ class AppConfig {
     bool? isUseForwardProxy,
     bool? isUseProxy,
     bool? isDarkTheme,
-    TThemeModes? themeMode,
+    ThemeMode? themeMode,
   }) {
     return AppConfig(
       customPath: customPath ?? this.customPath,
@@ -110,7 +110,7 @@ class AppConfig {
       isUseForwardProxy: map.getBool(['isUseForwardProxy']),
       isUseProxy: map.getBool(['isUseProxy']),
       isDarkTheme: map.getBool(['isDarkTheme']),
-      themeMode: TThemeModes.getName(map.getString(['themeMode'])),
+      themeMode: ThemeModeExtension.getName(map.getString(['themeMode'])),
     );
   }
 
@@ -135,4 +135,18 @@ class AppConfig {
     }
     return AppConfig.create();
   }
+}
+
+extension ThemeModeExtension on ThemeMode {
+  static ThemeMode getName(String name) {
+    if (name == ThemeMode.dark.name) {
+      return ThemeMode.dark;
+    }
+    if (name == ThemeMode.light.name) {
+      return ThemeMode.light;
+    }
+    return ThemeMode.system;
+  }
+
+  bool get isDarkTheme => this == ThemeMode.dark;
 }

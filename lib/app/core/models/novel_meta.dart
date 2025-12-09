@@ -7,7 +7,7 @@ class NovelMeta {
   static final String metaName = 'meta.json';
   final String title;
   final String author;
-  final String? translator;
+  final String translator;
   final String mc;
   final String desc;
   final List<String> otherTitleList;
@@ -19,7 +19,7 @@ class NovelMeta {
   NovelMeta({
     required this.title,
     required this.author,
-    this.translator,
+    required this.translator,
     required this.mc,
     required this.desc,
     required this.otherTitleList,
@@ -35,6 +35,7 @@ class NovelMeta {
       title: 'Untitled',
       author: 'Unknown',
       mc: 'Unknown',
+      translator: 'Unknown',
       desc: '',
       otherTitleList: [],
       isAdult: false,
@@ -117,13 +118,11 @@ class NovelMeta {
 
   factory NovelMeta.fromMap(Map<String, dynamic> map) {
     return NovelMeta(
-      title: map['title'] as String,
-      author: map['author'] as String,
-      translator: map['translator'] != null
-          ? map['translator'] as String
-          : null,
-      mc: map['mc'] as String,
-      desc: map['desc'] as String,
+      title: map.getString(['title']),
+      author: map.getString(['author']),
+      translator: map.getString(['translator']),
+      mc: map.getString(['mc']),
+      desc: map.getString(['desc']),
       otherTitleList: List<String>.from((map['otherTitleList'] ?? [])),
       isAdult: map['isAdult'] as bool,
       isCompleted: map['isCompleted'] as bool,
@@ -157,7 +156,7 @@ class NovelMeta {
       mc: mcFile.existsSync() ? await mcFile.readAsString() : 'Unknown',
       translator: translatorFile.existsSync()
           ? await translatorFile.readAsString()
-          : null,
+          : '',
       desc: descFile.existsSync() ? await descFile.readAsString() : '',
       otherTitleList: [],
       isAdult: isAdultFile.existsSync(),

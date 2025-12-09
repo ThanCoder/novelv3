@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:than_pkg/than_pkg.dart';
@@ -18,7 +17,7 @@ class Novel {
   });
 
   String get getCoverPath => '$path/cover.png';
-  
+
   DateTime get getDate => Directory(path).getDate;
 
   int getSize() {
@@ -55,6 +54,24 @@ class Novel {
       path: path ?? this.path,
       meta: meta ?? this.meta,
       date: date ?? this.date,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'title': title,
+      'path': path,
+      'meta': meta.toMap(),
+      'date': date.millisecondsSinceEpoch,
+    };
+  }
+
+  factory Novel.fromMap(Map<String, dynamic> map) {
+    return Novel(
+      title: map['title'] as String,
+      path: map['path'] as String,
+      meta: NovelMeta.fromMap(map['meta'] as Map<String, dynamic>),
+      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
     );
   }
 }

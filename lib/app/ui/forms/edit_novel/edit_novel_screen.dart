@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/routes.dart';
-import 'package:t_widgets/t_widgets_dev.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class EditNovelScreen extends StatefulWidget {
   final Novel novel;
@@ -37,7 +37,7 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
     titleController.text = widget.novel.title;
     authorController.text = widget.novel.meta.author;
     mcController.text = widget.novel.meta.mc;
-    translatorController.text = widget.novel.meta.translator ?? '';
+    translatorController.text = widget.novel.meta.translator;
     descController.text = widget.novel.meta.desc;
     isAdult = widget.novel.meta.isAdult;
     isCompleted = widget.novel.meta.isCompleted;
