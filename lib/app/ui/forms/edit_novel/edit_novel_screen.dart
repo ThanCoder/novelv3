@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class EditNovelScreen extends StatefulWidget {
@@ -19,6 +21,7 @@ class EditNovelScreen extends StatefulWidget {
 class _EditNovelScreenState extends State<EditNovelScreen> {
   @override
   void initState() {
+    novel = widget.novel.copyWith();
     super.initState();
     init();
   }
@@ -33,14 +36,16 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
     super.dispose();
   }
 
+  late Novel novel;
+
   void init() {
-    titleController.text = widget.novel.title;
-    authorController.text = widget.novel.meta.author;
-    mcController.text = widget.novel.meta.mc;
-    translatorController.text = widget.novel.meta.translator;
-    descController.text = widget.novel.meta.desc;
-    isAdult = widget.novel.meta.isAdult;
-    isCompleted = widget.novel.meta.isCompleted;
+    titleController.text = novel.title;
+    authorController.text = novel.meta.author;
+    mcController.text = novel.meta.mc;
+    translatorController.text = novel.meta.translator;
+    descController.text = novel.meta.desc;
+    isAdult = novel.meta.isAdult;
+    isCompleted = novel.meta.isCompleted;
   }
 
   @override
@@ -68,13 +73,16 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10,
           children: [
+            // cover
+            TCoverChooser(coverPath: novel.getCoverPath),
+            Divider(),
             TTextField(
               label: Text('Title'),
               maxLines: 1,
               controller: titleController,
-              autofocus: true,
               onSubmitted: (value) => _onUpdate(),
             ),
             TTextField(
@@ -93,6 +101,8 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
               controller: mcController,
             ),
             _getChecks(),
+            _getPageUrlWidget(),
+            _getTagsWidget(),
             TTextField(
               label: Text('Description'),
               maxLines: null,
@@ -101,6 +111,56 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _getTagsWidget() {
+    final allTags = context.watch<NovelProvider>().getAllTags;
+    return // tags
+    TTagsWrapView(
+      title: Text('Tags'),
+      values: novel.meta.tags,
+      allTags: allTags,
+      onApply: (values) {
+        novel = novel.copyWith(meta: novel.meta.copyWith(tags: values));
+        _clearFocus();
+        setState(() {});
+      },
+    );
+  }
+
+  Widget _getPageUrlWidget() {
+    return TTagsWrapView(
+      title: Text('Page Urls'),
+      values: novel.meta.pageUrls,
+      onAddButtonClicked: () {
+        showTReanmeDialog(
+          context,
+          title: Text('Page Urls'),
+          autofocus: true,
+          barrierDismissible: false,
+          submitText: 'Add Url',
+          text: '',
+          onCheckIsError: (text) {
+            if (!text.startsWith('http')) {
+              return 'http....***!';
+            }
+            return null;
+          },
+          onCancel: () {
+            _clearFocus();
+          },
+          onSubmit: (url) {
+            novel.meta.pageUrls.add(url);
+            _clearFocus();
+            setState(() {});
+          },
+        );
+      },
+      onApply: (values) {
+        novel = novel.copyWith(meta: novel.meta.copyWith(pageUrls: values));
+        setState(() {});
+      },
     );
   }
 
@@ -129,10 +189,18 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
     );
   }
 
+  void _clearFocus() {
+    // titleFocus.unfocus();
+    // descFocus.unfocus();
+    // authorFocus.unfocus();
+    // translatorFocus.unfocus();
+    // mcFocus.unfocus();
+  }
+
   void _onUpdate() {
-    final newNovel = widget.novel.copyWith(
+    final newNovel = novel.copyWith(
       title: titleController.text,
-      meta: widget.novel.meta.copyWith(
+      meta: novel.meta.copyWith(
         title: titleController.text,
         author: authorController.text,
         translator: translatorController.text,

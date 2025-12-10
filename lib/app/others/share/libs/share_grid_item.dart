@@ -31,7 +31,7 @@ class ShareGridItem extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Positioned.fill(
-                      child: TCacheImage(
+                      child: TImageUrl(
                         url: '$hostUrl/download?path=${novel.path}/cover.png',
                       ),
                     ),

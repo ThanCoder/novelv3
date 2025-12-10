@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/home/create_novel_website_info_result_dialog.dart';
+import 'package:novel_v3/app/ui/home/home_list_style_list_tile.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -40,6 +41,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
             _showAddMainMenu();
           },
         ),
+        HomeListStyleListTile(onCloseParent: () => Navigator.pop(context)),
       ],
     );
   }

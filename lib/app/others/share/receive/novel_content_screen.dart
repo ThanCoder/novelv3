@@ -108,7 +108,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
       flexibleSpace: Stack(
         fit: StackFit.expand,
         children: [
-          TCacheImage(url: widget.novel.getCoverPath(widget.hostUrl)),
+          TImageUrl(url: widget.novel.getCoverPath(widget.hostUrl)),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

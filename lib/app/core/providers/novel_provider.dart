@@ -66,4 +66,61 @@ class NovelProvider extends ChangeNotifier {
     await Future.delayed(Duration.zero);
     notifyListeners();
   }
+
+  List<Novel> searchAuthor(String author) {
+    return list.where((e) => e.meta.author == author).toList();
+  }
+
+  List<Novel> searchMC(String mc) {
+    return list.where((e) => e.meta.mc == mc).toList();
+  }
+
+  List<Novel> searchTranslator(String translator) {
+    return list.where((e) => e.meta.translator == translator).toList();
+  }
+
+  List<Novel> searchTag(String tag) {
+    return list.where((e) => e.meta.tags.contains(tag)).toList();
+  }
+
+  List<String> get getAllTags {
+    final res = list
+        .map((e) => e.meta)
+        .expand((e) => e.tags)
+        .where((e) => e.isNotEmpty)
+        .toSet()
+        .toList();
+    res.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return res;
+  }
+
+  List<String> get getAllAuthors {
+    final res = list
+        .map((e) => e.meta.author)
+        .where((e) => e.isNotEmpty)
+        .toSet()
+        .toList();
+    res.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return res;
+  }
+
+  List<String> get getAllMC {
+    final res = list
+        .map((e) => e.meta.mc)
+        .where((e) => e.isNotEmpty)
+        .toSet()
+        .toList();
+    res.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return res;
+  }
+
+  List<String> get getAllTranslator {
+    final res = list
+        .map((e) => e.meta.translator)
+        .where((e) => e.isNotEmpty)
+        .toSet()
+        .toList();
+    res.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return res;
+  }
 }

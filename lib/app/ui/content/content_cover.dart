@@ -15,7 +15,11 @@ class ContentCover extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Center(
-      child: SizedBox(width: 170, child: TImage(source: novel.getCoverPath)),
+      child: SizedBox(
+        width: 170,
+        height: 200,
+        child: TImage(source: novel.getCoverPath),
+      ),
     );
   }
 

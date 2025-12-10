@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/components/novel_grid_item.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';
 import 'package:novel_v3/app/ui/content/content_screen.dart';
 import 'package:novel_v3/app/ui/home/home_menu_actions.dart';
 import 'package:novel_v3/app/ui/home/novel_item_menu_actions.dart';
 import 'package:novel_v3/app/ui/home/novel_sliver_tags_bar.dart';
+import 'package:novel_v3/app/ui/search/search_screen.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
@@ -27,12 +30,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   String? currentTag;
+  // filter
+  List<Novel> filterdNovelList = [];
 
   Future<void> init({bool isUsedCache = true}) async {
     await context.read<NovelProvider>().init(isUsedCache: isUsedCache);
   }
 
-  NovelProvider get getProvider => context.watch<NovelProvider>();
+  NovelProvider get getWProvider => context.watch<NovelProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +45,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(Setting.instance.appName),
         actions: [
+          IconButton(onPressed: _goSearchScreen, icon: Icon(Icons.search)),
           !TPlatform.isDesktop
               ? SizedBox.shrink()
               : IconButton(
@@ -56,56 +62,59 @@ class _HomePageState extends State<HomePage> {
             // _getAppbar(),
             NovelSliverTagsBar(value: currentTag, onChoosed: _onChoosedTag),
           ],
-          body: CustomScrollView(slivers: [_getListWidget()]),
+          body: getWProvider.isLoading
+              ? Center(child: TLoader.random())
+              : CustomScrollView(slivers: [_getListWidget()]),
         ),
       ),
     );
   }
 
-  // Widget _getAppbar() {
-  //   return SliverAppBar(
-  //     title: Text(Setting.instance.appName),
-  //     actions: [
-  //       !TPlatform.isDesktop
-  //           ? SizedBox.shrink()
-  //           : IconButton(
-  //               onPressed: () => init(isUsedCache: false),
-  //               icon: Icon(Icons.refresh),
-  //             ),
-  //       HomeMenuActions(),
-  //     ],
-  //   );
-  // }
-
-  List<Novel> filterdNovelList = [];
-
   Widget _getListWidget() {
-    if (getProvider.list.isEmpty) {
+    if (getWProvider.list.isEmpty) {
       return SliverFillRemaining(child: Center(child: Text('Empty List!')));
     }
     if (currentTag != null && currentTag != novelSliverTags.first) {
       if (filterdNovelList.isEmpty) {
         return SliverFillRemaining(child: Center(child: Text('Empty List!')));
       }
-      return SliverList.builder(
-        itemCount: filterdNovelList.length,
-        itemBuilder: (context, index) => _getListItem(filterdNovelList[index]),
-      );
+      return _getListStyleWidget(filterdNovelList);
     }
-    return SliverList.builder(
-      itemCount: getProvider.list.length,
-      itemBuilder: (context, index) => _getListItem(getProvider.list[index]),
+    return _getListStyleWidget(getWProvider.list);
+  }
+
+  Widget _getListStyleWidget(List<Novel> list) {
+    return ValueListenableBuilder(
+      valueListenable: homePageListStyleNotifier,
+      builder: (context, listStyle, child) {
+        if (listStyle == ListStyleType.grid) {
+          return SliverGrid.builder(
+            itemCount: list.length,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 160,
+              mainAxisExtent: 200,
+              mainAxisSpacing: 2,
+              crossAxisSpacing: 2,
+            ),
+            itemBuilder: (context, index) => NovelGridItem(
+              novel: list[index],
+              onClicked: _goContentScreen,
+              onRightClicked: _onItemMenu,
+            ),
+          );
+        }
+        return SliverList.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) => _getListItem(list[index]),
+        );
+      },
     );
   }
 
   Widget _getListItem(Novel novel) {
     return NovelListItem(
       novel: novel,
-      onClicked: (novel) async {
-        await context.read<NovelProvider>().setCurrentNovel(novel);
-        if (!mounted) return;
-        goRoute(context, builder: (context) => ContentScreen());
-      },
+      onClicked: _goContentScreen,
       onRightClicked: _onItemMenu,
     );
   }
@@ -141,5 +150,15 @@ class _HomePageState extends State<HomePage> {
       title: Text(novel.title),
       child: NovelItemMenuActions(novel: novel),
     );
+  }
+
+  void _goContentScreen(Novel novel) async {
+    await context.read<NovelProvider>().setCurrentNovel(novel);
+    if (!mounted) return;
+    goRoute(context, builder: (context) => ContentScreen());
+  }
+
+  void _goSearchScreen() {
+    goRoute(context, builder: (context) => SearchScreen());
   }
 }
