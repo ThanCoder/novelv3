@@ -91,10 +91,10 @@ class _HomePageState extends State<HomePage> {
           return SliverGrid.builder(
             itemCount: list.length,
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 160,
-              mainAxisExtent: 200,
-              mainAxisSpacing: 2,
-              crossAxisSpacing: 2,
+              maxCrossAxisExtent: 170,
+              mainAxisExtent: 190,
+              mainAxisSpacing: 1,
+              crossAxisSpacing: 1,
             ),
             itemBuilder: (context, index) => NovelGridItem(
               novel: list[index],

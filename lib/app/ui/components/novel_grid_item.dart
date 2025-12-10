@@ -23,7 +23,7 @@ class NovelGridItem extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(1.0),
+            padding: const EdgeInsets.all(2.0),
             child: SizedBox(
               width: 100,
               height: 120,
@@ -89,7 +89,7 @@ class NovelGridItem extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 11),
+                        style: TextStyle(fontSize: 11, color: Colors.white),
                       ),
                     ),
                   ),

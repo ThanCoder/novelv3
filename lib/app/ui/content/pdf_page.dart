@@ -81,9 +81,19 @@ class _PdfPageState extends State<PdfPage> {
     if (getProvider.list.isEmpty) {
       return SliverFillRemaining(
         child: Center(
-          child: Text(
-            'List Empty!...',
-            style: TextTheme.of(context).headlineMedium,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 3,
+            children: [
+              Text(
+                'List Empty!...',
+                style: TextTheme.of(context).headlineSmall,
+              ),
+              IconButton(
+                onPressed: init,
+                icon: Icon(Icons.refresh, color: Colors.blue),
+              ),
+            ],
           ),
         ),
       );
