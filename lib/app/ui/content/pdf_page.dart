@@ -5,9 +5,12 @@ import 'package:novel_v3/app/core/providers/pdf_provider.dart';
 import 'package:novel_v3/app/others/pdf_reader/screens/pdfrx_reader_screen.dart';
 import 'package:novel_v3/app/others/pdf_reader/types/pdf_config.dart';
 import 'package:novel_v3/app/routes.dart';
-import 'package:novel_v3/app/ui/components/pdf_cover_thumbnail_image.dart';
+import 'package:novel_v3/app/ui/components/file_on_drop_wiget.dart';
+import 'package:novel_v3/app/ui/components/pdf_file_list_item.dart';
+import 'package:novel_v3/app/ui/content/pdf_item_menu_bottom_sheet.dart';
+import 'package:novel_v3/app/ui/content/pdf_rc_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:t_widgets/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class PdfPage extends StatefulWidget {
@@ -43,16 +46,20 @@ class _PdfPageState extends State<PdfPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: getProvider.isLoading
-          ? Center(child: TLoader.random())
-          : RefreshIndicator.adaptive(
-              onRefresh: init,
-              child: CustomScrollView(
-                controller: controller,
-                slivers: [_getAppbar(), _getList()],
+    return FileOnDropWiget(
+      onTest: (path) => path.endsWith('.pdf'),
+      onDragDone: _addPdfConfirmDialog,
+      child: Scaffold(
+        body: getProvider.isLoading
+            ? Center(child: TLoader.random())
+            : RefreshIndicator.adaptive(
+                onRefresh: init,
+                child: CustomScrollView(
+                  controller: controller,
+                  slivers: [_getAppbar(), _getList()],
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -104,59 +111,14 @@ class _PdfPageState extends State<PdfPage> {
     );
   }
 
-  Widget _getListItem(PdfFile file) {
-    return GestureDetector(
-      onTap: () => _goReader(file),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Card(
-          color: _getRecentName() == file.title
-              ? const Color.fromARGB(45, 33, 149, 243)
-              : null,
-          child: Row(
-            spacing: 4,
-            children: [
-              SizedBox(
-                width: 100,
-                height: 120,
-                child: PdfCoverThumbnailImage(
-                  pdfFile: file,
-                  savePath: file.getCoverPath,
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.title),
-                        Expanded(
-                          child: Text(
-                            file.title,
-                            style: TextStyle(fontSize: 13),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.sd_card),
-                        Expanded(child: Text(file.getSize.toFileSizeLabel())),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.date_range),
-                        Expanded(child: Text(file.date.toParseTime())),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+  Widget _getListItem(PdfFile pdf) {
+    return PdfFileListItem(
+      pdf: pdf,
+      cardColor: _getRecentName() == pdf.title
+          ? const Color.fromARGB(45, 33, 149, 243)
+          : null,
+      onClicked: (pdf) => _goReader(pdf),
+      onRightClicked: _showItemMenu,
     );
   }
 
@@ -171,9 +133,23 @@ class _PdfPageState extends State<PdfPage> {
     return '';
   }
 
+  void _showItemMenu(PdfFile pdf) {
+    showTMenuBottomSheetSingle(
+      context,
+      title: Text(pdf.title),
+      child: PdfItemMenuBottomSheet(
+        pdf: pdf,
+        onClosedMenu: () {
+          if (!mounted) return;
+          closeContext(context);
+        },
+      ),
+    );
+  }
+
   void _goReader(PdfFile pdf) async {
     if (novelPath == null) return;
-    final configPath = PdfFile.getConfigPath(novelPath!);
+    final configPath = pdf.getCurrentConfigPath;
     // set recent
     await TRecentDB.getInstance.putString(
       'recent-pdf-name:${novelPath!.getName()}',
@@ -186,7 +162,8 @@ class _PdfPageState extends State<PdfPage> {
       builder: (context) => PdfrxReaderScreen(
         sourcePath: pdf.path,
         title: pdf.title,
-        pdfConfig: PdfConfig.fromPath(PdfFile.getConfigPath(novelPath!)),
+        pdfConfig: PdfConfig.fromPath(configPath),
+        bookmarkPath: pdf.getCurrentBookmarkConfigPath,
         onConfigUpdated: (pdfConfig) async {
           pdfConfig.savePath(configPath);
           if (!mounted) return;
@@ -205,5 +182,20 @@ class _PdfPageState extends State<PdfPage> {
       return;
     }
     _goReader(list[index]);
+  }
+
+  // file drop
+  void _addPdfConfirmDialog(List<String> files) {
+    if (files.isEmpty) {
+      showTMessageDialogError(context, 'PDF file ပဲလက်ခံပါတယ်!...');
+      return;
+    }
+    showTMenuBottomSheetSingle(
+      context,
+      child: PdfRcBottomSheet(
+        files: files,
+        onClosed: () => closeContext(context),
+      ),
+    );
   }
 }

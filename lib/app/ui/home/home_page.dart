@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
+import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/novel_grid_item.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';
@@ -34,6 +35,8 @@ class _HomePageState extends State<HomePage> {
   List<Novel> filterdNovelList = [];
 
   Future<void> init({bool isUsedCache = true}) async {
+    context.read<NovelBookmarkProvider>().init();
+    if (!mounted) return;
     await context.read<NovelProvider>().init(isUsedCache: isUsedCache);
   }
 
@@ -123,7 +126,12 @@ class _HomePageState extends State<HomePage> {
   void _onChoosedTag(String tag) {
     final list = context.read<NovelProvider>().list;
     filterdNovelList = list.where((e) {
-      if (tag == 'BookMark') {}
+      if (tag == 'BookMark') {
+        final bookList = context.read<NovelBookmarkProvider>().list.map(
+          (e) => e.title,
+        );
+        if (bookList.contains(e.title)) return true;
+      }
       if (tag == 'Completed' && e.meta.isCompleted) {
         return true;
       }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/others/bookmark/novel_bookmark_toggle_action.dart';
 import 'package:novel_v3/app/ui/content/chapter_bookmark_page.dart';
 import 'package:novel_v3/app/ui/content/chapter_page.dart';
 import 'package:novel_v3/app/ui/content/content_cover.dart';
@@ -93,6 +94,18 @@ class _ContentScreenState extends State<ContentScreen> {
   }
 
   Widget _getAppbar() {
-    return SliverAppBar(floating: true, snap: true, pinned: false);
+    final provider = context.watch<NovelProvider>();
+    return SliverAppBar(
+      floating: true,
+      snap: true,
+      pinned: false,
+      actions: [
+        provider.currentNovel == null
+            ? SizedBox.shrink()
+            : NovelBookmarkToggleAction(
+                novelTitle: provider.currentNovel!.title,
+              ),
+      ],
+    );
   }
 }

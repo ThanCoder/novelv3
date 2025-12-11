@@ -121,4 +121,40 @@ class PathUtil {
     // old dir delete
     await oldDir.delete();
   }
+
+  static Future<void> copyWithProgress(
+    File file, {
+    required File destFile,
+    bool Function()? isCancel,
+    bool onCancelDeletedFile = true,
+    void Function(int total, int loaded)? onProgerss,
+  }) async {
+    final raf = await file.open();
+    final outRaf = await destFile.open(mode: FileMode.write);
+
+    final total = await raf.length();
+    int loaded = 0;
+    const chunk = 1024 * 1024; // 1MB
+
+    while (true) {
+      if (isCancel?.call() ?? false) {
+        break; //cancel
+      }
+      final data = await raf.read(chunk);
+      if (data.isEmpty) break; //EOF
+
+      await outRaf.writeFrom(data);
+      loaded += data.length;
+      // progress
+      onProgerss?.call(total, loaded);
+      // delay
+      // await Future.delayed(Duration(milliseconds: 100));
+    }
+
+    await raf.close();
+    await outRaf.close();
+    if ((isCancel?.call() ?? false) && onCancelDeletedFile) {
+      await destFile.delete();
+    }
+  }
 }

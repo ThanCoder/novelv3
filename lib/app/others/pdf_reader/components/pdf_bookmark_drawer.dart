@@ -125,6 +125,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
       barrierDismissible: false,
       builder: (context) => TRenameDialog(
         text: 'Untitled',
+        submitText: 'Add',
         onSubmit: (text) async {
           final bm = PdfBookmark(title: text, page: widget.currentPage);
           list.add(bm);

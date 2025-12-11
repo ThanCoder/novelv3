@@ -6,6 +6,7 @@ import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/core/providers/pdf_provider.dart';
 import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
+import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
@@ -92,6 +93,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => PdfProvider()),
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
         ChangeNotifierProvider(create: (context) => ChapterBookmarkProvider()),
+        ChangeNotifierProvider(create: (context) => NovelBookmarkProvider()),
       ],
       child: const MyApp(),
     ),

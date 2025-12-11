@@ -15,4 +15,23 @@ class PdfProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  Future<void> rename(PdfFile pdf, {required String oldName}) async {
+    final index = list.indexWhere((e) => e.title == oldName);
+    if (index == -1) return;
+    list[index] = pdf;
+    // rename pdf && config
+    await pdf.rename(oldName);
+
+    notifyListeners();
+  }
+
+  Future<void> deleteForever(PdfFile pdf) async {
+    final index = list.indexWhere((e) => e.title == pdf.title);
+    if (index == -1) return;
+    list.removeAt(index);
+    await pdf.deleteForever();
+
+    notifyListeners();
+  }
 }

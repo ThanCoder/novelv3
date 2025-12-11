@@ -11,6 +11,8 @@ class NovelProvider extends ChangeNotifier {
   bool isLoading = false;
   Novel? currentNovel;
 
+  void refersh() => notifyListeners();
+
   Future<void> init({bool isUsedCache = true}) async {
     if (isUsedCache && list.isNotEmpty) return;
     isLoading = true;
