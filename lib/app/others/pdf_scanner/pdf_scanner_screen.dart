@@ -12,11 +12,19 @@ import 'package:than_pkg/than_pkg.dart';
 
 typedef PdfScannerOnClickedCallback =
     void Function(BuildContext context, PdfFile pdf);
+typedef PdfScannerOnMultiChoosedCallback =
+    void Function(BuildContext context, List<PdfFile> files);
 
 class PdfScannerScreen extends StatefulWidget {
-  PdfScannerOnClickedCallback? onClicked;
-
-  PdfScannerScreen({super.key, this.onClicked});
+  final PdfScannerOnClickedCallback? onClicked;
+  final PdfScannerOnMultiChoosedCallback? onChoosed;
+  final bool isMultipleSelected;
+  const PdfScannerScreen({
+    super.key,
+    this.onClicked,
+    this.onChoosed,
+    this.isMultipleSelected = false,
+  });
 
   @override
   State<PdfScannerScreen> createState() => PdfScannerScreenState();
@@ -33,6 +41,8 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
   List<PdfFile> list = [];
   int currentSortId = TSort.getDateId;
   bool isSortAsc = false;
+  bool isAllSelected = false;
+  List<PdfFile> selectedList = [];
 
   Future<void> init() async {
     try {
@@ -66,6 +76,18 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
       appBar: AppBar(
         title: Text('PDF Scanner'),
         actions: [
+          !widget.isMultipleSelected
+              ? SizedBox.shrink()
+              : Text('Count: ${selectedList.length}'),
+          !widget.isMultipleSelected
+              ? SizedBox.shrink()
+              : Checkbox.adaptive(
+                  value: isAllSelected,
+                  onChanged: (value) {
+                    isAllSelected = value!;
+                    _onSelectAll();
+                  },
+                ),
           _getSortWidget(),
           TPlatform.isDesktop
               ? IconButton(onPressed: init, icon: Icon(Icons.refresh))
@@ -79,6 +101,21 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
           : RefreshIndicator.adaptive(
               onRefresh: init,
               child: CustomScrollView(slivers: [_getSliverList()]),
+            ),
+      bottomNavigationBar: !widget.isMultipleSelected
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () =>
+                        widget.onChoosed?.call(context, selectedList),
+                    child: Text('Choose'),
+                  ),
+                ],
+              ),
             ),
     );
   }
@@ -105,8 +142,12 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
       itemCount: list.length,
       itemBuilder: (context, index) => PdfListItem(
         cachePath: PathUtil.getCachePath(),
+        onExists: (pdf) {
+          final index = selectedList.indexWhere((e) => e.title == pdf.title);
+          return index != -1;
+        },
         pdf: list[index],
-        onClicked: (pdf) => widget.onClicked?.call(context, pdf),
+        onClicked: _onItemClicked,
         onRightClicked: _showItemMenu,
       ),
     );
@@ -136,6 +177,36 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
     }
     if (currentSortId == TSort.getDateId) {
       list.sortDate(isNewest: !isSortAsc);
+    }
+    setState(() {});
+  }
+
+  void _onItemClicked(PdfFile pdf) {
+    if (!widget.isMultipleSelected) {
+      widget.onClicked?.call(context, pdf);
+      return;
+    }
+    // is multi
+    if (selectedList.isEmpty) {
+      selectedList.add(pdf);
+    } else {
+      // check
+      final index = selectedList.indexWhere((e) => e.title == pdf.title);
+      if (index == -1) {
+        selectedList.add(pdf);
+      }
+      //remove
+      else {
+        selectedList.removeAt(index);
+      }
+    }
+    setState(() {});
+  }
+
+  void _onSelectAll() {
+    selectedList.clear();
+    if (isAllSelected) {
+      selectedList.addAll(list);
     }
     setState(() {});
   }
@@ -252,14 +323,14 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
   }
 
   void _deleteConfirm(PdfFile pdf) {
-    // showTConfirmDialog(
-    //   context,
-    //   submitText: 'Delete Forever!',
-    //   contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
-    //   onSubmit: () async {
-    //     await pdf.delete();
-    //     removeUIPdf(pdf);
-    //   },
-    // );
+    showTConfirmDialog(
+      context,
+      submitText: 'Delete Forever!',
+      contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+      onSubmit: () async {
+        await pdf.deleteForever();
+        removeUIPdf(pdf);
+      },
+    );
   }
 }

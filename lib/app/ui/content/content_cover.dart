@@ -24,7 +24,7 @@ class ContentCover extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 300;
+  double get maxExtent => 250;
 
   @override
   double get minExtent => 200;

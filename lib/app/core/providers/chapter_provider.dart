@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/core/services/chapter_services.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class ChapterProvider extends ChangeNotifier {
   List<Chapter> list = [];
@@ -16,7 +17,7 @@ class ChapterProvider extends ChangeNotifier {
     currentNovelPath = novelPath;
     list = await ChapterServices.getAll(novelPath);
 
-    list.sortChapterNumber();
+    sort(currentSortId, sortAsc);
 
     isLoading = false;
     notifyListeners();
@@ -62,4 +63,21 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   int get getLatestChapter => list.isEmpty ? 0 : list.last.number;
+
+  // sort
+  bool sortAsc = true;
+  int currentSortId = 1;
+  List<TSort> sortList = [
+    TSort(id: 1, title: 'Number', ascTitle: 'Smallest', descTitle: 'Biggest'),
+  ];
+
+  void sort(int currentId, bool isAsc) {
+    sortAsc = isAsc;
+    currentSortId = currentId;
+    if (currentSortId == 1) {
+      // size
+      list.sortChapterNumber(isSort: sortAsc);
+    }
+    notifyListeners();
+  }
 }

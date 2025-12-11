@@ -5,6 +5,7 @@ import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
 import 'package:novel_v3/app/ui/content/chapter_list_item.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
@@ -44,12 +45,12 @@ class _ChapterPageState extends State<ChapterPage> {
     setState(() {});
   }
 
-  ChapterProvider get getProvider => context.watch<ChapterProvider>();
+  ChapterProvider get getWProvider => context.watch<ChapterProvider>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: getProvider.isLoading
+      body: getWProvider.isLoading
           ? Center(child: TLoader.random())
           : RefreshIndicator.adaptive(
               onRefresh: () async => init(isUsedCache: false),
@@ -80,13 +81,22 @@ class _ChapterPageState extends State<ChapterPage> {
                 onPressed: () => init(isUsedCache: false),
                 icon: Icon(Icons.refresh),
               ),
+        // sort
+        SortDialogAction(
+          isAsc: getWProvider.sortAsc,
+          currentId: getWProvider.currentSortId,
+          sortList: getWProvider.sortList,
+          sortDialogCallback: (id, isAsc) {
+            context.read<ChapterProvider>().sort(id, isAsc);
+          },
+        ),
         ChapterMenuActions(),
       ],
     );
   }
 
   Widget _getList() {
-    if (getProvider.list.isEmpty) {
+    if (getWProvider.list.isEmpty) {
       return SliverFillRemaining(
         child: Center(
           child: Column(
@@ -107,9 +117,9 @@ class _ChapterPageState extends State<ChapterPage> {
       );
     }
     return SliverList.builder(
-      itemCount: getProvider.list.length,
+      itemCount: getWProvider.list.length,
       itemBuilder: (context, index) => ChapterListItem(
-        chapter: (getProvider.list[index]),
+        chapter: (getWProvider.list[index]),
         onClicked: _goReaderPage,
       ),
     );

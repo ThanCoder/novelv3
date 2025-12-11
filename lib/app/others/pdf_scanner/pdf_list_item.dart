@@ -15,11 +15,13 @@ class PdfListItem extends StatefulWidget {
   final bool isEnableRecent;
   final void Function(PdfFile pdf) onClicked;
   final void Function(PdfFile pdf)? onRightClicked;
+  final bool Function(PdfFile pdf)? onExists;
   const PdfListItem({
     super.key,
     required this.pdf,
     required this.onClicked,
     this.onRightClicked,
+    this.onExists,
     this.cachePath,
     this.isEnableRecent = false,
   });
@@ -79,7 +81,9 @@ class _PdfListItemState extends State<PdfListItem> {
         cursor: SystemMouseCursors.click,
         child:
             Card(
-              // color:
+              color: (widget.onExists?.call(widget.pdf) ?? false)
+                  ? const Color.fromARGB(64, 23, 96, 155)
+                  : null,
               //     widget.isEnableRecent &&
               //         PdfServices.isExistsRecent(
               //           novelId: widget.pdf.getParentPath.getName(),

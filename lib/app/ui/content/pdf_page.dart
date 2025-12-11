@@ -7,7 +7,9 @@ import 'package:novel_v3/app/others/pdf_reader/types/pdf_config.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/file_on_drop_wiget.dart';
 import 'package:novel_v3/app/ui/components/pdf_file_list_item.dart';
+import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
 import 'package:novel_v3/app/ui/content/pdf_item_menu_bottom_sheet.dart';
+import 'package:novel_v3/app/ui/content/pdf_menu_botton_sheet.dart';
 import 'package:novel_v3/app/ui/content/pdf_rc_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -42,7 +44,7 @@ class _PdfPageState extends State<PdfPage> {
     setState(() {});
   }
 
-  PdfProvider get getProvider => context.watch<PdfProvider>();
+  PdfProvider get getWProvider => context.watch<PdfProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class _PdfPageState extends State<PdfPage> {
       onTest: (path) => path.endsWith('.pdf'),
       onDragDone: _addPdfConfirmDialog,
       child: Scaffold(
-        body: getProvider.isLoading
+        body: getWProvider.isLoading
             ? Center(child: TLoader.random())
             : RefreshIndicator.adaptive(
                 onRefresh: init,
@@ -74,6 +76,24 @@ class _PdfPageState extends State<PdfPage> {
         !TPlatform.isDesktop
             ? SizedBox.shrink()
             : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
+        // sort
+        SortDialogAction(
+          isAsc: getWProvider.sortAsc,
+          currentId: getWProvider.currentSortId,
+          sortList: getWProvider.sortList,
+          sortDialogCallback: (id, isAsc) {
+            context.read<PdfProvider>().sort(id, isAsc);
+          },
+        ),
+        IconButton(
+          onPressed: () {
+            showTMenuBottomSheetSingle(
+              context,
+              child: PdfMenuBottonSheet(onClosed: () => closeContext(context)),
+            );
+          },
+          icon: Icon(Icons.more_vert_rounded),
+        ),
       ],
     );
   }
@@ -85,7 +105,7 @@ class _PdfPageState extends State<PdfPage> {
   }
 
   Widget _getList() {
-    if (getProvider.list.isEmpty) {
+    if (getWProvider.list.isEmpty) {
       return SliverFillRemaining(
         child: Center(
           child: Column(
@@ -106,8 +126,8 @@ class _PdfPageState extends State<PdfPage> {
       );
     }
     return SliverList.builder(
-      itemCount: getProvider.list.length,
-      itemBuilder: (context, index) => _getListItem(getProvider.list[index]),
+      itemCount: getWProvider.list.length,
+      itemBuilder: (context, index) => _getListItem(getWProvider.list[index]),
     );
   }
 
