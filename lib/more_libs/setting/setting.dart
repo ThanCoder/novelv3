@@ -102,6 +102,8 @@ class Setting {
       //custom path
       if (config.isUseCustomPath && config.customPath.isNotEmpty) {
         appRootPath = config.customPath;
+      } else {
+        appRootPath = appConfigPath;
       }
     } catch (e) {
       showDebugLog(e.toString(), tag: 'Setting:reSetConfig');

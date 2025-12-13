@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import 'package:novel_v3/app/core/models/novel_meta.dart';
@@ -15,6 +16,14 @@ class Novel {
     required this.meta,
     required this.date,
   });
+  factory Novel.create({required String title, String? path, NovelMeta? meta}) {
+    return Novel(
+      title: title,
+      path: path ?? PathUtil.getSourcePath(name: title),
+      meta: NovelMeta.createEmpty(),
+      date: DateTime.now(),
+    );
+  }
 
   String get getCoverPath => '$path/cover.png';
 

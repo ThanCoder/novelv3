@@ -5,6 +5,7 @@ import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/novel_grid_item.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';
+import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
 import 'package:novel_v3/app/ui/content/content_screen.dart';
 import 'package:novel_v3/app/ui/home/home_menu_actions.dart';
 import 'package:novel_v3/app/ui/home/novel_item_menu_actions.dart';
@@ -48,6 +49,15 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(Setting.instance.appName),
         actions: [
+          // sort
+          SortDialogAction(
+            isAsc: getWProvider.sortAsc,
+            currentId: getWProvider.currentSortId,
+            sortList: getWProvider.sortList,
+            sortDialogCallback: (id, isAsc) {
+              context.read<NovelProvider>().sort(id, isAsc);
+            },
+          ),
           IconButton(onPressed: _goSearchScreen, icon: Icon(Icons.search)),
           !TPlatform.isDesktop
               ? SizedBox.shrink()
@@ -58,31 +68,45 @@ class _HomePageState extends State<HomePage> {
           HomeMenuActions(),
         ],
       ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async => init(isUsedCache: false),
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            // _getAppbar(),
-            NovelSliverTagsBar(value: currentTag, onChoosed: _onChoosedTag),
-          ],
-          body: getWProvider.isLoading
-              ? Center(child: TLoader.random())
-              : CustomScrollView(slivers: [_getListWidget()]),
-        ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          // _getAppbar(),
+          NovelSliverTagsBar(value: currentTag, onChoosed: _onChoosedTag),
+        ],
+        body: getWProvider.isLoading
+            ? Center(child: TLoader.random())
+            : RefreshIndicator.adaptive(
+                onRefresh: () async => init(isUsedCache: false),
+                child: CustomScrollView(slivers: [_getListWidget()]),
+              ),
       ),
     );
   }
 
+  Widget _getEmptyWidget() {
+    return SliverFillRemaining(child: Center(child: Text('Empty List!')));
+  }
+
   Widget _getListWidget() {
     if (getWProvider.list.isEmpty) {
-      return SliverFillRemaining(child: Center(child: Text('Empty List!')));
+      return _getEmptyWidget();
     }
+    // bookmark
+    if (currentTag != null && currentTag == 'BookMark') {
+      final bookmarkProvider = context.watch<NovelBookmarkProvider>();
+      if (bookmarkProvider.isLoading) {
+        return SliverFillRemaining(child: Center(child: TLoader.random()));
+      }
+      return _getListStyleWidget(bookmarkProvider.novelList);
+    }
+    // latest
     if (currentTag != null && currentTag != novelSliverTags.first) {
       if (filterdNovelList.isEmpty) {
-        return SliverFillRemaining(child: Center(child: Text('Empty List!')));
+        return _getEmptyWidget();
       }
       return _getListStyleWidget(filterdNovelList);
     }
+
     return _getListStyleWidget(getWProvider.list);
   }
 
@@ -96,8 +120,8 @@ class _HomePageState extends State<HomePage> {
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 170,
               mainAxisExtent: 190,
-              mainAxisSpacing: 1,
-              crossAxisSpacing: 1,
+              // mainAxisSpacing: 1,
+              // crossAxisSpacing: 1,
             ),
             itemBuilder: (context, index) => NovelGridItem(
               novel: list[index],
@@ -123,32 +147,31 @@ class _HomePageState extends State<HomePage> {
   }
 
   // filter tags
-  void _onChoosedTag(String tag) {
+  void _onChoosedTag(String tag) async {
+    currentTag = tag;
+
     final list = context.read<NovelProvider>().list;
-    filterdNovelList = list.where((e) {
-      if (tag == 'BookMark') {
-        final bookList = context.read<NovelBookmarkProvider>().list.map(
-          (e) => e.title,
-        );
-        if (bookList.contains(e.title)) return true;
-      }
-      if (tag == 'Completed' && e.meta.isCompleted) {
-        return true;
-      }
-      if (tag == 'OnGoing' && !e.meta.isCompleted) {
-        return true;
-      }
-      if (tag == 'No Adult' && !e.meta.isAdult) {
-        return true;
-      }
-      if (tag == 'Adult' && e.meta.isAdult) {
-        return true;
-      }
-      return false;
-    }).toList();
-    setState(() {
-      currentTag = tag;
-    });
+    if (tag == 'BookMark') {
+      setState(() {});
+      await context.read<NovelBookmarkProvider>().parseNovelList();
+    } else {
+      filterdNovelList = list.where((e) {
+        if (tag == 'Completed' && e.meta.isCompleted) {
+          return true;
+        }
+        if (tag == 'OnGoing' && !e.meta.isCompleted) {
+          return true;
+        }
+        if (tag == 'No Adult' && !e.meta.isAdult) {
+          return true;
+        }
+        if (tag == 'Adult' && e.meta.isAdult) {
+          return true;
+        }
+        return false;
+      }).toList();
+      setState(() {});
+    }
   }
 
   // item menu

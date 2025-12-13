@@ -103,10 +103,7 @@ class _ChapterPageState extends State<ChapterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 3,
             children: [
-              Text(
-                'List Empty!...',
-                style: TextTheme.of(context).headlineSmall,
-              ),
+              Text('List Empty!...', style: TextTheme.of(context).labelLarge),
               IconButton(
                 onPressed: () => init(isUsedCache: false),
                 icon: Icon(Icons.refresh, color: Colors.blue),

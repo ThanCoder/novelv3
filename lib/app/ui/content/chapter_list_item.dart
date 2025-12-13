@@ -53,7 +53,7 @@ class _ChapterListItemState extends State<ChapterListItem> {
           },
         ),
         ListTile(
-          leading: Icon(Icons.delete_forever),
+          leading: Icon(Icons.delete_forever, color: Colors.red),
           title: Text('Delete Forever'),
           onTap: () {
             closeContext(context);

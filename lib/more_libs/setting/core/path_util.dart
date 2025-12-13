@@ -6,7 +6,7 @@ import '../setting.dart';
 
 class PathUtil {
   static Future<String> getAssetRealPathPath(String rootPath) async {
-    final bytes = await rootBundle.load('assets/$rootPath');
+    final bytes = await rootBundle.load(pathJoin('assets', rootPath));
     final name = rootPath.getName();
     final cacheFile = File(PathUtil.getCachePath(name: name));
     if (!cacheFile.existsSync()) {
@@ -23,51 +23,68 @@ class PathUtil {
 
   static String getHomePath({String? name}) {
     final dirPath = createDir(Setting.appRootPath);
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
   static String getConfigPath({String? name}) {
-    final dirPath = createDir('${getHomePath()}/config');
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final dirPath = createDir(getHomePath(name: 'config'));
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
   static String getLibaryPath({String? name}) {
-    final dirPath = createDir('${getHomePath()}/libary');
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final dirPath = createDir(getHomePath(name: 'libary'));
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
   static String getDatabasePath({String? name}) {
-    final dirPath = createDir('${getHomePath()}/database');
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final dirPath = createDir(getHomePath(name: 'database'));
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
   static String getDatabaseSourcePath() {
-    return createDir('${getHomePath()}/databaseSource');
+    return createDir(getHomePath(name: 'databaseSource'));
   }
 
   static String getCachePath({String? name}) {
     String homeDir = createDir(Setting.appConfigPath);
-    final dirPath = createDir('$homeDir/cache');
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final dirPath = createDir(pathJoin(homeDir, 'cache'));
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
   static String getSourcePath({String? name}) {
-    final dirPath = createDir('${getHomePath()}/source');
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final dirPath = createDir(getHomePath(name: 'source'));
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
   static String getOutPath({String? name}) {
     String download = createDir(
-      '${Setting.appExternalPath}/${Platform.isAndroid ? 'Download' : 'Downloads'}',
+      pathJoin(
+        Setting.appExternalPath,
+        Platform.isAndroid ? 'Download' : 'Downloads',
+      ),
     );
-    final dirPath = createDir('$download/${Setting.instance.appName}');
-    final fileName = (name != null && name.isNotEmpty) ? '/$name' : '';
+    final dirPath = createDir(pathJoin(download, Setting.instance.appName));
+    final fileName = (name != null && name.isNotEmpty)
+        ? '${Platform.pathSeparator}$name'
+        : '';
     return '$dirPath$fileName';
   }
 
@@ -115,7 +132,7 @@ class PathUtil {
     await newDir.create();
     //file move
     for (var file in oldDir.listSync(followLinks: false)) {
-      final newPath = '${newDir.path}/${file.getName()}';
+      final newPath = pathJoin(newDir.path, file.getName());
       await file.rename(newPath);
     }
     // old dir delete

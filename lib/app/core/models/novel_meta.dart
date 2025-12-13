@@ -30,6 +30,10 @@ class NovelMeta {
     required this.readed,
   });
 
+  factory NovelMeta.createEmpty() {
+    return NovelMeta.create();
+  }
+
   factory NovelMeta.create() {
     return NovelMeta(
       title: 'Untitled',

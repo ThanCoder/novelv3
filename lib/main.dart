@@ -21,12 +21,14 @@ import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main() async {
   await ThanPkg.instance.init();
+  final novelProvider = NovelProvider();
 
   await Setting.instance.init(
     appName: 'NV 3',
     releaseUrl: 'https://github.com/ThanCoder/novelv3/releases',
     onSettingSaved: (context, message) {
       showTSnackBar(context, message);
+      novelProvider.init(isUsedCache: false);
     },
   );
   final client = TClient();
@@ -89,7 +91,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => NovelProvider()),
+        ChangeNotifierProvider(create: (context) => novelProvider),
         ChangeNotifierProvider(create: (context) => PdfProvider()),
         ChangeNotifierProvider(create: (context) => ChapterProvider()),
         ChangeNotifierProvider(create: (context) => ChapterBookmarkProvider()),

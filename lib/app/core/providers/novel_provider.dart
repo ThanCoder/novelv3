@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/extensions/novel_extension.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/services/novel_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/extensions/string_extension.dart';
+import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class NovelProvider extends ChangeNotifier {
   List<Novel> list = [];
@@ -19,6 +21,16 @@ class NovelProvider extends ChangeNotifier {
     notifyListeners();
 
     list = await NovelServices.getAll();
+    // sort
+    sortAsc = TRecentDB.getInstance.getBool(
+      'novel-home-sort-sortAsc',
+      def: false,
+    );
+    currentSortId = TRecentDB.getInstance.getInt(
+      'novel-home-sort-sortId',
+      def: TSort.getDateId,
+    );
+    sort(currentSortId, sortAsc);
 
     isLoading = false;
     notifyListeners();
@@ -124,5 +136,35 @@ class NovelProvider extends ChangeNotifier {
         .toList();
     res.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
     return res;
+  }
+
+  // sort
+  bool sortAsc = false;
+  int currentSortId = TSort.getDateId;
+  List<TSort> sortList = TSort.getDefaultList
+    ..add(
+      TSort(id: 1, title: 'Size', ascTitle: 'Smallest', descTitle: 'Biggest'),
+    );
+
+  void sort(int currentId, bool isAsc) {
+    sortAsc = isAsc;
+    currentSortId = currentId;
+
+    if (currentSortId == TSort.getDateId) {
+      // date
+      list.sortDate(isNewest: !sortAsc);
+    }
+    if (currentSortId == TSort.getTitleId) {
+      // title
+      list.sortTitle(aToZ: sortAsc);
+    }
+    if (currentSortId == 1) {
+      // size
+      list.sortSize(isSmallest: sortAsc);
+    }
+    // set recent
+    TRecentDB.getInstance.putBool('novel-home-sort-sortAsc', sortAsc);
+    TRecentDB.getInstance.putInt('novel-home-sort-sortId', currentId);
+    notifyListeners();
   }
 }

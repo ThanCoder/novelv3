@@ -114,7 +114,7 @@ class _PdfPageState extends State<PdfPage> {
             children: [
               Text(
                 'List Empty!...',
-                style: TextTheme.of(context).headlineSmall,
+                style: TextTheme.of(context).labelLarge,
               ),
               IconButton(
                 onPressed: init,

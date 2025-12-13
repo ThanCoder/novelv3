@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_services.dart';
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
 class NovelBookmarkProvider with ChangeNotifier {
   List<NovelBookmark> list = [];
+  List<Novel> novelList = [];
   bool isLoading = false;
 
   Future<void> init() async {
@@ -11,7 +14,22 @@ class NovelBookmarkProvider with ChangeNotifier {
     notifyListeners();
 
     list = await NovelBookmarkServices.getAll();
+
+    await parseNovelList();
+
     isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> parseNovelList() async {
+    novelList.clear();
+    for (var bookmark in list) {
+      final novel = await Novel.fromPath(
+        PathUtil.getSourcePath(name: bookmark.title),
+      );
+      if (novel == null) continue;
+      novelList.add(novel);
+    }
     notifyListeners();
   }
 
@@ -26,6 +44,7 @@ class NovelBookmarkProvider with ChangeNotifier {
   Future<void> add(NovelBookmark bookmark) async {
     list.insert(0, bookmark);
     await NovelBookmarkServices.setList(list);
+    await parseNovelList();
     notifyListeners();
   }
 
@@ -35,6 +54,7 @@ class NovelBookmarkProvider with ChangeNotifier {
     if (index != -1) {
       list.removeAt(index);
     }
+    await parseNovelList();
     await NovelBookmarkServices.setList(list);
     notifyListeners();
   }

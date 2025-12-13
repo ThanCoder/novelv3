@@ -31,7 +31,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
 
   void init() async {
     customPathTextController.text =
-        '${Setting.appExternalPath}/.${Setting.instance.appName}';
+        '${Setting.appExternalPath}/.${Setting.instance.packageName}';
     config = Setting.getAppConfig;
     forwardProxyController.text = config.forwardProxyUrl;
     proxyController.text = config.proxyUrl;

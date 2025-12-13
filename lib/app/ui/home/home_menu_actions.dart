@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/home/create_novel_website_info_result_dialog.dart';
@@ -156,20 +158,34 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
         return null;
       },
       onSubmit: (text) async {
-        // if (text.isEmpty) return;
+        if (text.isEmpty) return;
         try {
-          //   final novel = await Novel.createTitle(text.trim());
-          //   // copy cover
-          //   final pdfCoverFile = File(pdf.getCoverPath);
-          //   await pdfCoverFile.copy(novel.getCoverPath);
-          //   // move pdf file
-          //   await pdf.rename('${novel.path}/${pdf.getTitle}');
+          final novel = await NovelServices.createNovelWithTitle(text.trim());
+          if (novel == null) {
+            throw Exception('Novel `${text.trim()}` Create Failed!');
+          }
+          // copy cover
+          final pdfCoverFile = File(pdf.getCoverPath);
+          if (pdfCoverFile.existsSync()) {
+            await pdfCoverFile.copy(novel.getCoverPath);
+          }
+          // move pdf file to novel
+          final pdfFile = File(pdf.path);
+          if (pdfFile.existsSync()) {
+            await pdfFile.rename(pathJoin(novel.path, pdf.title));
+          }
+          await provider.add(novel);
 
-          //   provider.add(novel);
-          //   if (!mounted) return;
-          //   goRoute(context, builder: (context) => EditNovelScreen(novel: novel,onUpdated: (updatedNovel) {
-
-          //   },));
+          if (!mounted) return;
+          goRoute(
+            context,
+            builder: (context) => EditNovelScreen(
+              novel: novel,
+              onUpdated: (updatedNovel) {
+                context.read<NovelProvider>().update(updatedNovel);
+              },
+            ),
+          );
         } catch (e) {
           showTMessageDialogError(context, e.toString());
         }

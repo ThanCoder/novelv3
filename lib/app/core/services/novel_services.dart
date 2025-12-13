@@ -6,7 +6,6 @@ import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 
 class NovelServices {
-
   static Future<List<Novel>> getAll() async {
     List<Novel> list = [];
     final dir = Directory(PathUtil.getSourcePath());
@@ -24,9 +23,9 @@ class NovelServices {
   }
 
   static Future<Novel?> createNovelWithTitle(String title) async {
-    final dir = Directory('${PathUtil.getSourcePath()}/$title');
+    final dir = Directory(PathUtil.getSourcePath(name: title));
     if (dir.existsSync()) return null;
     await dir.create();
-    return Novel.fromPath(dir.path);
+    return await Novel.fromPath(dir.path);
   }
 }
