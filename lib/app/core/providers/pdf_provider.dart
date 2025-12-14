@@ -25,7 +25,7 @@ class PdfProvider extends ChangeNotifier {
     if (index == -1) return;
     list[index] = pdf;
     // rename pdf && config
-    await pdf.rename(oldName);
+    await pdf.renameAllConfig(oldName);
 
     notifyListeners();
   }

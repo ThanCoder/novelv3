@@ -297,29 +297,29 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
   }
 
   void _rename(PdfFile pdf) {
-    // showTReanmeDialog(
-    //   context,
-    //   barrierDismissible: false,
-    //   title: Text('Rename'),
-    //   submitText: 'Rename',
-    //   text: pdf.title.getName(withExt: false),
-    //   onSubmit: (text) async {
-    //     try {
-    //       final index = list.indexWhere((e) => e.title == pdf.title);
-    //       if (index == -1) return;
-    //       await pdf.rename('${pdf.getParentPath}/$text.pdf');
-    //       list[index] = pdf;
+    showTReanmeDialog(
+      context,
+      barrierDismissible: false,
+      title: Text('Rename'),
+      submitText: 'Rename',
+      text: pdf.title.getName(withExt: false),
+      onSubmit: (text) async {
+        try {
+          final index = list.indexWhere((e) => e.title == pdf.title);
+          if (index == -1) return;
+          final newPath = '${pdf.getParentPath}/$text.pdf';
+          final pdfFile = File(pdf.path);
+          await pdfFile.rename(newPath);
+          list[index] = pdf.copyWith(path: newPath, title: '$text.pdf');
 
-    //       if (!mounted) return;
-    //       setState(() {});
-    //     } catch (e) {
-    //       NovelDirApp.showDebugLog(
-    //         e.toString(),
-    //         tag: 'PdfScannerScreen:_rename',
-    //       );
-    //     }
-    //   },
-    // );
+          if (!mounted) return;
+          setState(() {});
+        } catch (e) {
+          if (!mounted) return;
+          showTMessageDialogError(context, e.toString());
+        }
+      },
+    );
   }
 
   void _deleteConfirm(PdfFile pdf) {

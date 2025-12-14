@@ -44,6 +44,20 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> toggleBookmark(ChapterBookmark bookmark) async {
+    if (isExistsChapter(bookmark.chapter)) {
+      final index = list.indexWhere((e) => e.chapter == bookmark.chapter);
+      if (index != -1) {
+        list.removeAt(index);
+      }
+    } else {
+      // add
+      list.add(bookmark);
+    }
+    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
+    notifyListeners();
+  }
+
   bool isExistsChapter(int chapter) {
     if (list.isEmpty) return false;
     final index = list.indexWhere((e) => e.chapter == chapter);

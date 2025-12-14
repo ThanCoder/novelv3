@@ -84,7 +84,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getEmptyWidget() {
-    return SliverFillRemaining(child: Center(child: Text('Empty List!')));
+    return SliverFillRemaining(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 3,
+          children: [
+            Text('List Empty!...', style: TextTheme.of(context).labelLarge),
+            IconButton(
+              onPressed: () => init(isUsedCache: false),
+              icon: Icon(Icons.refresh, color: Colors.blue),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _getListWidget() {

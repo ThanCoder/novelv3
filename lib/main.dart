@@ -61,7 +61,7 @@ void main() async {
   );
 
   // fetcher
-  Fetcher.instance.init(
+  await Fetcher.instance.init(
     onGetHtmlContent: (url) async {
       final res = await client.get(url);
       return res.data.toString();

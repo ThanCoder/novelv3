@@ -33,7 +33,7 @@ class PdfFile {
   String get getCurrentBookmarkConfigPath =>
       getBookmarkPath(getParentPath, title);
 
-  Future<void> rename(String oldName) async {
+  Future<void> renameAllConfig(String oldName) async {
     final oldFile = File(pathJoin(getParentPath, oldName));
     if (!oldFile.existsSync()) return;
     // rename

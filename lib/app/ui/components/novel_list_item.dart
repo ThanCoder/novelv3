@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -75,6 +77,26 @@ class NovelListItem extends StatelessWidget {
                             size: 20,
                           ),
                         ),
+                      ),
+                      // bookmark
+                      Positioned(
+                        bottom: 0,
+                        child:
+                            !context.watch<NovelBookmarkProvider>().isExists(
+                              novel.title,
+                            )
+                            ? SizedBox.shrink()
+                            : Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.7),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Icon(
+                                  Icons.bookmark_added,
+                                  size: 20,
+                                  color: Colors.green,
+                                ),
+                              ),
                       ),
                     ],
                   ),

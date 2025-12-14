@@ -38,6 +38,14 @@ class _PdfListItemState extends State<PdfListItem> {
     init();
   }
 
+  @override
+  void didUpdateWidget(covariant PdfListItem oldWidget) {
+    if (oldWidget.pdf.path != widget.pdf.path) {
+      init();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   bool isLoading = false;
 
   Future<void> init() async {
@@ -84,13 +92,6 @@ class _PdfListItemState extends State<PdfListItem> {
               color: (widget.onExists?.call(widget.pdf) ?? false)
                   ? const Color.fromARGB(64, 23, 96, 155)
                   : null,
-              //     widget.isEnableRecent &&
-              //         PdfServices.isExistsRecent(
-              //           novelId: widget.pdf.getParentPath.getName(),
-              //           pdfName: widget.pdf.getTitle,
-              //         )
-              //     ? const Color.fromARGB(181, 42, 170, 157)
-              //     : null,
               child: Row(
                 spacing: 8,
                 children: [

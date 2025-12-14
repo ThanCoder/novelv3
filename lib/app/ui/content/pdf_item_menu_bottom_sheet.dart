@@ -32,37 +32,44 @@ class _PdfItemMenuBottomSheetState extends State<PdfItemMenuBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return TScrollableColumn(
+      spacing: 0,
       children: [
         ListTile(
           leading: Icon(Icons.info_outline_rounded),
           title: Text('Info'),
           onTap: _showInfo,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.drive_file_rename_outline),
           title: Text('Rename'),
           onTap: _renameDialog,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.edit_document),
           title: Text('Edit Config'),
           onTap: _editConfigDialog,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.restore, color: Colors.green),
           title: Text('Copy Outside'),
           onTap: _copyOutside,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.restore, color: Colors.yellow),
           title: Text('Move Outside'),
           onTap: _moveOutside,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.image),
           title: Text('Set Pdf Cover'),
           onTap: _setPdfCover,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.delete, color: Colors.red),
           title: Text('Delete'),

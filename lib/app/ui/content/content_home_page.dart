@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/search/search_result_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -20,7 +22,20 @@ class ContentHomePage extends StatelessWidget {
                 spacing: 4,
                 children: [
                   // tag
-                  TTagsWrapView(values: novel.meta.tags, type: TTagsTypes.text),
+                  TTagsWrapView(
+                    values: novel.meta.tags,
+                    type: TTagsTypes.text,
+                    onClicked: (value) {
+                      final res = context.read<NovelProvider>().searchTag(
+                        value,
+                      );
+                      goRoute(
+                        context,
+                        builder: (context) =>
+                            SearchResultScreen(title: value, list: res),
+                      );
+                    },
+                  ),
                   novel.meta.tags.isNotEmpty ? Divider() : SizedBox.shrink(),
                   SelectableText(
                     novel.meta.desc,

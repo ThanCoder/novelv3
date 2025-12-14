@@ -4,7 +4,7 @@ import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
-import 'package:novel_v3/app/ui/content/page_url_dialog.dart';
+import 'package:novel_v3/app/ui/components/page_url_dialog.dart';
 import 'package:novel_v3/app/ui/forms/edit_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetch_send_data.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_chapter_list_screen.dart';
@@ -57,6 +57,7 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
             _goEditChapter();
           },
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.add),
           title: Text('Add Chapter With Online'),
@@ -65,6 +66,7 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
             _goFetcher();
           },
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.add),
           title: Text('Add Multi Chapter With Online'),
@@ -129,16 +131,6 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
             context,
             builder: (context) => FetcherChapterListScreen(
               pageUrl: url,
-              onExistsChapter: provider.isExistsNumber,
-              onSaved: _addChapter,
-              onClosed: () => init(),
-            ),
-          );
-        },
-        onSubmit: () {
-          goRoute(
-            context,
-            builder: (context) => FetcherChapterListScreen(
               onExistsChapter: provider.isExistsNumber,
               onSaved: _addChapter,
               onClosed: () => init(),

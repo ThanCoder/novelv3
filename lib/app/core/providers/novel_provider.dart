@@ -63,8 +63,12 @@ class NovelProvider extends ChangeNotifier {
     await novel.meta.save(novel.path);
 
     final index = list.indexWhere((e) => e.path == oldPath);
-    if (index == -1) return;
-    list[index] = novel;
+    if (index != -1) {
+      list[index] = novel;
+    }
+    // set current
+    currentNovel = novel;
+
     await Future.delayed(Duration.zero);
     notifyListeners();
   }

@@ -58,16 +58,12 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
   }
 
   Widget _getAppbar() {
+    if (!TPlatform.isDesktop) {
+      return SliverToBoxAdapter();
+    }
     return SliverAppBar(
       automaticallyImplyLeading: false,
-      pinned: false,
-      floating: true,
-      snap: true,
-      actions: [
-        !TPlatform.isDesktop
-            ? SizedBox.shrink()
-            : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
-      ],
+      actions: [IconButton(onPressed: init, icon: Icon(Icons.refresh))],
     );
   }
 

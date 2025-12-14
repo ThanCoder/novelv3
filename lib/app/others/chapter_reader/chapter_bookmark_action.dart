@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/reader_theme.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterBookmarkAction extends StatefulWidget {
@@ -25,33 +30,17 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
-  bool isExists = false;
   bool isLoading = false;
+  late Novel novel;
+  late ChapterBookmarkProvider chapterBookmarkProvider;
 
   void init() async {
-    // try {
-    //   setState(() {
-    //     isLoading = true;
-    //   });
-    //   final novel = context.read<NovelProvider>().currentNovel!;
-    //   final list = await ChapterBookmarkDB.instance(
-    //     novel.getChapterBookmarkPath,
-    //   ).getAll();
-
-    //   final index = list.indexWhere((e) => e.chapter == widget.chapter.number);
-    //   isExists = index != -1;
-
-    //   if (!mounted) return;
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // } catch (e) {
-    //   if (!mounted) return;
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // }
+    novel = context.read<NovelProvider>().currentNovel!;
   }
+
+  bool get isExists => context.watch<ChapterBookmarkProvider>().isExistsChapter(
+    widget.chapter.number,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +69,8 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
   Widget _getAction() {
     return IconButton(
       color: widget.theme?.bgColor,
-      onPressed: _toggleBookmark,
+      onPressed: _toggle,
+
       icon: Icon(
         color: isExists ? Colors.red : Colors.blue,
         isExists ? Icons.bookmark_remove : Icons.bookmark_add,
@@ -88,36 +78,19 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     );
   }
 
-  void _toggleBookmark() async {
-    // final novel = context.read<NovelProvider>().getCurrent!;
-    // if (isExists) {
-    //   await ChapterBookmarkDB.instance(
-    //     novel.getChapterBookmarkPath,
-    //   ).toggle(chapterNumber: widget.chapter.number, key: novel.title);
-    //   if (!mounted) return;
-    //   setState(() {
-    //     isExists = !isExists;
-    //   });
-    // } else {
-    //   //add
-    //   showTReanmeDialog(
-    //     context,
-    //     barrierDismissible: false,
-    //     text: widget.chapter.title,
-    //     title: Text('Book Mark'),
-    //     submitText: 'Add',
-    //     onSubmit: (text) async {
-    //       await ChapterBookmarkDB.instance(novel.getChapterBookmarkPath).toggle(
-    //         chapterNumber: widget.chapter.number,
-    //         title: text,
-    //         key: novel.title,
-    //       );
-    //       if (!mounted) return;
-    //       setState(() {
-    //         isExists = !isExists;
-    //       });
-    //     },
-    //   );
-    // }
+  void _toggle() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await context.read<ChapterBookmarkProvider>().toggleBookmark(
+      ChapterBookmark(
+        title: widget.chapter.title,
+        chapter: widget.chapter.number,
+      ),
+    );
+    setState(() {
+      isLoading = false;
+    });
   }
 }

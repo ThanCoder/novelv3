@@ -30,6 +30,7 @@ class _PdfRcBottomSheetState extends State<PdfRcBottomSheet> {
           title: Text('Copy All'),
           onTap: _copyAll,
         ),
+        Divider(),
         ListTile(
           leading: Icon(Icons.move_to_inbox_rounded),
           title: Text('Move All'),

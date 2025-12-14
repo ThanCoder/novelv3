@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/core/services/chapter_services.dart';
+import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -53,6 +55,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     super.initState();
     initConfig();
     init();
+    WidgetsBinding.instance.addPostFrameCallback((_) => initProvider());
   }
 
   @override
@@ -61,6 +64,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
     ThanPkg.platform.toggleKeepScreen(isKeep: false);
     super.dispose();
+  }
+
+  void initProvider() async {
+    final novel = context.read<NovelProvider>().currentNovel;
+    if (novel == null) return;
+    context.read<ChapterBookmarkProvider>().init(novel.path);
   }
 
   void initConfig() async {
@@ -175,18 +184,18 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         spacing: 5,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // ChapterBookmarkAction(
-          //   theme: config.theme,
-          //   chapter: item,
-          //   title: 'BookMark',
-          // ),
+          ChapterBookmarkAction(
+            theme: config.theme,
+            chapter: item,
+            title: 'BookMark',
+          ),
           _getContentWidget(item, index),
           // bookmark
-          // ChapterBookmarkAction(
-          //   theme: config.theme,
-          //   chapter: item,
-          //   title: 'BookMark',
-          // ),
+          ChapterBookmarkAction(
+            theme: config.theme,
+            chapter: item,
+            title: 'BookMark',
+          ),
         ],
       ),
     );
