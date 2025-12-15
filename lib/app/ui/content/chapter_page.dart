@@ -163,6 +163,8 @@ class _ChapterPageState extends State<ChapterPage> {
       builder: (context) => ChapterReaderScreen(
         chapter: chapter,
         config: ChapterReaderConfig.fromPath(configPath),
+        getChapterContent: (context, chapterNumber) async =>
+            await context.read<ChapterProvider>().getContent(chapterNumber),
         onUpdateConfig: (updatedConfig) {
           updatedConfig.savePath(configPath);
         },

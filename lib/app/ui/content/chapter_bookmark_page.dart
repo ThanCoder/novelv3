@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
@@ -25,6 +26,7 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
   @override
   void initState() {
     super.initState();
+    novelPath = context.read<NovelProvider>().currentNovel!.path;
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
@@ -34,8 +36,9 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
     super.dispose();
   }
 
+  late String novelPath;
+
   Future<void> init() async {
-    final novelPath = context.read<NovelProvider>().currentNovel!.path;
     await context.read<ChapterBookmarkProvider>().init(novelPath);
   }
 
@@ -101,11 +104,15 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
     );
 
     final configPath = PathUtil.getConfigPath(name: 'chapter.config.json');
+    final novelPath = context.read<NovelProvider>().currentNovel!.path;
     goRoute(
       context,
       builder: (context) => ChapterReaderScreen(
         chapter: chapter,
         config: ChapterReaderConfig.fromPath(configPath),
+        getChapterContent: (context, chapterNumber) async => await context
+            .read<ChapterProvider>()
+            .getContent(chapterNumber, novelPath: novelPath),
         onUpdateConfig: (updatedConfig) {
           updatedConfig.savePath(configPath);
         },

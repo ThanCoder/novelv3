@@ -82,15 +82,39 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     setState(() {
       isLoading = true;
     });
-
-    await context.read<ChapterBookmarkProvider>().toggleBookmark(
-      ChapterBookmark(
-        title: widget.chapter.title,
-        chapter: widget.chapter.number,
-      ),
-    );
-    setState(() {
-      isLoading = false;
-    });
+    if (context.read<ChapterBookmarkProvider>().isExistsChapter(
+      widget.chapter.number,
+    )) {
+      await context.read<ChapterBookmarkProvider>().removeChapter(
+        widget.chapter,
+      );
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      showTReanmeDialog(
+        context,
+        barrierDismissible: false,
+        text: widget.chapter.title,
+        title: Text('BookMark'),
+        submitText: 'Rename',
+        onCancel: () {
+          if (!mounted) return;
+          setState(() {
+            isLoading = false;
+          });
+        },
+        onSubmit: (text) async {
+          await context.read<ChapterBookmarkProvider>().add(
+            ChapterBookmark(title: text, chapter: widget.chapter.number),
+          );
+          if (!mounted) return;
+          setState(() {
+            isLoading = false;
+          });
+        },
+      );
+    }
   }
 }

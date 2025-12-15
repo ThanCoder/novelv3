@@ -14,17 +14,21 @@ import 'package:than_pkg/than_pkg.dart';
 import 'reader_config_dialog.dart';
 
 typedef OnChapterReaderCloseCallback = void Function(Chapter lastChapter);
+typedef OnGetChapterContentCallback =
+    Future<String?> Function(BuildContext context, int chapterNumber);
 
 class ChapterReaderScreen extends StatefulWidget {
   final Chapter chapter;
   final ChapterReaderConfig config;
   final OnUpdateConfigCallback? onUpdateConfig;
   final OnChapterReaderCloseCallback? onReaderClosed;
+  final OnGetChapterContentCallback getChapterContent;
   const ChapterReaderScreen({
     super.key,
     required this.chapter,
-    this.onReaderClosed,
     required this.config,
+    required this.getChapterContent,
+    this.onReaderClosed,
     this.onUpdateConfig,
   });
 
@@ -212,10 +216,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       );
     }
     return FutureBuilder(
-      future: provider.getContent(chapter.number),
+      future: widget.getChapterContent(context, chapter.number),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: TLoader());
+          return Center(child: TLoader(color: Colors.blue));
         }
         final text = snapshot.data ?? '';
         list[index] = chapter.copyWith(content: text);
@@ -317,11 +321,15 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       }
 
       isLoading = true;
-      final res = allList[currentChapterPos + 1];
+      final chapter = allList[currentChapterPos + 1];
       // // ရှိနေရင်
-      list.add(res);
+      list.add(chapter);
+      // final content = await widget.getChapterContent(context, chapter.number);
+      // if (content != null) {
+      //   list.add(chapter.copyWith(content: content));
+      // }
       setState(() {});
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 2));
       isLoading = false;
     } catch (e) {
       if (!mounted) return;

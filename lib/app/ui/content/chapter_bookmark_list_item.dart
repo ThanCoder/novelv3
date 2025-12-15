@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class ChapterBookmarkListItem extends StatefulWidget {
   final ChapterBookmark bookmark;
@@ -33,35 +35,40 @@ class _ChapterListItemState extends State<ChapterBookmarkListItem> {
           icon: Icon(Icons.bookmark_remove, color: Colors.red),
         ),
         onTap: () => widget.onClicked?.call(widget.bookmark),
-        // onLongPress: () => _showItemMenu(widget.chapter),
+        onLongPress: () => _showItemMenu(widget.bookmark),
       ),
     );
   }
 
-  // void _showItemMenu(ChapterBookmark chapter) {
-  //   showTMenuBottomSheet(
-  //     context,
-  //     children: [
-  //       ListTile(
-  //         leading: Icon(Icons.edit_document),
-  //         title: Text('Edit'),
-  //         onTap: () {
-  //           closeContext(context);
-  //           _goEditPage(chapter);
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
+  void _showItemMenu(ChapterBookmark chapter) {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit'),
+          onTap: () {
+            closeContext(context);
+            _goEditPage(chapter);
+          },
+        ),
+      ],
+    );
+  }
 
-  // void _goEditPage(ChapterBookmark chapter) {
-  // final novelPath = context.read<NovelProvider>().currentNovel!.path;
-  // goRoute(
-  //   context,
-  //   builder: (context) =>
-  //       EditChapterScreen(novelPath: novelPath, chapter: chapter),
-  // );
-  // }
+  void _goEditPage(ChapterBookmark chapter) {
+    showTReanmeDialog(
+      context,
+      text: chapter.title,
+      title: Text('BookMark'),
+      submitText: 'Rename',
+      onSubmit: (text) {
+        context.read<ChapterBookmarkProvider>().update(
+          widget.bookmark.copyWith(title: text),
+        );
+      },
+    );
+  }
 
   void _removeBookmark() {
     final proiver = context.read<ChapterBookmarkProvider>();

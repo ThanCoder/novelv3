@@ -43,11 +43,13 @@ class ChapterProvider extends ChangeNotifier {
     return index != -1;
   }
 
-  Future<String?> getContent(int chapterNumber) async {
+  Future<String?> getContent(int chapterNumber, {String? novelPath}) async {
     final content = await ChapterServices.getContent(
       chapterNumber,
-      currentNovelPath!,
+      novelPath ?? currentNovelPath!,
     );
+    currentNovelPath = novelPath;
+    // await Future.delayed(Duration(milliseconds: 1500));
     return content;
   }
 

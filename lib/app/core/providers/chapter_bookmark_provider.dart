@@ -14,12 +14,26 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     notifyListeners();
 
     list = await ChapterBookmarkServices.getAll(novelPath);
+    // sort 1 -> 9
+    sortNumber();
+
     isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> update(ChapterBookmark bookmark) async {
+    final index = list.indexWhere((e) => e.chapter == bookmark.chapter);
+    if (index == -1) return;
+    list[index] = bookmark;
+    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
     notifyListeners();
   }
 
   Future<void> add(ChapterBookmark bookmark) async {
     list.add(bookmark);
+    // sort 1 -> 9
+    sortNumber();
+
     await ChapterBookmarkServices.setAll(list, currentNovelPath!);
     notifyListeners();
   }
@@ -62,5 +76,13 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     if (list.isEmpty) return false;
     final index = list.indexWhere((e) => e.chapter == chapter);
     return index != -1;
+  }
+
+  void sortNumber() {
+    list.sort((a, b) {
+      if (a.chapter > b.chapter) return 1;
+      if (a.chapter < b.chapter) return -1;
+      return 0;
+    });
   }
 }
