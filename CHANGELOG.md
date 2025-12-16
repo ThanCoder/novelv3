@@ -2,6 +2,28 @@
 
 - Changed `New UI`,`Changed Core Code`,`Change Database`
 
+## environment
+
+sdk: ^3.9.0
+
+## dependencies
+
+```cupertino_icons: ^1.0.8
+pdfrx: ^2.2.16
+than_pkg: ^5.0.0
+t_widgets: ^2.0.2
+desktop_drop: ^0.7.0
+uuid: ^4.5.1
+provider: ^6.1.5+1
+archive: ^4.0.7
+t_html_parser: ^1.1.1
+t_server: ^2.2.0
+flutter_animate: ^4.5.2
+t_client: ^0.1.6
+flutter_markdown: ^0.7.7+1
+t_db: ^1.1.1
+```
+
 ## 3.6.0
 
 - Changed `Android Package Name` -> `thancoder.nv3.app`

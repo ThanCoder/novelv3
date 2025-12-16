@@ -10,11 +10,13 @@ class Novel {
   final String path;
   final NovelMeta meta;
   final DateTime date;
+  int? size;
   Novel({
     required this.title,
     required this.path,
     required this.meta,
     required this.date,
+    this.size,
   });
   factory Novel.create({required String title, String? path, NovelMeta? meta}) {
     return Novel(
@@ -30,14 +32,16 @@ class Novel {
   DateTime get getDate => Directory(path).getDate;
 
   int getSize() {
-    int size = 0;
+    if (size != null) return size ?? 0;
+    int allSize = 0;
     final dir = Directory(path);
-    if (!dir.existsSync()) return size;
+    if (!dir.existsSync()) return allSize;
     for (var file in dir.listSync(followLinks: false)) {
       if (!file.isFile) continue;
-      size += file.getSize;
+      allSize += file.getSize;
     }
-    return size;
+    size = allSize;
+    return allSize;
   }
 
   static Future<Novel?> fromPath(String path) async {

@@ -70,6 +70,7 @@ class NovelGridItem extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   // title
                   Positioned(
                     left: 0,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/managers/novel_size_calculator_progress_manager.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
@@ -54,7 +55,24 @@ class _HomePageState extends State<HomePage> {
             isAsc: getWProvider.sortAsc,
             currentId: getWProvider.currentSortId,
             sortList: getWProvider.sortList,
-            sortDialogCallback: (id, isAsc) {
+            sortDialogCallback: (id, isAsc) async {
+              // size sort
+              if (id == 1) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => TProgressDialog(
+                    title: Text('Calculate Novel Size'),
+                    manager: NovelSizeCalculatorProgressManager(
+                      context: context,
+                    ),
+                    onSuccess: () {
+                      context.read<NovelProvider>().sort(id, isAsc);
+                    },
+                  ),
+                );
+                return;
+              }
               context.read<NovelProvider>().sort(id, isAsc);
             },
           ),

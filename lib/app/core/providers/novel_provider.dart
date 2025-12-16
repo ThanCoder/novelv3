@@ -85,6 +85,29 @@ class NovelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> calculateSize({
+    required bool Function() isCanceld,
+    void Function(int total, int loaded, String message)? onProgress,
+  }) async {
+    int index = 0;
+    for (var novel in list) {
+      // await Future.delayed(Duration(milliseconds: 600));
+
+      if (isCanceld()) break;
+      // progress
+      index++;
+      onProgress?.call(
+        list.length,
+        index,
+        'Calculated Size: \n${novel.title}....',
+      );
+
+      if (novel.size != null) continue;
+      final size = novel.getSize();
+      novel.size = size;
+    }
+  }
+
   List<Novel> searchAuthor(String author) {
     return list.where((e) => e.meta.author == author).toList();
   }
@@ -150,7 +173,7 @@ class NovelProvider extends ChangeNotifier {
       TSort(id: 1, title: 'Size', ascTitle: 'Smallest', descTitle: 'Biggest'),
     );
 
-  void sort(int currentId, bool isAsc) {
+  void sort(int currentId, bool isAsc) async {
     sortAsc = isAsc;
     currentSortId = currentId;
 
@@ -163,6 +186,7 @@ class NovelProvider extends ChangeNotifier {
       list.sortTitle(aToZ: sortAsc);
     }
     if (currentSortId == 1) {
+      await calculateSize(isCanceld: () => false);
       // size
       list.sortSize(isSmallest: sortAsc);
     }
