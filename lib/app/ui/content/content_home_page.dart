@@ -28,7 +28,7 @@ class ContentHomePage extends StatelessWidget {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
 
-                  novel.meta.originalTitle.isEmpty
+                  novel.meta.englishTitle.isEmpty
                       ? SizedBox.shrink()
                       : Text(
                           'English Title: ${novel.meta.englishTitle}',
