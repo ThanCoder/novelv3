@@ -75,6 +75,7 @@ class _ChapterPageState extends State<ChapterPage> {
               child: Text('Recent Chapter'),
             ),
       actions: [
+        Text('Count: ${getWProvider.list.length}'),
         !TPlatform.isDesktop
             ? SizedBox.shrink()
             : IconButton(

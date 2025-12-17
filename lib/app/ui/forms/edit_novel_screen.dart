@@ -40,6 +40,8 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
 
   void init() {
     titleController.text = novel.title;
+    originalTitleController.text = novel.meta.originalTitle;
+    englishTitleController.text = novel.meta.englishTitle;
     authorController.text = novel.meta.author;
     mcController.text = novel.meta.mc;
     translatorController.text = novel.meta.translator;
@@ -61,6 +63,8 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
   }
 
   final titleController = TextEditingController();
+  final originalTitleController = TextEditingController();
+  final englishTitleController = TextEditingController();
   final authorController = TextEditingController();
   final mcController = TextEditingController();
   final translatorController = TextEditingController();
@@ -83,6 +87,18 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
               label: Text('Title'),
               maxLines: 1,
               controller: titleController,
+              onSubmitted: (value) => _onUpdate(),
+            ),
+            TTextField(
+              label: Text('Original Title'),
+              maxLines: 1,
+              controller: originalTitleController,
+              onSubmitted: (value) => _onUpdate(),
+            ),
+            TTextField(
+              label: Text('English Title'),
+              maxLines: 1,
+              controller: englishTitleController,
               onSubmitted: (value) => _onUpdate(),
             ),
             TTextField(
@@ -202,6 +218,8 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
       title: titleController.text,
       meta: novel.meta.copyWith(
         title: titleController.text,
+        originalTitle: originalTitleController.text,
+        englishTitle: englishTitleController.text,
         author: authorController.text,
         translator: translatorController.text,
         mc: mcController.text,

@@ -21,6 +21,19 @@ class ContentHomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 4,
                 children: [
+                  novel.meta.originalTitle.isEmpty
+                      ? SizedBox.shrink()
+                      : Text(
+                          'Original Title: ${novel.meta.originalTitle}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+
+                  novel.meta.originalTitle.isEmpty
+                      ? SizedBox.shrink()
+                      : Text(
+                          'English Title: ${novel.meta.englishTitle}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                   // tag
                   TTagsWrapView(
                     values: novel.meta.tags,

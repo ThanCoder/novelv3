@@ -49,7 +49,6 @@ class ChapterProvider extends ChangeNotifier {
       novelPath ?? currentNovelPath!,
     );
     currentNovelPath = novelPath;
-    // await Future.delayed(Duration(milliseconds: 1500));
     return content;
   }
 
@@ -64,7 +63,10 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get getLatestChapter => list.isEmpty ? 0 : list.last.number;
+  int get getLatestChapter {
+    list.sortChapterNumber(isSort: true);
+    return list.isEmpty ? 0 : list.last.number;
+  }
 
   // sort
   bool sortAsc = true;

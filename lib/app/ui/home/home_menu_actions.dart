@@ -10,7 +10,7 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:novel_v3/app/core/models/pdf_file.dart';
 import 'package:novel_v3/app/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/pdf_scanner/pdf_scanner_screen.dart';
-import 'package:novel_v3/app/ui/forms/edit_novel/edit_novel_screen.dart';
+import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:than_pkg/than_pkg.dart';

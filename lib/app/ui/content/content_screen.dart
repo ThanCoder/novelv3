@@ -75,7 +75,7 @@ class _ContentScreenState extends State<ContentScreen> {
                       automaticallyImplyLeading: false,
                       flexibleSpace: _getNovelContentWidget(),
                       // toolbarHeight: 180,
-                      collapsedHeight: 180,
+                      collapsedHeight: 200,
                       expandedHeight: 220,
                       bottom: TabBar(
                         labelColor: Colors.blue,
@@ -132,7 +132,11 @@ class _ContentScreenState extends State<ContentScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 4,
         children: [
-          Text(currentNovel!.title),
+          Text(
+            currentNovel!.title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+
           Text('Author: ${currentNovel!.meta.author}'),
           Text('Main MC: ${currentNovel!.meta.mc}'),
           Text('Translator: ${currentNovel!.meta.translator}'),

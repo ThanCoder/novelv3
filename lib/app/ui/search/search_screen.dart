@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/components/wrap_more_less.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';
 import 'package:novel_v3/app/ui/content/content_screen.dart';
 import 'package:novel_v3/app/ui/search/search_result_screen.dart';
@@ -148,34 +149,7 @@ class _SearchScreenState extends State<SearchScreen> {
     List<String> names, {
     void Function(String name)? onClicked,
   }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 5,
-          children: [
-            Text(title, style: TextTheme.of(context).headlineSmall),
-            Wrap(
-              spacing: 3,
-              runSpacing: 3,
-              children: names
-                  .map(
-                    (e) => GestureDetector(
-                      onTap: () => onClicked?.call(e),
-                      child: Chip(
-                        label: Text(e),
-                        padding: EdgeInsets.symmetric(horizontal: 3),
-                        mouseCursor: SystemMouseCursors.click,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ],
-        ),
-      ),
-    );
+    return WrapMoreLess(title: title, names: names, onClicked: onClicked);
   }
 
   void _onSearchChanged(String text) {

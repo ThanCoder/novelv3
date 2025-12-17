@@ -16,6 +16,8 @@ class NovelMeta {
   final List<String> pageUrls;
   final List<String> tags;
   final int readed;
+  final String originalTitle;
+  final String englishTitle;
   NovelMeta({
     required this.title,
     required this.author,
@@ -28,6 +30,8 @@ class NovelMeta {
     required this.pageUrls,
     required this.tags,
     required this.readed,
+    required this.originalTitle,
+    required this.englishTitle,
   });
 
   factory NovelMeta.createEmpty() {
@@ -37,6 +41,8 @@ class NovelMeta {
   factory NovelMeta.create() {
     return NovelMeta(
       title: 'Untitled',
+      originalTitle: '',
+      englishTitle: '',
       author: 'Unknown',
       mc: 'Unknown',
       translator: 'Unknown',
@@ -78,6 +84,8 @@ class NovelMeta {
 
   NovelMeta copyWith({
     String? title,
+    String? originalTitle,
+    String? englishTitle,
     String? author,
     String? translator,
     String? mc,
@@ -91,6 +99,8 @@ class NovelMeta {
   }) {
     return NovelMeta(
       title: title ?? this.title,
+      originalTitle: originalTitle ?? this.originalTitle,
+      englishTitle: englishTitle ?? this.englishTitle,
       author: author ?? this.author,
       translator: translator ?? this.translator,
       mc: mc ?? this.mc,
@@ -107,6 +117,8 @@ class NovelMeta {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
+      'originalTitle': originalTitle,
+      'englishTitle': englishTitle,
       'author': author,
       'translator': translator,
       'mc': mc,
@@ -123,6 +135,8 @@ class NovelMeta {
   factory NovelMeta.fromMap(Map<String, dynamic> map) {
     return NovelMeta(
       title: map.getString(['title']),
+      originalTitle: map.getString(['originalTitle']),
+      englishTitle: map.getString(['englishTitle']),
       author: map.getString(['author']),
       translator: map.getString(['translator']),
       mc: map.getString(['mc']),
@@ -154,6 +168,8 @@ class NovelMeta {
     }
     final meta = NovelMeta(
       title: title,
+      originalTitle: '',
+      englishTitle: '',
       author: authorFile.existsSync()
           ? await authorFile.readAsString()
           : 'Unknown',

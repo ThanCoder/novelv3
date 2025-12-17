@@ -56,8 +56,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
 
     if (widget.chapter != null) {
       chapterNumber = widget.chapter!.number;
-      contentController.text =
-          await provider.getContent(widget.chapter!.number) ?? '';
+      contentController.text = await _getChapterFileContent();
       setState(() {});
     } else {
       setState(() {
@@ -193,7 +192,11 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   }
 
   Future<String> _getChapterFileContent() async {
-    return await provider.getContent(chapterNumber) ?? '';
+    return await provider.getContent(
+          chapterNumber,
+          novelPath: widget.novelPath,
+        ) ??
+        '';
   }
 
   Future<void> setChapterContent() async {
