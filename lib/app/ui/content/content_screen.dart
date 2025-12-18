@@ -14,6 +14,7 @@ import 'package:novel_v3/app/ui/content/readed_button.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ContentScreen extends StatefulWidget {
   const ContentScreen({super.key});
@@ -132,9 +133,14 @@ class _ContentScreenState extends State<ContentScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 4,
         children: [
-          Text(
-            currentNovel!.title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+          GestureDetector(
+            onTap: () {
+              ThanPkg.appUtil.copyText(currentNovel!.title);
+            },
+            child: Text(
+              currentNovel!.title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
 
           Text('Author: ${currentNovel!.meta.author}'),

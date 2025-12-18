@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
-import 'package:novel_v3/app/core/providers/chapter_provider.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/core/services/chapter_services.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
-import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -19,6 +14,7 @@ typedef OnGetChapterContentCallback =
 
 class ChapterReaderScreen extends StatefulWidget {
   final Chapter chapter;
+  final List<Chapter> allList;
   final ChapterReaderConfig config;
   final OnUpdateConfigCallback? onUpdateConfig;
   final OnChapterReaderCloseCallback? onReaderClosed;
@@ -26,6 +22,7 @@ class ChapterReaderScreen extends StatefulWidget {
   const ChapterReaderScreen({
     super.key,
     required this.chapter,
+    required this.allList,
     required this.config,
     required this.getChapterContent,
     this.onReaderClosed,
@@ -39,27 +36,22 @@ class ChapterReaderScreen extends StatefulWidget {
 class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   late ChapterReaderConfig config;
   List<Chapter> list = [];
-  List<Chapter> allList = [];
   final controller = ScrollController();
-  double lastScrollPos = 0;
   bool isLoading = false;
   bool isInitLoading = false;
   bool isShowGetPrevChapter = true;
   Chapter? topChapter;
   bool isFullScreen = false;
   bool canPop = true;
-  late ChapterProvider provider;
 
   @override
   void initState() {
     config = widget.config;
     list.add(widget.chapter);
-    provider = context.read<ChapterProvider>();
     controller.addListener(_onScroll);
     super.initState();
     initConfig();
     init();
-    WidgetsBinding.instance.addPostFrameCallback((_) => initProvider());
   }
 
   @override
@@ -68,12 +60,6 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
     ThanPkg.platform.toggleKeepScreen(isKeep: false);
     super.dispose();
-  }
-
-  void initProvider() async {
-    final novel = context.read<NovelProvider>().currentNovel;
-    if (novel == null) return;
-    context.read<ChapterBookmarkProvider>().init(novel.path);
   }
 
   void initConfig() async {
@@ -91,9 +77,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       setState(() {
         isInitLoading = true;
       });
-      final novelPath = context.read<NovelProvider>().currentNovel!.path;
-      allList = await ChapterServices.getAll(novelPath);
-      allList.sort((a, b) => a.number.compareTo(b.number));
+      widget.allList.sort((a, b) => a.number.compareTo(b.number));
       if (!mounted) return;
       setState(() {
         isInitLoading = false;
@@ -293,13 +277,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     final pos = controller.position;
     // scroll down
     if (controller.position.userScrollDirection == ScrollDirection.reverse) {
-      if (lastScrollPos < pos.maxScrollExtent &&
-          pos.maxScrollExtent == pos.pixels) {
-        lastScrollPos = pos.maxScrollExtent;
+      if (pos.maxScrollExtent == pos.pixels) {
         await _getNextChapter();
       }
-      // print('max: ${pos.maxScrollExtent}');
-      // print(pos.pixels);
     }
     // scroll up
     else if (controller.position.userScrollDirection ==
@@ -312,24 +292,22 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   Future<void> _getNextChapter() async {
     try {
-      final currentChapterPos = allList.indexWhere(
+      if (isLoading) return;
+
+      isLoading = true;
+      final currentChapterPos = widget.allList.indexWhere(
         (e) => e.number == list.last.number,
       );
       if (currentChapterPos == -1 ||
-          currentChapterPos >= (allList.length - 1)) {
+          currentChapterPos >= (widget.allList.length - 1)) {
         return;
       }
 
-      isLoading = true;
-      final chapter = allList[currentChapterPos + 1];
+      final chapter = widget.allList[currentChapterPos + 1];
       // // ရှိနေရင်
       list.add(chapter);
-      // final content = await widget.getChapterContent(context, chapter.number);
-      // if (content != null) {
-      //   list.add(chapter.copyWith(content: content));
-      // }
       setState(() {});
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 3));
       isLoading = false;
     } catch (e) {
       if (!mounted) return;
@@ -340,7 +318,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   Future<void> _getPrevChapter() async {
     try {
-      final currentChapterPos = allList.indexWhere(
+      final currentChapterPos = widget.allList.indexWhere(
         (e) => e.number == list.first.number,
       );
       if (currentChapterPos == -1 || currentChapterPos == 0) {
@@ -349,7 +327,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       isLoading = true;
       isShowGetPrevChapter = true;
 
-      topChapter = allList[currentChapterPos - 1];
+      topChapter = widget.allList[currentChapterPos - 1];
       setState(() {});
     } catch (e) {
       if (!mounted) return;

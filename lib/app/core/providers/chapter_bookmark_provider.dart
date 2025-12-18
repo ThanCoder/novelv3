@@ -21,6 +21,10 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refershUI() {
+    notifyListeners();
+  }
+
   Future<void> update(ChapterBookmark bookmark) async {
     final index = list.indexWhere((e) => e.chapter == bookmark.chapter);
     if (index == -1) return;

@@ -23,6 +23,10 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refershUI() {
+    notifyListeners();
+  }
+
   Future<void> add(Chapter chapter) async {
     chapter = chapter.copyWith(novelPath: currentNovelPath);
     list.add(chapter);
@@ -44,12 +48,17 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<String?> getContent(int chapterNumber, {String? novelPath}) async {
-    final content = await ChapterServices.getContent(
-      chapterNumber,
-      novelPath ?? currentNovelPath!,
-    );
-    currentNovelPath = novelPath;
-    return content;
+    try {
+      final content = await ChapterServices.getContent(
+        chapterNumber,
+        novelPath ?? currentNovelPath!,
+      );
+      currentNovelPath = novelPath;
+      return content;
+    } catch (e) {
+      debugPrint('[ChapterProvider:getContent]: ${e.toString()}');
+      return null;
+    }
   }
 
   Future<void> setChapter(Chapter chapter) async {

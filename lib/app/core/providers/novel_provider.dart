@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/extensions/directory_extension.dart';
 import 'package:novel_v3/app/core/extensions/novel_extension.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/services/novel_services.dart';
@@ -89,22 +91,48 @@ class NovelProvider extends ChangeNotifier {
     required bool Function() isCanceld,
     void Function(int total, int loaded, String message)? onProgress,
   }) async {
-    int index = 0;
-    for (var novel in list) {
-      // await Future.delayed(Duration(milliseconds: 600));
+    try {
+      final receivePort = ReceivePort();
+      final pathList = list.map((e) => e.path).toList();
 
-      if (isCanceld()) break;
-      // progress
-      index++;
-      onProgress?.call(
-        list.length,
-        index,
-        'Calculated Size: \n${novel.title}....',
-      );
+      await Isolate.spawn(calculatePathSizeIsolate, (
+        receivePort.sendPort,
+        pathList,
+      ));
 
-      if (novel.size != null) continue;
-      final size = novel.getSize();
-      novel.size = size;
+      int index = 0;
+      await for (final message in receivePort) {
+        index++;
+        if (message is! Map) continue;
+        if (isCanceld()) {
+          receivePort.close();
+          break;
+        }
+        final path = message['path'] as String;
+        final size = message['size'] as int;
+
+        // await Future.delayed(Duration(milliseconds: 600));
+
+        // progress
+        final novelIndex = list.indexWhere((e) => e.path == path);
+        if (novelIndex == -1) continue;
+        final novel = list[novelIndex];
+
+        onProgress?.call(
+          list.length,
+          index,
+          'Calculated Size: \n${novel.title}....',
+        );
+        novel.size ??= size;
+
+        // print('index: $index - length: ${list.length}');
+        if (message['done'] ?? false) {
+          receivePort.close();
+          break;
+        }
+      }
+    } catch (e) {
+      debugPrint('[calculateSize]: ${e.toString()}');
     }
   }
 
@@ -195,4 +223,16 @@ class NovelProvider extends ChangeNotifier {
     TRecentDB.getInstance.putInt('novel-home-sort-sortId', currentId);
     notifyListeners();
   }
+}
+
+Future<void> calculatePathSizeIsolate((SendPort, List<String>) args) async {
+  final sendPort = args.$1;
+  final pathList = args.$2;
+
+  for (var path in pathList) {
+    final dir = Directory(path);
+    if (!dir.existsSync()) continue;
+    sendPort.send({'path': path, 'size': await dir.getAllSize()});
+  }
+  sendPort.send({'done': true});
 }

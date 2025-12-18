@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
-import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
 import 'package:novel_v3/app/ui/content/chapter_list_item.dart';
-import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -72,7 +69,7 @@ class _ChapterPageState extends State<ChapterPage> {
           ? null
           : TextButton(
               onPressed: _goRecentChapter,
-              child: Text('Recent Chapter'),
+              child: Text('Recent Chapter: ${_getRecentName()}'),
             ),
       actions: [
         Text('Count: ${getWProvider.list.length}'),
@@ -151,34 +148,6 @@ class _ChapterPageState extends State<ChapterPage> {
   }
 
   void _goReaderPage(Chapter chapter) async {
-    final configPath = PathUtil.getConfigPath(name: 'chapter.config.json');
-    // set recent
-    await TRecentDB.getInstance.putString(
-      'recent-chapter-name:${novelPath!.getName()}',
-      chapter.number.toString(),
-    );
-    if (!mounted) return;
-    setState(() {});
-    goRoute(
-      context,
-      builder: (context) => ChapterReaderScreen(
-        chapter: chapter,
-        config: ChapterReaderConfig.fromPath(configPath),
-        getChapterContent: (context, chapterNumber) async =>
-            await context.read<ChapterProvider>().getContent(chapterNumber),
-        onUpdateConfig: (updatedConfig) {
-          updatedConfig.savePath(configPath);
-        },
-        onReaderClosed: (lastChapter) async {
-          // set recent
-          await TRecentDB.getInstance.putString(
-            'recent-chapter-name:${novelPath!.getName()}',
-            lastChapter.number.toString(),
-          );
-          if (!mounted) return;
-          setState(() {});
-        },
-      ),
-    );
+    goChapterReader(context, chapter: chapter);
   }
 }

@@ -24,7 +24,7 @@ class NovelSizeCalculatorProgressManager extends TProgressManagerSimple {
         controller.add(
           TProgress.progress(
             index: loaded,
-            indexLength: loaded,
+            indexLength: total,
             loaded: loaded,
             total: total,
             message: message,
