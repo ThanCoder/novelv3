@@ -23,6 +23,7 @@ class EditChapterScreen extends StatefulWidget {
 
 class _EditChapterScreenState extends State<EditChapterScreen> {
   final chapterController = TextEditingController();
+  final titleController = TextEditingController();
   final contentController = TextEditingController();
 
   final chapterFocusNode = FocusNode();
@@ -30,6 +31,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
 
   @override
   void initState() {
+    provider = context.read<ChapterProvider>();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
@@ -49,13 +51,13 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   bool isChanged = false;
   bool isAutoIncrement = true;
   int chapterNumber = 1;
+  int readTitleLine = -1;
   late ChapterProvider provider;
 
   void init() async {
-    provider = context.read<ChapterProvider>();
-
     if (widget.chapter != null) {
       chapterNumber = widget.chapter!.number;
+      titleController.text = widget.chapter!.title;
       contentController.text = await _getChapterFileContent();
       setState(() {});
     } else {
@@ -67,6 +69,8 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
       chapterNumber = provider.getLatestChapter + 1;
     }
     chapterController.text = chapterNumber.toString();
+    _setTitleFromContent();
+
     if (!mounted) return;
     setState(() {
       isLoading = false;
@@ -85,92 +89,14 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
         body: isLoading
             ? Center(child: TLoaderRandom())
             : TScrollableColumn(
+                spacing: 15,
                 children: [
                   // chapter
-                  TTextField(
-                    label: const Text('Chapter Number'),
-                    focusNode: chapterFocusNode,
-                    controller: chapterController,
-                    textInputType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (value) {
-                      if (!isChanged) {
-                        setState(() {
-                          isChanged = true;
-                        });
-                      }
-                      if (value.isEmpty) return;
-                      try {
-                        chapterNumber = int.parse(value);
-                      } catch (e) {
-                        debugPrint(e.toString());
-                      }
-                    },
-                  ),
-                  // row
-                  Row(
-                    spacing: 5,
-                    children: [
-                      // auto
-                      Row(
-                        spacing: 4,
-                        children: [
-                          Text(
-                            isAutoIncrement
-                                ? 'Auto Increment'
-                                : 'Auto Decrement',
-                          ),
-                          Switch(
-                            value: isAutoIncrement,
-                            onChanged: (value) {
-                              isAutoIncrement = value;
-                              setState(() {});
-                            },
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(width: 10),
-                      //decre
-                      IconButton(
-                        onPressed: _decre,
-                        icon: const Icon(
-                          Icons.remove_circle_outlined,
-                          color: Colors.red,
-                        ),
-                      ),
-                      // const SizedBox(width: 10),
-                      //incre
-                      IconButton(
-                        onPressed: _incre,
-                        icon: const Icon(
-                          Icons.add_circle_outlined,
-                          color: Colors.green,
-                        ),
-                      ),
-
-                      const Spacer(),
-                      //paste
-                      IconButton(
-                        onPressed: _paste,
-                        icon: const Icon(Icons.paste_rounded),
-                      ),
-                    ],
-                  ),
+                  _getChapterNumberWidget(),
+                  // title
+                  _getTitleWidget(),
                   //content
-                  TTextField(
-                    label: const Text('Content'),
-                    controller: contentController,
-                    maxLines: null,
-                    focusNode: contentFocusNode,
-                    onChanged: (value) {
-                      if (!isChanged) {
-                        setState(() {
-                          isChanged = true;
-                        });
-                      }
-                    },
-                  ),
+                  _getContentWidet(),
                 ],
               ),
         floatingActionButton: isChanged
@@ -187,6 +113,162 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
     );
   }
 
+  Widget _getChapterNumberWidget() {
+    return Column(
+      children: [
+        TTextField(
+          label: const Text('Chapter Number'),
+          focusNode: chapterFocusNode,
+          controller: chapterController,
+          textInputType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onChanged: (value) {
+            if (!isChanged) {
+              setState(() {
+                isChanged = true;
+              });
+            }
+            if (value.isEmpty) return;
+            try {
+              chapterNumber = int.parse(value);
+            } catch (e) {
+              debugPrint(e.toString());
+            }
+          },
+        ),
+        SizedBox(width: 20),
+        // row
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 5,
+            children: [
+              // auto
+              Row(
+                spacing: 4,
+                children: [
+                  Text(isAutoIncrement ? 'Auto Increment' : 'Auto Decrement'),
+                  Switch(
+                    value: isAutoIncrement,
+                    onChanged: (value) {
+                      isAutoIncrement = value;
+                      isChanged = true;
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+
+              const SizedBox(width: 10),
+              //decre
+              IconButton(
+                onPressed: _decre,
+                icon: const Icon(
+                  Icons.remove_circle_outlined,
+                  color: Colors.red,
+                ),
+              ),
+              // const SizedBox(width: 10),
+              //incre
+              IconButton(
+                onPressed: _incre,
+                icon: const Icon(
+                  Icons.add_circle_outlined,
+                  color: Colors.green,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getTitleWidget() {
+    return Column(
+      spacing: 4,
+      children: [
+        TTextField(
+          label: Text('Title'),
+          controller: titleController,
+          maxLines: 1,
+          onChanged: (value) {
+            isChanged = true;
+            setState(() {});
+          },
+        ),
+        ExpansionTile(
+          title: Text('Content ထဲကနေ Title ရယူမယ်'),
+          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Line: $readTitleLine',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(width: 10),
+                IconButton(
+                  onPressed: () {
+                    if (readTitleLine == -1) return;
+                    readTitleLine--;
+                    isChanged = true;
+                    setState(() {});
+                    _setTitleFromContent();
+                  },
+                  icon: Icon(Icons.remove_circle, color: Colors.amber),
+                ),
+                IconButton(
+                  onPressed: () {
+                    readTitleLine++;
+                    isChanged = true;
+                    setState(() {});
+                    _setTitleFromContent();
+                  },
+                  icon: Icon(Icons.add_circle, color: Colors.teal),
+                ),
+                SizedBox(width: 20),
+              ],
+            ),
+            // info
+            Text('Line [-1]: Off'),
+            Text('Line [number]: Content ထဲကနေ Title ကိုရယူမယ်'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _getContentWidet() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: _paste,
+              icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+            ),
+            SizedBox(width: 20),
+          ],
+        ),
+        TTextField(
+          label: const Text('Content'),
+          controller: contentController,
+          maxLines: null,
+          focusNode: contentFocusNode,
+          onChanged: (value) {
+            if (!isChanged) {
+              setState(() {
+                isChanged = true;
+              });
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   bool get _isContentFileExists {
     return provider.isExistsNumber(chapterNumber);
   }
@@ -199,16 +281,11 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
         '';
   }
 
-  Future<void> setChapterContent() async {
-    await provider.setChapter(
-      Chapter.create(number: chapterNumber, content: contentController.text),
-    );
-  }
-
   void _paste() async {
     final res = await ThanPkg.appUtil.pasteText();
     if (res.isEmpty) return;
-    contentController.text = res;
+    contentController.text = res.trim();
+    _setTitleFromContent();
     _unFocusAll();
     setState(() {
       isChanged = true;
@@ -219,7 +296,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
     chapterNumber++;
     chapterController.text = chapterNumber.toString();
     contentController.text = await _getChapterFileContent();
-
+    _setTitleFromContent();
     if (isShowSubmit) {
       isChanged = true;
     }
@@ -232,11 +309,26 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
     chapterNumber--;
     chapterController.text = chapterNumber.toString();
     contentController.text = await _getChapterFileContent();
+    _setTitleFromContent();
     if (isShowSubmit) {
       isChanged = true;
     }
     _unFocusAll();
     setState(() {});
+  }
+
+  void _setTitleFromContent() {
+    if (readTitleLine == -1 || contentController.text.isEmpty) {
+      final chapter = context.read<ChapterProvider>().getOne(
+        (chapter) => chapter.number == chapterNumber,
+      );
+      titleController.text = chapter == null ? 'Untitled' : chapter.title;
+      return;
+    }
+    final contentList = contentController.text.split('\n');
+    if (readTitleLine > contentList.length) return;
+
+    titleController.text = contentList[readTitleLine];
   }
 
   void _onSave() async {
@@ -255,6 +347,30 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
       }
     } catch (e) {
       showTMessageDialogError(context, e.toString());
+    }
+  }
+
+  Future<void> setChapterContent() async {
+    final foundCh = provider.getOne((ch) => ch.number == chapterNumber);
+    if (foundCh == null) {
+      await provider.add(
+        Chapter.create(
+          title: titleController.text,
+          number: chapterNumber,
+          content: contentController.text,
+        ),
+      );
+    } else {
+      // update
+      await provider.update(
+        Chapter(
+          autoId: foundCh.autoId,
+          title: titleController.text,
+          number: chapterNumber,
+          content: contentController.text,
+          date: DateTime.now(),
+        ),
+      );
     }
   }
 

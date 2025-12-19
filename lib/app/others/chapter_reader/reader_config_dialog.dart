@@ -41,51 +41,66 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
     return AlertDialog.adaptive(
       contentPadding: EdgeInsets.all(6),
       scrollable: true,
-      content: TScrollableColumn(
-        spacing: 15,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // keep screen
-          SwitchListTile.adaptive(
-            value: isKeepScreening,
-            title: Text('Keep Screen'),
-            subtitle: Text(
-              'Screen မီးဆက်တက်ဖွင့်ထားမယ်...',
-              style: TextStyle(fontSize: 12),
+          Card(
+            child: SwitchListTile.adaptive(
+              value: isKeepScreening,
+              title: Text('Keep Screen'),
+              subtitle: Text(
+                'Screen မီးဆက်တက်ဖွင့်ထားမယ်...',
+                style: TextStyle(fontSize: 12),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  isKeepScreening = value;
+                });
+              },
             ),
-            onChanged: (value) {
-              setState(() {
-                isKeepScreening = value;
-              });
-            },
           ),
           // is backpress confirm
-          SwitchListTile.adaptive(
-            value: isBackpressConfirm,
-            title: Text('BackPress Confirm'),
-            subtitle: Text(
-              'ပြန်ထွက် အတည်ပြုခြင်း',
-              style: TextStyle(fontSize: 12),
+          Card(
+            child: SwitchListTile.adaptive(
+              value: isBackpressConfirm,
+              title: Text('BackPress Confirm'),
+              subtitle: Text(
+                'ပြန်ထွက် အတည်ပြုခြင်း',
+                style: TextStyle(fontSize: 12),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  isBackpressConfirm = value;
+                });
+              },
             ),
-            onChanged: (value) {
-              setState(() {
-                isBackpressConfirm = value;
-              });
-            },
           ),
           // font
-          TNumberField(
-            label: Text('Font Size'),
-            maxLines: 1,
-            controller: fontSizeController,
-            // onChanged: (text) {
-            //   if (double.tryParse(text) == null) return;
-            //   config.fontSize = double.parse(text);
-            // },
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TNumberField(
+                label: Text('Font Size'),
+                maxLines: 1,
+                controller: fontSizeController,
+              ),
+            ),
           ),
           // theme
-          _getThemeChanger(),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _getThemeChanger(),
+            ),
+          ),
           // padding
-          _getPadding(),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _getPadding(),
+            ),
+          ),
         ],
       ),
       actions: _getActions(),
@@ -105,7 +120,7 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
 
   Widget _getPadding() {
     return Column(
-      spacing: 5,
+      spacing: 9,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Reader Text Padding'),

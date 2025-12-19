@@ -49,17 +49,10 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     }
     if (widget.title != null) {
       return Card(
-        color: widget.theme?.bgColor.withValues(alpha: 0.7),
         child: Row(
           spacing: 5,
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              widget.title!,
-              style: TextStyle(color: widget.theme?.fontColor),
-            ),
-            _getAction(),
-          ],
+          children: [Text(widget.title!), _getAction()],
         ),
       );
     }
@@ -68,7 +61,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
 
   Widget _getAction() {
     return IconButton(
-      color: widget.theme?.bgColor,
+      // color: widget.theme?.bgColor,
       onPressed: _toggle,
 
       icon: Icon(

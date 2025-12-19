@@ -17,20 +17,32 @@ class ReaderTheme {
     if (index != -1) return getDefaultList[index];
     return defaultLightTheme;
   }
+  @override
+  String toString() {
+    return title;
+  }
 
   static List<ReaderTheme> get getDefaultList {
     return [
+      systemTheme,
       defaultLightTheme,
       defaultDarkTheme,
-      warmYellow,
-      sepiaTheme,
-      cobalt,
-      blueLightFilter,
-      greenTheme,
-      greenPaper,
-      gray,
+      // warmYellow,
+      // sepiaTheme,
+      // cobalt,
+      // blueLightFilter,
+      // greenTheme,
+      // greenPaper,
+      // gray,
     ];
   }
+
+  static const ReaderTheme systemTheme = ReaderTheme(
+    id: '0',
+    title: 'System Theme',
+    fontColor: Color.fromARGB(255, 10, 10, 10),
+    bgColor: Colors.white,
+  );
 
   static const ReaderTheme defaultLightTheme = ReaderTheme(
     id: '1',

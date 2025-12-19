@@ -7,7 +7,6 @@ import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/wrap_more_less.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';
 import 'package:novel_v3/app/ui/content/content_screen.dart';
-import 'package:novel_v3/app/ui/search/search_result_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -203,9 +202,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _goSearchResultPage(String title, List<Novel> list) {
-    goRoute(
-      context,
-      builder: (context) => SearchResultScreen(title: title, list: list),
-    );
+    goSearchResultScreen(context, title: title, list: list);
   }
 }

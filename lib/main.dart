@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:novel_v3/app/core/models/chapter_content.dart';
+import 'package:novel_v3/app/core/databases/chapter_db.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
@@ -12,7 +11,6 @@ import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:t_client/t_client.dart';
-import 'package:t_db/t_db.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:novel_v3/app/my_app.dart';
@@ -47,10 +45,9 @@ void main() async {
   await PdfReader.instance.init(
     getDarkTheme: () => Setting.getAppConfig.isDarkTheme,
   );
-  // db
-  final db = TDB.getInstance();
-  db.setAdapter<Chapter>(ChapterAdapter());
-  db.setAdapter<ChapterContent>(ChapterContentAdapter());
+  // chapter db
+  ChapterDB.setAdapters();
+
   // recent
   await TRecentDB.getInstance.init(
     rootPath: PathUtil.getConfigPath(name: 'recent.db.json'),

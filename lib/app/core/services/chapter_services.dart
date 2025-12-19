@@ -1,55 +1,34 @@
-import 'dart:io';
-
+import 'package:novel_v3/app/core/databases/chapter_db.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 
 class ChapterServices {
   static Future<List<Chapter>> getAll(String novelPath) async {
-    List<Chapter> list = [];
-    final dir = Directory(novelPath);
-    if (!dir.existsSync()) return list;
-    // check db
-    final chapterDBFile = File('$novelPath/chapters.db');
-    if (chapterDBFile.existsSync()) {
-      return list;
-    }
-    // not exists
-    for (var file in dir.listSync(followLinks: false)) {
-      if (!file.isFile) continue;
-      final title = file.getName();
-      if (!Chapter.isChapterFile(title)) continue;
-      list.add(
-        Chapter(
-          number: int.parse(title),
-          title: 'Untitled',
-          date: file.getDate,
-          novelPath: novelPath,
-        ),
-      );
-    }
-
-    return list;
+    return await ChapterDB.getAll(novelPath);
   }
 
   static Future<String?> getContent(int chapterNumber, String novelPath) async {
-    final file = File('$novelPath/$chapterNumber');
-    if (!file.existsSync()) {
-      return null;
-    }
-    return await file.readAsString();
+    final content = await ChapterDB.getContent(chapterNumber, novelPath);
+    if (content == null) return null;
+    return content.content;
   }
 
-  static Future<void> setChapter(Chapter chapter) async {
-    if (chapter.novelPath == null) return;
-    final file = File('${chapter.novelPath}/${chapter.number}');
-    await file.writeAsString(chapter.content ?? '');
+  static Future<void> update(Chapter chapter) async {
+    await ChapterDB.update(chapter);
+  }
+
+  static Future<void> add(Chapter chapter) async {
+    await ChapterDB.add(chapter);
   }
 
   static Future<void> delete(Chapter chapter) async {
-    if (chapter.novelPath == null) return;
-    final file = File('${chapter.novelPath}/${chapter.number}');
-    if (file.existsSync()) {
-      await file.delete();
-    }
+    await ChapterDB.delete(chapter);
+  }
+
+  static Future<void> deleteAll() async {
+    await ChapterDB.deleteAll();
+  }
+
+  static Future<void> deleteDBFile(String novelPath) async {
+    await ChapterDB.deleteDBFile(novelPath);
   }
 }

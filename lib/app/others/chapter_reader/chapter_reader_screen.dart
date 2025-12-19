@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
+import 'package:novel_v3/app/others/chapter_reader/chapter_reader_theme_listener.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -36,6 +37,7 @@ class ChapterReaderScreen extends StatefulWidget {
 class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   late ChapterReaderConfig config;
   List<Chapter> list = [];
+  List<Chapter> allList = [];
   final controller = ScrollController();
   bool isLoading = false;
   bool isInitLoading = false;
@@ -77,7 +79,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       setState(() {
         isInitLoading = true;
       });
-      widget.allList.sort((a, b) => a.number.compareTo(b.number));
+      allList.addAll(widget.allList);
+      allList.sort((a, b) => a.number.compareTo(b.number));
       if (!mounted) return;
       setState(() {
         isInitLoading = false;
@@ -105,12 +108,18 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           widget.onUpdateConfig?.call(config);
         });
       },
-      child: TScaffold(
-        body: GestureDetector(
-          onDoubleTap: () => _toggleFullScreen(),
-          onLongPress: _showConfigDialog,
-          onSecondaryTap: _showConfigDialog,
-          child: Container(color: config.theme.bgColor, child: _getView()),
+      child: ChapterReaderThemeListener(
+        theme: config.theme,
+        builder: (context, themeData) => Theme(
+          data: themeData,
+          child: Scaffold(
+            body: GestureDetector(
+              onDoubleTap: () => _toggleFullScreen(),
+              onLongPress: _showConfigDialog,
+              onSecondaryTap: _showConfigDialog,
+              child: _getView(),
+            ),
+          ),
         ),
       ),
     );
@@ -125,13 +134,13 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
             : SliverAppBar(
                 title: Text(
                   'Chapter Reader',
-                  style: TextStyle(color: config.theme.fontColor),
+                  // style: TextStyle(color: config.theme.fontColor),
                 ),
                 snap: true,
                 floating: true,
-                backgroundColor: config.theme.bgColor.withValues(alpha: 0.8),
+                // backgroundColor: config.theme.bgColor.withValues(alpha: 0.8),
                 leading: IconButton(
-                  color: config.theme.fontColor,
+                  // color: config.theme.fontColor,
                   onPressed: () {
                     if (config.isBackpressConfirm) {
                       _onBackConfirm();
@@ -170,7 +179,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       ),
       child: Column(
         spacing: 5,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ChapterBookmarkAction(
             theme: config.theme,
@@ -192,11 +201,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   Widget _getContentWidget(Chapter chapter, int index) {
     if (chapter.content != null) {
       return Text(
-        'Chapter: ${chapter.number}\n${chapter.content}',
-        style: TextStyle(
-          fontSize: config.fontSize,
-          color: config.theme.fontColor,
-        ),
+        'Chapter: ${chapter.number}\n\n${chapter.content}',
+        style: TextStyle(fontSize: config.fontSize),
       );
     }
     return FutureBuilder(
@@ -208,11 +214,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         final text = snapshot.data ?? '';
         list[index] = chapter.copyWith(content: text);
         return Text(
-          'Chapter: ${chapter.number}\n$text',
-          style: TextStyle(
-            fontSize: config.fontSize,
-            color: config.theme.fontColor,
-          ),
+          'Chapter: ${chapter.number}\n\n$text',
+          style: TextStyle(fontSize: config.fontSize),
         );
       },
     );
@@ -221,13 +224,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   Widget _getSeparator(int index) {
     final item = list[index];
     return Card(
-      color: config.theme.bgColor.withValues(alpha: 0.5),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Text(
             'Chapter: ${item.number} End...',
-            style: TextStyle(fontSize: 20, color: config.theme.fontColor),
+            style: TextStyle(fontSize: 20),
           ),
         ),
       ),
@@ -249,7 +251,6 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Card(
-          color: config.theme.bgColor.withValues(alpha: 0.5),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -259,10 +260,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
                   size: 30,
                   color: Colors.teal,
                 ),
-                Text(
-                  'Chapter: ${topChapter!.number}',
-                  style: TextStyle(color: config.theme.fontColor),
-                ),
+                Text('Chapter: ${topChapter!.number}'),
               ],
             ),
           ),
@@ -295,15 +293,15 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       if (isLoading) return;
 
       isLoading = true;
-      final currentChapterPos = widget.allList.indexWhere(
+      final currentChapterPos = allList.indexWhere(
         (e) => e.number == list.last.number,
       );
       if (currentChapterPos == -1 ||
-          currentChapterPos >= (widget.allList.length - 1)) {
+          currentChapterPos >= (allList.length - 1)) {
         return;
       }
 
-      final chapter = widget.allList[currentChapterPos + 1];
+      final chapter = allList[currentChapterPos + 1];
       // // ရှိနေရင်
       list.add(chapter);
       setState(() {});
@@ -318,7 +316,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   Future<void> _getPrevChapter() async {
     try {
-      final currentChapterPos = widget.allList.indexWhere(
+      // sort
+
+      final currentChapterPos = allList.indexWhere(
         (e) => e.number == list.first.number,
       );
       if (currentChapterPos == -1 || currentChapterPos == 0) {
@@ -327,7 +327,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       isLoading = true;
       isShowGetPrevChapter = true;
 
-      topChapter = widget.allList[currentChapterPos - 1];
+      topChapter = allList[currentChapterPos - 1];
       setState(() {});
     } catch (e) {
       if (!mounted) return;
@@ -343,9 +343,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   // config dialog
   void _showConfigDialog() {
-    showDialog(
+    showAdaptiveDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) => ReaderConfigDialog(
         config: config,
         onUpdated: (updatedConfig) {

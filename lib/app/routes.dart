@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
+import 'package:novel_v3/app/ui/search/search_result_screen.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:provider/provider.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -18,6 +20,15 @@ void goRoute(
 
 void closeContext(BuildContext context) {
   Navigator.pop(context);
+}
+
+void goSearchResultScreen(
+  BuildContext context, {
+  required String title,
+  required List<Novel> list,
+}) {
+  context.read<NovelProvider>().setSearchResultList(list);
+  goRoute(context, builder: (context) => SearchResultScreen(title: title));
 }
 
 Future<void> goChapterReader(

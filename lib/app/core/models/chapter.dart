@@ -1,4 +1,6 @@
+import 'package:novel_v3/app/core/models/chapter_content.dart';
 import 'package:t_db/t_db.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ChapterAdapter extends TDAdapter<Chapter> {
   @override
@@ -19,6 +21,17 @@ class ChapterAdapter extends TDAdapter<Chapter> {
   @override
   Map<String, dynamic> toMap(Chapter value) {
     return value.toMap();
+  }
+
+  @override
+  List<HBRelation> relations() {
+    return [
+      HBRelation(
+        targetType: ChapterContent,
+        foreignKey: 'chapterId',
+        onDelete: RelationAction.cascade,
+      ),
+    ];
   }
 }
 
@@ -84,9 +97,9 @@ class Chapter {
   factory Chapter.fromMap(Map<String, dynamic> map) {
     return Chapter(
       autoId: map['autoId'] as int,
-      number: map['number'] as int,
-      title: map['title'] as String,
-      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+      number: map.getInt(['number'], def: -1),
+      title: map.getString(['title'], def: 'Null'),
+      date: DateTime.fromMillisecondsSinceEpoch(map.getInt(['date'])),
     );
   }
 }

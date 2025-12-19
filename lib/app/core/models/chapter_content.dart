@@ -20,6 +20,13 @@ class ChapterContentAdapter extends TDAdapter<ChapterContent> {
   Map<String, dynamic> toMap(ChapterContent value) {
     return value.toMap();
   }
+
+  @override
+  getFieldValue(ChapterContent value, String fieldName) {
+    if (fieldName == 'chapterId') {
+      return value.chapterId;
+    }
+  }
 }
 
 class ChapterContent {

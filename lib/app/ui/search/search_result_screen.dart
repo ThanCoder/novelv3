@@ -8,12 +8,7 @@ import 'package:provider/provider.dart';
 
 class SearchResultScreen extends StatefulWidget {
   final String title;
-  final List<Novel> list;
-  const SearchResultScreen({
-    super.key,
-    required this.title,
-    required this.list,
-  });
+  const SearchResultScreen({super.key, required this.title});
 
   @override
   State<SearchResultScreen> createState() => _SearchResultScreenState();
@@ -29,12 +24,11 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   }
 
   Widget _getListWidget() {
+    final list = context.watch<NovelProvider>().searchResultList;
     return SliverList.builder(
-      itemCount: widget.list.length,
-      itemBuilder: (context, index) => NovelListItem(
-        novel: widget.list[index],
-        onClicked: _goNovelContentPage,
-      ),
+      itemCount: list.length,
+      itemBuilder: (context, index) =>
+          NovelListItem(novel: list[index], onClicked: _goNovelContentPage),
     );
   }
 

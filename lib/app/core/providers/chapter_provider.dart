@@ -24,13 +24,14 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   void refershUI() {
+    sort(currentSortId, sortAsc);
     notifyListeners();
   }
 
   Future<void> add(Chapter chapter) async {
     chapter = chapter.copyWith(novelPath: currentNovelPath);
     list.add(chapter);
-    await ChapterServices.setChapter(chapter);
+    await ChapterServices.add(chapter);
     notifyListeners();
   }
 
@@ -40,6 +41,32 @@ class ChapterProvider extends ChangeNotifier {
     list.removeAt(index);
     await ChapterServices.delete(chapter);
     notifyListeners();
+  }
+
+  Future<void> deleteAll() async {
+    isLoading = true;
+    notifyListeners();
+
+    list.clear();
+    await ChapterServices.deleteAll();
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteDBFile(String novelPath) async {
+    isLoading = true;
+    notifyListeners();
+
+    list.clear();
+    await ChapterServices.deleteDBFile(novelPath);
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Chapter? getOne(bool Function(Chapter chapter) test) {
+    final index = list.indexWhere((e) => test(e));
+    if (index == -1) return null;
+    return list[index];
   }
 
   bool isExistsNumber(int number) {
@@ -61,14 +88,13 @@ class ChapterProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> setChapter(Chapter chapter) async {
+  Future<void> update(Chapter chapter) async {
     int index = list.indexWhere((e) => e.number == chapter.number);
     if (index == -1) {
-      await add(chapter);
       return;
     }
     list[index] = chapter;
-    await ChapterServices.setChapter(chapter);
+    await ChapterServices.update(chapter);
     notifyListeners();
   }
 

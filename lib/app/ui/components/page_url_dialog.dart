@@ -22,7 +22,12 @@ class PageUrlDialog extends StatelessWidget {
         children: List.generate(list.length, (index) {
           final url = list[index];
           return ListTile(
-            title: Text(url),
+            title: Text(
+              url,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 14),
+            ),
             onTap: () {
               Navigator.pop(context);
               onClicked?.call(url);

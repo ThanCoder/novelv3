@@ -75,6 +75,24 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
             _goMultiChapterFetcher();
           },
         ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.delete_forever, color: Colors.red),
+          title: Text('Delete All Chapter'),
+          onTap: () {
+            closeContext(context);
+            _deleteAllChapterConfirm();
+          },
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.delete_forever, color: Colors.red),
+          title: Text('Delete Chapter DB File'),
+          onTap: () {
+            closeContext(context);
+            _deleteAllChapterDBFileConfirm();
+          },
+        ),
       ],
     );
   }
@@ -148,6 +166,28 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
         title: response.title,
         content: response.content,
       ),
+    );
+  }
+
+  void _deleteAllChapterConfirm() {
+    showTConfirmDialog(
+      context,
+      contentText: 'Chapter အားလုံးကို ဖျက်ချင်တာ သေချာပြီလား?',
+      submitText: 'Delete Forever',
+      onSubmit: () {
+        provider.deleteAll();
+      },
+    );
+  }
+
+  void _deleteAllChapterDBFileConfirm() {
+    showTConfirmDialog(
+      context,
+      contentText: 'Chapter Database ကို ဖျက်ချင်တာသေချာပြီလား?',
+      submitText: 'Delete Chapter DB',
+      onSubmit: () {
+        provider.deleteDBFile(novel.path);
+      },
     );
   }
 }

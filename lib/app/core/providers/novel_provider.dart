@@ -14,6 +14,12 @@ class NovelProvider extends ChangeNotifier {
   List<Novel> list = [];
   bool isLoading = false;
   Novel? currentNovel;
+  // search result list
+  List<Novel> searchResultList = [];
+  void setSearchResultList(List<Novel> list) {
+    searchResultList = list;
+    notifyListeners();
+  }
 
   void refersh() => notifyListeners();
 
@@ -32,7 +38,7 @@ class NovelProvider extends ChangeNotifier {
       'novel-home-sort-sortId',
       def: TSort.getDateId,
     );
-    sort(currentSortId, sortAsc);
+    await sort(currentSortId, sortAsc);
 
     isLoading = false;
     notifyListeners();
@@ -79,6 +85,13 @@ class NovelProvider extends ChangeNotifier {
     final index = list.indexWhere((e) => e.path == novel.path);
     if (index == -1) return;
     list.removeAt(index);
+    // remove search list
+    final resultIndex = searchResultList.indexWhere(
+      (e) => e.path == novel.path,
+    );
+    if (resultIndex == -1) return;
+    searchResultList.removeAt(resultIndex);
+
     final dir = Directory(novel.path);
     if (dir.existsSync()) {
       await PathUtil.deleteDir(dir);
@@ -108,8 +121,13 @@ class NovelProvider extends ChangeNotifier {
           receivePort.close();
           break;
         }
-        final path = message['path'] as String;
-        final size = message['size'] as int;
+        if (message['done'] ?? false) {
+          receivePort.close();
+          break;
+        }
+        String path = message['path'] ?? '';
+        int size = message['size'] ?? 0;
+        if (path.isEmpty || size == 0) continue;
 
         // await Future.delayed(Duration(milliseconds: 600));
 
@@ -126,10 +144,6 @@ class NovelProvider extends ChangeNotifier {
         novel.size ??= size;
 
         // print('index: $index - length: ${list.length}');
-        if (message['done'] ?? false) {
-          receivePort.close();
-          break;
-        }
       }
     } catch (e) {
       debugPrint('[calculateSize]: ${e.toString()}');
@@ -201,7 +215,7 @@ class NovelProvider extends ChangeNotifier {
       TSort(id: 1, title: 'Size', ascTitle: 'Smallest', descTitle: 'Biggest'),
     );
 
-  void sort(int currentId, bool isAsc) async {
+  Future<void> sort(int currentId, bool isAsc) async {
     sortAsc = isAsc;
     currentSortId = currentId;
 

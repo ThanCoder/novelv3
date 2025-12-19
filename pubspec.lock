@@ -873,10 +873,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_db
-      sha256: "9b3969c932667e7ccfad308e107b6a9c60f7a5f1f3c1808d964c4c5e29cf1b09"
+      sha256: "4db1fd54ef41d176f3b326cecd969980873df8469ce4e1c0e0faa9f5df376511"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.3.0"
   t_html_parser:
     dependency: "direct main"
     description:
@@ -897,10 +897,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: "52a71d7f1f125631f046ea336471b4d0a36cbe914ef49fcef9a9bb97b4437da2"
+      sha256: e235964988021ef3c6c93557df37d1adb67e0682e601c5793aeddc0b8b825739
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "2.1.0"
   tar:
     dependency: transitive
     description:

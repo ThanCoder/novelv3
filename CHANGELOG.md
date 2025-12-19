@@ -1,5 +1,6 @@
 # 4.0.0
 
+- Changed `Chapter File` -> `Chapter Database`
 - Changed `New UI`,`Changed Core Code`,`Change Database`
 
 ## environment
@@ -21,7 +22,7 @@ t_server: ^2.2.0
 flutter_animate: ^4.5.2
 t_client: ^0.1.6
 flutter_markdown: ^0.7.7+1
-t_db: ^1.1.1
+t_db: ^1.2.0
 ```
 
 ## 3.6.0
