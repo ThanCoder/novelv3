@@ -160,13 +160,25 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
   }
 
   Future<void> _addChapter(FetcherResponse response) async {
-    await provider.add(
-      Chapter.create(
-        number: response.chapterNumber,
-        title: response.title,
-        content: response.content,
-      ),
-    );
+    if (provider.isExistsNumber(response.chapterNumber)) {
+      // update
+      final chapter = provider.getOne(
+        (chapter) => chapter.number == response.chapterNumber,
+      );
+      if (chapter == null) return;
+      await provider.update(
+        chapter.copyWith(title: response.title, content: response.content),
+      );
+    } else {
+      // new
+      await provider.add(
+        Chapter.create(
+          number: response.chapterNumber,
+          title: response.title,
+          content: response.content,
+        ),
+      );
+    }
   }
 
   void _deleteAllChapterConfirm() {

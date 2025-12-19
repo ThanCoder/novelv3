@@ -114,9 +114,9 @@ class _AddAutoMultiChapterScreenState extends State<AddAutoMultiChapterScreen> {
             });
           },
         ),
-        downloadingChapter != null && !isDownloadingStop
-            ? Text('Chapter: `${downloadingChapter!.index}` Downloading....')
-            : SizedBox.shrink(),
+        downloadingChapter == null || isDownloadingStop
+            ? SizedBox.shrink()
+            : Text('Chapter: `${downloadingChapter!.index}` Downloading....'),
         Divider(),
         isLoading ? LinearProgressIndicator() : SizedBox.shrink(),
       ],
@@ -209,13 +209,11 @@ class _AddAutoMultiChapterScreenState extends State<AddAutoMultiChapterScreen> {
         downloadingChapter = ch;
         setState(() {});
         final content = await _fetchWebChapterContent(ch);
-        if (content == null) continue;
+        if (content == null || content.isEmpty) continue;
 
         // downloaded
         isDownloadedChapter.add(ch.index);
-        //set content
-        // final file = File(pathJoin(widget.saveDir.path, '${ch.index}'));
-        // await file.writeAsString(content);
+
         await widget.onSaved?.call(
           FetcherResponse(
             url: ch.url,
@@ -232,11 +230,13 @@ class _AddAutoMultiChapterScreenState extends State<AddAutoMultiChapterScreen> {
       if (!mounted) return;
       setState(() {
         isLoading = false;
+        isDownloadingStop = true;
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         isLoading = false;
+        isDownloadingStop = true;
       });
       showTMessageDialogError(context, e.toString());
     }

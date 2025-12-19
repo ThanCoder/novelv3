@@ -29,9 +29,11 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> add(Chapter chapter) async {
-    chapter = chapter.copyWith(novelPath: currentNovelPath);
+    final autoId = await ChapterServices.add(chapter);
+    chapter = chapter.copyWith(autoId: autoId, novelPath: currentNovelPath);
     list.add(chapter);
-    await ChapterServices.add(chapter);
+
+    sort(currentSortId, sortAsc);
     notifyListeners();
   }
 

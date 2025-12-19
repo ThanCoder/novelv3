@@ -133,6 +133,12 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
+        // cover
+        SizedBox(
+          width: 100,
+          height: 120,
+          child: TImage(source: coverUrlController.text),
+        ),
         currentSite!.info.titleQuery == null
             ? SizedBox.shrink()
             : Row(
@@ -239,9 +245,11 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
                   ),
                 ],
               ),
+        // desc
         currentSite!.info.descriptionQuery == null
             ? SizedBox.shrink()
-            : Checkbox.adaptive(
+            : CheckboxListTile.adaptive(
+                title: Text('Add Description'),
                 value: isIncludeDesc,
                 onChanged: (value) {
                   setState(() {

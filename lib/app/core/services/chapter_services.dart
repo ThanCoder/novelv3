@@ -16,8 +16,8 @@ class ChapterServices {
     await ChapterDB.update(chapter);
   }
 
-  static Future<void> add(Chapter chapter) async {
-    await ChapterDB.add(chapter);
+  static Future<int> add(Chapter chapter) async {
+    return await ChapterDB.add(chapter);
   }
 
   static Future<void> delete(Chapter chapter) async {

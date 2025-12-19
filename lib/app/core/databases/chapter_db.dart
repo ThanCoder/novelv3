@@ -73,12 +73,18 @@ class ChapterDB {
     );
   }
 
-  static Future<void> add(Chapter chapter) async {
+  ///
+  /// return `newId`
+  ///
+  static Future<int> add(Chapter chapter) async {
     //add new chapter
     final id = await getChapterBox.add(chapter);
-    await getChapterContentBox.add(
-      ChapterContent(chapterId: id, content: chapter.content ?? ''),
-    );
+    if (chapter.content != null) {
+      await getChapterContentBox.add(
+        ChapterContent(chapterId: id, content: chapter.content ?? ''),
+      );
+    }
+    return id;
   }
 
   static Future<void> update(Chapter chapter) async {
@@ -92,18 +98,13 @@ class ChapterDB {
     );
 
     // check content
-    if (content == null) {
-      // add
-      await getChapterContentBox.add(
-        ChapterContent(
-          chapterId: chapter.autoId,
-          content: chapter.content ?? '',
-        ),
-      );
-    } else {
-      // update
-      await getChapterContentBox.updateById(content.autoId, content);
+    if (content != null) {
+      // delete
+      await getChapterContentBox.deleteById(content.autoId);
     }
+    await getChapterContentBox.add(
+      ChapterContent(chapterId: chapter.autoId, content: chapter.content ?? ''),
+    );
   }
 
   static Future<void> delete(Chapter chapter) async {
