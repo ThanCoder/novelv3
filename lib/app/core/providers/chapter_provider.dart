@@ -107,7 +107,7 @@ class ChapterProvider extends ChangeNotifier {
   bool sortAsc = true;
   int currentSortId = 1;
   List<TSort> sortList = [
-    TSort(id: 1, title: 'Number', ascTitle: 'Smallest', descTitle: 'Biggest'),
+    TSort(id: 1, title: 'Number', ascTitle: 'Smallest', descTitle: 'Largest'),
   ];
 
   void sort(int currentId, bool isAsc) {

@@ -69,7 +69,7 @@ class _ChapterPageState extends State<ChapterPage> {
           ? null
           : TextButton(
               onPressed: _goRecentChapter,
-              child: Text('Recent Chapter: ${_getRecentName()}'),
+              child: Text('Recent: ${_getRecentName()}'),
             ),
       actions: [
         Text('Count: ${getWProvider.list.length}'),

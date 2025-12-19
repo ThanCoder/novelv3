@@ -132,15 +132,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         isFullScreen
             ? SliverToBoxAdapter()
             : SliverAppBar(
-                title: Text(
-                  'Chapter Reader',
-                  // style: TextStyle(color: config.theme.fontColor),
-                ),
+                title: Text('Chapter Reader'),
                 snap: true,
                 floating: true,
-                // backgroundColor: config.theme.bgColor.withValues(alpha: 0.8),
                 leading: IconButton(
-                  // color: config.theme.fontColor,
                   onPressed: () {
                     if (config.isBackpressConfirm) {
                       _onBackConfirm();
@@ -305,7 +300,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       // // ရှိနေရင်
       list.add(chapter);
       setState(() {});
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 2));
       isLoading = false;
     } catch (e) {
       if (!mounted) return;
