@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
@@ -36,21 +35,18 @@ class ChapterReaderScreen extends StatefulWidget {
 
 class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   late ChapterReaderConfig config;
-  List<Chapter> list = [];
+  List<Chapter> viewList = [];
   List<Chapter> allList = [];
   final controller = ScrollController();
   bool isLoading = false;
   bool isInitLoading = false;
-  bool isShowGetPrevChapter = true;
-  Chapter? topChapter;
   bool isFullScreen = false;
   bool canPop = true;
 
   @override
   void initState() {
     config = widget.config;
-    list.add(widget.chapter);
-    controller.addListener(_onScroll);
+    viewList.add(widget.chapter);
     super.initState();
     initConfig();
     init();
@@ -104,7 +100,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           return;
         }
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.onReaderClosed?.call(list.last);
+          widget.onReaderClosed?.call(viewList.last);
           widget.onUpdateConfig?.call(config);
         });
       },
@@ -129,44 +125,51 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     return CustomScrollView(
       controller: controller,
       slivers: [
-        isFullScreen
-            ? SliverToBoxAdapter()
-            : SliverAppBar(
-                title: Text('Chapter Reader'),
-                snap: true,
-                floating: true,
-                leading: IconButton(
-                  onPressed: () {
-                    if (config.isBackpressConfirm) {
-                      _onBackConfirm();
-                      return;
-                    }
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.arrow_back),
-                ),
-              ),
+        _getAppbar(),
         // top
-        SliverToBoxAdapter(child: _getPrevChapterWidget()),
+        _getPrevChapterWidget(),
         // list
         _getListWidget(),
+
+        _getNextChapterWidget(),
       ],
     );
+  }
+
+  Widget _getAppbar() {
+    if (isFullScreen) {
+      return SliverToBoxAdapter();
+    } else {
+      return SliverAppBar(
+        title: Text('Chapter Reader'),
+        snap: true,
+        floating: true,
+        leading: IconButton(
+          onPressed: () {
+            if (config.isBackpressConfirm) {
+              _onBackConfirm();
+              return;
+            }
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      );
+    }
   }
 
   Widget _getListWidget() {
     if (isInitLoading) {
       return SliverFillRemaining(child: Center(child: TLoader.random()));
     }
-    return SliverList.separated(
-      itemCount: list.length,
+    return SliverList.builder(
+      itemCount: viewList.length,
       itemBuilder: (context, index) => _getListItem(index),
-      separatorBuilder: (context, index) => _getSeparator(index),
     );
   }
 
   Widget _getListItem(int index) {
-    final item = list[index];
+    final item = viewList[index];
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: config.paddingY,
@@ -188,6 +191,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
             chapter: item,
             title: 'BookMark',
           ),
+          _getSeparator(index),
         ],
       ),
     );
@@ -207,7 +211,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           return Center(child: TLoader(color: Colors.blue));
         }
         final text = snapshot.data ?? '';
-        list[index] = chapter.copyWith(content: text);
+        viewList[index] = chapter.copyWith(content: text);
         return Text(
           'Chapter: ${chapter.number}\n\n$text',
           style: TextStyle(fontSize: config.fontSize),
@@ -217,7 +221,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   }
 
   Widget _getSeparator(int index) {
-    final item = list[index];
+    final item = viewList[index];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -232,31 +236,39 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   }
 
   Widget _getPrevChapterWidget() {
-    if (!isShowGetPrevChapter || topChapter == null) {
-      return SizedBox.shrink();
+    if (viewList.isEmpty) {
+      return SliverToBoxAdapter();
     }
-    return GestureDetector(
-      onTap: () async {
-        list.insert(0, topChapter!);
-        isShowGetPrevChapter = false;
-        setState(() {});
-        await Future.delayed(Duration(seconds: 1));
-        isLoading = false;
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.keyboard_arrow_up_rounded,
-                  size: 30,
-                  color: Colors.teal,
-                ),
-                Text('Chapter: ${topChapter!.number}'),
-              ],
+    final currentChapterPos = allList.indexWhere(
+      (e) => e.number == viewList.first.number,
+    );
+    if (currentChapterPos == 0) {
+      return SliverToBoxAdapter();
+    }
+
+    final chapter = allList[currentChapterPos - 1];
+
+    return SliverToBoxAdapter(
+      child: GestureDetector(
+        onTap: () async {
+          viewList.insert(0, chapter);
+          setState(() {});
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.keyboard_arrow_up_rounded,
+                    size: 30,
+                    color: Colors.teal,
+                  ),
+                  Text('Read Chapter: ${chapter.number}'),
+                ],
+              ),
             ),
           ),
         ),
@@ -264,70 +276,60 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     );
   }
 
-  void _onScroll() async {
-    if (isLoading) return;
-
-    final pos = controller.position;
-    // scroll down
-    if (controller.position.userScrollDirection == ScrollDirection.reverse) {
-      if (pos.maxScrollExtent == pos.pixels) {
-        await _getNextChapter();
-      }
+  Widget _getNextChapterWidget() {
+    if (viewList.isEmpty) {
+      return SliverToBoxAdapter();
     }
-    // scroll up
-    else if (controller.position.userScrollDirection ==
-        ScrollDirection.forward) {
-      if (pos.pixels == 0) {
-        await _getPrevChapter();
-      }
-    }
-  }
-
-  Future<void> _getNextChapter() async {
-    try {
-      if (isLoading) return;
-
-      isLoading = true;
-      final currentChapterPos = allList.indexWhere(
-        (e) => e.number == list.last.number,
+    final currentChapterPos = allList.indexWhere(
+      (e) => e.number == viewList.last.number,
+    );
+    if (currentChapterPos == -1 || currentChapterPos >= (allList.length - 1)) {
+      return SliverToBoxAdapter(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Icon(Icons.not_interested_rounded, size: 30, color: Colors.red),
+                Text(
+                  'Chapter ထပ်မရှိတော့ပါ...',
+                  style: TextStyle(color: Colors.red, fontSize: 18),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
-      if (currentChapterPos == -1 ||
-          currentChapterPos >= (allList.length - 1)) {
-        return;
-      }
-
-      final chapter = allList[currentChapterPos + 1];
-      // // ရှိနေရင်
-      list.add(chapter);
-      setState(() {});
-      await Future.delayed(Duration(seconds: 2));
-      isLoading = false;
-    } catch (e) {
-      if (!mounted) return;
-      showTMessageDialogError(context, e.toString());
-      // debugPrint(e.toString());
     }
-  }
 
-  Future<void> _getPrevChapter() async {
-    try {
-      // sort
+    final chapter = allList[currentChapterPos + 1];
 
-      final currentChapterPos = allList.indexWhere(
-        (e) => e.number == list.first.number,
-      );
-      if (currentChapterPos == -1 || currentChapterPos == 0) {
-        return;
-      }
-      isLoading = true;
-      isShowGetPrevChapter = true;
-
-      topChapter = allList[currentChapterPos - 1];
-      setState(() {});
-    } catch (e) {
-      if (!mounted) return;
-      showTMessageDialogError(context, e.toString());
-    }
+    return SliverToBoxAdapter(
+      child: GestureDetector(
+        onTap: () async {
+          viewList.add(chapter);
+          setState(() {});
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 30,
+                    color: Colors.teal,
+                  ),
+                  Text('Read Chapter: ${chapter.number}'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _toggleFullScreen() {
