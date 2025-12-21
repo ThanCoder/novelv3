@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_toggle_list_tile.dart';
+import 'package:novel_v3/app/others/novl_db/novl_export_list_tile.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,10 @@ class _NovelItemMenuActionsState extends State<NovelItemMenuActions> {
         ),
         NovelBookmarkToggleListTile(
           novelTitle: widget.novel.title,
+          onClosed: () => closeContext(context),
+        ),
+        NovlExportListTile(
+          novel: widget.novel,
           onClosed: () => closeContext(context),
         ),
         ListTile(

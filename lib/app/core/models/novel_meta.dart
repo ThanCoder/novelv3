@@ -1,7 +1,26 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/rendering.dart';
+import 'package:hb_db/hb_db.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+class NovelMetaAdapter extends HBAdapter<NovelMeta> {
+  @override
+  NovelMeta fromMap(Map<String, dynamic> map) {
+    return NovelMeta.fromMap(map);
+  }
+
+  @override
+  int getUniqueFieldId() {
+    return 2;
+  }
+
+  @override
+  Map<String, dynamic> toMap(NovelMeta value) {
+    return value.toMap();
+  }
+}
 
 class NovelMeta {
   static final String metaName = 'meta.json';
@@ -70,9 +89,13 @@ class NovelMeta {
   }
 
   Future<void> save(String novelPath) async {
-    final metaFile = File(pathJoin(novelPath, metaName));
-    final contents = jsonEncode(toMap());
-    await metaFile.writeAsString(contents);
+    try {
+      final metaFile = File(pathJoin(novelPath, metaName));
+      final contents = jsonEncode(toMap());
+      await metaFile.writeAsString(contents);
+    } catch (e) {
+      debugPrint('[NovelMeta:save]: $e');
+    }
   }
 
   static List<String> _getListFromString(String value) {

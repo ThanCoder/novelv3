@@ -86,7 +86,7 @@ class NovelGridItem extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        novel.title,
+                        novel.meta.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,

@@ -111,7 +111,7 @@ class NovelListItem extends StatelessWidget {
                           Icon(Icons.title),
                           Expanded(
                             child: Text(
-                              novel.title,
+                              novel.meta.title,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                               style: TextStyle(fontSize: 14),

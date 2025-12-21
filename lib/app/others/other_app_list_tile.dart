@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_scanner_screen.dart';
+import 'package:novel_v3/app/others/novl_db/novl_data_scanner_screen.dart';
 import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/app/others/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/others/share/share_home_screen.dart';
@@ -20,6 +21,14 @@ class OtherAppListTile extends StatelessWidget {
           children: [
             Text('Other Apps', style: TextStyle(fontSize: 17)),
 
+            ListTile(
+              leading: Icon(Icons.file_present),
+              title: Text('Novl Data Scanner'),
+              onTap: () {
+                goRoute(context, builder: (context) => NovlDataScannerScreen());
+              },
+            ),
+            Divider(),
             ListTile(
               leading: Icon(Icons.file_present),
               title: Text('N3 Data Scanner'),

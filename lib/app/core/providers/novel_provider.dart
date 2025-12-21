@@ -89,8 +89,9 @@ class NovelProvider extends ChangeNotifier {
     final resultIndex = searchResultList.indexWhere(
       (e) => e.path == novel.path,
     );
-    if (resultIndex == -1) return;
-    searchResultList.removeAt(resultIndex);
+    if (resultIndex != -1) {
+      searchResultList.removeAt(resultIndex);
+    }
 
     final dir = Directory(novel.path);
     if (dir.existsSync()) {
