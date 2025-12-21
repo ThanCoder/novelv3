@@ -38,7 +38,7 @@ class _NovlExportListTileState extends State<NovlExportListTile> {
               progressManager: NovlExportProgressManager(
                 novel: widget.novel,
                 info: info,
-                outPath: PathUtil.getOutPath(name: widget.novel.title),
+                outPath: PathUtil.getOutPath(name: widget.novel.meta.title),
                 onDone: widget.onClosed,
               ),
             ),

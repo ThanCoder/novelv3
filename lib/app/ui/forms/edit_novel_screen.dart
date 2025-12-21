@@ -39,7 +39,7 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
   late Novel novel;
 
   void init() {
-    titleController.text = novel.title;
+    titleController.text = novel.meta.title;
     originalTitleController.text = novel.meta.originalTitle;
     englishTitleController.text = novel.meta.englishTitle;
     authorController.text = novel.meta.author;
@@ -215,7 +215,6 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
 
   void _onUpdate() {
     final newNovel = novel.copyWith(
-      title: titleController.text,
       meta: novel.meta.copyWith(
         title: titleController.text,
         originalTitle: originalTitleController.text,
@@ -226,6 +225,7 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
         desc: descController.text,
         isAdult: isAdult,
         isCompleted: isCompleted,
+        date: DateTime.now(),
       ),
     );
     closeContext(context);

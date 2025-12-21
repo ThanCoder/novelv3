@@ -10,7 +10,7 @@ class NovelShareServices {
     final jsonList = list
         .map(
           (e) => ShareNovel(
-            title: e.title,
+            title: e.meta.title,
             path: e.path,
             isAdult: e.meta.isAdult,
             isCompleted: e.meta.isCompleted,
@@ -38,7 +38,7 @@ class NovelShareServices {
   <div class="novel">
   <a href="/dir?path=${e.path}">
    <img alt="cover" src="/cover?path=${e.getCoverPath}" />
-  <div class="title">${e.title}</div>
+  <div class="title">${e.meta.title}</div>
   <div class="top">
     ${e.meta.isAdult ? '<div class="top-left">IsAdult</div>' : ''}
     <div class="top-right">${e.meta.isCompleted ? 'OnGoing' : 'Completed'}</div>

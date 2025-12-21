@@ -5,10 +5,10 @@ extension NovelExtension on List<Novel> {
     sort((a, b) {
       if (aToZ) {
         // A → Z
-        return a.title.compareTo(b.title);
+        return a.meta.title.compareTo(b.meta.title);
       } else {
         // Z → A
-        return b.title.compareTo(a.title);
+        return b.meta.title.compareTo(a.meta.title);
       }
     });
   }
@@ -17,18 +17,22 @@ extension NovelExtension on List<Novel> {
     sort((a, b) {
       if (isNewest) {
         // newest
-        if (a.date.millisecondsSinceEpoch > b.date.millisecondsSinceEpoch) {
+        if (a.meta.date.millisecondsSinceEpoch >
+            b.meta.date.millisecondsSinceEpoch) {
           return -1;
         }
-        if (a.date.millisecondsSinceEpoch < b.date.millisecondsSinceEpoch) {
+        if (a.meta.date.millisecondsSinceEpoch <
+            b.meta.date.millisecondsSinceEpoch) {
           return 1;
         }
       } else {
         // oldest top
-        if (a.date.millisecondsSinceEpoch > b.date.millisecondsSinceEpoch) {
+        if (a.meta.date.millisecondsSinceEpoch >
+            b.meta.date.millisecondsSinceEpoch) {
           return 1;
         }
-        if (a.date.millisecondsSinceEpoch < b.date.millisecondsSinceEpoch) {
+        if (a.meta.date.millisecondsSinceEpoch <
+            b.meta.date.millisecondsSinceEpoch) {
           return -1;
         }
       }

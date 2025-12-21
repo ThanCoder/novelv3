@@ -4,37 +4,38 @@ import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:uuid/uuid.dart';
 
 class Novel {
-  final String title;
+  final String id;
   final String path;
   final NovelMeta meta;
   final DateTime date;
   int? size;
   Novel({
-    required this.title,
+    required this.id,
     required this.path,
     required this.meta,
     required this.date,
     this.size,
   });
-  factory Novel.create({required String title, String? path, NovelMeta? meta}) {
+  factory Novel.create({
+    required String name,
+    String? path,
+    NovelMeta? meta,
+    String? id,
+  }) {
     return Novel(
-      title: title,
-      path: path ?? PathUtil.getSourcePath(name: title),
-      meta: NovelMeta.createEmpty(),
+      id: id ?? Uuid().v4(),
+      path: path ?? PathUtil.getSourcePath(name: name),
+      meta: NovelMeta.create(),
       date: DateTime.now(),
     );
   }
 
-  Novel copyWith({
-    String? title,
-    String? path,
-    NovelMeta? meta,
-    DateTime? date,
-  }) {
+  Novel copyWith({String? id, String? path, NovelMeta? meta, DateTime? date}) {
     return Novel(
-      title: title ?? this.title,
+      id: id ?? this.id,
       path: path ?? this.path,
       meta: meta ?? this.meta,
       date: date ?? this.date,
@@ -82,7 +83,7 @@ class Novel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'title': title,
+      'id': id,
       'path': path,
       'meta': meta.toMap(),
       'date': date.millisecondsSinceEpoch,
@@ -91,7 +92,7 @@ class Novel {
 
   factory Novel.fromMap(Map<String, dynamic> map) {
     return Novel(
-      title: map['title'] as String,
+      id: map['id'] as String,
       path: map['path'] as String,
       meta: NovelMeta.fromMap(map['meta'] as Map<String, dynamic>),
       date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
@@ -103,11 +104,6 @@ class Novel {
     final meta = await NovelMeta.fromPath(path);
     final dir = Directory(path);
     if (!dir.existsSync()) return null;
-    return Novel(
-      title: path.getName(),
-      path: path,
-      meta: meta,
-      date: dir.getDate,
-    );
+    return Novel(id: path.getName(), path: path, meta: meta, date: dir.getDate);
   }
 }

@@ -83,7 +83,7 @@ class NovelListItem extends StatelessWidget {
                         bottom: 0,
                         child:
                             !context.watch<NovelBookmarkProvider>().isExists(
-                              novel.title,
+                              novel.meta.title,
                             )
                             ? SizedBox.shrink()
                             : Container(

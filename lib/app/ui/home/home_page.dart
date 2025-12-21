@@ -34,15 +34,15 @@ class _HomePageState extends State<HomePage> {
 
   String? currentTag;
   // filter
-  List<Novel> filterdNovelList = [];
 
   Future<void> init({bool isUsedCache = true}) async {
     context.read<NovelBookmarkProvider>().init();
     if (!mounted) return;
-    await context.read<NovelProvider>().init(isUsedCache: isUsedCache);
+    await getRProvider.init(isUsedCache: isUsedCache);
   }
 
   NovelProvider get getWProvider => context.watch<NovelProvider>();
+  NovelProvider get getRProvider => context.read<NovelProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +133,10 @@ class _HomePageState extends State<HomePage> {
     }
     // latest
     if (currentTag != null && currentTag != novelSliverTags.first) {
-      if (filterdNovelList.isEmpty) {
+      if (getWProvider.filterdNovelList.isEmpty) {
         return _getEmptyWidget();
       }
-      return _getListStyleWidget(filterdNovelList);
+      return _getListStyleWidget(getWProvider.filterdNovelList);
     }
 
     return _getListStyleWidget(getWProvider.list);
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
       await context.read<NovelBookmarkProvider>().parseNovelList();
     } else {
-      filterdNovelList = list.where((e) {
+      final filterdNovelList = list.where((e) {
         if (tag == 'Completed' && e.meta.isCompleted) {
           return true;
         }
@@ -203,6 +203,7 @@ class _HomePageState extends State<HomePage> {
         return false;
       }).toList();
       setState(() {});
+      getRProvider.setFilterdNovelList(filterdNovelList);
     }
   }
 
@@ -210,7 +211,7 @@ class _HomePageState extends State<HomePage> {
   void _onItemMenu(Novel novel) {
     showTMenuBottomSheetSingle(
       context,
-      title: Text(novel.title),
+      title: Text(novel.meta.title),
       child: NovelItemMenuActions(novel: novel),
     );
   }

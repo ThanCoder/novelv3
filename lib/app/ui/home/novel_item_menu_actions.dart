@@ -30,7 +30,7 @@ class _NovelItemMenuActionsState extends State<NovelItemMenuActions> {
           },
         ),
         NovelBookmarkToggleListTile(
-          novelTitle: widget.novel.title,
+          novelTitle: widget.novel.meta.title,
           onClosed: () => closeContext(context),
         ),
         NovlExportListTile(

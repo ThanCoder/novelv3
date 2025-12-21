@@ -40,7 +40,7 @@ class N3DataTask {
 class N3DataWorker {
   static Future<void> export(Novel novel) async {
     final task = N3DataTask(
-      zipPath: '${PathUtil.getOutPath()}/${novel.title}.${N3Data.getExt}',
+      zipPath: '${PathUtil.getOutPath()}/${novel.meta.title}.${N3Data.getExt}',
       novelPath: novel.path,
       password: getSecretKey(),
     );
@@ -61,7 +61,7 @@ class N3DataWorker {
       final receivePort = ReceivePort();
 
       final task = N3DataTask(
-        zipPath: '${PathUtil.getOutPath()}/${novel.title}.${N3Data.getExt}',
+        zipPath: '${PathUtil.getOutPath()}/${novel.meta.title}.${N3Data.getExt}',
         novelPath: novel.path,
         sendPort: receivePort.sendPort,
         password: isSetPassword ? getSecretKey() : null,

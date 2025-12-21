@@ -173,7 +173,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final upper = text.toUpperCase();
 
     resultList = getRProvider.list.where((e) {
-      if (e.title.toUpperCase().contains(upper)) {
+      if (e.meta.title.toUpperCase().contains(upper)) {
         return true;
       }
       if (e.meta.mc.toUpperCase().contains(upper)) {
@@ -188,7 +188,7 @@ class _SearchScreenState extends State<SearchScreen> {
       }
       return false;
     }).toList();
-    resultList.sort((a, b) => a.title.compareTo(b.title));
+    resultList.sort((a, b) => a.meta.title.compareTo(b.meta.title));
     setState(() {
       isShowResult = true;
       isSearching = false;

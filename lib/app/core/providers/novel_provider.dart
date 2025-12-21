@@ -16,8 +16,15 @@ class NovelProvider extends ChangeNotifier {
   Novel? currentNovel;
   // search result list
   List<Novel> searchResultList = [];
-  void setSearchResultList(List<Novel> list) {
-    searchResultList = list;
+  void setSearchResultList(List<Novel> result) {
+    searchResultList = result;
+    notifyListeners();
+  }
+
+  // home filter novel
+  List<Novel> filterdNovelList = [];
+  void setFilterdNovelList(List<Novel> result) {
+    filterdNovelList = result;
     notifyListeners();
   }
 
@@ -57,40 +64,36 @@ class NovelProvider extends ChangeNotifier {
   }
 
   Future<void> update(Novel novel) async {
-    String oldPath = novel.path;
-    // check path == title
-    if (novel.title != novel.path.getName()) {
-      // update directory
-      final oldDir = Directory(novel.path);
-      final newDir = Directory('${oldDir.parent.path}/${novel.title}');
-      await PathUtil.renameDir(oldDir: oldDir, newDir: newDir);
-      // update new path
-      novel = novel.copyWith(path: newDir.path);
-    }
     // resave meta
     await novel.meta.save(novel.path);
 
-    final index = list.indexWhere((e) => e.path == oldPath);
+    final index = list.indexWhere((e) => e.id == novel.id);
     if (index != -1) {
       list[index] = novel;
     }
     // set current
     currentNovel = novel;
 
+    sort(currentSortId, sortAsc);
+
     await Future.delayed(Duration.zero);
     notifyListeners();
   }
 
   Future<void> deleteForever(Novel novel) async {
-    final index = list.indexWhere((e) => e.path == novel.path);
+    // main list
+    final index = list.indexWhere((e) => e.id == novel.id);
     if (index == -1) return;
     list.removeAt(index);
     // remove search list
-    final resultIndex = searchResultList.indexWhere(
-      (e) => e.path == novel.path,
-    );
+    final resultIndex = searchResultList.indexWhere((e) => e.id == novel.id);
     if (resultIndex != -1) {
       searchResultList.removeAt(resultIndex);
+    }
+    // remove filter list
+    final filterIndex = filterdNovelList.indexWhere((e) => e.id == novel.id);
+    if (filterIndex != -1) {
+      filterdNovelList.removeAt(filterIndex);
     }
 
     final dir = Directory(novel.path);
@@ -99,6 +102,11 @@ class NovelProvider extends ChangeNotifier {
     }
     await Future.delayed(Duration.zero);
     notifyListeners();
+  }
+
+  bool isNovelExists(String title) {
+    final index = list.indexWhere((e) => e.meta.title == title);
+    return index != -1;
   }
 
   Future<void> calculateSize({
@@ -140,7 +148,7 @@ class NovelProvider extends ChangeNotifier {
         onProgress?.call(
           list.length,
           index,
-          'Calculated Size: \n${novel.title}....',
+          'Calculated Size: \n${novel.meta.title}....',
         );
         novel.size ??= size;
 

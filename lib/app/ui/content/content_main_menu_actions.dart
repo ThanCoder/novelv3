@@ -25,7 +25,7 @@ class _ContentMainMenuActionsState extends State<ContentMainMenuActions> {
     if (novel == null) return;
     showTMenuBottomSheetSingle(
       context,
-      title: Text(novel.title),
+      title: Text(novel.meta.title),
       child: NovelItemMenuActions(novel: novel),
     );
   }

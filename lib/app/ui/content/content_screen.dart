@@ -135,10 +135,10 @@ class _ContentScreenState extends State<ContentScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              ThanPkg.appUtil.copyText(currentNovel!.title);
+              ThanPkg.appUtil.copyText(currentNovel!.meta.title);
             },
             child: Text(
-              currentNovel!.title,
+              currentNovel!.meta.title,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -152,7 +152,7 @@ class _ContentScreenState extends State<ContentScreen> {
             child: Row(
               spacing: 3,
               children: [
-                NovelBookmarkToggleAction(novelTitle: currentNovel!.title),
+                NovelBookmarkToggleAction(novelTitle: currentNovel!.meta.title),
                 !currentNovel!.meta.isAdult
                     ? SizedBox.shrink()
                     : Chip(

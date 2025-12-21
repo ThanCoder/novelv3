@@ -57,7 +57,7 @@ class _NovlDataInstallScreenState extends State<NovlDataInstallScreen> {
   }
 
   String get getInstallNovelPath =>
-      PathUtil.getSourcePath(name: widget.data.novelMeta.title);
+      PathUtil.getSourcePath(name: widget.data.novelMeta.id);
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +194,7 @@ class _NovlDataInstallScreenState extends State<NovlDataInstallScreen> {
       barrierDismissible: false,
       builder: (context) => ProgressDialog(
         progressManager: NovlInstallProgressManager(
+          novl: widget.data,
           installList: installList,
           installNovelPath: getInstallNovelPath,
           onDone: () {

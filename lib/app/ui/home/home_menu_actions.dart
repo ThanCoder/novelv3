@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/models/novel_meta.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/home/create_novel_website_info_result_dialog.dart';
 import 'package:novel_v3/app/ui/home/home_list_style_list_tile.dart';
@@ -91,7 +92,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       submitText: 'New',
       title: Text('New Title'),
       onCheckIsError: (text) {
-        final index = list.indexWhere((e) => e.title == text);
+        final index = list.indexWhere((e) => e.meta.title == text);
         if (index != -1) {
           return 'title ရှိနေပြီးသားဖြစ်နေပါတယ်!...';
         }
@@ -101,15 +102,9 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
 
-        final novel = await NovelServices.createNovelWithTitle(text.trim());
-        if (novel == null) {
-          if (!mounted) return;
-          showTMessageDialogError(
-            context,
-            'Novel: `${text.trim()}` ဖန်တီးလို့ရမပါ',
-          );
-          return;
-        }
+        final novel = await NovelServices.createNovelFolder(
+          meta: NovelMeta.create(title: text.trim()),
+        );
         provider.add(novel);
         if (!mounted) return;
         goRoute(
@@ -151,7 +146,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       title: Text('New Novel'),
       text: pdf.title.getName(withExt: false),
       onCheckIsError: (text) {
-        final index = list.indexWhere((e) => e.title == (text.trim()));
+        final index = list.indexWhere((e) => e.meta.title == (text.trim()));
         if (index != -1) {
           return 'title ရှိနေပြီးသားဖြစ်နေပါတယ်!...';
         }
@@ -160,10 +155,9 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
         try {
-          final novel = await NovelServices.createNovelWithTitle(text.trim());
-          if (novel == null) {
-            throw Exception('Novel `${text.trim()}` Create Failed!');
-          }
+          final novel = await NovelServices.createNovelFolder(
+            meta: NovelMeta.create(title: text.trim()),
+          );
           // copy cover
           final pdfCoverFile = File(pdf.getCoverPath);
           if (pdfCoverFile.existsSync()) {

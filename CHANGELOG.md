@@ -1,5 +1,6 @@
 # 4.0.0
 
+- Changed `Novel Source Folder` ကို ID အဖြစ်ပြောင်းလဲခြင်း
 - Changed `Chapter File` -> `Chapter Database`
 - Changed `New UI`,`Changed Core Code`,`Change Database`
 
