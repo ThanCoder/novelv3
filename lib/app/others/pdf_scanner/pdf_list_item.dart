@@ -107,7 +107,17 @@ class _PdfListItemState extends State<PdfListItem> {
                                   : null,
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: TImage(source: widget.pdf.getCoverPath),
+                            child: TImageFile(
+                              path: widget.pdf.getCoverPath,
+                              errorBuilder: (context, error, stackTrace) {
+                                debugPrint('[PdfListItem:TImageFile]: $error');
+                                final file = File(widget.pdf.getCoverPath);
+                                if (file.existsSync()) {
+                                  file.deleteSync();
+                                }
+                                return TImage(source: '');
+                              },
+                            ),
                           ),
                   ),
                   Expanded(

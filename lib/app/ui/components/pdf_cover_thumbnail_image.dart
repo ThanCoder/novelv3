@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/pdf_file.dart';
 import 'package:t_widgets/widgets/index.dart';
@@ -23,7 +25,17 @@ class PdfCoverThumbnailImage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return TLoader();
         }
-        return TImage(source: savePath);
+        return TImage(
+          source: savePath,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('[PdfListItem:TImageFile]: $error');
+            final file = File(savePath);
+            if (file.existsSync()) {
+              file.deleteSync();
+            }
+            return TImage(source: '');
+          },
+        );
       },
     );
   }

@@ -22,8 +22,8 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
   @override
   void initState() {
     novel = widget.novel.copyWith();
-    super.initState();
     init();
+    super.initState();
   }
 
   @override

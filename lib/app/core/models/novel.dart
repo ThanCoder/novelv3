@@ -28,7 +28,7 @@ class Novel {
     return Novel(
       id: id ?? Uuid().v4(),
       path: path ?? PathUtil.getSourcePath(name: name),
-      meta: NovelMeta.create(),
+      meta: meta ?? NovelMeta.create(),
       date: DateTime.now(),
     );
   }

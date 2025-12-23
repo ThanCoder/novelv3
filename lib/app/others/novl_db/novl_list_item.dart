@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/novl_db/novl_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -22,6 +24,9 @@ class NovlListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final coverPath = PathUtil.getCachePath(name: '${data.title}.png');
+    final isExistsInNovel = context.read<NovelProvider>().isNovelExists(
+      data.novelMeta.title,
+    );
     return GestureDetector(
       onTap: () => onClicked(data),
       onSecondaryTap: () => onRightClicked?.call(data),
@@ -62,6 +67,7 @@ class NovlListItem extends StatelessWidget {
                       data.novelMeta.title,
                       iconData: Icons.title,
                       fontWeight: FontWeight.bold,
+                      fontSize: 11,
                     ),
                     textIconWidget(
                       data.type,
@@ -71,6 +77,12 @@ class NovlListItem extends StatelessWidget {
                       data.size.toFileSizeLabel(),
                       iconData: Icons.sd_card,
                     ),
+                    !isExistsInNovel
+                        ? SizedBox.shrink()
+                        : Text(
+                            'Novel ထဲမှာရှိနေပါတယ်...',
+                            style: TextStyle(color: Colors.red, fontSize: 11),
+                          ),
                     textIconWidget(
                       data.date.toParseTime(),
                       iconData: Icons.date_range,
