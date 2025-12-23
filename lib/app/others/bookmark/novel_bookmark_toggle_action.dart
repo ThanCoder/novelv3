@@ -14,6 +14,7 @@ class NovelBookmarkToggleAction extends StatelessWidget {
       onPressed: () {
         context.read<NovelBookmarkProvider>().toggle(
           NovelBookmark(title: novelTitle),
+          context: context,
         );
       },
       icon: provider.isExists(novelTitle)

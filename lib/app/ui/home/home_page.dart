@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   // filter
 
   Future<void> init({bool isUsedCache = true}) async {
-    context.read<NovelBookmarkProvider>().init();
+    context.read<NovelBookmarkProvider>().init(context);
     if (!mounted) return;
     await getRProvider.init(isUsedCache: isUsedCache);
   }
@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
     final list = context.read<NovelProvider>().list;
     if (tag == 'BookMark') {
       setState(() {});
-      await context.read<NovelBookmarkProvider>().parseNovelList();
+      await context.read<NovelBookmarkProvider>().parseNovelList(context);
     } else {
       final filterdNovelList = list.where((e) {
         if (tag == 'Completed' && e.meta.isCompleted) {

@@ -25,6 +25,7 @@ class NovelBookmarkToggleListTile extends StatelessWidget {
       onTap: () {
         context.read<NovelBookmarkProvider>().toggle(
           NovelBookmark(title: novelTitle),
+          context: context,
         );
         onClosed?.call();
       },
