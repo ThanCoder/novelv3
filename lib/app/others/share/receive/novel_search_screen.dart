@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/others/share/libs/share_grid_item.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-import '../libs/share_novel.dart';
-
 class NovelSearchScreen extends StatefulWidget {
   final String hostUrl;
-  final List<ShareNovel> list;
-  final void Function(ShareNovel novel)? onClicked;
+  final List<Novel> list;
+  final void Function(Novel novel)? onClicked;
   const NovelSearchScreen({
     super.key,
     required this.hostUrl,
@@ -22,7 +21,7 @@ class NovelSearchScreen extends StatefulWidget {
 }
 
 class _NovelSearchScreenState extends State<NovelSearchScreen> {
-  List<ShareNovel> result = [];
+  List<Novel> result = [];
   bool isLoading = false;
   Timer? delayTime;
   int delayMili = 1200;
@@ -106,7 +105,7 @@ class _NovelSearchScreenState extends State<NovelSearchScreen> {
 
   void _onSearch(String text) {
     result = widget.list
-        .where((e) => e.title.toLowerCase().contains(text.toLowerCase()))
+        .where((e) => e.meta.title.toLowerCase().contains(text.toLowerCase()))
         .toList();
     if (!mounted) return;
     setState(() {

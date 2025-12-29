@@ -1,0 +1,46 @@
+# GET http://localhost:4545/api/view/chapters/8ec082a4-73fc-45c8-8771-b917d533fbf7
+
+
+GET http://localhost:4545/api/view/chapter-content/8ec082a4-73fc-45c8-8771-b917d533fbf7/chapter/1
+
+
+
+
+# [
+#   {
+#     "name": "home",
+#     "method": "GET",
+#     "requestUrl": "/",
+#     "returnType": "html doc"
+#   },
+#   {
+#     "name": "api",
+#     "method": "GET",
+#     "requestUrl": "/api",
+#     "returnType": "List<Json>"
+#   },
+#   {
+#     "name": "view novel",
+#     "method": "GET",
+#     "requestUrl": "/api/view/novel/:id",
+#     "returnType": "{'novel': novel,'files': []}"
+#   },
+#   {
+#     "name": "view chapter list",
+#     "method": "GET",
+#     "requestUrl": "/api/view/chapters/:id",
+#     "returnType": "{'chapters': []}"
+#   },
+#   {
+#     "name": "view chapter content",
+#     "method": "GET",
+#     "requestUrl": "/api/view/chapter-content/:id/chapter/:chapterNumber",
+#     "returnType": "{chapter_content': String}"
+#   },
+#   {
+#     "name": "download file",
+#     "method": "GET",
+#     "requestUrl": "/download/id/:id/name/:name",
+#     "returnType": "server send file"
+#   }
+# ]

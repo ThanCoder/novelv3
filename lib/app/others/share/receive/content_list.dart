@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
+import 'package:novel_v3/app/others/share/libs/novel_file.dart';
 import 'package:novel_v3/app/others/share/receive/client_download_manager.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_client/t_client.dart';
@@ -10,8 +10,14 @@ import 'package:than_pkg/than_pkg.dart';
 
 class ContentList extends StatefulWidget {
   final String hostUrl;
-  final List<ShareDirFile> list;
-  const ContentList({super.key, required this.hostUrl, required this.list});
+  final String novelId;
+  final List<NovelFile> list;
+  const ContentList({
+    super.key,
+    required this.hostUrl,
+    required this.novelId,
+    required this.list,
+  });
 
   @override
   State<ContentList> createState() => _ContentListState();
@@ -39,7 +45,7 @@ class _ContentListState extends State<ContentList> {
     );
   }
 
-  Widget _getListItem(ShareDirFile file) {
+  Widget _getListItem(NovelFile file) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(3.0),
@@ -50,7 +56,8 @@ class _ContentListState extends State<ContentList> {
               width: 80,
               height: 80,
               child: TCacheImage(
-                url: '${widget.hostUrl}/cover?path=${file.path}',
+                url:
+                    '${widget.hostUrl}/cover/id/${widget.novelId}?name=${file.name}',
               ),
             ),
             Expanded(
@@ -72,7 +79,12 @@ class _ContentListState extends State<ContentList> {
                       ),
                     ],
                   ),
-                  Row(children: [Icon(Icons.sd_storage), Text(file.size)]),
+                  Row(
+                    children: [
+                      Icon(Icons.sd_storage),
+                      Text(file.size.toFileSizeLabel()),
+                    ],
+                  ),
                   file.mime.isEmpty
                       ? SizedBox()
                       : Row(
@@ -111,7 +123,7 @@ class _ContentListState extends State<ContentList> {
     );
   }
 
-  void _onDowload(ShareDirFile file) {
+  void _onDowload(NovelFile file) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -120,7 +132,9 @@ class _ContentListState extends State<ContentList> {
           token: TClientToken(isCancelFileDelete: false),
           saveDir: Directory(PathUtil.getOutPath()),
         ),
-        urls: ['${widget.hostUrl}/download?path=${file.path}'],
+        urls: [
+          '${widget.hostUrl}/download/id/${widget.novelId}/name/${file.name}',
+        ],
       ),
     );
   }

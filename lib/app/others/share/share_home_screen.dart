@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/libs/share_receive_url_form_dialog.dart';
 import 'package:novel_v3/app/others/share/receive/novel_receive_screen.dart';
 import 'package:novel_v3/app/others/share/send/novel_share_screen.dart';
+import 'package:novel_v3/app/others/share/server_services.dart';
 import 'package:novel_v3/app/routes.dart';
-import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/t_database/index.dart';
 
@@ -21,10 +21,16 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
     init();
   }
 
-  void init() {
+  void init() async {
     try {
-      TServer.instance.startListen(port: 4545);
+      await ServerServices.getInstance.server.stop(force: true);
+      await ServerServices.getInstance.server.start(
+        '0.0.0.0',
+        4545,
+        shared: true,
+      );
     } catch (e) {
+      if (!mounted) return;
       showTMessageDialogError(context, e.toString());
     }
   }

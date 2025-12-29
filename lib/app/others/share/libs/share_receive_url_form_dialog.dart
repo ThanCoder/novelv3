@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/others/share/server_services.dart';
 import 'package:t_client/t_client.dart';
-import 'package:t_server/t_server.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -117,7 +117,8 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
       setState(() {
         isLoading = true;
       });
-      final url = 'http://${urlController.text}:${TServer.instance.getPort}';
+      final url =
+          'http://${urlController.text}:${ServerServices.getInstance.server.port}';
 
       await client.get(url);
 

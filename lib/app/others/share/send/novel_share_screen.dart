@@ -1,16 +1,15 @@
-import 'dart:io';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/extensions/novel_extension.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/share/libs/novel_share_services.dart';
-import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
+import 'package:novel_v3/app/others/share/libs/share_doc.dart';
+import 'package:novel_v3/app/others/share/server_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_server/t_server.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:than_pkg/types/index.dart';
 
 class NovelShareScreen extends StatefulWidget {
   const NovelShareScreen({super.key});
@@ -33,30 +32,186 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
     ThanPkg.platform.toggleKeepScreen(isKeep: true);
 
     _initWifiList();
-    TServer.instance.get('/download', (req) {
-      final path = req.getQueryParameters['path'] ?? '';
-      req.sendFile(path);
-    });
-
-    TServer.instance.get('/dir', (req) {
-      final path = req.getQueryParameters['path'] ?? '';
-      req.sendHtml(NovelShareServices.getDirListHtml(_getAllDirFiles(path)));
-    });
-    TServer.instance.get('/dir/api', (req) {
-      final path = req.getQueryParameters['path'] ?? '';
-      req.sendJson(NovelShareServices.getDirJson(_getAllDirFiles(path)));
-    });
-    TServer.instance.get('/api', (req) {
-      req.sendJson(NovelShareServices.getJson(novelList));
-      // req.sendJson(jsonEncode({'hello': 'than'}));
-    });
-    TServer.instance.get('/cover', (req) async {
-      final filePath = req.getQueryParameters['path'] ?? '';
-      req.sendFile(await _getCoverPath(filePath));
-    });
-    TServer.instance.get('/', (req) {
+    // home
+    ServerServices.getInstance.router.get('/', (req) {
       req.sendHtml(NovelShareServices.getHomeHtml(novelList));
     });
+    ServerServices.getInstance.router.get('/view/novel/:id', (req) {
+      final id = req.getParams.getString(['id']);
+      if (id.isEmpty) {
+        req.sendNotFoundHtml(text: '<h1>not found id: `$id`</h1>');
+        return;
+      }
+      final index = novelList.indexWhere((e) => e.id == id);
+      if (index == -1) {
+        req.sendNotFoundHtml(text: '<h1>not found in novelList id: `$id`</h1>');
+        return;
+      }
+      req.sendHtml(NovelShareServices.viewWebNovel(novelList[index]));
+    });
+
+    // api
+    ServerServices.getInstance.router.get('/api', (req) {
+      req.sendJson(NovelShareServices.getJson(novelList));
+    });
+    // send doc
+    ServerServices.getInstance.router.get('/doc', (req) {
+      List<ShareDoc> list = [
+        ShareDoc.create(returnType: 'html doc'),
+        ShareDoc.create(
+          name: 'get cover',
+          requestUrl: '/cover/id/:id?name=[name|{default=cover.png}]',
+          returnType: 'cover file',
+        ),
+        ShareDoc.create(
+          name: 'api',
+          requestUrl: '/api',
+          returnType: 'List<Json>',
+        ),
+        ShareDoc.create(
+          name: 'view novel',
+          requestUrl: '/api/view/novel/:id',
+          returnType: "{'novel': novel,'files': []}",
+        ),
+        ShareDoc.create(
+          name: 'view chapter list',
+          requestUrl: '/api/view/chapters/:id',
+          returnType: "{'chapters': []}",
+        ),
+        ShareDoc.create(
+          name: 'view chapter content',
+          requestUrl: '/api/view/chapter-content/:id/chapter/:chapterNumber',
+          returnType: "{chapter_content': String}",
+        ),
+        ShareDoc.create(
+          name: 'download file',
+          requestUrl: '/download/id/:id/name/:name',
+          returnType: 'server send file',
+        ),
+      ];
+      final json = list.map((e) => e.toMap()).toList();
+      req.sendJson(JsonEncoder.withIndent(' ').convert(json));
+    });
+    // download
+    ServerServices.getInstance.router.get('/download/id/:id/name/:name', (req) {
+      final id = req.getParams.getString(['id']);
+      final name = req.getParams.getString(['name']);
+      if (id.isEmpty) {
+        req.sendJson(
+          jsonEncode({
+            'status': 'not found id: `$id`',
+            'uri': '/download/id/:id/name/:name',
+          }),
+        );
+        return;
+      }
+      if (name.isEmpty) {
+        req.sendJson(
+          jsonEncode({
+            'status': 'not found name: `$name`',
+            'uri': '/download/id/:id/name/:name',
+          }),
+        );
+        return;
+      }
+      final index = novelList.indexWhere((e) => e.id == id);
+      if (index == -1) {
+        req.sendJson(
+          jsonEncode({'status': 'not found in novelList id: `$id`'}),
+        );
+        return;
+      }
+
+      req.sendFile(pathJoin(PathUtil.getSourcePath(), pathJoin(id, name)));
+    });
+    // cover
+    ServerServices.getInstance.router.get('/cover/id/:id', (req) {
+      final id = req.getParams.getString(['id']);
+      final name = req.getQueryParameters.getString(['name'], def: 'cover.png');
+      if (id.isEmpty) {
+        req.sendJson(jsonEncode({'status': 'not found id: `$id`'}));
+        return;
+      }
+      final index = novelList.indexWhere((e) => e.id == id);
+      if (index == -1) {
+        req.sendJson(
+          jsonEncode({'status': 'not found in novelList id: `$id`'}),
+        );
+        return;
+      }
+      String sendPath = PathUtil.getSourcePath(name: pathJoin(id, name));
+
+      if (name.endsWith('.pdf')) {
+        sendPath = PathUtil.getCachePath(name: '$name.png');
+      }
+
+      req.sendFile(sendPath);
+    });
+    // view novel
+    ServerServices.getInstance.router.get('/api/view/novel/:id', (req) {
+      final id = req.getParams.getString(['id']);
+      if (id.isEmpty) {
+        req.sendJson(jsonEncode({'status': 'not found id: `$id`'}));
+        return;
+      }
+      final index = novelList.indexWhere((e) => e.id == id);
+      if (index == -1) {
+        req.sendJson(
+          jsonEncode({'status': 'not found in novelList id: `$id`'}),
+        );
+        return;
+      }
+      req.sendJson(NovelShareServices.viewNovel(novelList[index]));
+    });
+    // view chapters
+    ServerServices.getInstance.router.get('/api/view/chapters/:id', (
+      req,
+    ) async {
+      final id = req.getParams.getString(['id']);
+      if (id.isEmpty) {
+        req.sendJson(jsonEncode({'status': 'not found id: `$id`'}));
+        return;
+      }
+      final index = novelList.indexWhere((e) => e.id == id);
+      if (index == -1) {
+        req.sendJson(
+          jsonEncode({'status': 'not found in novelList id: `$id`'}),
+        );
+        return;
+      }
+      req.sendJson(await NovelShareServices.viewChapters(novelList[index]));
+    });
+    // view chapter content
+    ServerServices.getInstance.router.get(
+      '/api/view/chapter-content/:id/chapter/:chapterNumber',
+      (req) async {
+        final id = req.getParams.getString(['id']);
+        final chapterNumber = req.getParams.getInt(['chapterNumber'], def: -1);
+        if (id.isEmpty) {
+          req.sendJson(jsonEncode({'status': 'not found id: `$id`'}));
+          return;
+        }
+        if (id.isEmpty) {
+          req.sendJson(
+            jsonEncode({'status': 'not found chapterNumber: `$chapterNumber`'}),
+          );
+          return;
+        }
+
+        final index = novelList.indexWhere((e) => e.id == id);
+        if (index == -1) {
+          req.sendJson(
+            jsonEncode({'status': 'not found in novelList id: `$id`'}),
+          );
+          return;
+        }
+        final content = await NovelShareServices.viewChapterContent(
+          novelList[index],
+          chapterNumber,
+        );
+        req.sendJson(content);
+      },
+    );
 
     // get novel
     novelList = await NovelServices.getAll();
@@ -103,7 +258,7 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
 
   Widget _getStatus() {
     final hostUrl =
-        'http://${wifiList.isEmpty ? 'localhost' : wifiList.first}:${TServer.instance.getPort}';
+        'http://${wifiList.isEmpty ? 'localhost' : wifiList.first}:${ServerServices.getInstance.server.port}';
 
     return SliverToBoxAdapter(
       child: Column(
@@ -136,42 +291,6 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
       },
       separatorBuilder: (context, index) => Divider(),
     );
-  }
-
-  List<ShareDirFile> _getAllDirFiles(String path) {
-    final dir = Directory(path);
-    if (!dir.existsSync()) return [];
-    final files = dir.listSync();
-    files.sort((a, b) {
-      if (a.getDate.millisecondsSinceEpoch > b.getDate.millisecondsSinceEpoch) {
-        return -1;
-      }
-      if (a.getDate.millisecondsSinceEpoch < b.getDate.millisecondsSinceEpoch) {
-        return 1;
-      }
-      return 0;
-    });
-    return files.map((e) => ShareDirFile.fromFile(e)).toList();
-  }
-
-  Future<String> _getCoverPath(String path) async {
-    final mime = lookupMimeType(path) ?? '';
-    if (mime.startsWith('image')) {
-      return path;
-    }
-    if (mime.endsWith('/pdf')) {
-      final dest = PathUtil.getCachePath(
-        name: '${path.getName(withExt: false)}.png',
-      );
-      await ThanPkg.platform.genPdfThumbnail(
-        pathList: [SrcDestType(src: path, dest: dest)],
-      );
-      return dest;
-    }
-    if (path.endsWith('.json')) {
-      return await PathUtil.getAssetRealPathPath('config.png');
-    }
-    return await PathUtil.getAssetRealPathPath('file.png');
   }
 
   void _initWifiList() async {

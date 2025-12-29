@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/app/others/share/libs/novel_file.dart';
 import 'package:novel_v3/app/others/share/receive/client_download_manager.dart';
-import 'package:novel_v3/app/others/share/libs/share_dir_file.dart';
-import 'package:novel_v3/app/others/share/libs/share_dir_file_extension.dart';
-import 'package:novel_v3/app/others/share/libs/share_novel.dart';
 import 'package:novel_v3/app/others/share/receive/content_list.dart';
-import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_client/t_client.dart';
@@ -17,7 +16,7 @@ import 'package:than_pkg/than_pkg.dart';
 
 class NovelContentScreen extends StatefulWidget {
   final String hostUrl;
-  final ShareNovel novel;
+  final Novel novel;
   const NovelContentScreen({
     super.key,
     required this.hostUrl,
@@ -36,7 +35,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   }
 
   bool isLoading = false;
-  List<ShareDirFile> list = [];
+  List<NovelFile> list = [];
   final client = TClient();
   int sortId = 0;
   bool sortIsAsc = true;
@@ -47,10 +46,11 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         isLoading = true;
       });
       final res = await client.get(
-        '${widget.hostUrl}/dir/api?path=${widget.novel.path}',
+        '${widget.hostUrl}/api/view/novel/${widget.novel.id}',
       );
-      List<dynamic> jsonList = jsonDecode(res.data.toString());
-      list = jsonList.map((e) => ShareDirFile.fromMap(e)).toList();
+      final map = jsonDecode(res.data.toString());
+      List<dynamic> files = map['files'] ?? [];
+      list = files.map((e) => NovelFile.fromMap(e)).toList();
       if (!mounted) return;
       setState(() {
         isLoading = false;
@@ -69,7 +69,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 2,
       child: TScaffold(
         body: isLoading
             ? Center(child: TLoader.random())
@@ -101,14 +101,14 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   Widget _getAppBar() {
     final size = MediaQuery.of(context).size;
     return SliverAppBar(
-      title: Text('Content: ${widget.novel.title}'),
+      title: Text('Content: ${widget.novel.meta.title}'),
       // snap: true,
       // floating: true,
       expandedHeight: size.height * .5,
       flexibleSpace: Stack(
         fit: StackFit.expand,
         children: [
-          TImageUrl(url: widget.novel.getCoverPath(widget.hostUrl)),
+          TImageUrl(url: '${widget.hostUrl}/cover/id/${widget.novel.id}'),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -153,54 +153,34 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         tabs: [
           Tab(text: 'Description'),
           Tab(text: 'အားလုံး'),
-          Tab(text: 'PDF'),
-          Tab(text: 'Chapter'),
-          Tab(text: 'Config'),
         ],
       ),
     );
   }
 
   Widget _getTabView() {
-    final pdfList = list.where((e) => e.mime.endsWith('pdf')).toList();
-    final chapterList = list.where((e) => e.isChapterFile).toList();
-    final configList = list.where((e) => e.isConfigFile).toList();
     return TabBarView(
       children: [
         Padding(padding: const EdgeInsets.all(8.0), child: _getDesc()),
-        ContentList(hostUrl: widget.hostUrl, list: list),
-        ContentList(hostUrl: widget.hostUrl, list: pdfList),
-        ContentList(hostUrl: widget.hostUrl, list: chapterList),
-        ContentList(hostUrl: widget.hostUrl, list: configList),
+        ContentList(
+          hostUrl: widget.hostUrl,
+          novelId: widget.novel.id,
+          list: list,
+        ),
       ],
     );
   }
 
   Widget _getDesc() {
-    final descIndex = list.indexWhere((e) => e.name == 'content');
-    if (descIndex == -1) return Center(child: Text('Description မရှိပါ!...'));
-    final desc = list[descIndex];
-    return FutureBuilder(
-      future: client.get(desc.getDownloadLink(widget.hostUrl)),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return TLoader.random();
-        }
-        if (snapshot.hasData) {
-          final data = snapshot.data!;
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Text(
-                  data.data.toString(),
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          );
-        }
-        return Center(child: Text('Description မရှိပါ!...'));
-      },
+    if (widget.novel.meta.desc.isEmpty) {
+      return Center(child: Text('Description မရှိပါ!...'));
+    }
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Text(widget.novel.meta.desc, style: TextStyle(fontSize: 16)),
+        ),
+      ],
     );
   }
 
@@ -226,26 +206,26 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   }
 
   void _onSort() {
-    if (sortId == 0) {
-      list.sortDate(isNewest: sortIsAsc);
-    }
-    if (sortId == 1) {
-      list.sortAZ(isAToZ: sortIsAsc);
-    }
-    if (sortId == 2) {
-      //pdf
-      list.sortPdf(isPDF: sortIsAsc);
-    }
-    if (sortId == 3) {
-      // chapter
-      list.sortChapter(isChapter: sortIsAsc);
-    }
-    if (sortId == 4) {
-      // config
-      list.sortConfigFile(isConfigFile: sortIsAsc);
-    }
+    // if (sortId == 0) {
+    //   list.sortDate(isNewest: sortIsAsc);
+    // }
+    // if (sortId == 1) {
+    //   list.sortAZ(isAToZ: sortIsAsc);
+    // }
+    // if (sortId == 2) {
+    //   //pdf
+    //   list.sortPdf(isPDF: sortIsAsc);
+    // }
+    // if (sortId == 3) {
+    //   // chapter
+    //   list.sortChapter(isChapter: sortIsAsc);
+    // }
+    // if (sortId == 4) {
+    //   // config
+    //   list.sortConfigFile(isConfigFile: sortIsAsc);
+    // }
 
-    setState(() {});
+    // setState(() {});
   }
 
   void _showSortDialog() {
@@ -273,20 +253,25 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     );
   }
 
-  void _allDownload() {
-    final novelPath = PathUtil.createDir(
-      '${PathUtil.getSourcePath()}/${widget.novel.title}',
+  void _allDownload() async {
+    final novel = await NovelServices.createNovelFolder(
+      meta: widget.novel.meta,
     );
+    if (!mounted) return;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => TMultiDownloaderDialog(
         manager: ClientDownloadManager(
           token: TClientToken(isCancelFileDelete: false),
-          saveDir: Directory(novelPath),
+          saveDir: Directory(novel.path),
         ),
         urls: list
-            .map((e) => '${widget.hostUrl}/download?path=${e.path}')
+            .map(
+              (e) =>
+                  '${widget.hostUrl}/download/id/${widget.novel.id}/name/${e.name}',
+            )
             .toList(),
         onSuccess: () {
           if (!mounted) return;

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/core/extensions/novel_extension.dart';
+import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/others/share/libs/share_grid_item.dart';
-import 'package:novel_v3/app/others/share/libs/share_novel.dart';
-import 'package:novel_v3/app/others/share/libs/share_novel_extension.dart';
 import 'package:novel_v3/app/others/share/receive/novel_content_screen.dart';
 import 'package:novel_v3/app/others/share/receive/novel_search_screen.dart';
 import 'package:novel_v3/app/routes.dart';
@@ -26,7 +26,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
-  List<ShareNovel> list = [];
+  List<Novel> list = [];
   bool isLoading = false;
   int sortId = 0;
   bool sortIsAsc = true;
@@ -41,7 +41,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
       });
       final res = await client.get('${widget.hostUrl}/api');
       List<dynamic> jsonList = jsonDecode(res.data.toString());
-      list = jsonList.map((e) => ShareNovel.fromMap(e)).toList();
+      list = jsonList.map((e) => Novel.fromMap(e)).toList();
 
       if (!mounted) return;
       setState(() {
@@ -137,17 +137,18 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     }
     // tags
     final result = list.where((e) {
-      if (currentTag == 'OnGoing' && !e.isCompleted) {
+      
+      if (currentTag == 'OnGoing' && !e.meta.isCompleted) {
         return true;
       }
-      if (currentTag == 'Completed' && e.isCompleted) {
+      if (currentTag == 'Completed' && e.meta.isCompleted) {
         return true;
       }
-      if (currentTag == 'Adult' && e.isAdult) {
+      if (currentTag == 'Adult' && e.meta.isAdult) {
         return true;
       }
 
-      if (currentTag == 'Not Adult' && !e.isAdult) {
+      if (currentTag == 'Not Adult' && !e.meta.isAdult) {
         return true;
       }
       if (currentTag == 'Latest') {
@@ -197,7 +198,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
       list.sortAdult(isAdult: sortIsAsc);
     }
     if (sortId == 3) {
-      list.sortAZ(isAToZ: sortIsAsc);
+      list.sortTitle(aToZ: sortIsAsc);
     }
     setState(() {});
   }
@@ -228,7 +229,7 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     );
   }
 
-  void _goContentPage(ShareNovel novel) {
+  void _goContentPage(Novel novel) {
     goRoute(
       context,
       builder: (context) =>
