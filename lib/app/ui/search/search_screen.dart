@@ -176,6 +176,12 @@ class _SearchScreenState extends State<SearchScreen> {
       if (e.meta.title.toUpperCase().contains(upper)) {
         return true;
       }
+      if (e.meta.englishTitle.toUpperCase().contains(upper)) {
+        return true;
+      }
+      if (e.meta.originalTitle.toUpperCase().contains(upper)) {
+        return true;
+      }
       if (e.meta.mc.toUpperCase().contains(upper)) {
         return true;
       }
@@ -188,7 +194,17 @@ class _SearchScreenState extends State<SearchScreen> {
       }
       return false;
     }).toList();
-    resultList.sort((a, b) => a.meta.title.compareTo(b.meta.title));
+    resultList.sort((a, b) {
+      if (a.meta.title.toUpperCase().indexOf(upper) >
+          b.meta.title.toUpperCase().indexOf(upper)) {
+        return 1;
+      }
+      if (a.meta.title.toUpperCase().indexOf(upper) <
+          b.meta.title.toUpperCase().indexOf(upper)) {
+        return -1;
+      }
+      return 0;
+    });
     setState(() {
       isShowResult = true;
       isSearching = false;
