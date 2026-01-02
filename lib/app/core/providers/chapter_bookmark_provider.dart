@@ -13,9 +13,13 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    list = await ChapterBookmarkServices.getAll(novelPath);
-    // sort 1 -> 9
-    sortNumber();
+    try {
+      list = await ChapterBookmarkServices.getAll(novelPath);
+      // sort 1 -> 9
+      sortNumber();
+    } catch (e) {
+      debugPrint('[ChapterBookmarkProvider:e]: ${e.toString()}');
+    }
 
     isLoading = false;
     notifyListeners();

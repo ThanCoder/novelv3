@@ -1,3 +1,5 @@
+import 'package:than_pkg/than_pkg.dart';
+
 class ChapterBookmark {
   final String title;
   final int chapter;
@@ -16,8 +18,8 @@ class ChapterBookmark {
 
   factory ChapterBookmark.fromMap(Map<String, dynamic> map) {
     return ChapterBookmark(
-      title: map['title'] as String,
-      chapter: map['chapter'] as int,
+      title: map.getString(['title']),
+      chapter: map.getInt(['chapter']),
     );
   }
 }
