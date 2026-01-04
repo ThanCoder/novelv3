@@ -262,28 +262,31 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   }
 
   Widget _getPasteWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Text('Pre Append'),
-        IconButton(
-          onPressed: () => _paste(pasteType: _PasteType.preAppend),
-          icon: const Icon(Icons.paste_rounded, color: Colors.blue),
-        ),
-        SizedBox(width: 20),
-        Text('Append'),
-        IconButton(
-          onPressed: () => _paste(pasteType: _PasteType.append),
-          icon: const Icon(Icons.paste_rounded, color: Colors.blue),
-        ),
-        SizedBox(width: 50),
-        Text('SetAll'),
-        IconButton(
-          onPressed: _paste,
-          icon: const Icon(Icons.paste_rounded, color: Colors.blue),
-        ),
-        SizedBox(width: 20),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text('Pre Append'),
+          IconButton(
+            onPressed: () => _paste(pasteType: _PasteType.preAppend),
+            icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+          ),
+          SizedBox(width: 20),
+          Text('Append'),
+          IconButton(
+            onPressed: () => _paste(pasteType: _PasteType.append),
+            icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+          ),
+          SizedBox(width: 50),
+          Text('SetAll'),
+          IconButton(
+            onPressed: _paste,
+            icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+          ),
+          SizedBox(width: 20),
+        ],
+      ),
     );
   }
 
@@ -307,7 +310,6 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
     switch (pasteType) {
       case _PasteType.add:
         buff.write(res.trim());
-        _setTitleFromContent();
         break;
       case _PasteType.append:
         buff.writeln(contentController.text);
@@ -320,10 +322,14 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
         break;
     }
     contentController.text = buff.toString().trim();
+    _setTitleFromContent();
     _unFocusAll();
+    if (!mounted) return;
+
     setState(() {
       isChanged = true;
     });
+    showTSnackBar(context, pasteType.name);
   }
 
   void _incre({bool isShowSubmit = true}) async {
