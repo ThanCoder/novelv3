@@ -242,16 +242,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   Widget _getContentWidet() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-              onPressed: _paste,
-              icon: const Icon(Icons.paste_rounded, color: Colors.blue),
-            ),
-            SizedBox(width: 20),
-          ],
-        ),
+        _getPasteWidget(),
         TTextField(
           label: const Text('Content'),
           controller: contentController,
@@ -265,6 +256,33 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
             }
           },
         ),
+        SizedBox(height: 60),
+      ],
+    );
+  }
+
+  Widget _getPasteWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text('Pre Append'),
+        IconButton(
+          onPressed: () => _paste(pasteType: _PasteType.preAppend),
+          icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+        ),
+        SizedBox(width: 20),
+        Text('Append'),
+        IconButton(
+          onPressed: () => _paste(pasteType: _PasteType.append),
+          icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+        ),
+        SizedBox(width: 50),
+        Text('SetAll'),
+        IconButton(
+          onPressed: _paste,
+          icon: const Icon(Icons.paste_rounded, color: Colors.blue),
+        ),
+        SizedBox(width: 20),
       ],
     );
   }
@@ -281,11 +299,27 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
         '';
   }
 
-  void _paste() async {
+  void _paste({_PasteType pasteType = _PasteType.add}) async {
     final res = await ThanPkg.appUtil.pasteText();
     if (res.isEmpty) return;
-    contentController.text = res.trim();
-    _setTitleFromContent();
+    final buff = StringBuffer();
+
+    switch (pasteType) {
+      case _PasteType.add:
+        buff.write(res.trim());
+        _setTitleFromContent();
+        break;
+      case _PasteType.append:
+        buff.writeln(contentController.text);
+        buff.writeln(res);
+
+        break;
+      case _PasteType.preAppend:
+        buff.write(res);
+        buff.writeln(contentController.text);
+        break;
+    }
+    contentController.text = buff.toString().trim();
     _unFocusAll();
     setState(() {
       isChanged = true;
@@ -384,3 +418,5 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
     widget.onClosed?.call();
   }
 }
+
+enum _PasteType { add, append, preAppend }
