@@ -156,10 +156,10 @@ packages:
   dart_html_dsl:
     dependency: "direct main"
     description:
-      path: "/home/than/projects/plugins/dart_html_dsl"
+      path: "/home/thancoder/projects/plugins/dart_html_dsl"
       relative: false
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   dart_pubspec_licenses:
     dependency: transitive
     description:

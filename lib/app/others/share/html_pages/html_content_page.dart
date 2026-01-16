@@ -3,6 +3,7 @@ import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/others/share/libs/novel_file.dart';
 import 'package:than_pkg/than_pkg.dart';
 
+
 class HtmlContentPage extends Html5Page {
   final Novel novel;
   final List<NovelFile> files;
@@ -10,17 +11,17 @@ class HtmlContentPage extends Html5Page {
     : super(
         pageProps: PageProps(
           title: novel.meta.title,
-          cssStyles: [CssStyleSource(_styleSource)],
+          cssStyles: [CssStyle.fromSource(_styleSource)],
         ),
       );
 
   @override
   HtmlWidget build() {
-    return HtmlList(
+    return ColumnWidget(
       children: [
         Text(novel.meta.desc.replaceAll('\n', '<br/>')),
-        HtmlSizedBox(height: 20.px),
-        HtmlList(
+        // HtmlSizedBox(height: 20.px),
+        ColumnWidget(
           className: 'file-list',
           children: List.generate(
             files.length,
@@ -32,7 +33,7 @@ class HtmlContentPage extends Html5Page {
   }
 
   HtmlWidget _getItem(NovelFile file) {
-    return HtmlColumn(
+    return ColumnWidget(
       className: 'file',
       children: [
         Div(className: 'title', child: Text(file.name)),
@@ -42,15 +43,15 @@ class HtmlContentPage extends Html5Page {
         ),
         file.mime.isNotEmpty
             ? Div(className: 'type', child: Text(file.mime))
-            : EmptyElement(),
+            : EmptyWidget(),
         Div(className: 'date', child: Text('Date: ${file.date.toParseTime()}')),
 
-        HtmlColumn(
+        ColumnWidget(
           className: 'download',
           children: [
             Link(
               href: "/download/id/${novel.id}/name/${file.name}",
-              child: Text('Download'),
+              child: Text('Download')
             ),
           ],
         ),

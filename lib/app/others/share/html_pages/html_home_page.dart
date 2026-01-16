@@ -7,12 +7,12 @@ class HtmlHomePage extends Html5Page {
     : super(
         pageProps: PageProps(
           title: 'Novel Share',
-          cssStyles: [CssStyleSource(cssStyleSource)],
+          cssStyles: [CssStyle.fromSource(cssStyleSource)],
         ),
       );
   @override
   HtmlWidget build() {
-    return HtmlList(
+    return ColumnWidget(
       className: 'novel-list',
       children: List.generate(
         list.length,
@@ -26,17 +26,17 @@ class HtmlHomePage extends Html5Page {
       className: 'novel',
       child: Link(
         href: "/view/novel/${novel.id}",
-        child: HtmlColumn(
+        child: ColumnWidget(
           children: [
-            HtmlImg(src: "/cover/id/${novel.id}"),
+            Img(src: "/cover/id/${novel.id}"),
             Text(novel.meta.title),
-            HtmlColumn(
+            ColumnWidget(
               className: 'top',
               children: [
                 if (novel.meta.isAdult)
                   Div(className: 'top-left', child: Text('IsAdult'))
                 else
-                  EmptyElement(),
+                  EmptyWidget(),
                 Div(
                   className: 'top-right',
                   child: Text(novel.meta.isCompleted ? 'OnGoing' : 'Completed'),
