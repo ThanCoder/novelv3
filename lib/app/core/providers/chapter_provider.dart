@@ -7,7 +7,7 @@ import 'package:t_widgets/t_widgets.dart';
 class ChapterProvider extends ChangeNotifier {
   List<Chapter> list = [];
   bool isLoading = false;
-  String? currentNovelPath;
+  static String? currentNovelPath;
 
   Future<void> init(String novelPath, {bool isUsedCache = true}) async {
     if (isUsedCache && list.isNotEmpty && novelPath == currentNovelPath) return;
@@ -95,7 +95,9 @@ class ChapterProvider extends ChangeNotifier {
         chapterNumber,
         novelPath ?? currentNovelPath!,
       );
-      currentNovelPath = novelPath;
+      if (novelPath != null) {
+        currentNovelPath = novelPath;
+      }
       return content;
     } catch (e) {
       debugPrint('[ChapterProvider:getContent]: ${e.toString()}');

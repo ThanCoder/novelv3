@@ -91,12 +91,16 @@ class _ChapterListItemState extends State<ChapterListItem> {
                 leading: Icon(Icons.copy_all),
                 title: Text('Copy Content Text'),
                 onTap: () async {
-                  closeContext(context);
                   final content = await context
                       .read<ChapterProvider>()
                       .getContent(chapter.number);
+
+                  if (!mounted) return;
+
+                  closeContext(context);
                   if (content == null || content.isEmpty) return;
                   ThanPkg.appUtil.copyText(content);
+                  showTSnackBar(context, 'Copied');
                 },
               ),
         ListTile(
