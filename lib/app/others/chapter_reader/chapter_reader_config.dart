@@ -9,19 +9,21 @@ import 'package:than_pkg/services/t_map.dart';
 import 'package:novel_v3/app/others/chapter_reader/reader_theme.dart';
 
 class ChapterReaderConfig {
-  final double fontSize;
-  final double paddingX;
-  final double paddingY;
-  final bool isKeepScreening;
-  final ReaderTheme theme;
-  final bool isBackpressConfirm;
-  const ChapterReaderConfig({
+  double fontSize;
+  double paddingX;
+  double paddingY;
+  bool isKeepScreening;
+  ReaderTheme theme;
+  bool isBackpressConfirm;
+  double desktopArrowKeyScrollJumpToOffset;
+  ChapterReaderConfig({
     required this.fontSize,
     required this.paddingX,
     required this.paddingY,
     required this.isKeepScreening,
     required this.theme,
     required this.isBackpressConfirm,
+    required this.desktopArrowKeyScrollJumpToOffset,
   });
 
   factory ChapterReaderConfig.create({
@@ -31,6 +33,7 @@ class ChapterReaderConfig {
     bool isKeepScreening = false,
     bool isBackpressConfirm = false,
     ReaderTheme? theme,
+    double? desktopArrowKeyScrollJumpToOffset,
   }) {
     return ChapterReaderConfig(
       fontSize: fontSize,
@@ -41,23 +44,8 @@ class ChapterReaderConfig {
           ? ReaderTheme.defaultDarkTheme
           : ReaderTheme.defaultLightTheme,
       isBackpressConfirm: isBackpressConfirm,
-    );
-  }
-  ChapterReaderConfig copyWith({
-    double? fontSize,
-    double? paddingX,
-    double? paddingY,
-    bool? isKeepScreening,
-    ReaderTheme? theme,
-    bool? isBackpressConfirm,
-  }) {
-    return ChapterReaderConfig(
-      fontSize: fontSize ?? this.fontSize,
-      paddingX: paddingX ?? this.paddingX,
-      paddingY: paddingY ?? this.paddingY,
-      isKeepScreening: isKeepScreening ?? this.isKeepScreening,
-      theme: theme ?? this.theme,
-      isBackpressConfirm: isBackpressConfirm ?? this.isBackpressConfirm,
+      desktopArrowKeyScrollJumpToOffset:
+          desktopArrowKeyScrollJumpToOffset ?? 50,
     );
   }
 
@@ -92,6 +80,7 @@ class ChapterReaderConfig {
       'isKeepScreening': isKeepScreening,
       'themeId': theme.id,
       'isBackpressConfirm': isBackpressConfirm,
+      'desktopArrowKeyScrollJumpToOffset': desktopArrowKeyScrollJumpToOffset,
     };
   }
 
@@ -104,6 +93,9 @@ class ChapterReaderConfig {
       isKeepScreening: map.getBool(['isKeepScreening'], def: false),
       isBackpressConfirm: map.getBool(['isBackpressConfirm'], def: false),
       theme: ReaderTheme.getId(themId),
+      desktopArrowKeyScrollJumpToOffset: map.getDouble([
+        'desktopArrowKeyScrollJumpToOffset',
+      ], def: 50),
     );
   }
 }

@@ -21,6 +21,7 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
   final paddingXController = TextEditingController();
   final paddingYController = TextEditingController();
   final fontSizeController = TextEditingController();
+  final desktopArrowKeyScrollJumpToOffsetController = TextEditingController();
   bool isKeepScreening = false;
   bool isBackpressConfirm = false;
   late ReaderTheme theme;
@@ -33,6 +34,11 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
     paddingXController.text = widget.config.paddingX.toInt().toString();
     paddingYController.text = widget.config.paddingY.toInt().toString();
     fontSizeController.text = widget.config.fontSize.toInt().toString();
+    desktopArrowKeyScrollJumpToOffsetController.text = widget
+        .config
+        .desktopArrowKeyScrollJumpToOffset
+        .toInt()
+        .toString();
     super.initState();
   }
 
@@ -101,6 +107,17 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
               child: _getPadding(),
             ),
           ),
+          // destkop
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TNumberField(
+                label: Text('Arrow Key Scroll Jump To Offset'),
+                maxLines: 1,
+                controller: desktopArrowKeyScrollJumpToOffsetController,
+              ),
+            ),
+          ),
         ],
       ),
       actions: _getActions(),
@@ -128,19 +145,11 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
           label: Text('Left-Right'),
           maxLines: 1,
           controller: paddingXController,
-          // onChanged: (text) {
-          //   if (double.tryParse(text) == null) return;
-          //   config.paddingX = double.parse(text);
-          // },
         ),
         TNumberField(
           label: Text('Top-Bottom'),
           maxLines: 1,
           controller: paddingYController,
-          // onChanged: (text) {
-          //   if (double.tryParse(text) == null) return;
-          //   config.paddingY = double.parse(text);
-          // },
         ),
       ],
     );
@@ -161,15 +170,17 @@ class _ReaderConfigDialogState extends State<ReaderConfigDialog> {
   void _onSave() {
     try {
       Navigator.pop(context);
-      final config = widget.config.copyWith(
-        fontSize: double.tryParse(fontSizeController.text),
-        isBackpressConfirm: isBackpressConfirm,
-        isKeepScreening: isKeepScreening,
-        paddingX: double.tryParse(paddingXController.text),
-        paddingY: double.tryParse(paddingYController.text),
-        theme: theme,
+
+      widget.config.fontSize = double.parse(fontSizeController.text);
+      widget.config.isBackpressConfirm = isBackpressConfirm;
+      widget.config.isKeepScreening = isKeepScreening;
+      widget.config.paddingX = double.parse(paddingXController.text);
+      widget.config.paddingY = double.parse(paddingYController.text);
+      widget.config.desktopArrowKeyScrollJumpToOffset = double.parse(
+        desktopArrowKeyScrollJumpToOffsetController.text,
       );
-      widget.onUpdated?.call(config);
+      widget.config.theme = theme;
+      widget.onUpdated?.call(widget.config);
     } catch (e) {
       showTMessageDialogError(context, e.toString());
     }

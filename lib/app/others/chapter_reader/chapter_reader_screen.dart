@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
@@ -71,6 +72,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   }
 
   void init() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
     try {
       setState(() {
         isInitLoading = true;
@@ -122,17 +124,42 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   }
 
   Widget _getView() {
-    return CustomScrollView(
-      controller: controller,
-      slivers: [
-        _getAppbar(),
-        // top
-        _getPrevChapterWidget(),
-        // list
-        _getListWidget(),
+    return Focus(
+      autofocus: true,
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.arrowDown) {
+          // 50 pixels စီ အောက်ကို ဆင်းခိုင်းခြင်း
+          controller.animateTo(
+            controller.offset + config.desktopArrowKeyScrollJumpToOffset,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
+          return KeyEventResult.handled; // ဒါမှ အောက်ဆုံးကို တန်းမခုန်တော့မှာပါ
+        }
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          controller.animateTo(
+            controller.offset - config.desktopArrowKeyScrollJumpToOffset,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: CustomScrollView(
+        controller: controller,
+        slivers: [
+          _getAppbar(),
+          // top
+          _getPrevChapterWidget(),
+          // list
+          _getListWidget(),
 
-        _getNextChapterWidget(),
-      ],
+          _getNextChapterWidget(),
+        ],
+      ),
     );
   }
 
