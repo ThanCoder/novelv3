@@ -46,6 +46,18 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteAllById(List<int> ids) async {
+    await ChapterServices.deleteAllById(List<int>.from(ids));
+
+    for (var id in ids) {
+      final index = list.indexWhere((e) => e.autoId == id);
+      if (index == -1) return;
+      list.removeAt(index);
+    }
+
+    notifyListeners();
+  }
+
   Future<void> deleteAll() async {
     isLoading = true;
     notifyListeners();

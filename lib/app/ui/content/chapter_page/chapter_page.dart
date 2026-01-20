@@ -4,8 +4,8 @@ import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
-import 'package:novel_v3/app/ui/content/chapter_list_item.dart';
-import 'package:novel_v3/app/ui/content/chapter_menu_actions.dart';
+import 'package:novel_v3/app/ui/content/chapter_page/chapter_list_item.dart';
+import 'package:novel_v3/app/ui/content/chapter_page/chapter_menu_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -33,6 +33,9 @@ class _ChapterPageState extends State<ChapterPage> {
   }
 
   String? novelPath;
+  bool isShowMultiChapter = false;
+  List<int> selectedChapterId = [];
+
   Future<void> init({bool isUsedCache = true}) async {
     novelPath = context.read<NovelProvider>().currentNovel!.path;
     await context.read<ChapterProvider>().init(
@@ -113,10 +116,47 @@ class _ChapterPageState extends State<ChapterPage> {
     }
     return SliverList.builder(
       itemCount: getWProvider.list.length,
-      itemBuilder: (context, index) => ChapterListItem(
-        chapter: (getWProvider.list[index]),
-        onClicked: _goReaderPage,
-      ),
+      itemBuilder: (context, index) {
+        final chapter = getWProvider.list[index];
+        return ChapterListItem(
+          chapter: chapter,
+          isChecked: isShowMultiChapter
+              ? selectedChapterId.contains(chapter.autoId)
+              : null,
+          onClicked: _goReaderPage,
+          toggleMultiCheckBox: () {
+            isShowMultiChapter = !isShowMultiChapter;
+            if (!isShowMultiChapter) {
+              selectedChapterId.clear();
+            }
+            setState(() {});
+          },
+          onCheckedChanged: (ch) {
+            if (selectedChapterId.contains(chapter.autoId)) {
+              selectedChapterId.remove(ch.autoId);
+            } else {
+              selectedChapterId.add(ch.autoId);
+            }
+            setState(() {});
+          },
+          onDeleteMultiChapterClicked: _showDeleteMultiConfirm,
+        );
+      },
+    );
+  }
+
+  void _showDeleteMultiConfirm() {
+    showTConfirmDialog(
+      context,
+      contentText: 'Selected All: ဖျက်ချင်တာ သေချာပြီလား?',
+      submitText: 'Delete Forever',
+      barrierDismissible: false,
+      onSubmit: () {
+        context.read<ChapterProvider>().deleteAllById(selectedChapterId);
+        selectedChapterId.clear();
+        isShowMultiChapter = false;
+        setState(() {});
+      },
     );
   }
 

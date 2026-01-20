@@ -244,11 +244,12 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
       children: [
         _getPasteWidget(),
         TTextField(
-          label: const Text('Content'),
+          label: const Text('Main Content'),
           controller: contentController,
           maxLines: null,
           focusNode: contentFocusNode,
           onChanged: (value) {
+            _setTitleFromContent();
             if (!isChanged) {
               setState(() {
                 isChanged = true;

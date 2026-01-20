@@ -20,6 +20,10 @@ class ChapterServices {
     return await ChapterDB.add(chapter);
   }
 
+  static Future<void> deleteAllById(List<int> ids) async {
+    await ChapterDB.deleteAllById(ids);
+  }
+
   static Future<void> delete(Chapter chapter) async {
     await ChapterDB.delete(chapter);
   }

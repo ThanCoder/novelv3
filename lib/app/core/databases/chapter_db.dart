@@ -116,6 +116,10 @@ class ChapterDB {
     await getChapterContentBox.deleteAllRecord();
   }
 
+  static Future<void> deleteAllById(List<int> ids) async {
+    await getChapterBox.deleteAll(ids);
+  }
+
   static Future<void> deleteDBFile(String novelPath) async {
     final file = File(getDBPath(novelPath));
     if (file.existsSync()) {
