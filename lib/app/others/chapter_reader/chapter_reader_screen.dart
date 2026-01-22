@@ -146,6 +146,18 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           );
           return KeyEventResult.handled;
         }
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.space) {
+          final currentChapterPos = allList.indexWhere(
+            (e) => e.number == viewList.last.number,
+          );
+          if (currentChapterPos != -1) {
+            final chapter = allList[currentChapterPos + 1];
+            viewList.add(chapter);
+            setState(() {});
+          }
+          return KeyEventResult.handled;
+        }
         return KeyEventResult.ignored;
       },
       child: CustomScrollView(

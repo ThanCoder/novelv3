@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/core/providers/chapter_provider.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_toggle_action.dart';
 import 'package:novel_v3/app/ui/components/page_url_icon_button.dart';
@@ -37,6 +38,7 @@ class _ContentScreenState extends State<ContentScreen> {
   void init() {
     if (currentNovel == null) return;
     context.read<ChapterBookmarkProvider>().init(currentNovel!.path);
+    context.read<ChapterProvider>().init(currentNovel!.path);
   }
 
   @override

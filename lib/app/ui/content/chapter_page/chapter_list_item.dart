@@ -37,14 +37,14 @@ class _ChapterListItemState extends State<ChapterListItem> {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: widget.isChecked != null
-            ? _getCheckBox()
-            : Icon(Icons.article),
+        leading: widget.isChecked != null ? _getCheckBox() : null,
         title: GestureDetector(
           onSecondaryTap: () => _showItemMenu(widget.chapter),
           child: Text(
             '${widget.chapter.number}: ${widget.chapter.title}',
             maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12),
           ),
         ),
         trailing: ChapterBookmarkToggleButton(chatper: widget.chapter),
