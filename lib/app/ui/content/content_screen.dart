@@ -7,11 +7,11 @@ import 'package:novel_v3/app/others/bookmark/novel_bookmark_toggle_action.dart';
 import 'package:novel_v3/app/ui/components/page_url_icon_button.dart';
 import 'package:novel_v3/app/ui/content/chapter_bookmark_page/chapter_bookmark_page.dart';
 import 'package:novel_v3/app/ui/content/chapter_page/chapter_page.dart';
-import 'package:novel_v3/app/ui/content/content_cover.dart';
-import 'package:novel_v3/app/ui/content/content_home_page.dart';
-import 'package:novel_v3/app/ui/content/content_main_menu_actions.dart';
+import 'package:novel_v3/app/ui/content/home/content_cover.dart';
+import 'package:novel_v3/app/ui/content/home/content_home_page.dart';
+import 'package:novel_v3/app/ui/content/home/content_main_menu_actions.dart';
 import 'package:novel_v3/app/ui/content/pdf_page/pdf_page.dart';
-import 'package:novel_v3/app/ui/content/readed_button.dart';
+import 'package:novel_v3/app/ui/content/home/readed_button.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
@@ -64,9 +64,9 @@ class _ContentScreenState extends State<ContentScreen> {
             Positioned.fill(
               child: Container(
                 color: Setting.getAppConfig.isDarkTheme
-                    ? Colors.black.withValues(alpha: 0.7)
+                    ? Colors.black.withValues(alpha: 0.1)
                     : Colors.white.withValues(
-                        alpha: 0.7,
+                        alpha: 0.1,
                       ), // 🔹 background color
                 child: NestedScrollView(
                   headerSliverBuilder: (context, innerBoxIsScrolled) => [

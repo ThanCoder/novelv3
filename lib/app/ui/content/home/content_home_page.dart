@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/app/ui/content/home/tags_view.dart';
 import 'package:provider/provider.dart';
-import 'package:t_widgets/t_widgets.dart';
 
 class ContentHomePage extends StatelessWidget {
   const ContentHomePage({super.key});
@@ -34,9 +34,8 @@ class ContentHomePage extends StatelessWidget {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                   // tag
-                  TTagsWrapView(
-                    values: novel.meta.tags,
-                    type: TTagsTypes.text,
+                  TagsView(
+                    tags: novel.meta.tags,
                     onClicked: (value) {
                       final res = context.read<NovelProvider>().searchTag(
                         value,
@@ -44,6 +43,16 @@ class ContentHomePage extends StatelessWidget {
                       goSearchResultScreen(context, title: value, list: res);
                     },
                   ),
+                  // TTagsWrapView(
+                  //   values: novel.meta.tags,
+                  //   type: TTagsTypes.text,
+                  //   onClicked: (value) {
+                  //     final res = context.read<NovelProvider>().searchTag(
+                  //       value,
+                  //     );
+                  //     goSearchResultScreen(context, title: value, list: res);
+                  //   },
+                  // ),
                   novel.meta.tags.isNotEmpty ? Divider() : SizedBox.shrink(),
                   SelectableText(
                     novel.meta.desc,

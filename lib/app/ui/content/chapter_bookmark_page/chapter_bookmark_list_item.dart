@@ -25,10 +25,12 @@ class _ChapterListItemState extends State<ChapterBookmarkListItem> {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: Icon(Icons.article),
+        // leading: Icon(Icons.article),
         title: Text(
           '${widget.bookmark.chapter}: ${widget.bookmark.title}',
           maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 12),
         ),
         trailing: IconButton(
           onPressed: _removeBookmark,

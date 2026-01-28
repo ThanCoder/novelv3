@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "name": "Flutter (lib/app/ui/content/content_screen copy.dart)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/app/ui/content/content_screen copy.dart"
+    }
+  ]
+}
