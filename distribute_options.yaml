@@ -1,0 +1,14 @@
+output: dist/
+releases:
+  - name: release
+    jobs:
+      - name: linux-deb
+        package:
+          platform: linux
+          type: deb
+          targets: [x64] # target architecture ကို သတ်မှတ်ပေးပါ
+      - name: linux-rpm
+        package:
+          platform: linux
+          type: rpm
+          targets: [x64]

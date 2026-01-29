@@ -3,6 +3,7 @@ description: "WebNovel App"
 repository: https://github.com/ThanCoder/novelv3
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 4.0.0
+homepage: https://github.com/ThanCoder # ဒါမပါရင် error တက်တတ်ပါတယ်
 
 environment:
   sdk: ^3.9.0
