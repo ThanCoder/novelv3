@@ -1,14 +1,13 @@
-name: Build and Release
+name: Build and Release (Android & Linux Multi-Format)
 
 on:
   push:
     tags:
-      - 'v*' # v1.0.0 စသဖြင့် tag နဲ့ push လုပ်မှ အလုပ်လုပ်မယ်
+      - "v*"
 
 jobs:
   build:
-    name: Build for Linux
-    runs-on: ubuntu-latest # GitHub ရဲ့ Linux စက်ကို သုံးမယ်
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -17,24 +16,77 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
+          cache: true
 
-      - name: Install Linux Dependencies
+      - name: Install Packaging Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev rpm patchelf
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev rpm
+          # AppImageTool download
+          sudo wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
+          sudo chmod +x /usr/local/bin/appimagetool
 
-      - name: Install Fastforge
-        run: dart pub global activate fastforge
+      - name: Get Dependencies
+        run: flutter pub get
 
-      - name: Build Packages
+      # 1. Android Build (Split APKs)
+      - name: Build Android APK
+        run: flutter build apk --release --split-per-abi
+
+      # 2. Linux Native Build
+      - name: Build Linux
+        run: flutter build linux --release
+
+      # 3. Create .deb Package
+      - name: Create Debian Package
         run: |
-          export PATH="$PATH":"$HOME/.pub-cache/bin"
-          fastforge release
-        
-      - name: Upload Release
+          APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
+          mkdir -p debian/usr/bin
+          mkdir -p debian/DEBIAN
+          cp -r build/linux/x64/release/bundle/* debian/usr/bin/
+          echo "Package: $APP_NAME
+          Version: 4.0.0
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Dev <dev@example.com>
+          Description: Flutter App" > debian/DEBIAN/control
+          dpkg-deb --build debian ${APP_NAME}_linux_amd64.deb
+
+      # 4. Create .rpm Package
+      - name: Create RPM Package
+        run: |
+          APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
+          mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          # ရိုးရှင်းသော rpm generation (alien သို့မဟုတ် manual spec သုံးနိုင်သည်)
+          # ဒီနေရာမှာ အလွယ်ဆုံးနည်းလမ်းဖြစ်တဲ့ alien ကို သုံးပြီး .deb မှ .rpm ပြောင်းပါမယ်
+          sudo apt-get install -y alien
+          sudo alien -r --scripts ${APP_NAME}_linux_amd64.deb
+          mv *.rpm ${APP_NAME}_linux_amd64.rpm
+
+      # 5. Create AppImage
+      - name: Create AppImage
+        run: |
+          APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
+          mkdir -p AppDir/usr/bin
+          cp -r build/linux/x64/release/bundle/* AppDir/usr/bin/
+          # AppRun နဲ့ Desktop file လိုအပ်ချက်များ (အခြေခံ)
+          echo '#!/bin/sh' > AppDir/AppRun
+          echo 'exec ./usr/bin/'$APP_NAME >> AppDir/AppRun
+          chmod +x AppDir/AppRun
+          touch AppDir/$APP_NAME.desktop
+          # AppImage tool run
+          ARCH=x86_64 /usr/local/bin/appimagetool AppDir ${APP_NAME}_linux.AppImage
+
+      # 6. Upload All Assets
+      - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/*
+          files: |
+            build/app/outputs/flutter-apk/*.apk
+            *.deb
+            *.rpm
+            *.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
