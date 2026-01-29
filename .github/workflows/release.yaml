@@ -38,32 +38,32 @@ jobs:
       - name: Build Linux
         run: flutter build linux --release
 
-      # 3. Create .deb Package
-      - name: Create Debian Package
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
-          mkdir -p debian/usr/bin
-          mkdir -p debian/DEBIAN
-          cp -r build/linux/x64/release/bundle/* debian/usr/bin/
-          echo "Package: $APP_NAME
-          Version: 4.0.0
-          Section: utils
-          Priority: optional
-          Architecture: amd64
-          Maintainer: Dev <dev@example.com>
-          Description: Flutter App" > debian/DEBIAN/control
-          dpkg-deb --build debian ${APP_NAME}_linux_amd64.deb
+      # # 3. Create .deb Package
+      # - name: Create Debian Package
+      #   run: |
+      #     APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
+      #     mkdir -p debian/usr/bin
+      #     mkdir -p debian/DEBIAN
+      #     cp -r build/linux/x64/release/bundle/* debian/usr/bin/
+      #     echo "Package: $APP_NAME
+      #     Version: 4.0.0
+      #     Section: utils
+      #     Priority: optional
+      #     Architecture: amd64
+      #     Maintainer: Dev <dev@example.com>
+      #     Description: Flutter App" > debian/DEBIAN/control
+      #     dpkg-deb --build debian ${APP_NAME}_linux_amd64.deb
 
-      # 4. Create .rpm Package
-      - name: Create RPM Package
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
-          mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          # ရိုးရှင်းသော rpm generation (alien သို့မဟုတ် manual spec သုံးနိုင်သည်)
-          # ဒီနေရာမှာ အလွယ်ဆုံးနည်းလမ်းဖြစ်တဲ့ alien ကို သုံးပြီး .deb မှ .rpm ပြောင်းပါမယ်
-          sudo apt-get install -y alien
-          sudo alien -r --scripts ${APP_NAME}_linux_amd64.deb
-          mv *.rpm ${APP_NAME}_linux_amd64.rpm
+      # # 4. Create .rpm Package
+      # - name: Create RPM Package
+      #   run: |
+      #     APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
+      #     mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+      #     # ရိုးရှင်းသော rpm generation (alien သို့မဟုတ် manual spec သုံးနိုင်သည်)
+      #     # ဒီနေရာမှာ အလွယ်ဆုံးနည်းလမ်းဖြစ်တဲ့ alien ကို သုံးပြီး .deb မှ .rpm ပြောင်းပါမယ်
+      #     sudo apt-get install -y alien
+      #     sudo alien -r --scripts ${APP_NAME}_linux_amd64.deb
+      #     mv *.rpm ${APP_NAME}_linux_amd64.rpm
 
       # 5. Create AppImage
       - name: Create AppImage
