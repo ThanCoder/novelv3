@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_theme_listener.dart';
+import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -42,7 +44,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   bool isLoading = false;
   bool isInitLoading = false;
   bool isFullScreen = false;
-  bool canPop = true;
+  bool canGoback = true;
+  int readed = 0;
 
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   void initConfig() async {
     try {
       ThanPkg.platform.toggleKeepScreen(isKeep: config.isKeepScreening);
-      canPop = !config.isBackpressConfirm;
+      canGoback = !config.isBackpressConfirm;
       setState(() {});
     } catch (e) {
       debugPrint('[ChapterReaderScreen:initConfig]: ${e.toString()}');
@@ -72,7 +75,15 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   }
 
   void init() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      readed = context.read<NovelProvider>().currentNovel!.meta.readed;
+      if (viewList.isEmpty) return;
+      final chapter = viewList.last;
+      if (chapter.number > readed) {
+        canGoback = false;
+        setState(() {});
+      }
+    });
     try {
       setState(() {
         isInitLoading = true;
@@ -95,10 +106,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: canPop,
+      canPop: canGoback,
       onPopInvokedWithResult: (didPop, result) {
-        if (!canPop) {
-          _onBackConfirm();
+        if (didPop) return;
+        // false
+        if (!canGoback) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => _onBackConfirm());
           return;
         }
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -183,16 +196,16 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         title: Text('Chapter Reader'),
         snap: true,
         floating: true,
-        leading: IconButton(
-          onPressed: () {
-            if (config.isBackpressConfirm) {
-              _onBackConfirm();
-              return;
-            }
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
+        // leading: IconButton(
+        //   onPressed: () {
+        //     if (config.isBackpressConfirm) {
+        //       _onBackConfirm();
+        //       return;
+        //     }
+        //     Navigator.pop(context);
+        //   },
+        //   icon: Icon(Icons.arrow_back),
+        // ),
       );
     }
   }
@@ -322,6 +335,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     final currentChapterPos = allList.indexWhere(
       (e) => e.number == viewList.last.number,
     );
+    // ရှိမရှိ စစ်မယ်
     if (currentChapterPos == -1 || currentChapterPos >= (allList.length - 1)) {
       return SliverToBoxAdapter(
         child: Card(
@@ -340,9 +354,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         ),
       );
     }
-
+    // ရှိတယ်
     final chapter = allList[currentChapterPos + 1];
 
+    if (chapter.number > readed) {
+      canGoback = false;
+    }
     return SliverToBoxAdapter(
       child: GestureDetector(
         onTap: () async {
@@ -395,13 +412,48 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   // isBackconfig
   void _onBackConfirm() {
     try {
+      // readed ကို စစ်မယ်
+      if (viewList.isNotEmpty && viewList.last.number > readed) {
+        final chapter = viewList.last;
+        showTConfirmDialog(
+          context,
+          contentText:
+              'ယခု Chapter: `${chapter.number}`\nReaded Chapter: `$readed`\nသိမ်းဆည်းထားချင်ပါသလား?',
+          submitText: 'သိမ်းမယ်',
+          cancelText: 'မသိမ်းဘူး',
+          barrierDismissible: false,
+          onCancel: () {
+            canGoback = true;
+            setState(() {});
+            Navigator.pop(context);
+          },
+          onSubmit: () async {
+            canGoback = true;
+            setState(() {});
+            //current novel မှာသိမ်းဆည်းမယ်
+            final provider = context.read<NovelProvider>();
+            await provider.update(
+              provider.currentNovel!.copyWith(
+                meta: provider.currentNovel!.meta.copyWith(
+                  readed: chapter.number,
+                ),
+              ),
+            );
+            await Future.delayed(Duration.zero);
+            if (!mounted) return;
+            Navigator.pop(context);
+          },
+        );
+        return;
+      }
+      // backpress
       showTConfirmDialog(
         context,
         contentText: 'အပြင်ထွက်ချင်တာ သေချာပြီလား?',
         submitText: 'ထွက်မယ်',
         cancelText: 'မထွက်ဘူး',
         onSubmit: () {
-          canPop = true;
+          canGoback = true;
           setState(() {});
           Navigator.pop(context);
         },
