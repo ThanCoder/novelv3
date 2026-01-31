@@ -17,7 +17,7 @@ class ContentCover extends SliverPersistentHeaderDelegate {
     return Center(
       child: SizedBox(
         width: 170,
-        height: 200,
+        height: 220,
         child: TImage(source: novel.getCoverPath),
       ),
     );

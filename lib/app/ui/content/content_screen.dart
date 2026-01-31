@@ -14,6 +14,7 @@ import 'package:novel_v3/app/ui/content/pdf_page/pdf_page.dart';
 import 'package:novel_v3/app/ui/content/home/readed_button.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -50,6 +51,7 @@ class _ContentScreenState extends State<ContentScreen> {
         body: Center(child: Text('Current Novel is Null!')),
       );
     }
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -114,16 +116,13 @@ class _ContentScreenState extends State<ContentScreen> {
 
   Widget _getAppbar() {
     // final provider = context.watch<NovelProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SliverAppBar(
       floating: true,
       snap: true,
       pinned: false,
-      backgroundColor: Setting.getAppConfig.isDarkTheme
-          ? const Color.fromARGB(106, 0, 0, 0)
-          : const Color.fromARGB(106, 255, 255, 255),
-      foregroundColor: Setting.getAppConfig.isDarkTheme
-          ? Colors.white
-          : Colors.black,
+      backgroundColor: Colors.transparent,
+      foregroundColor: isDark ? Colors.white : Colors.black,
       actions: [ContentMainMenuActions()],
     );
   }
@@ -136,8 +135,14 @@ class _ContentScreenState extends State<ContentScreen> {
         spacing: 4,
         children: [
           GestureDetector(
-            onTap: () {
-              ThanPkg.appUtil.copyText(currentNovel!.meta.title);
+            onLongPress: () {
+              try {
+                ThanPkg.appUtil.copyText(currentNovel!.meta.title);
+                if (!TPlatform.isDesktop) return;
+                showTSnackBar(context, 'Copied `${currentNovel!.meta.title}`');
+              } catch (e) {
+                debugPrint('[ContentScreen:_getNovelContentWidget]: $e');
+              }
             },
             child: Text(
               currentNovel!.meta.title,
