@@ -30,7 +30,7 @@ class NovelServices {
     if (!dir.existsSync()) {
       await dir.create();
     }
-    final newMeta = meta.copyWith(id: name);
+    final newMeta = meta.copyWith(id: name, date: DateTime.now());
     await newMeta.save(dir.path);
 
     return Novel.create(name: name, path: dir.path, meta: newMeta);

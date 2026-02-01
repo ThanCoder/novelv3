@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
@@ -12,10 +14,8 @@ import 'package:novel_v3/app/ui/content/home/content_home_page.dart';
 import 'package:novel_v3/app/ui/content/home/content_main_menu_actions.dart';
 import 'package:novel_v3/app/ui/content/pdf_page/pdf_page.dart';
 import 'package:novel_v3/app/ui/content/home/readed_button.dart';
-import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ContentScreen extends StatefulWidget {
@@ -44,68 +44,53 @@ class _ContentScreenState extends State<ContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     if (currentNovel == null) {
       return Scaffold(
         appBar: AppBar(),
         body: Center(child: Text('Current Novel is Null!')),
       );
     }
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         body: Stack(
           children: [
+            Positioned.fill(child: TImage(source: currentNovel!.getCoverPath)),
             Positioned.fill(
-              child: Container(
-                color: Colors.black.withValues(alpha: 0.9),
-                child: TImage(source: currentNovel!.getCoverPath),
-              ),
-            ),
-            Positioned.fill(
-              child: Container(
-                color: Setting.getAppConfig.isDarkTheme
-                    ? Colors.black.withValues(alpha: 0.1)
-                    : Colors.white.withValues(
-                        alpha: 0.1,
-                      ), // 🔹 background color
-                child: NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                    _getAppbar(),
-                    SliverPersistentHeader(
-                      delegate: ContentCover(novel: currentNovel!),
-                    ),
-                    SliverAppBar(
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: _getNovelContentWidget(),
-                      // toolbarHeight: 180,
-                      collapsedHeight: 200,
-                      expandedHeight: 220,
-                      bottom: TabBar(
-                        labelColor: Colors.blue,
-                        isScrollable: width <= 360,
-                        tabs: [
-                          Tab(text: 'Content', icon: Icon(Icons.description)),
-                          Tab(
-                            text: 'PDF',
-                            icon: Icon(Icons.picture_as_pdf_rounded),
-                          ),
-                          Tab(text: 'Chapter', icon: Icon(Icons.article)),
-                          Tab(text: 'Bookmark', icon: Icon(Icons.bookmark)),
-                        ],
-                      ),
-                    ),
-                  ],
-                  body: TabBarView(
-                    children: [
-                      ContentHomePage(),
-                      PdfPage(),
-                      ChapterPage(),
-                      ChapterBookmarkPage(),
-                    ],
+              child: ClipRect(
+                // Blur effect အပြင်မထွက်အောင် ClipRect သုံးပေးရပါမယ်
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4), // Blur ပမာဏ
+                  child: Container(
+                    color: isDark
+                        ? Colors.black.withValues(alpha: 0.5)
+                        : Colors.white.withValues(
+                            alpha: 0.1,
+                          ), // အမည်းရောင်အုပ်မည့် ပမာဏ
                   ),
                 ),
+              ),
+            ),
+            // Positioned.fill(
+            //   child: Container(color: Colors.black.withValues(alpha: 0.6)),
+            // ),
+            NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                _getAppbar(),
+                SliverPersistentHeader(
+                  delegate: ContentCover(novel: currentNovel!),
+                ),
+                _getNovelContentAppbar(),
+              ],
+              body: TabBarView(
+                children: [
+                  ContentHomePage(),
+                  PdfPage(),
+                  ChapterPage(),
+                  ChapterBookmarkPage(),
+                ],
               ),
             ),
           ],
@@ -116,14 +101,36 @@ class _ContentScreenState extends State<ContentScreen> {
 
   Widget _getAppbar() {
     // final provider = context.watch<NovelProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
     return SliverAppBar(
-      floating: true,
-      snap: true,
+      floating: false,
+      snap: false,
       pinned: false,
-      backgroundColor: Colors.transparent,
-      foregroundColor: isDark ? Colors.white : Colors.black,
+      backgroundColor: Colors.transparent, // ဖောက်ထွင်းမြင်ရအောင်
+      elevation: 0,
+      // နောက်ခံက အမည်းရောင်အုပ်ထားတာမို့ Icon တွေကို အဖြူရောင်ပဲ ပေးလိုက်ပါ
+      foregroundColor: Colors.white,
       actions: [ContentMainMenuActions()],
+    );
+  }
+
+  Widget _getNovelContentAppbar() {
+    final width = MediaQuery.of(context).size.width;
+    return SliverAppBar(
+      automaticallyImplyLeading: false,
+      flexibleSpace: _getNovelContentWidget(),
+      collapsedHeight: 200,
+      expandedHeight: 220,
+      bottom: TabBar(
+        labelColor: Colors.blue,
+        isScrollable: width <= 360,
+        tabs: [
+          Tab(text: 'Content', icon: Icon(Icons.description)),
+          Tab(text: 'PDF', icon: Icon(Icons.picture_as_pdf_rounded)),
+          Tab(text: 'Chapter', icon: Icon(Icons.article)),
+          Tab(text: 'Bookmark', icon: Icon(Icons.bookmark)),
+        ],
+      ),
     );
   }
 
