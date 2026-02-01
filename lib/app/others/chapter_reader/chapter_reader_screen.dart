@@ -105,6 +105,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('canGoback: $canGoback');
     return PopScope(
       canPop: canGoback,
       onPopInvokedWithResult: (didPop, result) {
@@ -140,6 +141,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     return Focus(
       autofocus: true,
       onKeyEvent: (node, event) {
+        // print('event: $event');
         if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.arrowDown) {
           // 50 pixels စီ အောက်ကို ဆင်းခိုင်းခြင်း
@@ -357,12 +359,12 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     // ရှိတယ်
     final chapter = allList[currentChapterPos + 1];
 
-    if (chapter.number > readed) {
-      canGoback = false;
-    }
     return SliverToBoxAdapter(
       child: GestureDetector(
         onTap: () async {
+          if (chapter.number > readed) {
+            canGoback = false;
+          }
           viewList.add(chapter);
           setState(() {});
         },
@@ -413,7 +415,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
   void _onBackConfirm() {
     try {
       // readed ကို စစ်မယ်
-      if (viewList.isNotEmpty && viewList.last.number > readed) {
+      if (!canGoback && viewList.isNotEmpty && viewList.last.number > readed) {
         final chapter = viewList.last;
         showTConfirmDialog(
           context,
@@ -422,9 +424,11 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           submitText: 'သိမ်းမယ်',
           cancelText: 'မသိမ်းဘူး',
           barrierDismissible: false,
-          onCancel: () {
+          onCancel: () async {
             canGoback = true;
             setState(() {});
+            await Future.delayed(Duration.zero);
+            if (!mounted) return;
             Navigator.pop(context);
           },
           onSubmit: () async {
