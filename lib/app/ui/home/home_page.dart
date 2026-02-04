@@ -9,6 +9,7 @@ import 'package:novel_v3/app/ui/components/novel_list_item.dart';
 import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
 import 'package:novel_v3/app/ui/content/content_screen.dart';
 import 'package:novel_v3/app/ui/home/home_menu_actions.dart';
+import 'package:novel_v3/app/ui/home/home_page_drop_view.dart';
 import 'package:novel_v3/app/ui/home/novel_item_menu_actions.dart';
 import 'package:novel_v3/app/ui/home/novel_sliver_tags_bar.dart';
 import 'package:novel_v3/app/ui/search/search_screen.dart';
@@ -91,12 +92,14 @@ class _HomePageState extends State<HomePage> {
           // _getAppbar(),
           NovelSliverTagsBar(value: currentTag, onChoosed: _onChoosedTag),
         ],
-        body: getWProvider.isLoading
-            ? Center(child: TLoader.random())
-            : RefreshIndicator.adaptive(
-                onRefresh: () async => init(isUsedCache: false),
-                child: CustomScrollView(slivers: [_getListWidget()]),
-              ),
+        body: HomePageDropView(
+          child: getWProvider.isLoading
+              ? Center(child: TLoader.random())
+              : RefreshIndicator.adaptive(
+                  onRefresh: () async => init(isUsedCache: false),
+                  child: CustomScrollView(slivers: [_getListWidget()]),
+                ),
+        ),
       ),
     );
   }

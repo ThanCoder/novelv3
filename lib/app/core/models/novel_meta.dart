@@ -41,6 +41,7 @@ class NovelMeta {
   final String originalTitle;
   final String englishTitle;
   final DateTime date;
+  String? coverUrl;
   NovelMeta({
     required this.id,
     required this.title,
@@ -57,6 +58,7 @@ class NovelMeta {
     required this.originalTitle,
     required this.englishTitle,
     required this.date,
+    this.coverUrl,
   });
 
   factory NovelMeta.createEmpty() {
@@ -128,21 +130,21 @@ class NovelMeta {
     final tags = map['tags'] ?? [];
     return NovelMeta(
       id: id,
-      title: map['title'] as String,
-      author: map['author'] as String,
-      translator: map['translator'] as String,
-      mc: map['mc'] as String,
-      desc: map['desc'] as String,
-      otherTitleList: List<String>.from(otherTitleList),
-      isAdult: map['isAdult'] as bool,
-      isCompleted: map['isCompleted'] as bool,
-      pageUrls: List<String>.from(pageUrls),
-      tags: List<String>.from(tags),
-      readed: map['readed'] as int,
+      title: map.getString(['title']),
+      author: map.getString(['author']),
+      translator: map.getString(['translator']),
+      mc: map.getString(['mc']),
+      desc: map.getString(['desc']),
+      isAdult: map.getBool(['isAdult']),
+      isCompleted: map.getBool(['isCompleted']),
+      readed: map.getInt(['readed']),
       originalTitle: map.getString(['originalTitle']),
       englishTitle: map.getString(['englishTitle']),
       date: DateTime.fromMillisecondsSinceEpoch(date),
-      //get from novel folder -> date
+      otherTitleList: List<String>.from(otherTitleList),
+      pageUrls: List<String>.from(pageUrls),
+      tags: List<String>.from(tags),
+      coverUrl: map['coverUrl'],
     );
   }
 

@@ -27,6 +27,7 @@ dependencies:
   hb_db: ^1.4.0
   dart_html_dsl: ^0.0.3
   cached_network_image: ^3.4.1
+  file_selector: ^1.1.0
 
 dev_dependencies:
   flutter_test:

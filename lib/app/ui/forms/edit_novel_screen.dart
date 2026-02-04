@@ -1,16 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class EditNovelScreen extends StatefulWidget {
   final Novel novel;
+  final String? coverUrl;
   final void Function(Novel updatedNovel) onUpdated;
   const EditNovelScreen({
     super.key,
     required this.novel,
+    this.coverUrl,
     required this.onUpdated,
   });
 
@@ -81,7 +86,7 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
           spacing: 10,
           children: [
             // cover
-            TCoverChooser(coverPath: novel.getCoverPath),
+            _novelCoverWidget(),
             Divider(),
             TTextField(
               label: Text('Title'),
@@ -128,6 +133,31 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
         ),
       ),
     );
+  }
+
+  bool isDownloadingIcon = false;
+  final client = TClient();
+
+  Widget _novelCoverWidget() {
+    // print('coverUrl: ${widget.coverUrl}');
+    final file = File(novel.getCoverPath);
+    if (widget.coverUrl != null &&
+        widget.coverUrl!.isNotEmpty &&
+        !file.existsSync()) {
+      return SizedBox(
+        width: 150,
+        height: 150,
+        child: isDownloadingIcon
+            ? TLoader.random()
+            : IconButton(
+                onPressed: _downloadCoverUrl,
+                iconSize: 100,
+                color: Colors.teal,
+                icon: Icon(Icons.download),
+              ),
+      );
+    }
+    return TCoverChooser(coverPath: novel.getCoverPath);
   }
 
   Widget _getTagsWidget() {
@@ -230,5 +260,24 @@ class _EditNovelScreenState extends State<EditNovelScreen> {
     );
     closeContext(context);
     widget.onUpdated(newNovel);
+  }
+
+  void _downloadCoverUrl() async {
+    setState(() {
+      isDownloadingIcon = true;
+    });
+    try {
+      await client.download(widget.coverUrl!, savePath: novel.getCoverPath);
+
+      if (!mounted) return;
+      isDownloadingIcon = false;
+      setState(() {});
+    } catch (e) {
+      if (!mounted) return;
+
+      showTMessageDialogError(context, e.toString());
+      isDownloadingIcon = false;
+      setState(() {});
+    }
   }
 }

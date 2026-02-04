@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:novel_v3/app/others/novel_config/novel_config_services.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/home/create_novel_website_info_result_dialog.dart';
 import 'package:novel_v3/app/ui/home/home_list_style_list_tile.dart';
@@ -76,6 +78,14 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
           onTap: () {
             closeContext(context);
             _addNewNovelFromUrl();
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Novel From Config.JSON'),
+          onTap: () {
+            closeContext(context);
+            _addNewNovelFromConfigJson();
           },
         ),
       ],
@@ -195,6 +205,47 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
     );
   }
 
+  void _addNewNovelFromConfigJson() async {
+    try {
+      const XTypeGroup typeGroup = XTypeGroup(
+        label: 'Novel Meta Config File',
+        extensions: <String>['.meta.json'],
+      );
+      final XFile? file = await openFile(
+        initialDirectory: _initialDirectory,
+        acceptedTypeGroups: <XTypeGroup>[typeGroup],
+      );
+      if (file == null) return;
+      if (TPlatform.isDesktop) {
+        _initialDirectory = File(file.path).parent.path;
+      }
+      final meta = await NovelConfigServices.getNovelMetaFromPath(file.path);
+      if (meta == null) {
+        throw Exception('Meta Is Null,Meta File မှာပြသနာရှိနေပါတယ်!...');
+      }
+      if (!mounted) return;
+
+      final provider = context.read<NovelProvider>();
+      final novel = await NovelServices.createNovelFolder(meta: meta);
+
+      provider.add(novel);
+      if (!mounted) return;
+      goRoute(
+        context,
+        builder: (context) => EditNovelScreen(
+          novel: novel,
+          coverUrl: meta.coverUrl,
+          onUpdated: (updatedNovel) {
+            provider.update(updatedNovel);
+          },
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+    }
+  }
+
   void _createNovelWithWebResult(WebsiteInfoResult result) async {
     if (result.title == null) return;
     showDialog(
@@ -209,3 +260,5 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
     );
   }
 }
+
+String? _initialDirectory;

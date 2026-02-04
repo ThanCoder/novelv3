@@ -110,15 +110,29 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       canPop: canGoback,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        // false
+
         if (!canGoback) {
-          WidgetsBinding.instance.addPostFrameCallback((_) => _onBackConfirm());
+          // addPostFrameCallback အစား Future.microtask ကို စမ်းကြည့်ပါ
+          Future.microtask(() => _onBackConfirm());
           return;
         }
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+
+        // ကျန်တဲ့ logic တွေကိုလည်း microtask ထဲ ထည့်နိုင်ပါတယ်
+        Future.microtask(() {
           widget.onReaderClosed?.call(viewList.last);
           widget.onUpdateConfig?.call(config);
+
+          // တကယ်လို့ current context ကနေ pop လုပ်ချင်တာဆိုရင်
+          if (context.mounted) Navigator.of(context).pop();
         });
+        // if (!canGoback) {
+        //   WidgetsBinding.instance.addPostFrameCallback((_) => _onBackConfirm());
+        //   return;
+        // }
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   widget.onReaderClosed?.call(viewList.last);
+        //   widget.onUpdateConfig?.call(config);
+        // });
       },
       child: ChapterReaderThemeListener(
         theme: config.theme,
@@ -423,7 +437,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
               'ယခု Chapter: `${chapter.number}`\nReaded Chapter: `$readed`\nသိမ်းဆည်းထားချင်ပါသလား?',
           submitText: 'သိမ်းမယ်',
           cancelText: 'မသိမ်းဘူး',
-          barrierDismissible: false,
+          // barrierDismissible: false,
           onCancel: () async {
             canGoback = true;
             setState(() {});
