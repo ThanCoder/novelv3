@@ -125,9 +125,10 @@ class NovelMeta {
   }) {
     final id = map.getString(['id'], def: Uuid().v4());
     final date = map.getInt(['date'], def: novelDirMiliDateNumber);
-    final otherTitleList = map['otherTitleList'] ?? [];
-    final pageUrls = map['pageUrls'] ?? [];
-    final tags = map['tags'] ?? [];
+    final otherTitleList = _parseList(map['otherTitleList']);
+    final pageUrls = _parseList(map['pageUrls']);
+    var tags = _parseList(map['tags']);
+
     return NovelMeta(
       id: id,
       title: map.getString(['title']),
@@ -146,6 +147,19 @@ class NovelMeta {
       tags: List<String>.from(tags),
       coverUrl: map['coverUrl'],
     );
+  }
+  static List<String> _parseList(dynamic mapVal) {
+    if (mapVal == null) {
+      return [];
+    }
+
+    if (mapVal is String) {
+      return [mapVal];
+    }
+    if (mapVal is List<dynamic>) {
+      return List.from(mapVal);
+    }
+    return [];
   }
 
   static Future<NovelMeta> _getOldConfig(String novelPath) async {
