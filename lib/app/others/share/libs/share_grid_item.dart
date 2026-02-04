@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -19,51 +20,64 @@ class ShareGridItem extends StatelessWidget {
       onTap: () => onClicked?.call(novel),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Positioned.fill(
-                      child: TImageUrl(url: '$hostUrl/cover/id/${novel.id}'),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              // child: TImageUrl(url: '$hostUrl/cover/id/${novel.id}'),
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: '$hostUrl/cover/id/${novel.id}',
+                placeholder: (context, url) => TLoader.random(),
+                errorWidget: (context, url, error) =>
+                    Icon(Icons.broken_image_outlined),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              child: _getStatus(
+                novel.meta.isCompleted ? 'Completed' : 'OnGoing',
+                bgColor: novel.meta.isCompleted
+                    ? const Color.fromARGB(255, 4, 121, 109)
+                    : const Color.fromARGB(255, 7, 97, 92),
+              ),
+            ),
+            !novel.meta.isAdult
+                ? SizedBox.shrink()
+                : Positioned(
+                    right: 0,
+                    top: 0,
+                    child: _getStatus(
+                      'Adult',
+                      bgColor: const Color.fromARGB(255, 165, 30, 20),
                     ),
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      child: _getStatus(
-                        novel.meta.isCompleted ? 'Completed' : 'OnGoing',
-                        bgColor: novel.meta.isCompleted
-                            ? const Color.fromARGB(255, 4, 121, 109)
-                            : const Color.fromARGB(255, 7, 97, 92),
-                      ),
-                    ),
-                    !novel.meta.isAdult
-                        ? SizedBox.shrink()
-                        : Positioned(
-                            right: 0,
-                            top: 0,
-                            child: _getStatus(
-                              'Adult',
-                              bgColor: const Color.fromARGB(255, 165, 30, 20),
-                            ),
-                          ),
-                  ],
+                  ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(2),
+                    bottomRight: Radius.circular(2),
+                  ),
+                ),
+                child: Text(
+                  novel.meta.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
               ),
-              Text(
-                novel.meta.title,
-                style: TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis),
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

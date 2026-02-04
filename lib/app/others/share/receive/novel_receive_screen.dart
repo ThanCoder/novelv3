@@ -64,11 +64,8 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     return TScaffold(
       body: RefreshIndicator.adaptive(
         onRefresh: init,
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: CustomScrollView(
-            slivers: [_getAppBar(), _getTags(), _getListWidget()],
-          ),
+        child: CustomScrollView(
+          slivers: [_getAppBar(), _getTags(), _getListWidget()],
         ),
       ),
     );
@@ -93,22 +90,29 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     return SliverToBoxAdapter(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: tags
-              .map(
-                (e) => TChip(
-                  avatar: currentTag == e ? Icon(Icons.check) : null,
-                  title: Text(e),
-                  onClick: () {
-                    setState(() {
-                      currentTag = e;
-                    });
-                  },
-                ),
-              )
-              .toList(),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 2,
+            children: tags
+                .map(
+                  (e) => GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        currentTag = e;
+                      });
+                    },
+                    child: Chip(
+                      avatar: currentTag == e ? Icon(Icons.check) : null,
+                      label: Text(e),
+                      mouseCursor: SystemMouseCursors.click,
+                      padding: EdgeInsets.all(4),
+                      // labelPadding: EdgeInsets.symmetric(),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );
@@ -137,7 +141,6 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     }
     // tags
     final result = list.where((e) {
-      
       if (currentTag == 'OnGoing' && !e.meta.isCompleted) {
         return true;
       }
@@ -159,8 +162,8 @@ class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
     return SliverGrid.builder(
       itemCount: result.length,
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 130,
-        mainAxisExtent: 160,
+        maxCrossAxisExtent: 140,
+        mainAxisExtent: 170,
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
       ),

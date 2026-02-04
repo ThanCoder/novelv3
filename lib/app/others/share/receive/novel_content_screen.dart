@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/core/models/novel.dart';
 import 'package:novel_v3/app/core/providers/novel_provider.dart';
@@ -101,14 +102,20 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   Widget _getAppBar() {
     final size = MediaQuery.of(context).size;
     return SliverAppBar(
-      title: Text('Content: ${widget.novel.meta.title}'),
       // snap: true,
       // floating: true,
-      expandedHeight: size.height * .5,
+      expandedHeight: size.height * .7,
       flexibleSpace: Stack(
         fit: StackFit.expand,
         children: [
-          TImageUrl(url: '${widget.hostUrl}/cover/id/${widget.novel.id}'),
+          // TImageUrl(url: '${widget.hostUrl}/cover/id/${widget.novel.id}'),
+          CachedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: '${widget.hostUrl}/cover/id/${widget.novel.id}',
+            placeholder: (context, url) => TLoader.random(),
+            errorWidget: (context, url, error) =>
+                Icon(Icons.broken_image_outlined),
+          ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -128,15 +135,42 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
           ),
         ],
       ),
+      leading: IconButton(
+        padding: EdgeInsets.all(0),
+        onPressed: () => Navigator.pop(context),
+        color: Colors.white,
+        style: IconButton.styleFrom(
+          backgroundColor: Colors.black.withValues(alpha: 0.7),
+        ),
+        icon: Icon(Icons.arrow_back),
+      ),
       actions: [
         !TPlatform.isDesktop
             ? SizedBox.shrink()
-            : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
+            : IconButton(
+                onPressed: init,
+                color: Colors.white,
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.7),
+                ),
+                icon: Icon(Icons.refresh),
+              ),
         IconButton(
           onPressed: _allDownloadConfirm,
+          color: Colors.white,
+          style: IconButton.styleFrom(
+            backgroundColor: Colors.black.withValues(alpha: 0.7),
+          ),
           icon: Icon(Icons.sim_card_download_outlined),
         ),
-        IconButton(onPressed: _showSortDialog, icon: Icon(Icons.sort)),
+        IconButton(
+          onPressed: _showSortDialog,
+          color: Colors.white,
+          style: IconButton.styleFrom(
+            backgroundColor: Colors.black.withValues(alpha: 0.7),
+          ),
+          icon: Icon(Icons.sort),
+        ),
       ],
     );
   }
@@ -172,11 +206,23 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   }
 
   Widget _getDesc() {
-    if (widget.novel.meta.desc.isEmpty) {
-      return Center(child: Text('Description မရှိပါ!...'));
-    }
     return CustomScrollView(
       slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Title: ${widget.novel.meta.title}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _checkAlreadyNovel(),
+          ),
+        ),
         SliverToBoxAdapter(
           child: Text(widget.novel.meta.desc, style: TextStyle(fontSize: 16)),
         ),
@@ -203,6 +249,35 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         descTitle: 'Not Config',
       ),
     ];
+  }
+
+  Widget _checkAlreadyNovel() {
+    return FutureBuilder(
+      future: NovelServices.existsNovel(widget.novel.meta.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return TLoader();
+        }
+        if (snapshot.data ?? false) {
+          return Text(
+            'App ထဲမှာ Novel ရှိနေပြီးသားပါ...',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Colors.amber,
+            ),
+          );
+        }
+        return Text(
+          'App ထဲမှာ Novel မရှိပါ...',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        );
+      },
+    );
   }
 
   void _onSort() {
@@ -247,16 +322,23 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
     showTConfirmDialog(
       context,
       title: 'အတည်ပြုခြင်း',
-      contentText: 'အားလုံးကို Downlaod ပြုလုပ်ချင်တာ သေချာပြီလား?',
+      contentText:
+          '"New ID Download": က ID အသစ်အနေနဲ့ Download လုပ်မယ်။\n"Download": က ရိုးရိုးပဲ လုပ်မယ်။',
       submitText: 'Download',
+      cancelText: 'New ID Download',
       onSubmit: _allDownload,
+      onCancel: () => _allDownload(isNewIdDownload: true),
     );
   }
 
-  void _allDownload() async {
-    final novel = await NovelServices.createNovelFolder(
+  void _allDownload({bool isNewIdDownload = false}) async {
+    var novel = await NovelServices.createNovelFolder(
       meta: widget.novel.meta,
+      oldId: widget.novel.meta.id,
     );
+    if (isNewIdDownload) {
+      novel = await NovelServices.createNovelFolder(meta: widget.novel.meta);
+    }
     if (!mounted) return;
 
     showDialog(
@@ -276,6 +358,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         onSuccess: () {
           if (!mounted) return;
           context.read<NovelProvider>().init(isUsedCache: false);
+          setState(() {});
         },
       ),
     );

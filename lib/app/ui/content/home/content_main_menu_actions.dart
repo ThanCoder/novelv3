@@ -16,6 +16,10 @@ class _ContentMainMenuActionsState extends State<ContentMainMenuActions> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: _showMenu,
+      color: Colors.white,
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.black.withValues(alpha: 0.7),
+      ),
       icon: Icon(Icons.more_vert_rounded),
     );
   }

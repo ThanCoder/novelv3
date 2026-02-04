@@ -105,7 +105,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('canGoback: $canGoback');
+    // print('canGoback: $canGoback');
     return PopScope(
       canPop: canGoback,
       onPopInvokedWithResult: (didPop, result) {

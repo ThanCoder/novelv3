@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:novel_v3/app/others/share/server_services.dart';
 import 'package:t_client/t_client.dart';
@@ -112,6 +114,8 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
     );
   }
 
+  final http = HttpClient();
+
   void _checkHost() async {
     try {
       setState(() {
@@ -120,8 +124,14 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
       final url =
           'http://${urlController.text}:${ServerServices.getInstance.server.port}';
 
-      await client.get(url);
+      // final res = await client.get(url);
+      http.connectionTimeout = Duration(seconds: 8);
 
+      final request = await http.getUrl(Uri.parse(url));
+      final res = await request.close();
+      await res.drain();
+
+      // print('res.statusCode: ${res.statusCode} - url: $url');
       if (!mounted) return;
 
       setState(() {
@@ -129,10 +139,6 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
         errorText = null;
       });
       widget.onConnectedUrl?.call(urlController.text);
-      // await RecentServices.instance
-      //     .setValue<String>('share-host-address', urlController.text);
-      // await RecentServices.set('url', urlController.text);
-
       if (!mounted) return;
       Navigator.pop(context);
       widget.onSuccess(url);

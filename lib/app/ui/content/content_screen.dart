@@ -102,15 +102,24 @@ class _ContentScreenState extends State<ContentScreen> {
   Widget _getAppbar() {
     // final provider = context.watch<NovelProvider>();
     // final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDesktop = TPlatform.isDesktop;
     return SliverAppBar(
-      floating: false,
-      snap: false,
+      floating: isDesktop,
+      snap: isDesktop,
       pinned: false,
       backgroundColor: Colors.transparent, // ဖောက်ထွင်းမြင်ရအောင်
       elevation: 0,
       // နောက်ခံက အမည်းရောင်အုပ်ထားတာမို့ Icon တွေကို အဖြူရောင်ပဲ ပေးလိုက်ပါ
       foregroundColor: Colors.white,
       actions: [ContentMainMenuActions()],
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        color: Colors.white,
+        style: IconButton.styleFrom(
+          backgroundColor: Colors.black.withValues(alpha: 0.7),
+        ),
+        icon: Icon(Icons.arrow_back),
+      ),
     );
   }
 

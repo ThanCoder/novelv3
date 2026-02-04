@@ -46,6 +46,7 @@ class ClientDownloadManager extends TDownloadManager {
 
           await client.download(
             url,
+            token: token,
             savePath: temFile.path,
             onError: controller.addError,
             onCancelCallback: controller.addError,
