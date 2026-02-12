@@ -3,7 +3,7 @@ name: Flutter Build and Release
 on:
   push:
     tags:
-      - 'v*' # v1.0.0 စတဲ့ tag မျိုး push လုပ်ရင် run မယ်
+      - 'v*'
 
 jobs:
   build:
@@ -23,10 +23,9 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x' # သို့မဟုတ် မိမိသုံးချင်တဲ့ version
+          flutter-version: '3.x'
           channel: 'stable'
 
-      # Linux build အတွက် လိုအပ်တဲ့ dependencies များ
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
@@ -43,13 +42,8 @@ jobs:
       - name: Build Linux Desktop
         run: flutter build linux --release
 
-      # 3. Compress Files (Zip)
-      - name: Compress Builds
+      - name: Compress Linux Build
         run: |
-          # Android APKs ကို zip လုပ်ခြင်း
-          zip -r android-apks.zip build/app/outputs/flutter-apk/*.apk
-          
-          # Linux build ကို zip လုပ်ခြင်း (Binary နဲ့ လိုအပ်တဲ့ library များပါအောင်)
           cd build/linux/x64/release/bundle
           zip -r ../../../../../linux-x64-release.zip *
           cd -
@@ -59,7 +53,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            android-apks.zip
+            build/app/outputs/flutter-apk/*.apk
             linux-x64-release.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

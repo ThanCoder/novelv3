@@ -81,5 +81,5 @@ void main() async {
       // await windowManager.focus();
     });
   }
-  runApp(const BlocApp());
+  runApp(const MyApp());
 }
