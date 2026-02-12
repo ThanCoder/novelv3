@@ -1,4 +1,4 @@
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 
 extension NovelExtension on List<Novel> {
   void sortTitle({bool aToZ = true}) {

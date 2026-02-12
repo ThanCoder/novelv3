@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
-import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/core/models/chapter_bookmark.dart';
+import 'package:novel_v3/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/databases/chapter_db.dart';
-import 'package:novel_v3/app/core/providers/chapter_bookmark_provider.dart';
-import 'package:novel_v3/app/core/providers/chapter_provider.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/core/providers/pdf_provider.dart';
-import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
-import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
+import 'package:novel_v3/bloc_app/bloc_app.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
+import 'package:novel_v3/core/types/home_page_list_style_type.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:provider/provider.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -85,16 +81,5 @@ void main() async {
       // await windowManager.focus();
     });
   }
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => novelProvider),
-        ChangeNotifierProvider(create: (context) => PdfProvider()),
-        ChangeNotifierProvider(create: (context) => ChapterProvider()),
-        ChangeNotifierProvider(create: (context) => ChapterBookmarkProvider()),
-        ChangeNotifierProvider(create: (context) => NovelBookmarkProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const BlocApp());
 }

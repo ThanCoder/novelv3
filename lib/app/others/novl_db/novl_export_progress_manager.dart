@@ -8,7 +8,7 @@ import 'package:novel_v3/app/others/novl_db/novl_info.dart';
 import 'package:t_widgets/progress_manager/progress_manager_interface.dart';
 import 'package:t_widgets/progress_manager/progress_message.dart';
 
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 
 class NovlExportProgressManager extends ProgressManagerInterface {
   final Novel novel;

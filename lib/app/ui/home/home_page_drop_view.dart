@@ -1,7 +1,7 @@
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/novel_config/novel_config_services.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';

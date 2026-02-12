@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_client/t_client.dart';

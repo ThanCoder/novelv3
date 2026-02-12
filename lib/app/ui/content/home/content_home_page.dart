@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/content/home/tags_view.dart';
 import 'package:provider/provider.dart';

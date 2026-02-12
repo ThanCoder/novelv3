@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
-import 'package:novel_v3/app/core/services/chapter_bookmark_services.dart';
+import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/models/chapter_bookmark.dart';
+import 'package:novel_v3/core/services/chapter_bookmark_services.dart';
 
 class ChapterBookmarkProvider extends ChangeNotifier {
   List<ChapterBookmark> list = [];

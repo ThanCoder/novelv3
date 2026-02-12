@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:novel_v3/app/core/utils.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 abstract class FileScannerInterface<T> {

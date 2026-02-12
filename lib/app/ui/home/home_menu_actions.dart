@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/app/others/novel_config/novel_config_services.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/home/create_novel_website_info_result_dialog.dart';
@@ -10,12 +10,12 @@ import 'package:novel_v3/app/ui/home/home_list_style_list_tile.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/fetcher_web_novel_url_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
-import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class HomeMenuActions extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:dart_html_dsl/dart_html_dsl.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 
 class HtmlHomePage extends Html5Page {
   final List<Novel> list;

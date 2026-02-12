@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/core/extensions/novel_extension.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:novel_v3/core/extensions/novel_extension.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 import 'package:than_pkg/utils/f_path.dart';

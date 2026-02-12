@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';

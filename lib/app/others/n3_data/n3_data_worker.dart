@@ -4,7 +4,7 @@ import 'dart:isolate';
 
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/app/others/n3_data/constants.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';

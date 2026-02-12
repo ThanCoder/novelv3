@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/app/others/novl_db/novl_export_progress_manager.dart';
 import 'package:novel_v3/app/others/novl_db/novl_info_edit_dialog.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/app/others/novl_db/novl_db.dart';
 import 'package:novel_v3/app/others/novl_db/novl_info.dart';
 import 'package:than_pkg/extensions/file_system_entity_extension.dart';

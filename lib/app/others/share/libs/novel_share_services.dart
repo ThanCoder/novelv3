@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/services/chapter_services.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/app/others/share/html_pages/html_content_page.dart';
 import 'package:novel_v3/app/others/share/html_pages/html_home_page.dart';
 import 'package:novel_v3/app/others/share/libs/novel_chapter.dart';

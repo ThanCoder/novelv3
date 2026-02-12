@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 

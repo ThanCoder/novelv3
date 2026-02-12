@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/wrap_more_less.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';

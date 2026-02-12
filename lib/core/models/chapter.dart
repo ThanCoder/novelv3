@@ -1,4 +1,4 @@
-import 'package:novel_v3/app/core/models/chapter_content.dart';
+import 'package:novel_v3/core/models/chapter_content.dart';
 import 'package:t_db/t_db.dart';
 import 'package:than_pkg/than_pkg.dart';
 

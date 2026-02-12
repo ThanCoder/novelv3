@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/extensions/chapter_extension.dart';
-import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:novel_v3/app/core/services/chapter_services.dart';
+import 'package:novel_v3/core/extensions/chapter_extension.dart';
+import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterProvider extends ChangeNotifier {

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/core/models/pdf_file.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 
 class PdfServices {

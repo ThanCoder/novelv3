@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/share/libs/novel_file.dart';
 import 'package:novel_v3/app/others/share/receive/client_download_manager.dart';
 import 'package:t_client/t_client.dart';

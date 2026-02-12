@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:hb_db/hb_db.dart';
-import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/app/others/novl_db/novl_info.dart';
 import 'package:than_pkg/than_pkg.dart';
 

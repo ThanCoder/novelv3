@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/app/others/pdf_scanner/list_row_item.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:t_widgets/widgets/index.dart';

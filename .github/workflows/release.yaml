@@ -1,92 +1,65 @@
-name: Build and Release (Android & Linux Multi-Format)
+name: Flutter Build and Release
 
 on:
   push:
     tags:
-      - "v*"
+      - 'v*' # v1.0.0 စတဲ့ tag မျိုး push လုပ်ရင် run မယ်
 
 jobs:
   build:
+    name: Build and Release
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
-          cache: true
+          flutter-version: '3.x' # သို့မဟုတ် မိမိသုံးချင်တဲ့ version
+          channel: 'stable'
 
-      # - name: Install Packaging Tools
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev rpm
-      #     # AppImageTool download
-      #     sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
-      #     sudo chmod +x /usr/local/bin/appimagetool
+      # Linux build အတွက် လိုအပ်တဲ့ dependencies များ
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
 
-      - name: Get Dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      # 1. Android Build (Split APKs)
+      # 1. Build Android (Split per ABI)
       - name: Build Android APK
         run: flutter build apk --release --split-per-abi
 
-      # 2. Linux Native Build
-      - name: Build Linux
+      # 2. Build Linux
+      - name: Build Linux Desktop
         run: flutter build linux --release
 
-      # # 3. Create .deb Package
-      # - name: Create Debian Package
-      #   run: |
-      #     APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
-      #     mkdir -p debian/usr/bin
-      #     mkdir -p debian/DEBIAN
-      #     cp -r build/linux/x64/release/bundle/* debian/usr/bin/
-      #     echo "Package: $APP_NAME
-      #     Version: 4.0.0
-      #     Section: utils
-      #     Priority: optional
-      #     Architecture: amd64
-      #     Maintainer: Dev <dev@example.com>
-      #     Description: Flutter App" > debian/DEBIAN/control
-      #     dpkg-deb --build debian ${APP_NAME}_linux_amd64.deb
+      # 3. Compress Files (Zip)
+      - name: Compress Builds
+        run: |
+          # Android APKs ကို zip လုပ်ခြင်း
+          zip -r android-apks.zip build/app/outputs/flutter-apk/*.apk
+          
+          # Linux build ကို zip လုပ်ခြင်း (Binary နဲ့ လိုအပ်တဲ့ library များပါအောင်)
+          cd build/linux/x64/release/bundle
+          zip -r ../../../../../linux-x64-release.zip *
+          cd -
 
-      # # 4. Create .rpm Package
-      # - name: Create RPM Package
-      #   run: |
-      #     APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
-      #     mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-      #     # ရိုးရှင်းသော rpm generation (alien သို့မဟုတ် manual spec သုံးနိုင်သည်)
-      #     # ဒီနေရာမှာ အလွယ်ဆုံးနည်းလမ်းဖြစ်တဲ့ alien ကို သုံးပြီး .deb မှ .rpm ပြောင်းပါမယ်
-      #     sudo apt-get install -y alien
-      #     sudo alien -r --scripts ${APP_NAME}_linux_amd64.deb
-      #     mv *.rpm ${APP_NAME}_linux_amd64.rpm
-
-      # 5. Create AppImage
-      # - name: Create AppImage
-      #   run: |
-      #     APP_NAME=$(grep '^name:' pubspec.yaml | cut -d' ' -f2)
-      #     mkdir -p AppDir/usr/bin
-      #     cp -r build/linux/x64/release/bundle/* AppDir/usr/bin/
-      #     # AppRun နဲ့ Desktop file လိုအပ်ချက်များ (အခြေခံ)
-      #     echo '#!/bin/sh' > AppDir/AppRun
-      #     echo 'exec ./usr/bin/'$APP_NAME >> AppDir/AppRun
-      #     chmod +x AppDir/AppRun
-      #     touch AppDir/$APP_NAME.desktop
-      #     # AppImage tool run
-      #     ARCH=x86_64 /usr/local/bin/appimagetool AppDir ${APP_NAME}_linux.AppImage
-
-      # 6. Upload All Assets
-      - name: Upload Release Assets
+      # 4. Create Release and Upload Files
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            build/app/outputs/flutter-apk/*.apk
-            *.deb
-            *.rpm
-            *.AppImage
+            android-apks.zip
+            linux-x64-release.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

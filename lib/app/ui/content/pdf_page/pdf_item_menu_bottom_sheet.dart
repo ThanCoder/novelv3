@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/managers/copy_progress_manager.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/core/providers/pdf_provider.dart';
+import 'package:novel_v3/core/managers/copy_progress_manager.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/providers/pdf_provider.dart';
 import 'package:novel_v3/app/others/pdf_reader/dialogs/edit_pdf_config_dialog.dart';
 import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/app/routes.dart';

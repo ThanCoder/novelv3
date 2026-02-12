@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/share/libs/novel_file.dart';
 import 'package:novel_v3/app/others/share/receive/client_download_manager.dart';
 import 'package:novel_v3/app/others/share/receive/content_list.dart';

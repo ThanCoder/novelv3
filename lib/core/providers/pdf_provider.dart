@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/extensions/pdf_file_extension.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
-import 'package:novel_v3/app/core/services/pdf_services.dart';
+import 'package:novel_v3/core/extensions/pdf_file_extension.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
+import 'package:novel_v3/core/services/pdf_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class PdfProvider extends ChangeNotifier {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/managers/novel_size_calculator_progress_manager.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
+import 'package:novel_v3/core/managers/novel_size_calculator_progress_manager.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/types/home_page_list_style_type.dart';
 import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/novel_grid_item.dart';
@@ -15,7 +15,7 @@ import 'package:novel_v3/app/ui/home/novel_sliver_tags_bar.dart';
 import 'package:novel_v3/app/ui/search/search_screen.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

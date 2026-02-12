@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/core/interfaces/file_scanner_interface.dart';
+import 'package:novel_v3/core/interfaces/file_scanner_interface.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data.dart';
 import 'package:novel_v3/app/others/n3_data/n3_data_extension.dart';
 import 'package:than_pkg/than_pkg.dart';

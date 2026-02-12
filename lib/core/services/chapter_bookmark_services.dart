@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:novel_v3/app/core/models/chapter_bookmark.dart';
+import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:than_pkg/utils/f_path.dart';
 
 class ChapterBookmarkServices {

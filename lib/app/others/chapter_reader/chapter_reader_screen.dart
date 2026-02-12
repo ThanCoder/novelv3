@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/app/core/models/chapter.dart';
-import 'package:novel_v3/app/core/providers/novel_provider.dart';
+import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/app/others/chapter_reader/chapter_reader_theme_listener.dart';
@@ -111,28 +111,34 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
-        if (!canGoback) {
-          // addPostFrameCallback အစား Future.microtask ကို စမ်းကြည့်ပါ
-          Future.microtask(() => _onBackConfirm());
-          return;
+        if (TPlatform.isDesktop) {
+          if (!canGoback) {
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => _onBackConfirm(),
+            );
+            return;
+          }
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.onReaderClosed?.call(viewList.last);
+            widget.onUpdateConfig?.call(config);
+          });
         }
+        if (TPlatform.isMobile) {
+          if (!canGoback) {
+            // addPostFrameCallback အစား Future.microtask ကို စမ်းကြည့်ပါ
+            Future.microtask(() => _onBackConfirm());
+            return;
+          }
 
-        // ကျန်တဲ့ logic တွေကိုလည်း microtask ထဲ ထည့်နိုင်ပါတယ်
-        Future.microtask(() {
-          widget.onReaderClosed?.call(viewList.last);
-          widget.onUpdateConfig?.call(config);
+          // ကျန်တဲ့ logic တွေကိုလည်း microtask ထဲ ထည့်နိုင်ပါတယ်
+          Future.microtask(() {
+            widget.onReaderClosed?.call(viewList.last);
+            widget.onUpdateConfig?.call(config);
 
-          // တကယ်လို့ current context ကနေ pop လုပ်ချင်တာဆိုရင်
-          if (context.mounted) Navigator.of(context).pop();
-        });
-        // if (!canGoback) {
-        //   WidgetsBinding.instance.addPostFrameCallback((_) => _onBackConfirm());
-        //   return;
-        // }
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   widget.onReaderClosed?.call(viewList.last);
-        //   widget.onUpdateConfig?.call(config);
-        // });
+            // တကယ်လို့ current context ကနေ pop လုပ်ချင်တာဆိုရင်
+            if (context.mounted) Navigator.of(context).pop();
+          });
+        }
       },
       child: ChapterReaderThemeListener(
         theme: config.theme,

@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/extensions/directory_extension.dart';
-import 'package:novel_v3/app/core/extensions/novel_extension.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/core/extensions/directory_extension.dart';
+import 'package:novel_v3/core/extensions/novel_extension.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';

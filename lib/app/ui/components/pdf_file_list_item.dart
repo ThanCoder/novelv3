@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/app/ui/components/pdf_cover_thumbnail_image.dart';
 import 'package:than_pkg/than_pkg.dart';
 

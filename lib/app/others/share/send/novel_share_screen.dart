@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/extensions/novel_extension.dart';
-import 'package:novel_v3/app/core/models/novel.dart';
-import 'package:novel_v3/app/core/services/novel_services.dart';
+import 'package:novel_v3/core/extensions/novel_extension.dart';
+import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/app/others/share/libs/novel_share_services.dart';
 import 'package:novel_v3/app/others/share/libs/share_doc.dart';
 import 'package:novel_v3/app/others/share/server_services.dart';

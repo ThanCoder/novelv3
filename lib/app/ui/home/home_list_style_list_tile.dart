@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/types/home_page_list_style_type.dart';
+import 'package:novel_v3/core/types/home_page_list_style_type.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

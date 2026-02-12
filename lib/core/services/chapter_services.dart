@@ -1,5 +1,5 @@
-import 'package:novel_v3/app/core/databases/chapter_db.dart';
-import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
+import 'package:novel_v3/core/models/chapter.dart';
 
 class ChapterServices {
   static Future<List<Chapter>> getAll(String novelPath) async {

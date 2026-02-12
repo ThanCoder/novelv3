@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:novel_v3/app/core/interfaces/file_scanner_interface.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
+import 'package:novel_v3/core/interfaces/file_scanner_interface.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/app/others/pdf_scanner/pdf_extension.dart';
 
 class PdfScanner extends FileScannerInterface<PdfFile> {

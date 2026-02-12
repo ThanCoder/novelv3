@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-import 'package:novel_v3/app/core/models/novel_meta.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:uuid/uuid.dart';
 
 class Novel {

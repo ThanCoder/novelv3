@@ -1,4 +1,4 @@
-import 'package:novel_v3/app/core/models/chapter.dart';
+import 'package:novel_v3/core/models/chapter.dart';
 
 extension ChapterExtension on List<Chapter> {
   void sortChapterNumber({bool isSort = true}) {

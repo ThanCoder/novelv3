@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/core/models/pdf_file.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dest_type.dart';
