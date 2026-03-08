@@ -75,6 +75,9 @@ class _ChapterListPageState extends State<ChapterListPage> {
 
   Widget _listItem(Chapter chapter) {
     return ListTile(
+      textColor: Theme.brightnessOf(context).isDark
+          ? Colors.white
+          : Colors.black,
       titleTextStyle: TextStyle(fontSize: 13),
       title: Row(
         children: [

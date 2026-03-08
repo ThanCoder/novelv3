@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
+import 'package:t_widgets/internal.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterProvider extends ChangeNotifier {
@@ -10,17 +11,23 @@ class ChapterProvider extends ChangeNotifier {
   static String? currentNovelPath;
 
   Future<void> init(String novelPath, {bool isUsedCache = true}) async {
-    if (isUsedCache && list.isNotEmpty && novelPath == currentNovelPath) return;
+    try {
+      if (isUsedCache && list.isNotEmpty && novelPath == currentNovelPath) {
+        return;
+      }
 
-    isLoading = true;
-    notifyListeners();
-    currentNovelPath = novelPath;
-    list = await ChapterServices().getAll(novelPath);
+      isLoading = true;
+      notifyListeners();
+      currentNovelPath = novelPath;
+      list = await ChapterServices().getAll(novelPath.getName());
 
-    sort(currentSortId, sortAsc);
+      sort(currentSortId, sortAsc);
 
-    isLoading = false;
-    notifyListeners();
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChapterProvider:init]: $e');
+    }
   }
 
   void refershUI() {

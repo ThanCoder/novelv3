@@ -45,6 +45,9 @@ Future<void> goBlocChapterReader(
         //   ),
         // );
       },
+      isExistsChapterBookmark: (chpaterNumber) => false,
+      onAddChapterBookmark: (bookmark) async {},
+      onRemoveChapter: (chpaterNumber) async {},
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
       getChapterContent: (context, chapterNumber) async {

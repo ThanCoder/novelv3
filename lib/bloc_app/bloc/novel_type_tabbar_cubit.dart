@@ -14,7 +14,7 @@ class NovelTypeTabbarCubit extends Cubit<NovelTypes> {
     if (type == NovelTypes.latest) {
       await novelListCubit.fetchNovel();
       return;
-    } else if (novelListCubit.state.list.isEmpty) {
+    } else {
       await novelListCubit.fetchNovel();
     }
 

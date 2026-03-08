@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
@@ -24,6 +25,10 @@ class ChapterReaderScreen extends StatefulWidget {
   final OnGetChapterContentCallback getChapterContent;
   final int Function() getReaded;
   final Future<void> Function(BuildContext context, int readed) onUpdateReaded;
+  // bookmark
+  final bool Function(int chpaterNumber) isExistsChapterBookmark;
+  final Future<void> Function(int chpaterNumber) onRemoveChapter;
+  final Future<void> Function(ChapterBookmark bookmark) onAddChapterBookmark;
   const ChapterReaderScreen({
     super.key,
     required this.currentNovel,
@@ -33,6 +38,9 @@ class ChapterReaderScreen extends StatefulWidget {
     required this.getReaded,
     required this.onUpdateReaded,
     required this.getChapterContent,
+    required this.isExistsChapterBookmark,
+    required this.onRemoveChapter,
+    required this.onAddChapterBookmark,
     this.onReaderClosed,
     this.onUpdateConfig,
   });
@@ -275,10 +283,10 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       theme: config.theme,
       chapter: chapter,
       title: 'BookMark',
-      isExistsChapter: (chpaterNumber) => false,
+      isExistsChapterBookmark: widget.isExistsChapterBookmark,
       currentNovel: widget.currentNovel,
-      onRemoveChapter: (chpaterNumber) async {},
-      onAddChapterBookmark: (bookmark) async {},
+      onRemoveChapter: widget.onRemoveChapter,
+      onAddChapterBookmark: widget.onAddChapterBookmark,
     );
   }
 

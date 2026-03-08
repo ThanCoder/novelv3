@@ -10,14 +10,14 @@ class ChapterBookmarkAction extends StatefulWidget {
   final String? title;
   final ReaderTheme? theme;
   final Novel currentNovel;
-  final bool Function(int chpaterNumber) isExistsChapter;
+  final bool Function(int chpaterNumber) isExistsChapterBookmark;
   final Future<void> Function(int chpaterNumber) onRemoveChapter;
   final Future<void> Function(ChapterBookmark bookmark) onAddChapterBookmark;
   const ChapterBookmarkAction({
     super.key,
     required this.currentNovel,
     required this.chapter,
-    required this.isExistsChapter,
+    required this.isExistsChapterBookmark,
     required this.onRemoveChapter,
     required this.onAddChapterBookmark,
     this.theme,
@@ -31,7 +31,7 @@ class ChapterBookmarkAction extends StatefulWidget {
 class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
   bool isLoading = false;
 
-  bool get isExists => widget.isExistsChapter(widget.chapter.number);
+  bool get isExists => widget.isExistsChapterBookmark(widget.chapter.number);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
     setState(() {
       isLoading = true;
     });
-    if (widget.isExistsChapter(widget.chapter.number)) {
+    if (widget.isExistsChapterBookmark(widget.chapter.number)) {
       await widget.onRemoveChapter(widget.chapter.number);
       if (!mounted) return;
       setState(() {

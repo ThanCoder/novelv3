@@ -53,6 +53,18 @@ Future<void> goChapterReader(
       currentNovel: novel,
       allList: context.read<ChapterProvider>().list,
       getReaded: () => context.read<NovelProvider>().currentNovel!.meta.readed,
+      // bookmark
+      isExistsChapterBookmark: (chpaterNumber) => context
+          .read<ChapterBookmarkProvider>()
+          .isExistsChapter(chpaterNumber),
+      onAddChapterBookmark: (bookmark) async {
+        await context.read<ChapterBookmarkProvider>().add(bookmark);
+      },
+      onRemoveChapter: (chpaterNumber) async {
+        await context.read<ChapterBookmarkProvider>().removeChapter(
+          Chapter.create(number: chpaterNumber, novelId: novel.id),
+        );
+      },
       onUpdateReaded: (context, readed) async {
         final provider = context.read<NovelProvider>();
         await provider.update(
