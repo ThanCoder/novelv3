@@ -35,7 +35,7 @@ class NovelProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    list = await NovelServices.getAll();
+    list = await NovelServices().getAll();
     // sort
     sortAsc = TRecentDB.getInstance.getBool(
       'novel-home-sort-sortAsc',

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
 import 'package:novel_v3/bloc_app/routers.dart';
-import 'package:novel_v3/bloc_app/ui/main/home_screen.dart';
+import 'package:novel_v3/core/services/chapter_services.dart';
+import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/more_libs/setting/core/theme_listener.dart';
 
 class BlocApp extends StatelessWidget {
@@ -9,19 +14,42 @@ class BlocApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => CounterCubit())],
-      child: ThemeListener(
-        builder: (context, themeMode) {
-          return MaterialApp.router(
-            routerConfig: routerConfig,
-            debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.light,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            // home: HomeScreen(),
-          );
-        },
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (context) => NovelServices()),
+        RepositoryProvider(create: (context) => ChapterServices()),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                NovelListCubit(context.read<NovelServices>())..fetchNovel(),
+          ),
+          BlocProvider(
+            create: (context) =>
+                NovelDetailCubit(novelServices: context.read<NovelServices>()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                ChapterListCubit(context.read<ChapterServices>()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                NovelTypeTabbarCubit(context.read<NovelListCubit>()),
+          ),
+        ],
+        child: ThemeListener(
+          builder: (context, themeMode) {
+            return MaterialApp.router(
+              routerConfig: routerConfig,
+              debugShowCheckedModeBanner: false,
+              themeMode: themeMode,
+              theme: ThemeData.light(),
+              darkTheme: ThemeData.dark(),
+              // home: HomeScreen(),
+            );
+          },
+        ),
       ),
     );
   }

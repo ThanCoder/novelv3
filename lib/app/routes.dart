@@ -4,8 +4,8 @@ import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/providers/chapter_bookmark_provider.dart';
 import 'package:novel_v3/core/providers/chapter_provider.dart';
 import 'package:novel_v3/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/others/chapter_reader/chapter_reader_config.dart';
-import 'package:novel_v3/app/others/chapter_reader/chapter_reader_screen.dart';
+import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
+import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/ui/search/search_result_screen.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +50,17 @@ Future<void> goChapterReader(
   goRoute(
     context,
     builder: (context) => ChapterReaderScreen(
+      currentNovel: novel,
       allList: context.read<ChapterProvider>().list,
+      getReaded: () => context.read<NovelProvider>().currentNovel!.meta.readed,
+      onUpdateReaded: (context, readed) async {
+        final provider = context.read<NovelProvider>();
+        await provider.update(
+          provider.currentNovel!.copyWith(
+            meta: provider.currentNovel!.meta.copyWith(readed: chapter.number),
+          ),
+        );
+      },
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
       getChapterContent: (context, chapterNumber) async {

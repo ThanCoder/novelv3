@@ -97,6 +97,7 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
     final chapter = Chapter.create(
       number: bookmark.chapter,
       title: bookmark.title,
+      novelId: context.read<NovelProvider>().currentNovel!.id,
     );
 
     goChapterReader(context, chapter: chapter);

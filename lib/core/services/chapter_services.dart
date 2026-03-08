@@ -1,38 +1,51 @@
+import 'package:flutter/foundation.dart';
 import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
 class ChapterServices {
-  static Future<List<Chapter>> getAll(String novelPath) async {
-    return await ChapterDB.getAll(novelPath);
+  ChapterServices._();
+  static final instance = ChapterServices._();
+  factory ChapterServices() => instance;
+
+  Future<List<Chapter>> getAll(
+    String novelId, {
+    bool runInBackground = true,
+  }) async {
+    if (runInBackground) {
+      final novelPath = PathUtil.getSourcePath(name: novelId);
+      return await compute(getAllChapterInBackground, novelPath);
+    }
+    return await ChapterDB.getAll(novelId);
   }
 
-  static Future<String?> getContent(int chapterNumber, String novelPath) async {
-    final content = await ChapterDB.getContent(chapterNumber, novelPath);
-    if (content == null) return null;
-    return content.content;
+  Future<String?> getContent(int chapterNumber, String novelPath) async {
+    final res = await ChapterDB.getContent(chapterNumber, novelPath);
+    if (res == null) return null;
+    return res.content;
   }
 
-  static Future<void> update(Chapter chapter) async {
+  Future<void> update(Chapter chapter) async {
     await ChapterDB.update(chapter);
   }
 
-  static Future<int> add(Chapter chapter) async {
+  Future<int> add(Chapter chapter) async {
     return await ChapterDB.add(chapter);
   }
 
-  static Future<void> deleteAllById(List<int> ids) async {
+  Future<void> deleteAllById(List<int> ids) async {
     await ChapterDB.deleteAllById(ids);
   }
 
-  static Future<void> delete(Chapter chapter) async {
+  Future<void> delete(Chapter chapter) async {
     await ChapterDB.delete(chapter);
   }
 
-  static Future<void> deleteAll() async {
+  Future<void> deleteAll() async {
     await ChapterDB.deleteAll();
   }
 
-  static Future<void> deleteDBFile(String novelPath) async {
+  Future<void> deleteDBFile(String novelPath) async {
     await ChapterDB.deleteDBFile(novelPath);
   }
 }

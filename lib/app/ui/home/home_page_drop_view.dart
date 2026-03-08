@@ -2,7 +2,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
-import 'package:novel_v3/app/others/novel_config/novel_config_services.dart';
+import 'package:novel_v3/other_apps/novel_config/novel_config_services.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +43,7 @@ class _HomePageDropViewState extends State<HomePageDropView> {
       if (!mounted) return;
 
       final provider = context.read<NovelProvider>();
-      final novel = await NovelServices.createNovelFolder(meta: meta);
+      final novel = await NovelServices().createNovelFolder(meta: meta);
 
       provider.add(novel);
       if (!mounted) return;

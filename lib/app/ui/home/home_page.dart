@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/core/managers/novel_size_calculator_progress_manager.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/types/home_page_list_style_type.dart';
-import 'package:novel_v3/app/others/bookmark/novel_bookmark_provider.dart';
+import 'package:novel_v3/other_apps/bookmark/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/novel_grid_item.dart';
 import 'package:novel_v3/app/ui/components/novel_list_item.dart';

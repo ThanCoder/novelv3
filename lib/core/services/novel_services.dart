@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:novel_v3/core/extensions/novel_extension.dart';
+import 'package:flutter/foundation.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
@@ -9,7 +9,11 @@ import 'package:than_pkg/utils/f_path.dart';
 import 'package:uuid/uuid.dart';
 
 class NovelServices {
-  static Future<String> getNovelFullPath(String id) async {
+  NovelServices._();
+  static final instance = NovelServices._();
+  factory NovelServices() => instance;
+
+  Future<String> getNovelFullPath(String id) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) {
       await dir.create();
@@ -17,23 +21,18 @@ class NovelServices {
     return dir.path;
   }
 
-  static Future<List<Novel>> getAll() async {
-    List<Novel> list = [];
-    final dir = Directory(PathUtil.getSourcePath());
-    if (!dir.existsSync()) return list;
-    for (var file in dir.listSync(followLinks: false)) {
-      if (!file.isDirectory) continue;
-      final novel = await Novel.fromPath(file.path);
-      if (novel == null) continue;
-      list.add(novel);
-    }
-    // sort
-    list.sortDate();
-
-    return list;
+  Future<Novel?> getById(String id) async {
+    final dir = Directory(PathUtil.getSourcePath(name: id));
+    if (!dir.existsSync()) return null;
+    return await Novel.fromPath(dir.path);
   }
 
-  static Future<Novel> createNovelFolder({
+  Future<List<Novel>> getAll() async {
+    final path = PathUtil.getSourcePath();
+    return await compute(_fetchNovelsInBackground, path);
+  }
+
+  Future<Novel> createNovelFolder({
     required NovelMeta meta,
     String? oldId,
   }) async {
@@ -48,7 +47,7 @@ class NovelServices {
     return Novel.create(name: name, path: dir.path, meta: newMeta);
   }
 
-  static Future<NovelMeta?> getNovelMeta(String id) async {
+  Future<NovelMeta?> getNovelMeta(String id) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) return null;
     final file = File(pathJoin(dir.path, 'meta.json'));
@@ -56,19 +55,19 @@ class NovelServices {
     return await NovelMeta.fromPath(file.path);
   }
 
-  static Future<bool> existsNovel(String id) async {
+  Future<bool> existsNovel(String id) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     return dir.existsSync();
   }
 
-  static Future<bool> existsNovelMetaFile(String id) async {
+  Future<bool> existsNovelMetaFile(String id) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) return dir.existsSync();
     final file = File(pathJoin(dir.path, 'meta.json'));
     return await file.exists();
   }
 
-  static Future<bool> existsNovelOtherFile(
+  Future<bool> existsNovelOtherFile(
     String id,
     String filename, {
     int? checkSize,
@@ -81,4 +80,23 @@ class NovelServices {
     }
     return await file.exists();
   }
+}
+
+// သီးခြားခွဲထုတ်ထားတဲ့ Top-level function
+Future<List<Novel>> _fetchNovelsInBackground(String sourcePath) async {
+  List<Novel> list = [];
+  final dir = Directory(sourcePath);
+
+  if (!dir.existsSync()) return list;
+
+  // listSync ထက် list() (Stream) က ပိုကောင်းနိုင်ပေမယ့်
+  // background မှာမို့ Sync သုံးလည်း UI ကို မထိခိုက်တော့ပါဘူး
+  for (var file in dir.listSync(followLinks: false)) {
+    if (file is! Directory) continue;
+
+    final novel = await Novel.fromPath(file.path);
+    if (novel == null) continue;
+    list.add(novel);
+  }
+  return list;
 }

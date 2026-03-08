@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
-import 'package:novel_v3/app/others/novel_config/novel_config_services.dart';
+import 'package:novel_v3/other_apps/novel_config/novel_config_services.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/home/create_novel_website_info_result_dialog.dart';
 import 'package:novel_v3/app/ui/home/home_list_style_list_tile.dart';
@@ -12,7 +12,7 @@ import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
-import 'package:novel_v3/app/others/pdf_scanner/pdf_scanner_screen.dart';
+import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:novel_v3/core/providers/novel_provider.dart';
@@ -112,7 +112,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
 
-        final novel = await NovelServices.createNovelFolder(
+        final novel = await NovelServices().createNovelFolder(
           meta: NovelMeta.create(title: text.trim()),
         );
         provider.add(novel);
@@ -165,7 +165,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
         try {
-          final novel = await NovelServices.createNovelFolder(
+          final novel = await NovelServices().createNovelFolder(
             meta: NovelMeta.create(title: text.trim()),
           );
           // copy cover
@@ -226,7 +226,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       if (!mounted) return;
 
       final provider = context.read<NovelProvider>();
-      final novel = await NovelServices.createNovelFolder(meta: meta);
+      final novel = await NovelServices().createNovelFolder(meta: meta);
 
       provider.add(novel);
       if (!mounted) return;

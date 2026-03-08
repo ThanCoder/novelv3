@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/bloc_app/bloc_app.dart';
 import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/types/home_page_list_style_type.dart';
 import 'package:novel_v3/core/providers/novel_provider.dart';
-import 'package:novel_v3/app/others/pdf_reader/pdf_reader.dart';
+import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
+import 'package:novel_v3/multi_app/multi_app.dart';
+import 'package:novel_v3/multi_app/restart_widget.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:novel_v3/app/my_app.dart';
 import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 
@@ -81,5 +81,5 @@ void main() async {
       // await windowManager.focus();
     });
   }
-  runApp(const MyApp());
+  runApp(const RestartWidget(child:MultiApp()));
 }

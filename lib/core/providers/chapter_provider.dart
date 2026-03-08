@@ -15,7 +15,7 @@ class ChapterProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     currentNovelPath = novelPath;
-    list = await ChapterServices.getAll(novelPath);
+    list = await ChapterServices().getAll(novelPath);
 
     sort(currentSortId, sortAsc);
 
@@ -29,8 +29,8 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> add(Chapter chapter) async {
-    final autoId = await ChapterServices.add(chapter);
-    chapter = chapter.copyWith(autoId: autoId, novelPath: currentNovelPath);
+    final autoId = await ChapterServices().add(chapter);
+    chapter = chapter.copyWith(autoId: autoId, novelId: chapter.novelId);
     chapter.content = null;
     list.add(chapter);
 
@@ -42,12 +42,12 @@ class ChapterProvider extends ChangeNotifier {
     final index = list.indexWhere((e) => e.number == chapter.number);
     if (index == -1) return;
     list.removeAt(index);
-    await ChapterServices.delete(chapter);
+    await ChapterServices().delete(chapter);
     notifyListeners();
   }
 
   Future<void> deleteAllById(List<int> ids) async {
-    await ChapterServices.deleteAllById(List<int>.from(ids));
+    await ChapterServices().deleteAllById(List<int>.from(ids));
 
     for (var id in ids) {
       final index = list.indexWhere((e) => e.autoId == id);
@@ -63,7 +63,7 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
 
     list.clear();
-    await ChapterServices.deleteAll();
+    await ChapterServices().deleteAll();
     isLoading = false;
     notifyListeners();
   }
@@ -73,7 +73,7 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
 
     list.clear();
-    await ChapterServices.deleteDBFile(novelPath);
+    await ChapterServices().deleteDBFile(novelPath);
     isLoading = false;
     notifyListeners();
   }
@@ -91,7 +91,7 @@ class ChapterProvider extends ChangeNotifier {
 
   Future<String?> getContent(int chapterNumber, {String? novelPath}) async {
     try {
-      final content = await ChapterServices.getContent(
+      final content = await ChapterServices().getContent(
         chapterNumber,
         novelPath ?? currentNovelPath!,
       );
@@ -110,7 +110,7 @@ class ChapterProvider extends ChangeNotifier {
     if (index == -1) {
       return;
     }
-    await ChapterServices.update(chapter);
+    await ChapterServices().update(chapter);
     chapter.content = null;
     list[index] = chapter;
     notifyListeners();

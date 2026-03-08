@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/providers/chapter_provider.dart';
+import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -399,6 +400,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
           title: titleController.text,
           number: chapterNumber,
           content: contentController.text,
+          novelId: context.read<NovelProvider>().currentNovel!.id,
         ),
       );
     } else {
@@ -410,6 +412,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
           number: chapterNumber,
           content: contentController.text,
           date: DateTime.now(),
+          novelId: context.read<NovelProvider>().currentNovel!.id,
         ),
       );
     }

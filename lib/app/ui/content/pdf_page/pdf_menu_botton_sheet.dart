@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
-import 'package:novel_v3/app/others/pdf_scanner/pdf_scanner_screen.dart';
+import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/content/pdf_page/pdf_rc_bottom_sheet.dart';
 import 'package:t_widgets/t_widgets.dart';

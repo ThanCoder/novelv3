@@ -40,46 +40,29 @@ class Chapter {
   final int number;
   final String title;
   final DateTime date;
-  String? novelPath;
+  String novelId;
   String? content;
+
   Chapter({
     this.autoId = 0,
     required this.number,
     required this.title,
     required this.date,
-    this.novelPath,
+    required this.novelId,
     this.content,
   });
   factory Chapter.create({
     required int number,
+    required String novelId,
     String title = 'Untitled',
     String? content,
-    String? novelPath,
   }) {
     return Chapter(
       number: number,
       title: title,
       date: DateTime.now(),
       content: content,
-      novelPath: novelPath,
-    );
-  }
-
-  Chapter copyWith({
-    int? autoId,
-    int? number,
-    String? title,
-    DateTime? date,
-    String? novelPath,
-    String? content,
-  }) {
-    return Chapter(
-      autoId: autoId ?? this.autoId,
-      number: number ?? this.number,
-      title: title ?? this.title,
-      date: date ?? this.date,
-      novelPath: novelPath ?? this.novelPath,
-      content: content ?? this.content,
+      novelId: novelId,
     );
   }
 
@@ -99,7 +82,26 @@ class Chapter {
       autoId: map['autoId'] as int,
       number: map.getInt(['number'], def: -1),
       title: map.getString(['title'], def: 'Null'),
+      novelId: map.getString(['novelId'], def: '-1'),
       date: DateTime.fromMillisecondsSinceEpoch(map.getInt(['date'])),
+    );
+  }
+
+  Chapter copyWith({
+    int? autoId,
+    int? number,
+    String? title,
+    DateTime? date,
+    String? novelId,
+    String? content,
+  }) {
+    return Chapter(
+      autoId: autoId ?? this.autoId,
+      number: number ?? this.number,
+      title: title ?? this.title,
+      date: date ?? this.date,
+      novelId: novelId ?? this.novelId,
+      content: content ?? this.content,
     );
   }
 }

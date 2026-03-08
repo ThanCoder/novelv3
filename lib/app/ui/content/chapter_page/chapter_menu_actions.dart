@@ -124,6 +124,7 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
                 title: receiveData.title,
                 number: receiveData.chapterNumber,
                 content: receiveData.contentText,
+                novelId: context.read<NovelProvider>().currentNovel!.id,
               ),
             );
             showTSnackBar(
@@ -176,6 +177,7 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
           number: response.chapterNumber,
           title: response.title,
           content: response.content,
+          novelId: context.read<NovelProvider>().currentNovel!.id,
         ),
       );
     }
