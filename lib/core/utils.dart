@@ -1,6 +1,17 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+extension NavigatorExtension on BuildContext {
+  void closeNavigator({bool? isReturned}) {
+    if (isReturned != null) {
+      Navigator.pop(this, isReturned);
+    } else {
+      Navigator.pop(this);
+    }
+  }
+}
 
 Future<List<String>> getScannerPath() async {
   List<String> list = [];

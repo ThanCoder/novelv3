@@ -7,18 +7,17 @@ class NovelInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Author: ${novel.meta.author}'),
-            Text('MC: ${novel.meta.mc}'),
-            Text('Translator: ${novel.meta.translator}'),
-            _otherTitles(),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(novel.meta.title, style: TextStyle(fontSize: 14)),
+          Text('Author: ${novel.meta.author}'),
+          Text('MC: ${novel.meta.mc}'),
+          Text('Translator: ${novel.meta.translator}'),
+          _otherTitles(),
+        ],
       ),
     );
   }

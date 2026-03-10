@@ -38,9 +38,9 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: context.read<NovelListCubit>().fetchNovel,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: context.read<NovelListCubit>().fetchNovel,
+      // ),
     );
   }
 

@@ -1,11 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/content/chapter_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/novel_detail.dart';
-import 'package:novel_v3/bloc_app/ui/content/novel_info.dart';
+import 'package:novel_v3/bloc_app/ui/content/readed_component.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/extensions/t_platform.dart';
 
 class ContentScreen extends StatefulWidget {
   final String id;
@@ -38,58 +40,69 @@ class _ContentScreenState extends State<ContentScreen> {
           if (state.currentNovel == null) {
             return Center(child: Text('Novel is Null'));
           }
-          final isDesktop = TPlatform.isDesktop;
-          return DefaultTabController(
-            length: 4,
-            child: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    snap: isDesktop,
-                    floating: isDesktop,
-                    title: Text(
-                      state.currentNovel!.meta.title,
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  SliverAppBar(
-                    expandedHeight: 260,
-                    pinned: true,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: TImage(
-                      source: state.currentNovel!.getCoverPath,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: NovelInfo(novel: state.currentNovel!),
-                  ),
-                  // tab
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _TabbarHeader(
-                      TabBar(
-                        labelStyle: TextStyle(fontSize: 13),
-                        isScrollable: true,
-                        tabs: [
-                          Tab(text: 'Detail', icon: Icon(Icons.home)),
-                          Tab(text: 'Chapter', icon: Icon(Icons.list)),
-                          Tab(
-                            text: 'PDF',
-                            icon: Icon(Icons.picture_as_pdf_rounded),
-                          ),
-                          Tab(
-                            text: 'BookMark',
-                            icon: Icon(Icons.bookmark_added),
-                          ),
-                        ],
+          // final isDesktop = TPlatform.isDesktop;
+          return Scaffold(
+            body: DefaultTabController(
+              length: 4,
+              child: NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    // Header with Blurred Background
+                    SliverAppBar(
+                      expandedHeight: 300,
+                      pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            // Background Image
+                            TImage(source: state.currentNovel!.getCoverPath),
+                            // Blur Effect
+                            BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                color: Colors.black.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            // Center Foreground Image
+                            Center(
+                              child: SizedBox(
+                                height: 180,
+                                width: 120,
+                                child: TImage(
+                                  source: state.currentNovel!.getCoverPath,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ];
-              },
-              body: Container(
-                margin: EdgeInsets.only(top: 10),
-                child: TabBarView(
+
+                    // Novel Header Widget
+                    _header(state.currentNovel!),
+
+                    // Sticky Tab Bar
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _SliverAppBarDelegate(
+                        const TabBar(
+                          labelColor: Colors.blue,
+                          unselectedLabelColor: Colors.grey,
+                          indicatorColor: Colors.blue,
+                          tabs: [
+                            Tab(text: "Home"),
+                            Tab(text: "Chapter"),
+                            Tab(text: "PDF"),
+                            Tab(text: "Bookmark"),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ];
+                },
+                // Tab Body
+                body: TabBarView(
                   children: [
                     NovelDetail(novel: state.currentNovel!),
                     ChapterListPage(novel: state.currentNovel!),
@@ -104,11 +117,51 @@ class _ContentScreenState extends State<ContentScreen> {
       ),
     );
   }
+
+  Widget _header(Novel novel) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              novel.meta.title,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            Text(
+              "Author: ${novel.meta.author}",
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            Text(
+              "Translator: ${novel.meta.translator}",
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            Text(
+              "Main Character: ${novel.meta.mc}",
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            ReadedComponent(novel: novel),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _TabbarHeader extends SliverPersistentHeaderDelegate {
+// TabBar ကို Sliver ထဲမှာ Pinned ဖြစ်နေစေဖို့ Delegate class
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
   final TabBar _tabBar;
-  const _TabbarHeader(this._tabBar);
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
 
   @override
   Widget build(
@@ -116,23 +169,14 @@ class _TabbarHeader extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    // return _tabBar;
     return Container(
-      color: Theme.brightnessOf(context).isDark
-          ? const Color.fromARGB(255, 31, 31, 31)
-          : const Color.fromARGB(255, 226, 226, 226),
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: _tabBar,
     );
   }
 
   @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
     return false;
   }
 }

@@ -6,6 +6,7 @@ import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
 import 'package:novel_v3/bloc_app/routers.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
+import 'package:novel_v3/core/services/novel_bookmark_services.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/more_libs/setting/core/theme_listener.dart';
 
@@ -18,6 +19,7 @@ class BlocApp extends StatelessWidget {
       providers: [
         RepositoryProvider(create: (context) => NovelServices()),
         RepositoryProvider(create: (context) => ChapterServices()),
+        RepositoryProvider(create: (context) => NovelBookmarkServices()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -34,8 +36,10 @@ class BlocApp extends StatelessWidget {
                 ChapterListCubit(context.read<ChapterServices>()),
           ),
           BlocProvider(
-            create: (context) =>
-                NovelTypeTabbarCubit(context.read<NovelListCubit>()),
+            create: (context) => NovelTypeTabbarCubit(
+              novelListCubit: context.read<NovelListCubit>(),
+              novelBookmarkServices: context.read<NovelBookmarkServices>(),
+            ),
           ),
         ],
         child: ThemeListener(

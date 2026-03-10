@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/bookmark/novel_bookmark.dart';
-import 'package:novel_v3/other_apps/bookmark/novel_bookmark_services.dart';
+import 'package:novel_v3/core/services/novel_bookmark_services.dart';
 import 'package:provider/provider.dart';
 
 class NovelBookmarkProvider with ChangeNotifier {
@@ -14,7 +14,7 @@ class NovelBookmarkProvider with ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    list = await NovelBookmarkServices.getAll();
+    list = await NovelBookmarkServices().getAll();
     if (!context.mounted) return;
     await parseNovelList(context);
 
@@ -26,7 +26,7 @@ class NovelBookmarkProvider with ChangeNotifier {
     novelList.clear();
     final res = context.read<NovelProvider>().list;
     for (var bookmark in list) {
-      final index = res.indexWhere((e) => e.meta.title == bookmark.title);
+      final index = res.indexWhere((e) => e.meta.id == bookmark.id);
       if (index == -1) continue;
       novelList.add(res[index]);
     }
@@ -37,7 +37,7 @@ class NovelBookmarkProvider with ChangeNotifier {
     NovelBookmark bookmark, {
     required BuildContext context,
   }) async {
-    if (isExists(bookmark.title)) {
+    if (isExists(bookmark.id)) {
       await remove(bookmark, context: context);
     } else {
       await add(bookmark, context: context);
@@ -50,7 +50,7 @@ class NovelBookmarkProvider with ChangeNotifier {
   }) async {
     list.insert(0, bookmark);
     await parseNovelList(context);
-    await NovelBookmarkServices.setList(list);
+    await NovelBookmarkServices().setList(list);
     notifyListeners();
   }
 
@@ -59,18 +59,18 @@ class NovelBookmarkProvider with ChangeNotifier {
     required BuildContext context,
   }) async {
     if (list.isEmpty) return;
-    final index = list.indexWhere((e) => e.title == bookmark.title);
+    final index = list.indexWhere((e) => e.id == bookmark.id);
     if (index != -1) {
       list.removeAt(index);
     }
     await parseNovelList(context);
-    await NovelBookmarkServices.setList(list);
+    await NovelBookmarkServices().setList(list);
     notifyListeners();
   }
 
-  bool isExists(String title) {
+  bool isExists(String id) {
     if (list.isEmpty) return false;
-    final index = list.indexWhere((e) => e.title == title);
+    final index = list.indexWhere((e) => e.id == id);
     return index != -1;
   }
 }

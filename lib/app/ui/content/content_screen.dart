@@ -175,7 +175,7 @@ class _ContentScreenState extends State<ContentScreen> {
             child: Row(
               spacing: 3,
               children: [
-                NovelBookmarkToggleAction(novelTitle: currentNovel!.meta.title),
+                NovelBookmarkToggleAction(novel: currentNovel!),
                 !currentNovel!.meta.isAdult
                     ? SizedBox.shrink()
                     : Chip(
