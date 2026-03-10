@@ -51,7 +51,7 @@ class ChapterListCubit extends Cubit<ChapterListState> {
 
       emit(state.copyWith(isLoading: true, errorMessage: null));
 
-      final list = await chapterServices.getAll(novelId);
+      final list = await chapterServices.getAll(novelId: novelId);
 
       emit(
         state.copyWith(isLoading: false, list: list, currentNovelId: novelId),

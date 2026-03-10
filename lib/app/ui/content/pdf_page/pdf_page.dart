@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
-import 'package:novel_v3/core/providers/pdf_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/pdf_provider.dart';
 import 'package:novel_v3/other_apps/pdf_reader/screens/pdfrx_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
 import 'package:novel_v3/app/routes.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/providers/chapter_provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/chapter_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/page_url_dialog.dart';
 import 'package:novel_v3/app/ui/forms/edit_chapter_screen.dart';
@@ -200,7 +200,7 @@ class _ChapterMenuActionsState extends State<ChapterMenuActions> {
       contentText: 'Chapter Database ကို ဖျက်ချင်တာသေချာပြီလား?',
       submitText: 'Delete Chapter DB',
       onSubmit: () {
-        provider.deleteDBFile(novel.path);
+        provider.deleteDBFile();
       },
     );
   }

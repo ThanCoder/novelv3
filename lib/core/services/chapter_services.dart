@@ -8,8 +8,8 @@ class ChapterServices {
   static final instance = ChapterServices._();
   factory ChapterServices() => instance;
 
-  Future<List<Chapter>> getAll(
-    String novelId, {
+  Future<List<Chapter>> getAll({
+    required String novelId,
     bool runInBackground = true,
   }) async {
     if (runInBackground) {
@@ -19,33 +19,33 @@ class ChapterServices {
     return await ChapterDB.getAll(novelId);
   }
 
-  Future<String?> getContent(int chapterNumber, String novelPath) async {
-    final res = await ChapterDB.getContent(chapterNumber, novelPath);
+  Future<String?> getContent(int chapterNumber, String novelId) async {
+    final res = await ChapterDB.getContent(chapterNumber, novelId);
     if (res == null) return null;
     return res.content;
   }
 
-  Future<void> update(Chapter chapter) async {
-    await ChapterDB.update(chapter);
+  Future<void> update(Chapter chapter, {required String novelId}) async {
+    await ChapterDB.update(chapter, novelId: novelId);
   }
 
-  Future<int> add(Chapter chapter) async {
-    return await ChapterDB.add(chapter);
+  Future<int> add(Chapter chapter, {required String novelId}) async {
+    return await ChapterDB.add(chapter, novelId: novelId);
   }
 
-  Future<void> deleteAllById(List<int> ids) async {
-    await ChapterDB.deleteAllById(ids);
+  Future<void> deleteAllById(List<int> ids, {required String novelId}) async {
+    await ChapterDB.deleteAllById(ids, novelId: novelId);
   }
 
-  Future<void> delete(Chapter chapter) async {
-    await ChapterDB.delete(chapter);
+  Future<void> delete(Chapter chapter, {required String novelId}) async {
+    await ChapterDB.delete(chapter, novelId: novelId);
   }
 
-  Future<void> deleteAll() async {
-    await ChapterDB.deleteAll();
+  Future<void> deleteAll({required String novelId}) async {
+    await ChapterDB.deleteAll(novelId: novelId);
   }
 
-  Future<void> deleteDBFile(String novelPath) async {
-    await ChapterDB.deleteDBFile(novelPath);
+  Future<void> deleteDBFile(String novelId) async {
+    await ChapterDB.deleteDBFile(novelId);
   }
 }

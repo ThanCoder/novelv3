@@ -2,9 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/providers/chapter_bookmark_provider.dart';
-import 'package:novel_v3/core/providers/chapter_provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/chapter_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/bookmark/novel_bookmark_toggle_action.dart';
 import 'package:novel_v3/app/ui/components/page_url_icon_button.dart';
 import 'package:novel_v3/app/ui/content/chapter_bookmark_page/chapter_bookmark_page.dart';
@@ -28,7 +27,7 @@ class ContentScreen extends StatefulWidget {
 class _ContentScreenState extends State<ContentScreen> {
   NovelProvider get getNovelRProvider => context.watch<NovelProvider>();
 
-  Novel? get currentNovel => context.read<NovelProvider>().currentNovel;
+  Novel? get currentNovel => context.read<NovelProvider>().currentNovel!;
 
   @override
   void initState() {
@@ -36,20 +35,13 @@ class _ContentScreenState extends State<ContentScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
-  void init() {
-    if (currentNovel == null) return;
-    context.read<ChapterBookmarkProvider>().init(currentNovel!.path);
-    context.read<ChapterProvider>().init(currentNovel!.path);
+  void init() async {
+    // context.read<ChapterBookmarkProvider>(isUsedCache: false).init();
+    context.read<ChapterProvider>().init(isUsedCache: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (currentNovel == null) {
-      return Scaffold(
-        appBar: AppBar(),
-        body: Center(child: Text('Current Novel is Null!')),
-      );
-    }
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return DefaultTabController(

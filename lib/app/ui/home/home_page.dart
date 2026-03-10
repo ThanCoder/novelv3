@@ -15,7 +15,7 @@ import 'package:novel_v3/app/ui/home/novel_sliver_tags_bar.dart';
 import 'package:novel_v3/app/ui/search/search_screen.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:provider/provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

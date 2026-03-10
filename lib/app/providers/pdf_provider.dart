@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/core/extensions/pdf_file_extension.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/pdf_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class PdfProvider extends ChangeNotifier {
+  final NovelProvider novelProvider;
+  PdfProvider(this.novelProvider);
+
   List<PdfFile> list = [];
   bool isLoading = false;
 

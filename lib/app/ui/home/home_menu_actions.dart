@@ -15,7 +15,7 @@ import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/app/ui/forms/edit_novel_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class HomeMenuActions extends StatefulWidget {

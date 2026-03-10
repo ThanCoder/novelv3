@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/providers/chapter_bookmark_provider.dart';
-import 'package:novel_v3/core/providers/chapter_provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/providers/chapter_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/app/ui/search/search_result_screen.dart';
@@ -75,10 +75,10 @@ Future<void> goChapterReader(
       },
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
+      // content
       getChapterContent: (context, chapterNumber) async {
         final res = await context.read<ChapterProvider>().getContent(
           chapterNumber,
-          novelPath: novel.path,
         );
         // set recent
         await TRecentDB.getInstance.putString(

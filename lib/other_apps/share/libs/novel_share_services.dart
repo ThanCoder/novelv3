@@ -19,7 +19,7 @@ class NovelShareServices {
     List<NovelChapter> chapters = [];
     final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
     if (dir.existsSync()) {
-      for (var chapter in await ChapterServices().getAll(dir.path)) {
+      for (var chapter in await ChapterServices().getAll(novelId: novel.id)) {
         chapters.add(
           NovelChapter(
             id: chapter.autoId,

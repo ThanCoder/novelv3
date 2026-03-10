@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/services/chapter_bookmark_services.dart';
 
 class ChapterBookmarkProvider extends ChangeNotifier {
+  final NovelProvider novelProvider;
+  ChapterBookmarkProvider(this.novelProvider);
+
   List<ChapterBookmark> list = [];
   bool isLoading = false;
-  String? currentNovelPath;
 
-  Future<void> init(String novelPath) async {
-    currentNovelPath = novelPath;
+  Future<void> init() async {
     isLoading = true;
     notifyListeners();
 
     try {
-      list = await ChapterBookmarkServices.getAll(novelPath);
+      list = await ChapterBookmarkServices.getAll(
+        novelProvider.currentNovel!.path,
+      );
       // sort 1 -> 9
       sortNumber();
     } catch (e) {
@@ -33,7 +37,10 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     final index = list.indexWhere((e) => e.chapter == bookmark.chapter);
     if (index == -1) return;
     list[index] = bookmark;
-    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
+    await ChapterBookmarkServices.setAll(
+      list,
+      novelProvider.currentNovel!.path,
+    );
     notifyListeners();
   }
 
@@ -42,7 +49,10 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     // sort 1 -> 9
     sortNumber();
 
-    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
+    await ChapterBookmarkServices.setAll(
+      list,
+      novelProvider.currentNovel!.path,
+    );
     notifyListeners();
   }
 
@@ -52,7 +62,10 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     if (index != -1) {
       list.removeAt(index);
     }
-    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
+    await ChapterBookmarkServices.setAll(
+      list,
+      novelProvider.currentNovel!.path,
+    );
     notifyListeners();
   }
 
@@ -62,7 +75,10 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     if (index != -1) {
       list.removeAt(index);
     }
-    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
+    await ChapterBookmarkServices.setAll(
+      list,
+      novelProvider.currentNovel!.path,
+    );
     notifyListeners();
   }
 
@@ -76,7 +92,10 @@ class ChapterBookmarkProvider extends ChangeNotifier {
       // add
       list.add(bookmark);
     }
-    await ChapterBookmarkServices.setAll(list, currentNovelPath!);
+    await ChapterBookmarkServices.setAll(
+      list,
+      novelProvider.currentNovel!.path,
+    );
     notifyListeners();
   }
 

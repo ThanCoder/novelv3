@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/core/models/chapter.dart';
-import 'package:novel_v3/core/providers/chapter_provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/chapter_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -65,7 +65,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
       setState(() {
         isLoading = true;
       });
-      await provider.init(widget.novelPath);
+      await provider.init();
       // set provider list
       chapterNumber = provider.getLatestChapter + 1;
     }
@@ -297,11 +297,7 @@ class _EditChapterScreenState extends State<EditChapterScreen> {
   }
 
   Future<String> _getChapterFileContent() async {
-    return await provider.getContent(
-          chapterNumber,
-          novelPath: widget.novelPath,
-        ) ??
-        '';
+    return await provider.getContent(chapterNumber) ?? '';
   }
 
   void _paste({_PasteType pasteType = _PasteType.add}) async {

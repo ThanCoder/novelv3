@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/chapter.dart';
-import 'package:novel_v3/core/providers/chapter_provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/chapter_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/components/sort_dialog_action.dart';
 import 'package:novel_v3/app/ui/content/chapter_page/chapter_list_item.dart';
@@ -38,10 +38,7 @@ class _ChapterPageState extends State<ChapterPage> {
 
   Future<void> init({bool isUsedCache = true}) async {
     novelPath = context.read<NovelProvider>().currentNovel!.path;
-    await context.read<ChapterProvider>().init(
-      novelPath!,
-      isUsedCache: isUsedCache,
-    );
+    await context.read<ChapterProvider>().init(isUsedCache: isUsedCache);
     setState(() {});
   }
 

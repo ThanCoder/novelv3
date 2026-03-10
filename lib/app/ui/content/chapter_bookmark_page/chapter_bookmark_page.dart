@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
-import 'package:novel_v3/core/providers/chapter_bookmark_provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/app/routes.dart';
 import 'package:novel_v3/app/ui/content/chapter_bookmark_page/chapter_bookmark_list_item.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,6 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
   @override
   void initState() {
     super.initState();
-    novelPath = context.read<NovelProvider>().currentNovel!.path;
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
@@ -32,10 +31,8 @@ class _ChapterPageState extends State<ChapterBookmarkPage> {
     super.dispose();
   }
 
-  late String novelPath;
-
   Future<void> init() async {
-    await context.read<ChapterBookmarkProvider>().init(novelPath);
+    await context.read<ChapterBookmarkProvider>().init();
   }
 
   ChapterBookmarkProvider get getProvider =>

@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/managers/copy_progress_manager.dart';
-import 'package:novel_v3/core/providers/pdf_provider.dart';
+import 'package:novel_v3/app/providers/pdf_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

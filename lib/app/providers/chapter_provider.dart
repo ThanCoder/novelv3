@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
-import 'package:t_widgets/internal.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterProvider extends ChangeNotifier {
+  final NovelProvider novelProvider;
+
+  ChapterProvider(this.novelProvider);
+
   List<Chapter> list = [];
   bool isLoading = false;
-  static String? currentNovelPath;
+  String? errorMessage;
 
-  Future<void> init(String novelPath, {bool isUsedCache = true}) async {
+  Future<void> init({bool isUsedCache = true}) async {
     try {
-      if (isUsedCache && list.isNotEmpty && novelPath == currentNovelPath) {
+      if (isUsedCache && list.isNotEmpty) {
         return;
       }
 
       isLoading = true;
       notifyListeners();
-      currentNovelPath = novelPath;
-      list = await ChapterServices().getAll(novelPath.getName());
+      list = await ChapterServices().getAll(
+        novelId: novelProvider.currentNovel!.id,
+      );
 
       sort(currentSortId, sortAsc);
 
@@ -36,8 +41,14 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> add(Chapter chapter) async {
-    final autoId = await ChapterServices().add(chapter);
-    chapter = chapter.copyWith(autoId: autoId, novelId: chapter.novelId);
+    final autoId = await ChapterServices().add(
+      chapter,
+      novelId: chapter.novelId,
+    );
+    chapter = chapter.copyWith(
+      autoId: autoId,
+      novelId: novelProvider.currentNovel!.id,
+    );
     chapter.content = null;
     list.add(chapter);
 
@@ -49,12 +60,18 @@ class ChapterProvider extends ChangeNotifier {
     final index = list.indexWhere((e) => e.number == chapter.number);
     if (index == -1) return;
     list.removeAt(index);
-    await ChapterServices().delete(chapter);
+    await ChapterServices().delete(
+      chapter,
+      novelId: novelProvider.currentNovel!.id,
+    );
     notifyListeners();
   }
 
   Future<void> deleteAllById(List<int> ids) async {
-    await ChapterServices().deleteAllById(List<int>.from(ids));
+    await ChapterServices().deleteAllById(
+      List<int>.from(ids),
+      novelId: novelProvider.currentNovel!.id,
+    );
 
     for (var id in ids) {
       final index = list.indexWhere((e) => e.autoId == id);
@@ -70,17 +87,17 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
 
     list.clear();
-    await ChapterServices().deleteAll();
+    await ChapterServices().deleteAll(novelId: novelProvider.currentNovel!.id);
     isLoading = false;
     notifyListeners();
   }
 
-  Future<void> deleteDBFile(String novelPath) async {
+  Future<void> deleteDBFile() async {
     isLoading = true;
     notifyListeners();
 
     list.clear();
-    await ChapterServices().deleteDBFile(novelPath);
+    await ChapterServices().deleteDBFile(novelProvider.currentNovel!.id);
     isLoading = false;
     notifyListeners();
   }
@@ -96,15 +113,13 @@ class ChapterProvider extends ChangeNotifier {
     return index != -1;
   }
 
-  Future<String?> getContent(int chapterNumber, {String? novelPath}) async {
+  Future<String?> getContent(int chapterNumber) async {
     try {
       final content = await ChapterServices().getContent(
         chapterNumber,
-        novelPath ?? currentNovelPath!,
+        novelProvider.currentNovel!.id,
       );
-      if (novelPath != null) {
-        currentNovelPath = novelPath;
-      }
+
       return content;
     } catch (e) {
       debugPrint('[ChapterProvider:getContent]: ${e.toString()}');
@@ -117,7 +132,10 @@ class ChapterProvider extends ChangeNotifier {
     if (index == -1) {
       return;
     }
-    await ChapterServices().update(chapter);
+    await ChapterServices().update(
+      chapter,
+      novelId: novelProvider.currentNovel!.id,
+    );
     chapter.content = null;
     list[index] = chapter;
     notifyListeners();

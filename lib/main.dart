@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/types/home_page_list_style_type.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
@@ -41,8 +40,6 @@ void main() async {
   await PdfReader.instance.init(
     getDarkTheme: () => Setting.getAppConfig.isDarkTheme,
   );
-  // chapter db
-  ChapterDB.setAdapters();
 
   // recent
   await TRecentDB.getInstance.init(
@@ -81,5 +78,5 @@ void main() async {
       // await windowManager.focus();
     });
   }
-  runApp(const RestartWidget(child:MultiApp()));
+  runApp(const RestartWidget(child: MultiApp()));
 }

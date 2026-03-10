@@ -1,6 +1,6 @@
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/other_apps/novel_config/novel_config_services.dart';
 import 'package:novel_v3/app/routes.dart';

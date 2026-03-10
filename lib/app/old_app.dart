@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/other_apps/bookmark/novel_bookmark_provider.dart';
 import 'package:novel_v3/app/ui/home/home_screen.dart';
-import 'package:novel_v3/core/providers/novel_provider.dart';
-import 'package:novel_v3/core/providers/pdf_provider.dart';
+import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:novel_v3/app/providers/pdf_provider.dart';
 import 'package:novel_v3/more_libs/setting/core/theme_listener.dart';
-import 'package:novel_v3/core/providers/chapter_bookmark_provider.dart';
-import 'package:novel_v3/core/providers/chapter_provider.dart';
+import 'package:novel_v3/app/providers/chapter_bookmark_provider.dart';
+import 'package:novel_v3/app/providers/chapter_provider.dart';
 import 'package:provider/provider.dart';
 
 class OldApp extends StatelessWidget {
@@ -16,9 +16,16 @@ class OldApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => NovelProvider()),
-        ChangeNotifierProvider(create: (context) => PdfProvider()),
-        ChangeNotifierProvider(create: (context) => ChapterProvider()),
-        ChangeNotifierProvider(create: (context) => ChapterBookmarkProvider()),
+        ChangeNotifierProvider(
+          create: (context) => PdfProvider(context.read<NovelProvider>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChapterProvider(context.read<NovelProvider>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              ChapterBookmarkProvider(context.read<NovelProvider>()),
+        ),
         ChangeNotifierProvider(create: (context) => NovelBookmarkProvider()),
       ],
       child: ThemeListener(
