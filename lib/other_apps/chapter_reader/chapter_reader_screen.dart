@@ -444,6 +444,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         config: config,
         onUpdated: (updatedConfig) {
           config = updatedConfig;
+          widget.onUpdateConfig?.call(updatedConfig);
           initConfig();
         },
       ),

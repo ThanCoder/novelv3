@@ -24,7 +24,7 @@ class SliverListStyle extends StatelessWidget {
   }
 
   Widget _item(Novel novel) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => onClicked?.call(novel),
       onLongPress: () => onRightClicked?.call(novel),
       onSecondaryTap: () => onRightClicked?.call(novel),
@@ -135,7 +135,7 @@ class SliverListStyle extends StatelessWidget {
                         children: [
                           Icon(Icons.sd_card),
                           Expanded(
-                            child: Text(novel.getSize().fileSizeLabel()),
+                            child: Text(novel.size.fileSizeLabel()),
                           ),
                         ],
                       ),

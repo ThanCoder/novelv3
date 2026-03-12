@@ -16,7 +16,7 @@ class PdfProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    list = await PdfServices.getAll(novelPath);
+    list = await PdfServices().getAll(novelPath);
 
     sort(currentSortId, sortAsc);
 

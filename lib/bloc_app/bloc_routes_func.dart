@@ -3,16 +3,39 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
+import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
+import 'package:novel_v3/other_apps/pdf_reader/screens/pdfrx_reader_screen.dart';
 
 void goBlocRoute(
   BuildContext context, {
   required Widget Function(BuildContext context) builder,
 }) {
   Navigator.push(context, MaterialPageRoute(builder: builder));
+}
+
+// go pdf reader
+
+Future<void> goBlocPdfReader(
+  BuildContext context, {
+  required PdfFile pdf,
+}) async {
+  final pdfConfig = PdfConfig.fromPath(pdf.getCurrentConfigPath);
+  goBlocRoute(
+    context,
+    builder: (context) => PdfrxReaderScreen(
+      sourcePath: pdf.path,
+      pdfConfig: pdfConfig,
+      title: pdf.title,
+      onConfigUpdated: (updatedPdfConfig) {
+        updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
+      },
+    ),
+  );
 }
 
 Future<void> goBlocChapterReader(
@@ -38,12 +61,10 @@ Future<void> goBlocChapterReader(
       allList: context.read<ChapterListCubit>().state.list,
       getReaded: () => novel.meta.readed,
       onUpdateReaded: (context, readed) async {
-        // final provider = context.read<NovelProvider>();
-        // await provider.update(
-        //   provider.currentNovel!.copyWith(
-        //     meta: provider.currentNovel!.meta.copyWith(readed: chapter.number),
-        //   ),
-        // );
+        await context.read<NovelDetailCubit>().updateNovel(
+          novel.id,
+          novel.copyWith(meta: novel.meta.copyWith(readed: chapter.number)),
+        );
       },
       isExistsChapterBookmark: (chpaterNumber) => false,
       onAddChapterBookmark: (bookmark) async {},
@@ -54,7 +75,7 @@ Future<void> goBlocChapterReader(
         try {
           final res = await ChapterServices().getContent(
             chapterNumber,
-            novel.path,
+            novel.id,
           );
           // set recent
           // await TRecentDB.getInstance.putString(

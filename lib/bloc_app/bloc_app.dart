@@ -4,10 +4,12 @@ import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/routers.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/core/services/novel_bookmark_services.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
+import 'package:novel_v3/core/services/pdf_services.dart';
 import 'package:novel_v3/more_libs/setting/core/theme_listener.dart';
 
 class BlocApp extends StatelessWidget {
@@ -20,6 +22,7 @@ class BlocApp extends StatelessWidget {
         RepositoryProvider(create: (context) => NovelServices()),
         RepositoryProvider(create: (context) => ChapterServices()),
         RepositoryProvider(create: (context) => NovelBookmarkServices()),
+        RepositoryProvider(create: (context) => PdfServices()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -32,13 +35,21 @@ class BlocApp extends StatelessWidget {
                 NovelDetailCubit(novelServices: context.read<NovelServices>()),
           ),
           BlocProvider(
-            create: (context) =>
-                ChapterListCubit(context.read<ChapterServices>()),
+            create: (context) => ChapterListCubit(
+              context.read<ChapterServices>(),
+              novelDetailCubit: context.read<NovelDetailCubit>(),
+            ),
           ),
           BlocProvider(
             create: (context) => NovelTypeTabbarCubit(
               novelListCubit: context.read<NovelListCubit>(),
               novelBookmarkServices: context.read<NovelBookmarkServices>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PdfListCubit(
+              context.read<PdfServices>(),
+              novelDetailCubit: context.read<NovelDetailCubit>(),
             ),
           ),
         ],

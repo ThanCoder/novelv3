@@ -32,6 +32,14 @@ class NovelServices {
     return await compute(_fetchNovelsInBackground, path);
   }
 
+  Future<void> updateNovel(String id, Novel novel) async {
+    final dir = Directory(PathUtil.getSourcePath(name: id));
+    if (!dir.existsSync()) {
+      await dir.create();
+    }
+    await novel.meta.save(dir.path);
+  }
+
   Future<Novel> createNovelFolder({
     required NovelMeta meta,
     String? oldId,

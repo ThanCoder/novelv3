@@ -150,7 +150,7 @@ class NovelProvider extends ChangeNotifier {
           index,
           'Calculated Size: \n${novel.meta.title}....',
         );
-        novel.size ??= size;
+        // novel.size ??= size;
 
         // print('index: $index - length: ${list.length}');
       }

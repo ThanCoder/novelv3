@@ -65,7 +65,8 @@ class ChapterReaderConfig {
   Future<void> savePath(String path) async {
     try {
       final file = File(path);
-      final contents = JsonEncoder.withIndent(' ').convert(toMap());
+      // final contents = JsonEncoder.withIndent(' ').convert(toMap());
+      final contents = jsonEncode(toMap());
       await file.writeAsString(contents);
     } catch (e) {
       debugPrint('[ChapterReaderConfig:savePath]: ${e.toString()}');
@@ -85,14 +86,13 @@ class ChapterReaderConfig {
   }
 
   factory ChapterReaderConfig.fromMap(Map<String, dynamic> map) {
-    final themId = map.getString(['themeId'], def: '1');
     return ChapterReaderConfig(
       fontSize: map.getDouble(['fontSize'], def: 18),
       paddingX: map.getDouble(['paddingX'], def: 2),
       paddingY: map.getDouble(['paddingY'], def: 5),
       isKeepScreening: map.getBool(['isKeepScreening'], def: false),
       isBackpressConfirm: map.getBool(['isBackpressConfirm'], def: false),
-      theme: ReaderTheme.getId(themId),
+      theme: ReaderTheme.getId(map.getString(['themeId'], def: '1')),
       desktopArrowKeyScrollJumpToOffset: map.getDouble([
         'desktopArrowKeyScrollJumpToOffset',
       ], def: 50),

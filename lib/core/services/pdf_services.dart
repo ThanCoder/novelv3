@@ -4,8 +4,11 @@ import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 
 class PdfServices {
+  PdfServices._();
+  static final instance = PdfServices._();
+  factory PdfServices() => instance;
 
-  static Future<List<PdfFile>> getAll(String novelPath) async {
+  Future<List<PdfFile>> getAll(String novelPath) async {
     List<PdfFile> list = [];
     final dir = Directory(novelPath);
     if (!dir.existsSync()) return list;
@@ -18,4 +21,6 @@ class PdfServices {
 
     return list;
   }
+
+  Future<void> delete() async {}
 }

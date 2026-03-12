@@ -22,8 +22,8 @@ class HeaderImageComponent extends StatelessWidget {
         ),
         Center(
           child: SizedBox(
-            width: 180,
-            height: 200,
+            width: 200,
+            height: 220,
             child: TImage(
               // fit: BoxFit.contain,
               borderRadius: 10,

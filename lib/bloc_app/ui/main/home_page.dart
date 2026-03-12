@@ -18,14 +18,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Novel Bloc')),
       body: BlocBuilder<NovelListCubit, NovelListState>(
         builder: (context, state) {
           return RefreshIndicator.adaptive(
             onRefresh: context.read<NovelListCubit>().fetchNovel,
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(child: NovelTypeTabbar()),
+                SliverAppBar(title: Text('Novel Bloc'), actions: _actions()),
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  pinned: false,
+                  flexibleSpace: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: NovelTypeTabbar(),
+                  ),
+                ),
+
                 if (state.isLoading)
                   SliverFillRemaining(child: TLoader.random()),
                 if (state.errorMessage != null)
@@ -44,8 +53,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  List<Widget> _actions() {
+    return [IconButton(onPressed: _showSort, icon: Icon(Icons.sort))];
+  }
+
   Widget _listStyle(List<Novel> list) {
     return SliverListStyle(list: list, onClicked: _onClicked);
+  }
+
+  void _showSort() {
+    showTSortDialog(
+      context,
+      sortList: NovelListCubit.sortList,
+      currentId: context.read<NovelListCubit>().state.sortId,
+      isAsc: context.read<NovelListCubit>().state.sortAsc,
+      sortDialogCallback: (id, isAsc) {
+        context.read<NovelListCubit>().sort(id, isAsc);
+      },
+    );
   }
 
   void _onClicked(Novel novel) {

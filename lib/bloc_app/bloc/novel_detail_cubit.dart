@@ -48,12 +48,13 @@ class NovelDetailCubit extends Cubit<NovelDetailState> {
       return null;
     }
   }
-  Future<Novel?> updateNovel(String id,Novel novel) async {
+
+  Future<Novel?> updateNovel(String id, Novel novel) async {
     try {
       if (state.isLoading) return null;
 
       emit(state.copyWith(isLoading: true, errorMessage: null));
-      final novel = await novelServices.getById(id);
+      await novelServices.updateNovel(id, novel);
       emit(state.copyWith(isLoading: false, currentNovel: novel));
       return novel;
     } catch (e) {

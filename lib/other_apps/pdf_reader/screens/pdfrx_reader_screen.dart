@@ -13,7 +13,7 @@ class PdfrxReaderScreen extends StatefulWidget {
   PdfConfig pdfConfig;
   String sourcePath;
   String title;
-  void Function(PdfConfig pdfConfig)? onConfigUpdated;
+  void Function(PdfConfig updatedPdfConfig)? onConfigUpdated;
   String? bookmarkPath;
   PdfrxReaderScreen({
     super.key,
@@ -562,9 +562,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
         return;
       }
 
-      if (widget.onConfigUpdated != null) {
-        widget.onConfigUpdated!(config.copyWith(page: currentPage));
-      }
+      widget.onConfigUpdated?.call(config.copyWith(page: currentPage));
     } catch (e) {
       PdfReader.showDebugLog(
         e.toString(),

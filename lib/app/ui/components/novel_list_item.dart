@@ -128,9 +128,7 @@ class NovelListItem extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.sd_card),
-                          Expanded(
-                            child: Text(novel.getSize().toFileSizeLabel()),
-                          ),
+                          Expanded(child: Text(novel.size.toFileSizeLabel())),
                         ],
                       ),
                       Row(

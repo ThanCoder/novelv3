@@ -17,26 +17,15 @@ extension NovelExtension on List<Novel> {
     sort((a, b) {
       if (isNewest) {
         // newest
-        if (a.meta.date.millisecondsSinceEpoch >
-            b.meta.date.millisecondsSinceEpoch) {
-          return -1;
-        }
-        if (a.meta.date.millisecondsSinceEpoch <
-            b.meta.date.millisecondsSinceEpoch) {
-          return 1;
-        }
+        return b.meta.date.millisecondsSinceEpoch.compareTo(
+          a.meta.date.millisecondsSinceEpoch,
+        );
       } else {
         // oldest top
-        if (a.meta.date.millisecondsSinceEpoch >
-            b.meta.date.millisecondsSinceEpoch) {
-          return 1;
-        }
-        if (a.meta.date.millisecondsSinceEpoch <
-            b.meta.date.millisecondsSinceEpoch) {
-          return -1;
-        }
+        return a.meta.date.millisecondsSinceEpoch.compareTo(
+          b.meta.date.millisecondsSinceEpoch,
+        );
       }
-      return 0;
     });
   }
 
@@ -78,24 +67,10 @@ extension NovelExtension on List<Novel> {
   void sortSize({bool isSmallest = true}) {
     sort((a, b) {
       if (isSmallest) {
-        // isSmallest
-        if (a.getSize() > b.getSize()) {
-          return 1;
-        }
-        if (a.getSize() < b.getSize()) {
-          return -1;
-        }
+        return a.size.compareTo(b.size); // ငယ်ရာမှ ကြီးရာ (Ascending)
       } else {
-        // is largest
-
-        if (a.getSize() > b.getSize()) {
-          return -1;
-        }
-        if (a.getSize() < b.getSize()) {
-          return 1;
-        }
+        return b.size.compareTo(a.size); // ကြီးရာမှ ငယ်ရာ (Descending)
       }
-      return 0;
     });
   }
 }

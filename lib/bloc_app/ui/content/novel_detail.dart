@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/bloc_app/ui/components/expandable_tags.dart';
 import 'package:novel_v3/core/models/novel.dart';
 
 class NovelDetail extends StatelessWidget {
@@ -7,9 +8,14 @@ class NovelDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ListView(
+      shrinkWrap: true,
       padding: const EdgeInsets.all(4.0),
-      child: SelectableText(novel.meta.desc),
+      children: [
+        ExpandableTags(list: novel.meta.tags),
+        novel.meta.tags.isNotEmpty ? Divider() : SizedBox.shrink(),
+        SelectableText(novel.meta.desc),
+      ],
     );
   }
 }

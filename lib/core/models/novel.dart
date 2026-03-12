@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:uuid/uuid.dart';
@@ -11,13 +11,13 @@ class Novel {
   final String path;
   final NovelMeta meta;
   final DateTime date;
-  int? size;
+  final int size;
   Novel({
     required this.id,
     required this.path,
     required this.meta,
     required this.date,
-    this.size,
+    this.size = 0,
   });
   factory Novel.create({
     required String name,
@@ -44,7 +44,7 @@ class Novel {
 
   String get getCoverPath => '$path/cover.png';
 
-  DateTime get getDate => Directory(path).getDate;
+  DateTime get getDate => Directory(path).modified;
 
   List<String> get getConfigFiles {
     List<String> list = [];
@@ -66,19 +66,6 @@ class Novel {
       list.add(file.getName());
     }
     return list;
-  }
-
-  int getSize() {
-    if (size != null) return size ?? 0;
-    int allSize = 0;
-    final dir = Directory(path);
-    if (!dir.existsSync()) return allSize;
-    for (var file in dir.listSync(followLinks: false)) {
-      if (!file.isFile) continue;
-      allSize += file.getSize;
-    }
-    size = allSize;
-    return allSize;
   }
 
   Map<String, dynamic> toMap() {
@@ -104,6 +91,17 @@ class Novel {
     final meta = await NovelMeta.fromPath(path);
     final dir = Directory(path);
     if (!dir.existsSync()) return null;
-    return Novel(id: path.getName(), path: path, meta: meta, date: dir.getDate);
+    int size = 0;
+    for (var file in dir.listSync(followLinks: false)) {
+      if (!file.isFile) continue;
+      size += await file.sizeAsync();
+    }
+    return Novel(
+      id: path.getName(),
+      path: path,
+      meta: meta,
+      date: dir.modified,
+      size: size,
+    );
   }
 }

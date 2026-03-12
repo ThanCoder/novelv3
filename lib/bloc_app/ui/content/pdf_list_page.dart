@@ -1,37 +1,38 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
-import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/extensions/t_platform.dart';
 
-class ChapterListPage extends StatefulWidget {
+class PdfListPage extends StatefulWidget {
   final Novel novel;
-  const ChapterListPage({super.key, required this.novel});
+  const PdfListPage({super.key, required this.novel});
 
   @override
-  State<ChapterListPage> createState() => _ChapterListPageState();
+  State<PdfListPage> createState() => _PdfListPageState();
 }
 
-class _ChapterListPageState extends State<ChapterListPage> {
+class _PdfListPageState extends State<PdfListPage> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
-  Future<void> init({bool isCached = true}) async {
-    await context.read<ChapterListCubit>().fetchList(isCached: isCached);
+  Future<void> init() async {
+    await context.read<PdfListCubit>().fetchList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChapterListCubit, ChapterListState>(
+    return BlocBuilder<PdfListCubit, PdfListCubitState>(
       builder: (context, state) {
         return RefreshIndicator.adaptive(
-          onRefresh: () async => init(isCached: false),
+          onRefresh: init,
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -48,10 +49,7 @@ class _ChapterListPageState extends State<ChapterListPage> {
                 actions: [
                   !TPlatform.isDesktop
                       ? SizedBox.shrink()
-                      : IconButton(
-                          onPressed: () => init(isCached: false),
-                          icon: Icon(Icons.refresh),
-                        ),
+                      : IconButton(onPressed: init, icon: Icon(Icons.refresh)),
                   state.list.isEmpty
                       ? SizedBox.shrink()
                       : IconButton(
@@ -67,6 +65,8 @@ class _ChapterListPageState extends State<ChapterListPage> {
                 SliverFillRemaining(
                   child: Center(child: Text('Error: ${state.errorMessage}')),
                 )
+              else if (state.list.isEmpty)
+                SliverFillRemaining(child: Center(child: Text('Pdf မရှိပါ...')))
               else
                 _chapterList(state.list),
             ],
@@ -76,7 +76,7 @@ class _ChapterListPageState extends State<ChapterListPage> {
     );
   }
 
-  Widget _chapterList(List<Chapter> list) {
+  Widget _chapterList(List<PdfFile> list) {
     return SliverList.separated(
       separatorBuilder: (context, index) => Divider(),
       itemCount: list.length,
@@ -84,31 +84,21 @@ class _ChapterListPageState extends State<ChapterListPage> {
     );
   }
 
-  Widget _listItem(Chapter chapter) {
+  Widget _listItem(PdfFile pdf) {
     return ListTile(
       textColor: Theme.brightnessOf(context).isDark
           ? Colors.white
           : Colors.black,
       titleTextStyle: TextStyle(fontSize: 13),
-      title: Row(
-        children: [
-          Text(
-            '${chapter.number.toString()} : ',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              chapter.title,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: TextStyle(fontSize: 11),
-            ),
-          ),
-        ],
+      title: Text(
+        pdf.title,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       ),
+      subtitle: Text(pdf.getSize.fileSizeLabel()),
       onTap: () {
-        goBlocChapterReader(context, chapter: chapter);
+        goBlocPdfReader(context, pdf: pdf);
       },
     );
   }
@@ -116,17 +106,11 @@ class _ChapterListPageState extends State<ChapterListPage> {
   void _showSortDialog(bool isAsc) {
     showTSortDialog(
       context,
-      isAsc: isAsc,
-      sortList: [
-        TSort(
-          id: 1,
-          title: 'Chapter',
-          ascTitle: 'Up Smallest',
-          descTitle: 'Up Biggest',
-        ),
-      ],
+      currentId: context.read<PdfListCubit>().state.sortId,
+      isAsc: context.read<PdfListCubit>().state.sortAsc,
+      sortList: PdfListCubit.sortList,
       sortDialogCallback: (id, isAsc) {
-        context.read<ChapterListCubit>().sort(isAsc);
+        context.read<PdfListCubit>().sort(id, isAsc);
       },
     );
   }
