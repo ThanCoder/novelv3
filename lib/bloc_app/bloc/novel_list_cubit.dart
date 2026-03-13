@@ -19,10 +19,10 @@ class NovelListState {
     required this.sortId,
     required this.sortAsc,
   });
-  factory NovelListState.initState() {
+  factory NovelListState.initState({bool isLoading = false}) {
     return NovelListState(
       list: [],
-      isLoading: false,
+      isLoading: isLoading,
       errorMessage: null,
       sortId: TRecentDB.getInstance.getInt('novel-list-sort-id', def: 3),
       sortAsc: TRecentDB.getInstance.getBool('novel-list-sort-asc', def: true),
@@ -67,7 +67,7 @@ class NovelListCubit extends Cubit<NovelListState> {
     try {
       if (state.isLoading) return;
 
-      emit(NovelListState.initState());
+      emit(NovelListState.initState(isLoading: true));
       // await Future.delayed(Duration(seconds: 2));
       final list = await novelServices.getAll();
 
@@ -90,7 +90,7 @@ class NovelListCubit extends Cubit<NovelListState> {
 
       emit(state.copyWith(list: list, isLoading: false));
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
     }
   }
 

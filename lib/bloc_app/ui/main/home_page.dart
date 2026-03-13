@@ -29,9 +29,12 @@ class _HomePageState extends State<HomePage> {
                   floating: true,
                   snap: true,
                   pinned: false,
-                  flexibleSpace: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: NovelTypeTabbar(),
+                  // toolbarHeight: 50,
+                  flexibleSpace: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: NovelTypeTabbar(),
+                    ),
                   ),
                 ),
 
