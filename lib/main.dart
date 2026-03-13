@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/types/home_page_list_style_type.dart';
-import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';

@@ -136,6 +136,68 @@ class ChapterListCubit extends Cubit<ChapterListState> {
     }
   }
 
+  Future<String?> getChapterContent(int number) async {
+    return await chapterServices.getContent(
+      number,
+      novelDetailCubit.state.currentNovel!.id,
+    );
+  }
+
+  Future<int> add(Chapter chapter) async {
+    return await chapterServices.add(
+      chapter,
+      novelId: novelDetailCubit.state.currentNovel!.id,
+    );
+  }
+
+  Future<void> update(Chapter chapter) async {
+    await chapterServices.update(
+      chapter,
+      novelId: novelDetailCubit.state.currentNovel!.id,
+    );
+  }
+
+  Future<void> delete(Chapter chapter) async {
+    await chapterServices.delete(
+      chapter,
+      novelId: novelDetailCubit.state.currentNovel!.id,
+    );
+    final index = state.list.indexWhere((e) => e.number == chapter.number);
+    final list = state.list;
+    list.removeAt(index);
+    emit(state.copyWith(list: list));
+  }
+
+  ///
+  /// ###  return (isAdded, isUpdated);
+  ///
+  Future<(bool, bool)> addOrUpdate(Chapter chapter) async {
+    final index = state.list.indexWhere((e) => e.number == chapter.number);
+    final list = state.list;
+    bool isUpdated = false;
+    bool isAdded = false;
+
+    if (index == -1) {
+      //new
+      await add(chapter);
+      list.add(chapter);
+      isAdded = true;
+    } else {
+      //update
+      final updatedChapter = list[index].copyWith(
+        title: chapter.title,
+        number: chapter.number,
+        content: chapter.content,
+      );
+      await update(updatedChapter);
+      list[index] = updatedChapter;
+      isUpdated = true;
+    }
+    list.sortChapterNumber(isSort: state.sortAsc);
+    emit(state.copyWith(list: list));
+    return (isAdded, isUpdated);
+  }
+
   void sort(bool sortAsc) {
     final list = state.list;
     list.sortChapterNumber(isSort: sortAsc);

@@ -3,7 +3,7 @@ import 'package:novel_v3/other_apps/share/libs/share_receive_url_form_dialog.dar
 import 'package:novel_v3/other_apps/share/receive/novel_receive_screen.dart';
 import 'package:novel_v3/other_apps/share/send/novel_share_screen.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
-import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/t_database/index.dart';
 

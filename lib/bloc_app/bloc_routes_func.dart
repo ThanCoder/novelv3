@@ -9,7 +9,6 @@ import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
-import 'package:novel_v3/other_apps/pdf_reader/screens/pdfrx_reader_screen.dart';
 
 void goBlocRoute(
   BuildContext context, {

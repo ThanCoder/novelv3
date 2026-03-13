@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_info.dart';
-import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_widgets/widgets/index.dart';
 
 class NovlInfoEditDialog extends StatefulWidget {

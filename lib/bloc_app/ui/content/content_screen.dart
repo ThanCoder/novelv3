@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/circle_button.dart';
 import 'package:novel_v3/bloc_app/ui/content/chapter_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/novel_detail.dart';
 import 'package:novel_v3/bloc_app/ui/content/novel_page_component.dart';
 import 'package:novel_v3/bloc_app/ui/content/pdf_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/readed_component.dart';
+import 'package:novel_v3/bloc_app/ui/forms/add_chapter_form.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ContentScreen extends StatefulWidget {
@@ -82,7 +85,7 @@ class _ContentScreenState extends State<ContentScreen>
                       pinned: false,
                       floating: true,
                       snap: true, // Snap ကို ဒီမှာ သုံးမယ်
-                      actions: _actions(),
+                      actions: state.currentNovel == null ? [] : _actions(),
                       flexibleSpace: FlexibleSpaceBar(
                         background: Stack(
                           fit: StackFit.expand,
@@ -170,7 +173,12 @@ class _ContentScreenState extends State<ContentScreen>
   }
 
   List<Widget> _actions() {
-    return [CircleButton(icon: Icon(Icons.more_vert, color: Colors.white))];
+    return [
+      CircleButton(
+        icon: Icon(Icons.more_vert, color: Colors.white),
+        onTap: _showMainMenu,
+      ),
+    ];
   }
 
   Widget _header(Novel novel) {
@@ -203,6 +211,28 @@ class _ContentScreenState extends State<ContentScreen>
           NovelPageComponent(novel: novel),
         ],
       ),
+    );
+  }
+
+  // show menu
+  void _showMainMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Chapter'),
+          onTap: () {
+            context.closeNavigator();
+            goBlocRoute(
+              context,
+              builder: (context) => AddChapterForm(
+                novel: context.read<NovelDetailCubit>().state.currentNovel!,
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

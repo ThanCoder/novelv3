@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
+import 'package:novel_v3/bloc_app/ui/forms/add_chapter_form.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -58,7 +60,10 @@ class _ChapterListPageState extends State<ChapterListPage> {
                           onPressed: () => _showSortDialog(state.sortAsc),
                           icon: Icon(Icons.sort),
                         ),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+                  IconButton(
+                    onPressed: _showMainMenu,
+                    icon: Icon(Icons.more_vert),
+                  ),
                 ],
               ),
               if (state.isLoading)
@@ -110,6 +115,7 @@ class _ChapterListPageState extends State<ChapterListPage> {
       onTap: () {
         goBlocChapterReader(context, chapter: chapter);
       },
+      onLongPress: () => _showItemMenu(chapter),
     );
   }
 
@@ -127,6 +133,71 @@ class _ChapterListPageState extends State<ChapterListPage> {
       ],
       sortDialogCallback: (id, isAsc) {
         context.read<ChapterListCubit>().sort(isAsc);
+      },
+    );
+  }
+
+  // show menu
+  void _showMainMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Chapter'),
+          onTap: () {
+            context.closeNavigator();
+            goBlocRoute(
+              context,
+              builder: (context) => AddChapterForm(novel: widget.novel),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showItemMenu(Chapter chapter) {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Edit Chapter'),
+          onTap: () {
+            context.closeNavigator();
+            goBlocRoute(
+              context,
+              builder: (context) =>
+                  AddChapterForm(novel: widget.novel, currentChapter: chapter),
+            );
+          },
+        ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever),
+          title: Text('Delete Chapter'),
+          onTap: () {
+            context.closeNavigator();
+            _deleteChapter(chapter);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _deleteChapter(Chapter chapter) {
+    showTConfirmDialog(
+      context,
+      barrierDismissible: false,
+      contentText: '`${chapter.number}` ကိုဖျက်ချင်တာသေချာပြီလား?',
+      submitText: 'Delete Forever',
+      onSubmit: () {
+        try {
+          context.read<ChapterListCubit>().delete(chapter);
+        } catch (e) {
+          showTMessageDialogError(context, e.toString());
+        }
       },
     );
   }

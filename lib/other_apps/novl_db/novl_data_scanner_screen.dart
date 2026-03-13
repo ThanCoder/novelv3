@@ -4,7 +4,7 @@ import 'package:novel_v3/other_apps/novl_db/novl_data_extension.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_install_screen.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_services.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_list_item.dart';
-import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

@@ -114,6 +114,7 @@ class _ReadedComponentState extends State<ReadedComponent> {
       title: Text('Edit Readed'),
       barrierDismissible: false,
       text: widget.novel.meta.readed.toString(),
+      textInputType: TextInputType.number,
       onSubmit: (text) {
         if (text.isEmpty) return;
         context.read<NovelDetailCubit>().updateNovel(

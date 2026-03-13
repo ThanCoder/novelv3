@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hb_db/hb_db.dart';
-import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_db.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_install_progress_manager.dart';

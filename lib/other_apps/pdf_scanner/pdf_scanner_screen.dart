@@ -5,7 +5,7 @@ import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_extension.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_list_item.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner.dart';
-import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';

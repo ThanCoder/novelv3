@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';

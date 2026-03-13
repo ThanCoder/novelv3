@@ -4,7 +4,7 @@ import 'package:novel_v3/other_apps/novl_db/novl_data_scanner_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/other_apps/share/share_home_screen.dart';
-import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
 class OtherAppListTile extends StatelessWidget {

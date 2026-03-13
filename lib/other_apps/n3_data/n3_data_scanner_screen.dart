@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/app/providers/novel_provider.dart';
+import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_extension.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_list_item.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_install_confirm_dialog.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_services.dart';
-import 'package:novel_v3/app/routes.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:provider/provider.dart';
 import 'n3_data.dart';
