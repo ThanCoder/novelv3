@@ -28,7 +28,6 @@ class _ContentScreenState extends State<ContentScreen> {
 
   void _init() async {
     try {
-      if (!mounted) return;
       await context.read<ChapterListCubit>().fetchList();
     } catch (e) {
       if (!mounted) return;

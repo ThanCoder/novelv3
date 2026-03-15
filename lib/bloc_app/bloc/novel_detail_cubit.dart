@@ -71,7 +71,7 @@ class NovelDetailCubit extends Cubit<NovelDetailState> {
       if (index != -1) {
         // list ထဲမှာ ရှိနေရင်
         final list = novelListCubit.state.list;
-        list[index] = novel;
+        list[index] = novel.copyWith(size: list[index].size);
         novelListCubit.setList(list);
       }
       emit(state.copyWith(isLoading: false, currentNovel: novel));

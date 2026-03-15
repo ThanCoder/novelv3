@@ -15,20 +15,28 @@ class ContentStyleTwo extends StatefulWidget {
 
 class _ContentStyleTwoState extends State<ContentStyleTwo> {
   int _selectedIndex = 0;
-  Widget _getPage() {
-    if (_selectedIndex == 1) {
-      return ChapterListPage(novel: widget.novel);
-    }
-    if (_selectedIndex == 2) {
-      return PdfListPage(novel: widget.novel);
-    }
-    return NovelDetailPage(novel: widget.novel);
-  }
+  // Widget _getPage() {
+  //   if (_selectedIndex == 1) {
+  //     return ChapterListPage(novel: widget.novel);
+  //   }
+  //   if (_selectedIndex == 2) {
+  //     return PdfListPage(novel: widget.novel);
+  //   }
+  //   return NovelDetailPage(novel: widget.novel);
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _getPage(),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          NovelDetailPage(novel: widget.novel),
+          ChapterListPage(novel: widget.novel),
+          PdfListPage(novel: widget.novel),
+          Text('bookmark မရေးရသေး'),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         currentIndex: _selectedIndex,
