@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/content/content_screen.dart';
+import 'package:novel_v3/bloc_app/ui/search/search_result_screen.dart';
+import 'package:novel_v3/bloc_app/ui/search/search_screen.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
@@ -43,6 +46,31 @@ Future<void> goBlocPdfReader(
       title: pdf.title,
       onConfigUpdated: (updatedPdfConfig) {
         updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
+      },
+    ),
+  );
+}
+
+void goBlocSearch(BuildContext context) {
+  final list = context.read<NovelListCubit>().state.list;
+  goBlocRoute(
+    context,
+    builder: (context) => SearchScreen(
+      list: list,
+      onClicked: (novel) {
+        goNovelContentScreen(context, novel: novel);
+      },
+      onSearchResultPage: (title, list) {
+        goBlocRoute(
+          context,
+          builder: (context) => SearchResultScreen(
+            title: title,
+            list: list,
+            onClicked: (novel) {
+              goNovelContentScreen(context, novel: novel);
+            },
+          ),
+        );
       },
     ),
   );

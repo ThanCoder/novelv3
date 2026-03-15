@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 
@@ -31,8 +32,9 @@ class NovelDetailState {
 
 class NovelDetailCubit extends Cubit<NovelDetailState> {
   final NovelServices novelServices;
+  final NovelListCubit novelListCubit;
 
-  NovelDetailCubit({required this.novelServices})
+  NovelDetailCubit({required this.novelServices, required this.novelListCubit})
     : super(NovelDetailState.initState(isLoading: false));
 
   Future<void> setCurrentNovel(Novel novel) async {
@@ -64,6 +66,14 @@ class NovelDetailCubit extends Cubit<NovelDetailState> {
 
       emit(state.copyWith(isLoading: true, errorMessage: null));
       await novelServices.updateNovel(id, novel);
+      // update list
+      final index = novelListCubit.state.list.indexWhere((e) => e.id == id);
+      if (index != -1) {
+        // list ထဲမှာ ရှိနေရင်
+        final list = novelListCubit.state.list;
+        list[index] = novel;
+        novelListCubit.setList(list);
+      }
       emit(state.copyWith(isLoading: false, currentNovel: novel));
       return novel;
     } catch (e) {

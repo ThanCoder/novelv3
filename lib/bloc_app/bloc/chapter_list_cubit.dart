@@ -7,9 +7,6 @@ import 'package:novel_v3/core/services/chapter_services.dart';
 class ChapterListState {
   final String currentNovelId;
   final List<Chapter> list;
-  final Chapter? readedChapter;
-  final Chapter? readedChapterPre;
-  final Chapter? readedChapterNext;
   final bool isLoading;
   final String? errorMessage;
   final bool sortAsc;
@@ -17,9 +14,6 @@ class ChapterListState {
   const ChapterListState({
     required this.currentNovelId,
     required this.list,
-    this.readedChapter,
-    this.readedChapterPre,
-    this.readedChapterNext,
     required this.isLoading,
     this.errorMessage,
     this.sortAsc = true,
@@ -34,9 +28,6 @@ class ChapterListState {
       isLoading: isLoading,
       currentNovelId: '-1',
       errorMessage: null,
-      readedChapter: null,
-      readedChapterNext: null,
-      readedChapterPre: null,
       sortAsc: sortAsc,
     );
   }
@@ -44,9 +35,6 @@ class ChapterListState {
   ChapterListState copyWith({
     String? currentNovelId,
     List<Chapter>? list,
-    Chapter? readedChapter,
-    Chapter? readedChapterPre,
-    Chapter? readedChapterNext,
     bool? isLoading,
     String? errorMessage,
     bool? sortAsc,
@@ -54,9 +42,6 @@ class ChapterListState {
     return ChapterListState(
       currentNovelId: currentNovelId ?? this.currentNovelId,
       list: list ?? this.list,
-      readedChapter: readedChapter ?? this.readedChapter,
-      readedChapterPre: readedChapterPre ?? this.readedChapterPre,
-      readedChapterNext: readedChapterNext ?? this.readedChapterNext,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
       sortAsc: sortAsc ?? this.sortAsc,
@@ -92,41 +77,11 @@ class ChapterListCubit extends Cubit<ChapterListState> {
 
       final list = await chapterServices.getAll(novelId: novel.id);
 
-      // readed အတွက်
-      Chapter? readedChapter;
-      Chapter? readedPrevChapter;
-      Chapter? readedNextChapter;
-
-      if (list.isNotEmpty) {
-        final sortList = List.of(list);
-        sortList.sortChapterNumber();
-        final index = list.indexWhere((e) => e.number == novel.meta.readed);
-        if (index != -1) {
-          readedChapter = list[index];
-          // Previous Chapter: ရှေ့မှာ အခန်းကျန်သေးလား စစ်တာ (Index 0 ထက် ကြီးရမယ်)
-          if (index > 0) {
-            readedPrevChapter = list[index - 1];
-          }
-
-          // Next Chapter: နောက်မှာ အခန်းကျန်သေးလား စစ်တာ
-          // (Index က နောက်ဆုံးခန်း မဟုတ်ရဘူး၊ ဆိုလိုတာက length - 1 ထက် ငယ်ရမယ်)
-          if (index < list.length - 1) {
-            readedNextChapter = list[index + 1];
-          }
-        }
-      }
       // sort
       list.sortChapterNumber(isSort: state.sortAsc);
 
       emit(
-        state.copyWith(
-          isLoading: false,
-          list: list,
-          currentNovelId: novel.id,
-          readedChapter: readedChapter,
-          readedChapterNext: readedNextChapter,
-          readedChapterPre: readedPrevChapter,
-        ),
+        state.copyWith(isLoading: false, list: list, currentNovelId: novel.id),
       );
     } catch (e) {
       emit(
@@ -207,4 +162,51 @@ class ChapterListCubit extends Cubit<ChapterListState> {
 
     emit(state.copyWith(list: list, sortAsc: sortAsc));
   }
+
+  ReadedResponse getReadedResponse() {
+    // readed အတွက်
+    Chapter? readedChapter;
+    Chapter? readedPrevChapter;
+    Chapter? readedNextChapter;
+
+    final list = List.of(state.list);
+
+    if (list.isNotEmpty) {
+      final sortList = List.of(list);
+      sortList.sortChapterNumber();
+      final index = list.indexWhere(
+        (e) => e.number == novelDetailCubit.state.currentNovel!.meta.readed,
+      );
+      if (index != -1) {
+        readedChapter = list[index];
+        // Previous Chapter: ရှေ့မှာ အခန်းကျန်သေးလား စစ်တာ (Index 0 ထက် ကြီးရမယ်)
+        if (index > 0) {
+          readedPrevChapter = list[index - 1];
+        }
+
+        // Next Chapter: နောက်မှာ အခန်းကျန်သေးလား စစ်တာ
+        // (Index က နောက်ဆုံးခန်း မဟုတ်ရဘူး၊ ဆိုလိုတာက length - 1 ထက် ငယ်ရမယ်)
+        if (index < list.length - 1) {
+          readedNextChapter = list[index + 1];
+        }
+      }
+    }
+    return ReadedResponse(
+      readedChapter: readedChapter,
+      readedNextChapter: readedNextChapter,
+      readedPrevChapter: readedPrevChapter,
+    );
+  }
+}
+
+class ReadedResponse {
+  final Chapter? readedChapter;
+  final Chapter? readedPrevChapter;
+  final Chapter? readedNextChapter;
+
+  const ReadedResponse({
+    this.readedChapter,
+    this.readedPrevChapter,
+    this.readedNextChapter,
+  });
 }

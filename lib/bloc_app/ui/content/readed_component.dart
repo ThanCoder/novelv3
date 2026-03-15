@@ -36,6 +36,10 @@ class _ReadedComponentState extends State<ReadedComponent> {
           if (state.isLoading) {
             return TLoader.random();
           }
+          final readedResponses = context
+              .read<ChapterListCubit>()
+              .getReadedResponse();
+
           return Row(
             children: [
               InkWell(
@@ -48,30 +52,33 @@ class _ReadedComponentState extends State<ReadedComponent> {
                   ),
                 ),
               ),
-              state.readedChapter == null
+              readedResponses.readedChapter == null
                   ? SizedBox.shrink()
                   : TextButton(
-                      onPressed: () => _goReadedChapter(state.readedChapter!),
+                      onPressed: () =>
+                          _goReadedChapter(readedResponses.readedChapter!),
                       child: Text(
                         'Read',
                         style: TextStyle(color: Colors.blue[600]),
                       ),
                     ),
-              state.readedChapterPre == null
+              readedResponses.readedPrevChapter == null
                   ? SizedBox.shrink()
                   : TextButton(
-                      onPressed: () =>
-                          _goReadedPrevChapter(state.readedChapterPre!),
+                      onPressed: () => _goReadedPrevChapter(
+                        readedResponses.readedPrevChapter!,
+                      ),
                       child: Text(
                         'Prev Chapter',
                         style: TextStyle(color: Colors.blue[600]),
                       ),
                     ),
-              state.readedChapterNext == null
+              readedResponses.readedNextChapter == null
                   ? SizedBox.shrink()
                   : TextButton(
-                      onPressed: () =>
-                          _goReadedNextChapter(state.readedChapterNext!),
+                      onPressed: () => _goReadedNextChapter(
+                        readedResponses.readedNextChapter!,
+                      ),
                       child: Text(
                         'Next Chapter',
                         style: TextStyle(color: Colors.blue[600]),

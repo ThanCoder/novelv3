@@ -31,8 +31,10 @@ class BlocApp extends StatelessWidget {
                 NovelListCubit(context.read<NovelServices>())..fetchNovel(),
           ),
           BlocProvider(
-            create: (context) =>
-                NovelDetailCubit(novelServices: context.read<NovelServices>()),
+            create: (context) => NovelDetailCubit(
+              novelServices: context.read<NovelServices>(),
+              novelListCubit: context.read<NovelListCubit>(),
+            ),
           ),
           BlocProvider(
             create: (context) => ChapterListCubit(

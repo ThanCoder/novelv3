@@ -57,7 +57,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> _actions() {
-    return [IconButton(onPressed: _showSort, icon: Icon(Icons.sort))];
+    return [
+      IconButton(
+        onPressed: () => goBlocSearch(context),
+        icon: Icon(Icons.search),
+      ),
+      IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
+    ];
   }
 
   Widget _listStyle(List<Novel> list) {

@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/rendering.dart';
 import 'package:hb_db/hb_db.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:uuid/uuid.dart';
@@ -103,13 +101,9 @@ class NovelMeta {
   }
 
   Future<void> save(String novelPath) async {
-    try {
-      final metaFile = File(pathJoin(novelPath, metaName));
-      final contents = jsonEncode(toMap());
-      await metaFile.writeAsString(contents);
-    } catch (e) {
-      debugPrint('[NovelMeta:save]: $e');
-    }
+    final metaFile = File(pathJoin(novelPath, metaName));
+    final contents = jsonEncode(toMap());
+    await metaFile.writeAsString(contents);
   }
 
   static List<String> _getListFromString(String value) {

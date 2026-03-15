@@ -16,7 +16,7 @@ class NovelDetailPage extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 300,
+            height: 330,
             width: size.width,
             child: Stack(
               children: [
