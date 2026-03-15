@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onClicked(Novel novel) {
-    context.push('/content/${novel.id}');
+    // context.push('/content/${novel.id}');
+    goNovelContentScreen(context, novel: novel);
   }
 }

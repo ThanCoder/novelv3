@@ -74,6 +74,9 @@ class ChapterListCubit extends Cubit<ChapterListState> {
     try {
       if (state.isLoading) return;
 
+      //delay
+      // await Future.delayed(Duration(seconds: 3));
+
       final novel = novelDetailCubit.state.currentNovel;
       if (novel == null) return;
 

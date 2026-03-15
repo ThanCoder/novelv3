@@ -12,8 +12,8 @@ class NovelDetailState {
     required this.isLoading,
     this.errorMessage,
   });
-  factory NovelDetailState.initState() {
-    return NovelDetailState(isLoading: false);
+  factory NovelDetailState.initState({bool isLoading = true}) {
+    return NovelDetailState(isLoading: isLoading);
   }
 
   NovelDetailState copyWith({
@@ -33,18 +33,27 @@ class NovelDetailCubit extends Cubit<NovelDetailState> {
   final NovelServices novelServices;
 
   NovelDetailCubit({required this.novelServices})
-    : super(NovelDetailState.initState());
+    : super(NovelDetailState.initState(isLoading: false));
+
+  Future<void> setCurrentNovel(Novel novel) async {
+    emit(state.copyWith(currentNovel: novel, isLoading: false));
+    await Future.delayed(Duration.zero);
+  }
 
   Future<Novel?> getNovelById(String id) async {
     try {
       if (state.isLoading) return null;
+      if (state.currentNovel != null && state.currentNovel!.id == id) {
+        return state.currentNovel;
+      }
 
-      emit(state.copyWith(isLoading: true, errorMessage: null));
+      emit(NovelDetailState.initState());
+
       final novel = await novelServices.getById(id);
       emit(state.copyWith(isLoading: false, currentNovel: novel));
       return novel;
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
       return null;
     }
   }

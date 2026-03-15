@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
+import 'package:novel_v3/bloc_app/ui/content/content_screen.dart';
 import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
+import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
@@ -17,8 +20,16 @@ void goBlocRoute(
   Navigator.push(context, MaterialPageRoute(builder: builder));
 }
 
-// go pdf reader
+Future<void> goNovelContentScreen(
+  BuildContext context, {
+  required Novel novel,
+}) async {
+  await context.read<NovelDetailCubit>().setCurrentNovel(novel);
+  if (!context.mounted) return;
+  goRoute(context, builder: (context) => ContentScreen(novel: novel));
+}
 
+// go pdf reader
 Future<void> goBlocPdfReader(
   BuildContext context, {
   required PdfFile pdf,

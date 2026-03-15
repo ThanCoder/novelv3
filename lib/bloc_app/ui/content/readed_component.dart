@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
@@ -6,7 +7,7 @@ import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/utils.dart';
-import 'package:t_widgets/functions/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class ReadedComponent extends StatefulWidget {
   final Novel novel;
@@ -32,6 +33,9 @@ class _ReadedComponentState extends State<ReadedComponent> {
       scrollDirection: Axis.horizontal,
       child: BlocBuilder<ChapterListCubit, ChapterListState>(
         builder: (context, state) {
+          if (state.isLoading) {
+            return TLoader.random();
+          }
           return Row(
             children: [
               InkWell(
@@ -115,6 +119,7 @@ class _ReadedComponentState extends State<ReadedComponent> {
       barrierDismissible: false,
       text: widget.novel.meta.readed.toString(),
       textInputType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       onSubmit: (text) {
         if (text.isEmpty) return;
         context.read<NovelDetailCubit>().updateNovel(

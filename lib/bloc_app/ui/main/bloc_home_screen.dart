@@ -3,14 +3,14 @@ import 'package:novel_v3/multi_app/more_app.dart';
 
 import 'home_page.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class BlocHomeScreen extends StatefulWidget {
+  const BlocHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<BlocHomeScreen> createState() => _BlocHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _BlocHomeScreenState extends State<BlocHomeScreen> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
