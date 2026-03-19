@@ -1,5 +1,6 @@
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:novel_v3/bloc_app/ui/components/novel_bookmark_toggler.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -85,25 +86,11 @@ class SliverListStyle extends StatelessWidget {
                         ),
                       ),
                       // bookmark
-                      // Positioned(
-                      //   bottom: 0,
-                      //   child:
-                      //       !context.watch<NovelBookmarkProvider>().isExists(
-                      //         novel.meta.title,
-                      //       )
-                      //       ? SizedBox.shrink()
-                      //       : Container(
-                      //           decoration: BoxDecoration(
-                      //             color: Colors.black.withValues(alpha: 0.7),
-                      //             borderRadius: BorderRadius.circular(50),
-                      //           ),
-                      //           child: Icon(
-                      //             Icons.bookmark_added,
-                      //             size: 20,
-                      //             color: Colors.green,
-                      //           ),
-                      //         ),
-                      // ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: NovelBookmarkToggler(novel: novel),
+                      ),
                     ],
                   ),
                 ),
@@ -134,9 +121,7 @@ class SliverListStyle extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.sd_card),
-                          Expanded(
-                            child: Text(novel.size.fileSizeLabel()),
-                          ),
+                          Expanded(child: Text(novel.size.fileSizeLabel())),
                         ],
                       ),
                       Row(

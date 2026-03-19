@@ -1,17 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_bookmark_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/services/novel_bookmark_services.dart';
 
 class NovelTypeTabbarCubit extends Cubit<NovelTypes> {
   final NovelListCubit novelListCubit;
-  final NovelBookmarkServices novelBookmarkServices;
+  final NovelBookmarkListCubit novelBookmarkListCubit;
   final List<Novel> _allNovelList = [];
 
   NovelTypeTabbarCubit({
     required this.novelListCubit,
-    required this.novelBookmarkServices,
+    required this.novelBookmarkListCubit,
   }) : super(NovelTypes.latest);
 
   void setCurrent(NovelTypes type) async {
@@ -21,8 +21,7 @@ class NovelTypeTabbarCubit extends Cubit<NovelTypes> {
 
     // book mark
     if (type == NovelTypes.bookmark) {
-      final list = await novelBookmarkServices.getAllNovelList();
-      novelListCubit.setList(list);
+      novelListCubit.setList(novelBookmarkListCubit.state.list);
       return;
     }
 

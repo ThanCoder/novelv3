@@ -16,7 +16,7 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      list = await ChapterBookmarkServices.getAll(
+      list = await ChapterBookmarkServices.instance.getAll(
         novelProvider.currentNovel!.path,
       );
       // sort 1 -> 9
@@ -37,7 +37,7 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     final index = list.indexWhere((e) => e.chapter == bookmark.chapter);
     if (index == -1) return;
     list[index] = bookmark;
-    await ChapterBookmarkServices.setAll(
+    await ChapterBookmarkServices.instance.setAll(
       list,
       novelProvider.currentNovel!.path,
     );
@@ -49,7 +49,7 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     // sort 1 -> 9
     sortNumber();
 
-    await ChapterBookmarkServices.setAll(
+    await ChapterBookmarkServices.instance.setAll(
       list,
       novelProvider.currentNovel!.path,
     );
@@ -62,7 +62,7 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     if (index != -1) {
       list.removeAt(index);
     }
-    await ChapterBookmarkServices.setAll(
+    await ChapterBookmarkServices.instance.setAll(
       list,
       novelProvider.currentNovel!.path,
     );
@@ -75,7 +75,7 @@ class ChapterBookmarkProvider extends ChangeNotifier {
     if (index != -1) {
       list.removeAt(index);
     }
-    await ChapterBookmarkServices.setAll(
+    await ChapterBookmarkServices.instance.setAll(
       list,
       novelProvider.currentNovel!.path,
     );
@@ -92,7 +92,7 @@ class ChapterBookmarkProvider extends ChangeNotifier {
       // add
       list.add(bookmark);
     }
-    await ChapterBookmarkServices.setAll(
+    await ChapterBookmarkServices.instance.setAll(
       list,
       novelProvider.currentNovel!.path,
     );

@@ -17,8 +17,9 @@ class ChapterBookmark {
   }
 
   factory ChapterBookmark.fromMap(Map<String, dynamic> map) {
+    final title = map.getString(['title'], def: 'Untitled');
     return ChapterBookmark(
-      title: map.getString(['title']),
+      title: title.isEmpty ? 'Untitled' : title,
       chapter: map.getInt(['chapter']),
     );
   }

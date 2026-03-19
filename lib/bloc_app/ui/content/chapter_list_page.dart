@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
+import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/bloc_app/ui/forms/add_chapter_form.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -72,6 +73,15 @@ class _ChapterListPageState extends State<ChapterListPage> {
                 SliverFillRemaining(
                   child: Center(child: Text('Error: ${state.errorMessage}')),
                 )
+              else if (state.list.isEmpty)
+                SliverFillRemaining(
+                  child: Center(
+                    child: RefreshBtnComponent(
+                      text: Text('Chapter List Empty...'),
+                      onClicked: init,
+                    ),
+                  ),
+                )
               else
                 _chapterList(state.list),
             ],
@@ -90,32 +100,35 @@ class _ChapterListPageState extends State<ChapterListPage> {
   }
 
   Widget _listItem(Chapter chapter) {
-    return ListTile(
-      textColor: Theme.brightnessOf(context).isDark
-          ? Colors.white
-          : Colors.black,
-      titleTextStyle: TextStyle(fontSize: 13),
-      title: Row(
-        children: [
-          Text(
-            '${chapter.number.toString()} : ',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              chapter.title,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: TextStyle(fontSize: 11),
+    return InkWell(
+      onSecondaryTap: () => _showItemMenu(chapter),
+      child: ListTile(
+        textColor: Theme.brightnessOf(context).isDark
+            ? Colors.white
+            : Colors.black,
+        titleTextStyle: TextStyle(fontSize: 13),
+        title: Row(
+          children: [
+            Text(
+              '${chapter.number.toString()} : ',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
+            SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                chapter.title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(fontSize: 11),
+              ),
+            ),
+          ],
+        ),
+        onTap: () {
+          goBlocChapterReader(context, chapter: chapter);
+        },
+        onLongPress: () => _showItemMenu(chapter),
       ),
-      onTap: () {
-        goBlocChapterReader(context, chapter: chapter);
-      },
-      onLongPress: () => _showItemMenu(chapter),
     );
   }
 

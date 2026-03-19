@@ -1,16 +1,26 @@
 import 'package:novel_v3/core/models/chapter.dart';
+import 'package:novel_v3/core/models/chapter_bookmark.dart';
 
 extension ChapterExtension on List<Chapter> {
   void sortChapterNumber({bool isSort = true}) {
     sort((a, b) {
       if (isSort) {
-        if (a.number > b.number) return 1;
-        if (a.number < b.number) return -1;
+        return a.number.compareTo(b.number);
       } else {
-        if (a.number > b.number) return -1;
-        if (a.number < b.number) return 1;
+        return b.number.compareTo(a.number);
       }
-      return 0;
+    });
+  }
+}
+
+extension ChapterBookmarkExtension on List<ChapterBookmark> {
+  void sortChapterNumber({bool isSort = true}) {
+    sort((a, b) {
+      if (isSort) {
+        return a.chapter.compareTo(b.chapter);
+      } else {
+        return b.chapter.compareTo(a.chapter);
+      }
     });
   }
 }

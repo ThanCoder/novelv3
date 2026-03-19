@@ -26,8 +26,8 @@ class ChapterReaderScreen extends StatefulWidget {
   final int Function() getReaded;
   final Future<void> Function(BuildContext context, int readed) onUpdateReaded;
   // bookmark
-  final bool Function(int chpaterNumber) isExistsChapterBookmark;
-  final Future<void> Function(int chpaterNumber) onRemoveChapter;
+  final bool Function(int chapterNumber) isExistsChapterBookmark;
+  final Future<void> Function(int chapterNumber) onRemoveChapter;
   final Future<void> Function(ChapterBookmark bookmark) onAddChapterBookmark;
   const ChapterReaderScreen({
     super.key,

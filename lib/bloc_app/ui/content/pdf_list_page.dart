@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
+import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -66,7 +67,14 @@ class _PdfListPageState extends State<PdfListPage> {
                   child: Center(child: Text('Error: ${state.errorMessage}')),
                 )
               else if (state.list.isEmpty)
-                SliverFillRemaining(child: Center(child: Text('Pdf မရှိပါ...')))
+                SliverFillRemaining(
+                  child: Center(
+                    child: RefreshBtnComponent(
+                      text: Text('Pdf မရှိပါ...'),
+                      onClicked: init,
+                    ),
+                  ),
+                )
               else
                 _chapterList(state.list),
             ],

@@ -78,7 +78,7 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
         barrierDismissible: false,
         text: widget.chapter.title,
         title: Text('BookMark'),
-        submitText: 'Rename',
+        submitText: 'Add Title',
         onCancel: () {
           if (!mounted) return;
           setState(() {

@@ -20,9 +20,9 @@ class PdfListCubitState {
     required this.sortAsc,
     this.errorMessage,
   });
-  factory PdfListCubitState.create() {
+  factory PdfListCubitState.create({bool isLoading = false}) {
     return PdfListCubitState(
-      isLoading: true,
+      isLoading: isLoading,
       list: [],
       sortId: 1,
       sortAsc: true,
@@ -61,6 +61,8 @@ class PdfListCubit extends Cubit<PdfListCubitState> {
 
   Future<void> fetchList() async {
     try {
+      if (state.isLoading) return;
+
       emit(PdfListCubitState.create());
 
       final novelPath = PathUtil.getSourcePath(

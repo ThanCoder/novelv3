@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/bloc_app/bloc/chapter_bookmark_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_bookmark_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
@@ -42,16 +44,23 @@ class BlocApp extends StatelessWidget {
               novelDetailCubit: context.read<NovelDetailCubit>(),
             ),
           ),
-          BlocProvider(
-            create: (context) => NovelTypeTabbarCubit(
-              novelListCubit: context.read<NovelListCubit>(),
-              novelBookmarkServices: context.read<NovelBookmarkServices>(),
-            ),
-          ),
+
           BlocProvider(
             create: (context) => PdfListCubit(
               context.read<PdfServices>(),
               novelDetailCubit: context.read<NovelDetailCubit>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => ChapterBookmarkListCubit(
+              novelDetailCubit: context.read<NovelDetailCubit>(),
+            ),
+          ),
+          BlocProvider(create: (context) => NovelBookmarkListCubit()..fetch()),
+          BlocProvider(
+            create: (context) => NovelTypeTabbarCubit(
+              novelListCubit: context.read<NovelListCubit>(),
+              novelBookmarkListCubit: context.read<NovelBookmarkListCubit>(),
             ),
           ),
         ],

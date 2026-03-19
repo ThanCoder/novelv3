@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/bloc_app/bloc/chapter_bookmark_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
@@ -91,6 +92,7 @@ Future<void> goBlocChapterReader(
   //   chapter.number.toString(),
   // );
   if (!context.mounted) return;
+  final bookmarkProvider = context.read<ChapterBookmarkListCubit>();
 
   goBlocRoute(
     context,
@@ -104,9 +106,14 @@ Future<void> goBlocChapterReader(
           novel.copyWith(meta: novel.meta.copyWith(readed: chapter.number)),
         );
       },
-      isExistsChapterBookmark: (chpaterNumber) => false,
-      onAddChapterBookmark: (bookmark) async {},
-      onRemoveChapter: (chpaterNumber) async {},
+      isExistsChapterBookmark: (chapterNumber) =>
+          bookmarkProvider.isExists(chapterNumber),
+      onAddChapterBookmark: (bookmark) async {
+        await bookmarkProvider.toggle(bookmark);
+      },
+      onRemoveChapter: (chapterNumber) async {
+        await bookmarkProvider.removeNumber(chapterNumber);
+      },
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
       getChapterContent: (context, chapterNumber) async {
@@ -120,9 +127,6 @@ Future<void> goBlocChapterReader(
           //   'recent-chapter-name:${novel.path.getName()}',
           //   chapterNumber.toString(),
           // );
-          if (!context.mounted) return res;
-          // context.read<ChapterBookmarkProvider>().refershUI();
-          // context.read<ChapterProvider>().refershUI();
           return res;
         } catch (e) {
           debugPrint('[goBlocChapterReader]: $e');
@@ -132,16 +136,6 @@ Future<void> goBlocChapterReader(
       onUpdateConfig: (updatedConfig) {
         updatedConfig.savePath(configPath);
       },
-      // onReaderClosed: (lastChapter) async {
-      //   // set recent
-      //   await TRecentDB.getInstance.putString(
-      //     'recent-chapter-name:${novel.path.getName()}',
-      //     lastChapter.number.toString(),
-      //   );
-      //   if (!context.mounted) return;
-      //   context.read<ChapterBookmarkProvider>().refershUI();
-      //   context.read<ChapterProvider>().refershUI();
-      // },
     ),
   );
 }

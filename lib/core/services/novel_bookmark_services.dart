@@ -34,6 +34,12 @@ class NovelBookmarkServices {
     return list;
   }
 
+  Future<void> setListNovelList(List<Novel> list) async {
+    await setList(
+      list.map((e) => NovelBookmark(id: e.id, title: e.meta.title)).toList(),
+    );
+  }
+
   Future<List<Novel>> getAllNovelList() async {
     List<Novel> list = [];
     final booklList = await getAll();

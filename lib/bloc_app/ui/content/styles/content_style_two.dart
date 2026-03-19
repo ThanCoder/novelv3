@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/bloc_app/ui/content/chapter_bookmark_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/chapter_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/novel_detail_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/pdf_list_page.dart';
@@ -34,7 +35,7 @@ class _ContentStyleTwoState extends State<ContentStyleTwo> {
           NovelDetailPage(novel: widget.novel),
           ChapterListPage(novel: widget.novel),
           PdfListPage(novel: widget.novel),
-          Text('bookmark မရေးရသေး'),
+          ChapterBookmarkListPage(novel: widget.novel),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

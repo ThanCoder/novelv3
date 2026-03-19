@@ -8,7 +8,11 @@ class ChapterBookmarkServices {
   static const String dbOldName = 'fav_list2.json';
   static const String dbName = 'chapter-bookmark.json';
 
-  static Future<List<ChapterBookmark>> getAll(String novelPath) async {
+  static final ChapterBookmarkServices instance = ChapterBookmarkServices._();
+  ChapterBookmarkServices._();
+  factory ChapterBookmarkServices() => instance;
+
+  Future<List<ChapterBookmark>> getAll(String novelPath) async {
     List<ChapterBookmark> list = [];
     final contents = await _getDBContent(novelPath);
     if (contents.isEmpty) return list;
@@ -17,16 +21,13 @@ class ChapterBookmarkServices {
     return list;
   }
 
-  static Future<void> setAll(
-    List<ChapterBookmark> list,
-    String novelPath,
-  ) async {
+  Future<void> setAll(List<ChapterBookmark> list, String novelPath) async {
     final dbFile = File(pathJoin(novelPath, dbName));
     final contents = list.map((e) => e.toMap()).toList();
     await dbFile.writeAsString(jsonEncode(contents));
   }
 
-  static Future<String> _getDBContent(String novelPath) async {
+  Future<String> _getDBContent(String novelPath) async {
     final dir = Directory(novelPath);
     if (!dir.existsSync()) return '';
     final dbFile = File(pathJoin(novelPath, dbName));

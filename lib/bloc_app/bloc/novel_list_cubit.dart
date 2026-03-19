@@ -5,47 +5,6 @@ import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-class NovelListState {
-  final List<Novel> list;
-  final bool isLoading;
-  final String? errorMessage;
-  final int sortId;
-  final bool sortAsc;
-
-  const NovelListState({
-    required this.list,
-    required this.isLoading,
-    this.errorMessage,
-    required this.sortId,
-    required this.sortAsc,
-  });
-  factory NovelListState.initState({bool isLoading = false}) {
-    return NovelListState(
-      list: [],
-      isLoading: isLoading,
-      errorMessage: null,
-      sortId: TRecentDB.getInstance.getInt('novel-list-sort-id', def: 3),
-      sortAsc: TRecentDB.getInstance.getBool('novel-list-sort-asc', def: true),
-    );
-  }
-
-  NovelListState copyWith({
-    List<Novel>? list,
-    bool? isLoading,
-    String? errorMessage,
-    int? sortId,
-    bool? sortAsc,
-  }) {
-    return NovelListState(
-      list: list ?? this.list,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage ?? this.errorMessage,
-      sortId: sortId ?? this.sortId,
-      sortAsc: sortAsc ?? this.sortAsc,
-    );
-  }
-}
-
 class NovelListCubit extends Cubit<NovelListState> {
   final NovelServices novelServices;
   NovelListCubit(this.novelServices) : super(NovelListState.initState());
@@ -88,9 +47,15 @@ class NovelListCubit extends Cubit<NovelListState> {
         list.sortCompleted(isCompleted: state.sortAsc);
       }
 
-      emit(state.copyWith(list: list, isLoading: false));
+      emit(state.copyWith(list: list, isLoading: false, isInit: false));
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
+      emit(
+        state.copyWith(
+          errorMessage: e.toString(),
+          isLoading: false,
+          isInit: false,
+        ),
+      );
     }
   }
 
@@ -119,5 +84,55 @@ class NovelListCubit extends Cubit<NovelListState> {
     // set recent
     TRecentDB.getInstance.putInt('novel-list-sort-id', sortId);
     TRecentDB.getInstance.putBool('novel-list-sort-asc', sortAsc);
+  }
+}
+
+class NovelListState {
+  final List<Novel> list;
+  final bool isLoading;
+  final String errorMessage;
+  final int sortId;
+  final bool sortAsc;
+  final bool isInit;
+
+  const NovelListState({
+    required this.list,
+    required this.isLoading,
+    required this.errorMessage,
+    required this.sortId,
+    required this.sortAsc,
+    required this.isInit,
+  });
+
+  factory NovelListState.initState({
+    bool isLoading = false,
+    bool isInit = true,
+  }) {
+    return NovelListState(
+      list: [],
+      isLoading: isLoading,
+      isInit: isInit,
+      errorMessage: '',
+      sortId: TRecentDB.getInstance.getInt('novel-list-sort-id', def: 3),
+      sortAsc: TRecentDB.getInstance.getBool('novel-list-sort-asc', def: true),
+    );
+  }
+
+  NovelListState copyWith({
+    List<Novel>? list,
+    bool? isLoading,
+    String? errorMessage,
+    int? sortId,
+    bool? sortAsc,
+    bool? isInit,
+  }) {
+    return NovelListState(
+      list: list ?? this.list,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+      sortId: sortId ?? this.sortId,
+      sortAsc: sortAsc ?? this.sortAsc,
+      isInit: isInit ?? this.isInit,
+    );
   }
 }
