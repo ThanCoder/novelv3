@@ -14,6 +14,7 @@ import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main() async {
   await ThanPkg.instance.init();
+
   final novelProvider = NovelProvider();
 
   await Setting.instance.init(

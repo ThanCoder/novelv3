@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/add_chapter_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/forms/add_chapter_form.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -37,36 +38,7 @@ class _ChapterListPageState extends State<ChapterListPage> {
           onRefresh: () async => init(isCached: false),
           child: CustomScrollView(
             slivers: [
-              SliverAppBar(
-                snap: true,
-                floating: true,
-                // pinned: true,
-                automaticallyImplyLeading: false,
-                title: state.list.isEmpty
-                    ? null
-                    : Text(
-                        'Count: ${state.list.length}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                actions: [
-                  !TPlatform.isDesktop
-                      ? SizedBox.shrink()
-                      : IconButton(
-                          onPressed: () => init(isCached: false),
-                          icon: Icon(Icons.refresh),
-                        ),
-                  state.list.isEmpty
-                      ? SizedBox.shrink()
-                      : IconButton(
-                          onPressed: () => _showSortDialog(state.sortAsc),
-                          icon: Icon(Icons.sort),
-                        ),
-                  IconButton(
-                    onPressed: _showMainMenu,
-                    icon: Icon(Icons.more_vert),
-                  ),
-                ],
-              ),
+              _appbar(state),
               if (state.isLoading)
                 SliverFillRemaining(child: Center(child: TLoader.random()))
               else if (state.errorMessage != null)
@@ -88,6 +60,33 @@ class _ChapterListPageState extends State<ChapterListPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _appbar(ChapterListState state) {
+    return SliverAppBar(
+      snap: true,
+      floating: true,
+      // pinned: true,
+      automaticallyImplyLeading: false,
+      title: state.list.isEmpty
+          ? null
+          : Text('Count: ${state.list.length}', style: TextStyle(fontSize: 16)),
+      actions: [
+        !TPlatform.isDesktop
+            ? SizedBox.shrink()
+            : IconButton(
+                onPressed: () => init(isCached: false),
+                icon: Icon(Icons.refresh),
+              ),
+        state.list.isEmpty
+            ? SizedBox.shrink()
+            : IconButton(
+                onPressed: () => _showSortDialog(state.sortAsc),
+                icon: Icon(Icons.sort),
+              ),
+        IconButton(onPressed: _showMainMenu, icon: Icon(Icons.more_vert)),
+      ],
     );
   }
 
@@ -163,6 +162,18 @@ class _ChapterListPageState extends State<ChapterListPage> {
             goBlocRoute(
               context,
               builder: (context) => AddChapterForm(novel: widget.novel),
+            );
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add Chapter From Online'),
+          onTap: () {
+            context.closeNavigator();
+            goBlocRoute(
+              context,
+              builder: (context) =>
+                  AddChapterFromOnlineScreen(novel: widget.novel),
             );
           },
         ),

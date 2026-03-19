@@ -1,8 +1,8 @@
-import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
+import 'package:novel_v3/bloc_app/ui/components/pdf_list_item.dart';
 import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
@@ -62,7 +62,7 @@ class _PdfListPageState extends State<PdfListPage> {
               ),
               if (state.isLoading)
                 SliverFillRemaining(child: Center(child: TLoader.random()))
-              else if (state.errorMessage != null)
+              else if (state.errorMessage.isNotEmpty)
                 SliverFillRemaining(
                   child: Center(child: Text('Error: ${state.errorMessage}')),
                 )
@@ -93,19 +93,9 @@ class _PdfListPageState extends State<PdfListPage> {
   }
 
   Widget _listItem(PdfFile pdf) {
-    return ListTile(
-      textColor: Theme.brightnessOf(context).isDark
-          ? Colors.white
-          : Colors.black,
-      titleTextStyle: TextStyle(fontSize: 13),
-      title: Text(
-        pdf.title,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
-      subtitle: Text(pdf.getSize.fileSizeLabel()),
-      onTap: () {
+    return PdfListItem(
+      pdf: pdf,
+      onClicked: (pdf) {
         goBlocPdfReader(context, pdf: pdf);
       },
     );

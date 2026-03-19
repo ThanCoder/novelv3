@@ -6,47 +6,6 @@ import 'package:novel_v3/core/services/pdf_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
 
-class PdfListCubitState {
-  final bool isLoading;
-  final List<PdfFile> list;
-  final int sortId;
-  final bool sortAsc;
-  final String? errorMessage;
-
-  const PdfListCubitState({
-    required this.isLoading,
-    required this.list,
-    required this.sortId,
-    required this.sortAsc,
-    this.errorMessage,
-  });
-  factory PdfListCubitState.create({bool isLoading = false}) {
-    return PdfListCubitState(
-      isLoading: isLoading,
-      list: [],
-      sortId: 1,
-      sortAsc: true,
-      errorMessage: null,
-    );
-  }
-
-  PdfListCubitState copyWith({
-    bool? isLoading,
-    List<PdfFile>? list,
-    int? sortId,
-    bool? sortAsc,
-    String? errorMessage,
-  }) {
-    return PdfListCubitState(
-      isLoading: isLoading ?? this.isLoading,
-      list: list ?? this.list,
-      sortId: sortId ?? this.sortId,
-      sortAsc: sortAsc ?? this.sortAsc,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-  }
-}
-
 class PdfListCubit extends Cubit<PdfListCubitState> {
   final PdfServices pdfServices;
   final NovelDetailCubit novelDetailCubit;
@@ -63,7 +22,7 @@ class PdfListCubit extends Cubit<PdfListCubitState> {
     try {
       if (state.isLoading) return;
 
-      emit(PdfListCubitState.create());
+      emit(state.copyWith(isLoading: true, errorMessage: ''));
 
       final novelPath = PathUtil.getSourcePath(
         name: novelDetailCubit.state.currentNovel!.id,
@@ -100,5 +59,46 @@ class PdfListCubit extends Cubit<PdfListCubitState> {
     }
 
     emit(state.copyWith(sortAsc: sortAsc, sortId: sortId));
+  }
+}
+
+class PdfListCubitState {
+  final bool isLoading;
+  final List<PdfFile> list;
+  final int sortId;
+  final bool sortAsc;
+  final String errorMessage;
+
+  const PdfListCubitState({
+    required this.isLoading,
+    required this.list,
+    required this.sortId,
+    required this.sortAsc,
+    required this.errorMessage,
+  });
+  factory PdfListCubitState.create({bool isLoading = false}) {
+    return PdfListCubitState(
+      isLoading: isLoading,
+      list: [],
+      sortId: 1,
+      sortAsc: true,
+      errorMessage: '',
+    );
+  }
+
+  PdfListCubitState copyWith({
+    bool? isLoading,
+    List<PdfFile>? list,
+    int? sortId,
+    bool? sortAsc,
+    String? errorMessage,
+  }) {
+    return PdfListCubitState(
+      isLoading: isLoading ?? this.isLoading,
+      list: list ?? this.list,
+      sortId: sortId ?? this.sortId,
+      sortAsc: sortAsc ?? this.sortAsc,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
 }
