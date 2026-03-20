@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
-import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 import 'package:pdfrx_engine/pdfrx_engine.dart';
 import 'package:image/image.dart' as img;
 import 'package:than_pkg/than_pkg.dart';

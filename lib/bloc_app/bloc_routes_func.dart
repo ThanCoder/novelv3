@@ -5,6 +5,8 @@ import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/content/content_screen.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/add_novel_from_online_screen.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_supported_site_dialog.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_result_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_screen.dart';
 import 'package:novel_v3/core/models/chapter.dart';
@@ -22,6 +24,21 @@ void goBlocRoute(
   required Widget Function(BuildContext context) builder,
 }) {
   Navigator.push(context, MaterialPageRoute(builder: builder));
+}
+
+Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
+  showAdaptiveDialog(
+    barrierDismissible: true,
+    context: context,
+    builder: (context) => FetcherSupportedSiteDialog(
+      onChoosed: (site) {
+        goRoute(
+          context,
+          builder: (context) => AddNovelFromOnlineScreen(site: site),
+        );
+      },
+    ),
+  );
 }
 
 Future<void> goNovelContentScreen(

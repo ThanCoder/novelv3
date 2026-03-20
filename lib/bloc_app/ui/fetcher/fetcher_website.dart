@@ -3,41 +3,47 @@ import 'package:than_pkg/than_pkg.dart';
 class FetcherWebsite {
   final String url;
   final String title;
-  final FetcherWebsiteQuery titleQuery;
-  final FetcherWebsiteQuery contentQuery;
+  final ChapterPageQuery? chapterPageQuery;
 
   const FetcherWebsite({
     required this.url,
     required this.title,
+    this.chapterPageQuery,
+  });
+}
+
+class ChapterPageQuery {
+  final FetcherQuery titleQuery;
+  final FetcherQuery contentQuery;
+
+  const ChapterPageQuery({
     required this.titleQuery,
     required this.contentQuery,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'url': url,
-      'title': title,
       'titleQuery': titleQuery.toJson(),
       'contentQuery': contentQuery.toJson(),
     };
   }
 
-  factory FetcherWebsite.fromJson(Map<String, dynamic> json) {
-    return FetcherWebsite(
-      url: json['url'],
-      title: json['title'],
-      titleQuery: FetcherWebsiteQuery.fromJson(json['titleQuery']),
-      contentQuery: FetcherWebsiteQuery.fromJson(json['contentQuery']),
+  factory ChapterPageQuery.fromJson(Map<String, dynamic> json) {
+    return ChapterPageQuery(
+      titleQuery:
+          json['titleQuery'] ?? FetcherQuery.fromJson(json['titleQuery']),
+      contentQuery:
+          json['contentQuery'] ?? FetcherQuery.fromJson(json['contentQuery']),
     );
   }
 }
 
-class FetcherWebsiteQuery {
+class FetcherQuery {
   final int index;
   final String attribue;
   final String selector;
 
-  const FetcherWebsiteQuery({
+  const FetcherQuery({
     required this.index,
     required this.attribue,
     required this.selector,
@@ -47,8 +53,8 @@ class FetcherWebsiteQuery {
     return {'index': index, 'attribue': attribue, 'selector': selector};
   }
 
-  factory FetcherWebsiteQuery.fromJson(Map<String, dynamic> json) {
-    return FetcherWebsiteQuery(
+  factory FetcherQuery.fromJson(Map<String, dynamic> json) {
+    return FetcherQuery(
       index: json.getInt(['index']),
       attribue: json.getString(['attribue']),
       selector: json.getString(['selector']),

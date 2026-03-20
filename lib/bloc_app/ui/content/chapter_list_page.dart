@@ -172,8 +172,7 @@ class _ChapterListPageState extends State<ChapterListPage> {
             context.closeNavigator();
             goBlocRoute(
               context,
-              builder: (context) =>
-                  AddChapterFromOnlineScreen(novel: widget.novel),
+              builder: (context) => AddChapterFromOnlineScreen(),
             );
           },
         ),

@@ -7,6 +7,7 @@ import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -86,6 +87,7 @@ class _HomePageState extends State<HomePage> {
         icon: Icon(Icons.search),
       ),
       IconButton(onPressed: _showSort, icon: Icon(Icons.sort)),
+      IconButton(onPressed: _showMenu, icon: Icon(Icons.more_vert)),
     ];
   }
 
@@ -102,6 +104,22 @@ class _HomePageState extends State<HomePage> {
       sortDialogCallback: (id, isAsc) {
         context.read<NovelListCubit>().sort(id, isAsc);
       },
+    );
+  }
+
+  void _showMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add From Internet'),
+          onTap: () {
+            context.closeNavigator();
+            goAddNovelFromInternetScreen(context);
+          },
+        ),
+      ],
     );
   }
 

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
-import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 import 'package:novel_v3/core/utils.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AddChapterFromOnlineScreen extends StatefulWidget {
-  final Novel novel;
+  final FetcherWebsite? website;
   final void Function(FetcherWebsiteResult result)? onSaved;
-  const AddChapterFromOnlineScreen({
-    super.key,
-    required this.novel,
-    this.onSaved,
-  });
+  const AddChapterFromOnlineScreen({super.key, this.onSaved, this.website});
 
   @override
   State<AddChapterFromOnlineScreen> createState() =>
@@ -26,7 +22,7 @@ class _AddChapterFromOnlineScreenState
   initState() {
     urlController.text = 'https://mmxianxia.com/chapters/1392176/';
     super.initState();
-    currentSite = list.first;
+    currentSite = widget.website ?? list.first;
     setState(() {});
   }
 
@@ -87,7 +83,11 @@ class _AddChapterFromOnlineScreenState
             ),
           )
           .toList(),
-      onChanged: (value) {},
+      onChanged: (value) {
+        setState(() {
+          currentSite = value;
+        });
+      },
     );
   }
 
@@ -137,6 +137,8 @@ class _AddChapterFromOnlineScreenState
         return;
       }
       urlController.text = text;
+
+      _autoChooseWebsiteType();
     } catch (e) {
       if (!mounted) return;
       showTMessageDialogError(context, e.toString());
@@ -153,12 +155,15 @@ class _AddChapterFromOnlineScreenState
         isLoading = true;
       });
 
-      final res = await FetchServices.instance.fetchHtml(
+      final res = await FetchServices.instance.fetchChapter(
         urlController.text,
         website: currentSite!,
       );
       titleController.text = res.title;
-      contentController.text = res.content;
+      contentController.text = res.content.replaceAll(
+        '(adsbygoogle = window.adsbygoogle || []).push({});',
+        '',
+      );
 
       if (!mounted) return;
       setState(() {
@@ -171,5 +176,16 @@ class _AddChapterFromOnlineScreenState
       });
       showTMessageDialogError(context, e.toString());
     }
+  }
+
+  void _autoChooseWebsiteType() {
+    final index = list.indexWhere((e) {
+      final hostname = Uri.parse(e.url).host;
+      final currentHostname = Uri.parse(urlController.text).host;
+      return hostname == currentHostname;
+    });
+    if (index == -1) return;
+    currentSite = list[index];
+    setState(() {});
   }
 }
