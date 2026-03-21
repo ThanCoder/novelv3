@@ -9,7 +9,6 @@ import 'package:novel_v3/multi_app/restart_widget.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main() async {
@@ -60,11 +59,6 @@ void main() async {
   );
 
   if (TPlatform.isDesktop) {
-    await DesktopExe.exportDesktopIcon(
-      name: Setting.instance.appName,
-      assetsIconPath: 'assets/logo_3.jpg',
-    );
-
     WindowOptions windowOptions = WindowOptions(
       size: Size(602, 568), // စတင်ဖွင့်တဲ့အချိန် window size
 

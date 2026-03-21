@@ -120,7 +120,7 @@ Future<void> goBlocChapterReader(
       onUpdateReaded: (context, readed) async {
         await context.read<NovelDetailCubit>().updateNovel(
           novel.id,
-          novel.copyWith(meta: novel.meta.copyWith(readed: chapter.number)),
+          novel.copyWith(meta: novel.meta.copyWith(readed: readed)),
         );
       },
       isExistsChapterBookmark: (chapterNumber) =>
