@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
 /* 

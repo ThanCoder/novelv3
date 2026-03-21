@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/old_app/providers/novel_provider.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_extension.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_list_item.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_install_confirm_dialog.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_install_dialog.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_services.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:provider/provider.dart';
 import 'n3_data.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class N3DataScannerScreen extends StatefulWidget {
-  const N3DataScannerScreen({super.key});
+  final void Function()? refreshAllNovel;
+  const N3DataScannerScreen({super.key, this.refreshAllNovel});
 
   @override
   State<N3DataScannerScreen> createState() => _N3DataScannerState();
@@ -160,7 +159,7 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
           leading: Icon(Icons.install_desktop),
           title: Text('ထည့်သွင်းမယ်'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _installData(n3data);
           },
         ),
@@ -187,7 +186,8 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
                 setState(() {});
                 showTSnackBar(context, '${n3data.getTitle}: သွင်းပြီးပါပြီ');
                 // refresh all novel
-                context.read<NovelProvider>().init(isUsedCache: false);
+                // context.read<NovelProvider>().init(isUsedCache: false);
+                widget.refreshAllNovel?.call();
               },
             ),
           );
@@ -210,7 +210,7 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
           leading: Icon(Icons.edit_document),
           title: Text('Rename'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _rename(n3data);
           },
         ),
@@ -219,7 +219,7 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
           leading: Icon(Icons.delete_forever_rounded),
           title: Text('Delete'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _deleteConfirm(n3data);
           },
         ),

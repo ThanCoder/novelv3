@@ -1,4 +1,9 @@
-# 4.0.0
+# 4.5.0
+
+- Changed `UI ကိုအနည်းငယ်ပြောင်းလဲထားတယ်။`
+- Changed `State ကို Provider -> Bloc ပြောင်းလဲထား`
+
+## 4.0.0
 
 - Changed `Novel Source Folder` ကို ID အဖြစ်ပြောင်းလဲခြင်း
 - Changed `Chapter File` -> `Chapter Database`

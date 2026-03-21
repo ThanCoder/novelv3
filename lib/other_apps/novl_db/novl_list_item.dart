@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
-import 'package:provider/provider.dart';
 import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -13,20 +11,22 @@ class NovlListItem extends StatelessWidget {
   String? cachePath;
   void Function(NovlData data) onClicked;
   void Function(NovlData data)? onRightClicked;
+  bool Function()? isExists;
   NovlListItem({
     super.key,
     required this.data,
     required this.onClicked,
     this.onRightClicked,
     this.cachePath,
+    this.isExists,
   });
 
   @override
   Widget build(BuildContext context) {
     final coverPath = PathUtil.getCachePath(name: '${data.title}.png');
-    final isExistsInNovel = context.read<NovelProvider>().isNovelExists(
-      data.novelMeta.title,
-    );
+    // final isExistsInNovel = context.read<NovelProvider>().isNovelExists(
+    //   data.novelMeta.title,
+    // );
     return GestureDetector(
       onTap: () => onClicked(data),
       onSecondaryTap: () => onRightClicked?.call(data),
@@ -77,7 +77,7 @@ class NovlListItem extends StatelessWidget {
                       data.size.toFileSizeLabel(),
                       iconData: Icons.sd_card,
                     ),
-                    !isExistsInNovel
+                    !(isExists?.call() ?? false)
                         ? SizedBox.shrink()
                         : Text(
                             'Novel ထဲမှာရှိနေပါတယ်...',
