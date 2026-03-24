@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/bloc_app/ui/components/bloc_tag_view.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class NovelInfo extends StatelessWidget {
   final Novel novel;
@@ -16,18 +19,17 @@ class NovelInfo extends StatelessWidget {
           Text('Author: ${novel.meta.author}'),
           Text('MC: ${novel.meta.mc}'),
           Text('Translator: ${novel.meta.translator}'),
-          _otherTitles(),
+          BlocTagView(
+            values: novel.meta.otherTitleList,
+            onClick: (value) {
+              ThanPkg.appUtil.copyText(value);
+              if (TPlatform.isDesktop) {
+                showTSnackBar(context, 'Copied');
+              }
+            },
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _otherTitles() {
-    if (novel.meta.otherTitleList.isEmpty) {
-      return SizedBox.shrink();
-    }
-    return Wrap(
-      children: novel.meta.otherTitleList.map((e) => Text(e)).toList(),
     );
   }
 }

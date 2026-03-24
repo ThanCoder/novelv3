@@ -332,12 +332,12 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
   }
 
   void _allDownload({bool isNewIdDownload = false}) async {
-    var novel = await NovelServices().createNovelFolder(
+    var novel = await NovelServices().createNovel(
       meta: widget.novel.meta,
       oldId: widget.novel.meta.id,
     );
     if (isNewIdDownload) {
-      novel = await NovelServices().createNovelFolder(meta: widget.novel.meta);
+      novel = await NovelServices().createNovel(meta: widget.novel.meta);
     }
     if (!mounted) return;
 

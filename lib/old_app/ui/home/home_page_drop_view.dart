@@ -43,7 +43,7 @@ class _HomePageDropViewState extends State<HomePageDropView> {
       if (!mounted) return;
 
       final provider = context.read<NovelProvider>();
-      final novel = await NovelServices().createNovelFolder(meta: meta);
+      final novel = await NovelServices().createNovel(meta: meta);
 
       provider.add(novel);
       if (!mounted) return;

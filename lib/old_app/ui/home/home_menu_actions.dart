@@ -112,7 +112,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
 
-        final novel = await NovelServices().createNovelFolder(
+        final novel = await NovelServices().createNovel(
           meta: NovelMeta.create(title: text.trim()),
         );
         provider.add(novel);
@@ -165,7 +165,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       onSubmit: (text) async {
         if (text.isEmpty) return;
         try {
-          final novel = await NovelServices().createNovelFolder(
+          final novel = await NovelServices().createNovel(
             meta: NovelMeta.create(title: text.trim()),
           );
           // copy cover
@@ -226,7 +226,7 @@ class _HomeMenuActionsState extends State<HomeMenuActions> {
       if (!mounted) return;
 
       final provider = context.read<NovelProvider>();
-      final novel = await NovelServices().createNovelFolder(meta: meta);
+      final novel = await NovelServices().createNovel(meta: meta);
 
       provider.add(novel);
       if (!mounted) return;

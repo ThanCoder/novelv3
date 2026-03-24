@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:uuid/uuid.dart';
 
 class Novel {
   final String id;
@@ -18,15 +17,10 @@ class Novel {
     required this.date,
     this.size = 0,
   });
-  factory Novel.create({
-    required String name,
-    String? path,
-    NovelMeta? meta,
-    String? id,
-  }) {
+  factory Novel.create({required String id, String? path, NovelMeta? meta}) {
     return Novel(
-      id: id ?? Uuid().v4(),
-      path: path ?? PathUtil.getSourcePath(name: name),
+      id: id,
+      path: path ?? PathUtil.getSourcePath(name: id),
       meta: meta ?? NovelMeta.create(),
       date: DateTime.now(),
     );

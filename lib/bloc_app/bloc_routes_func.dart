@@ -7,6 +7,7 @@ import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/content/content_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_novel_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_supported_site_dialog.dart';
+import 'package:novel_v3/bloc_app/ui/forms/novel_edit_form_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_result_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_screen.dart';
 import 'package:novel_v3/core/models/chapter.dart';
@@ -36,6 +37,21 @@ Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
           context,
           builder: (context) => AddNovelFromOnlineScreen(site: site),
         );
+      },
+    ),
+  );
+}
+
+Future<void> goNovelEditScreen(
+  BuildContext context, {
+  required Novel novel,
+}) async {
+  goRoute(
+    context,
+    builder: (context) => NovelEditFormScreen(
+      novel: novel,
+      onUpdated: (updatedNovel) async {
+        await context.read<NovelListCubit>().update(updatedNovel);
       },
     ),
   );

@@ -92,7 +92,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _listStyle(List<Novel> list) {
-    return SliverListStyle(list: list, onClicked: _onClicked);
+    return SliverListStyle(
+      list: list,
+      onClicked: _onClicked,
+      onRightClicked: _onItemMenu,
+    );
   }
 
   void _showSort() {
@@ -113,6 +117,18 @@ class _HomePageState extends State<HomePage> {
       children: [
         ListTile(
           leading: Icon(Icons.add),
+          title: Text('New Novel'),
+          onTap: () async {
+            context.closeNavigator();
+            final newNovel = await context
+                .read<NovelListCubit>()
+                .createNewNovel();
+            if (!mounted) return;
+            goNovelEditScreen(context, novel: newNovel);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
           title: Text('Add From Internet'),
           onTap: () {
             context.closeNavigator();
@@ -120,6 +136,42 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ],
+    );
+  }
+
+  void _onItemMenu(Novel novel) {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.edit_document),
+          title: Text('Edit Novel'),
+          onTap: () {
+            context.closeNavigator();
+            goNovelEditScreen(context, novel: novel);
+          },
+        ),
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever),
+          title: Text('Delete'),
+          onTap: () {
+            context.closeNavigator();
+            _deleteConfirm(novel);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _deleteConfirm(Novel novel) {
+    showTConfirmDialog(
+      context,
+      contentText: 'ဖျက်ချင်တာ သေချာပြီးလား?',
+      submitText: 'Delete Forever',
+      onSubmit: () {
+        context.read<NovelListCubit>().delete(novel);
+      },
     );
   }
 

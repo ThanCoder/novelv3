@@ -40,19 +40,23 @@ class NovelServices {
     await novel.meta.save(dir.path);
   }
 
-  Future<Novel> createNovelFolder({
-    required NovelMeta meta,
-    String? oldId,
-  }) async {
-    final name = oldId ?? Uuid().v4();
-    final dir = Directory(PathUtil.getSourcePath(name: name));
+  Future<void> deleteNovel(String id) async {
+    final dir = Directory(PathUtil.getSourcePath(name: id));
+    if (dir.existsSync()) {
+      await dir.delete(recursive: true);
+    }
+  }
+
+  Future<Novel> createNovel({required NovelMeta meta, String? oldId}) async {
+    final id = oldId ?? Uuid().v4();
+    final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) {
       await dir.create();
     }
-    final newMeta = meta.copyWith(id: name, date: DateTime.now());
+    final newMeta = meta.copyWith(id: id, date: DateTime.now());
     await newMeta.save(dir.path);
 
-    return Novel.create(name: name, path: dir.path, meta: newMeta);
+    return Novel.create(id: id, path: dir.path, meta: newMeta);
   }
 
   Future<NovelMeta?> getNovelMeta(String id) async {

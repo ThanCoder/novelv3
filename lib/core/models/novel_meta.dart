@@ -117,11 +117,21 @@ class NovelMeta {
     Map<String, dynamic> map, {
     int novelDirMiliDateNumber = 0,
   }) {
+    List<dynamic> otherTitles = map['otherTitleList'] ?? [];
+
     final id = map.getString(['id'], def: Uuid().v4());
     final date = map.getInt(['date'], def: novelDirMiliDateNumber);
-    final otherTitleList = _parseList(map['otherTitleList']);
     final pageUrls = _parseList(map['pageUrls']);
     var tags = _parseList(map['tags']);
+    final originalTitle = map.getString(['originalTitle']);
+    final englishTitle = map.getString(['englishTitle']);
+
+    if (originalTitle.isNotEmpty) {
+      otherTitles.add(originalTitle);
+    }
+    if (englishTitle.isNotEmpty) {
+      otherTitles.add(englishTitle);
+    }
 
     return NovelMeta(
       id: id,
@@ -133,10 +143,10 @@ class NovelMeta {
       isAdult: map.getBool(['isAdult']),
       isCompleted: map.getBool(['isCompleted']),
       readed: map.getInt(['readed']),
-      originalTitle: map.getString(['originalTitle']),
-      englishTitle: map.getString(['englishTitle']),
+      originalTitle: originalTitle,
+      englishTitle: englishTitle,
       date: DateTime.fromMillisecondsSinceEpoch(date),
-      otherTitleList: List<String>.from(otherTitleList),
+      otherTitleList: List<String>.from(otherTitles).toSet().toList(),
       pageUrls: List<String>.from(pageUrls),
       tags: List<String>.from(tags),
       coverUrl: map['coverUrl'],

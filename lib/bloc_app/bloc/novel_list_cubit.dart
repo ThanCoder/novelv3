@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -63,6 +64,39 @@ class NovelListCubit extends Cubit<NovelListState> {
     emit(state.copyWith(list: list));
   }
 
+  Future<void> update(Novel novel) async {
+    final index = state.list.indexWhere((e) => e.id == novel.id);
+    if (index == -1) return;
+    // update services
+    await novelServices.updateNovel(novel.id, novel);
+
+    final list = state.list;
+    list.removeAt(index);
+    list.insert(0, novel);
+    emit(state.copyWith(list: list));
+  }
+
+  Future<void> delete(Novel novel) async {
+    final index = state.list.indexWhere((e) => e.id == novel.id);
+    if (index == -1) return;
+    // update services
+    await novelServices.deleteNovel(novel.id);
+
+    final list = state.list;
+    list.removeAt(index);
+    emit(state.copyWith(list: list));
+  }
+
+  Future<Novel> createNewNovel() async {
+    final novel = await novelServices.createNovel(
+      meta: NovelMeta.createEmpty(),
+    );
+    final list = state.list;
+    list.insert(0, novel);
+    emit(state.copyWith(list: list));
+    return novel;
+  }
+
   void sort(int sortId, bool sortAsc) {
     final list = state.list;
     if (sortId == 1) {
@@ -84,6 +118,14 @@ class NovelListCubit extends Cubit<NovelListState> {
     // set recent
     TRecentDB.getInstance.putInt('novel-list-sort-id', sortId);
     TRecentDB.getInstance.putBool('novel-list-sort-asc', sortAsc);
+  }
+
+  List<String> allTags() {
+    Set<String> tags = {};
+    for (var novel in state.list) {
+      tags.addAll(novel.meta.tags);
+    }
+    return tags.toList();
   }
 }
 
