@@ -87,9 +87,9 @@ class NovelListCubit extends Cubit<NovelListState> {
     emit(state.copyWith(list: list));
   }
 
-  Future<Novel> createNewNovel() async {
+  Future<Novel> createNewNovel({String title = 'Untitled'}) async {
     final novel = await novelServices.createNovel(
-      meta: NovelMeta.createEmpty(),
+      meta: NovelMeta.create(title: title),
     );
     final list = state.list;
     list.insert(0, novel);

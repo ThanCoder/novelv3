@@ -295,19 +295,19 @@ class _AddChapterFormState extends State<AddChapterForm> {
             onPressed: () => _paste(pasteType: _PasteType.preAppend),
             icon: const Icon(Icons.paste_rounded, color: Colors.blue),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 10),
           Text('Append'),
           IconButton(
             onPressed: () => _paste(pasteType: _PasteType.append),
             icon: const Icon(Icons.paste_rounded, color: Colors.blue),
           ),
-          SizedBox(width: 50),
+          SizedBox(width: 40),
           Text('SetAll'),
           IconButton(
             onPressed: _paste,
             icon: const Icon(Icons.paste_rounded, color: Colors.blue),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 10),
         ],
       ),
     );

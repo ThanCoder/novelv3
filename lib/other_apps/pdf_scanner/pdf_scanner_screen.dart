@@ -19,10 +19,12 @@ class PdfScannerScreen extends StatefulWidget {
   final PdfScannerOnClickedCallback? onClicked;
   final PdfScannerOnMultiChoosedCallback? onChoosed;
   final bool isMultipleSelected;
+  final Widget? title;
   const PdfScannerScreen({
     super.key,
     this.onClicked,
     this.onChoosed,
+    this.title,
     this.isMultipleSelected = false,
   });
 
@@ -74,7 +76,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
   Widget build(BuildContext context) {
     return TScaffold(
       appBar: AppBar(
-        title: Text('PDF Scanner'),
+        title: widget.title ?? Text('PDF Scanner'),
         actions: [
           !widget.isMultipleSelected
               ? SizedBox.shrink()

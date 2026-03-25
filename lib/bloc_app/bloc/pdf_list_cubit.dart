@@ -45,6 +45,20 @@ class PdfListCubit extends Cubit<PdfListCubitState> {
     }
   }
 
+  Future<void> deleteForever(PdfFile pdf) async {
+    try {
+      final list = state.list;
+      final index = list.indexWhere((e) => e.title == pdf.title);
+      if (index == -1) return;
+      list.removeAt(index);
+      await pdfServices.delete(pdf);
+
+      emit(state.copyWith(isLoading: false, list: list));
+    } catch (e) {
+      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
+    }
+  }
+
   void sort(int sortId, bool sortAsc) {
     final list = state.list;
 

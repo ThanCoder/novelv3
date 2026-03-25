@@ -72,6 +72,7 @@ class _PdfListItemState extends State<PdfListItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: () => widget.onClicked?.call(widget.pdf),
       onLongPress: () => widget.onRightClicked?.call(widget.pdf),
       onSecondaryTap: () => widget.onRightClicked?.call(widget.pdf),

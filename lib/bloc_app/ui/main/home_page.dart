@@ -4,6 +4,7 @@ import 'package:novel_v3/bloc_app/bloc/novel_bookmark_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
+import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -62,6 +63,13 @@ class _HomePageState extends State<HomePage> {
                   if (state.errorMessage.isNotEmpty)
                     SliverFillRemaining(
                       child: Text('Error: ${state.errorMessage}'),
+                    ),
+                  if (state.list.isEmpty)
+                    SliverFillRemaining(
+                      child: RefreshBtnComponent(
+                        text: Text('List Empty'),
+                        onClicked: context.read<NovelListCubit>().fetchNovel,
+                      ),
                     ),
                   _listStyle(state.list),
                 ],
@@ -133,6 +141,14 @@ class _HomePageState extends State<HomePage> {
           onTap: () {
             context.closeNavigator();
             goAddNovelFromInternetScreen(context);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add From PDF Files'),
+          onTap: () {
+            context.closeNavigator();
+            goAddFromPdfScreen(context);
           },
         ),
       ],

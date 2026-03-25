@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
+import 'package:novel_v3/bloc_app/ui/components/file_copy_dialog_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/pdf_list_item.dart';
 import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
+import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/old_app/routes.dart';
+import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/extensions/t_platform.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfListPage extends StatefulWidget {
   final Novel novel;
@@ -57,7 +63,10 @@ class _PdfListPageState extends State<PdfListPage> {
                           onPressed: () => _showSortDialog(state.sortAsc),
                           icon: Icon(Icons.sort),
                         ),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+                  IconButton(
+                    onPressed: _showMainMenu,
+                    icon: Icon(Icons.more_vert),
+                  ),
                 ],
               ),
               if (state.isLoading)
@@ -93,11 +102,14 @@ class _PdfListPageState extends State<PdfListPage> {
   }
 
   Widget _listItem(PdfFile pdf) {
-    return PdfListItem(
-      pdf: pdf,
-      onClicked: (pdf) {
-        goBlocPdfReader(context, pdf: pdf);
-      },
+    return Card(
+      child: PdfListItem(
+        pdf: pdf,
+        onClicked: (pdf) {
+          goBlocPdfReader(context, pdf: pdf);
+        },
+        onRightClicked: _showItemMenu,
+      ),
     );
   }
 
@@ -109,6 +121,77 @@ class _PdfListPageState extends State<PdfListPage> {
       sortList: PdfListCubit.sortList,
       sortDialogCallback: (id, isAsc) {
         context.read<PdfListCubit>().sort(id, isAsc);
+      },
+    );
+  }
+
+  void _showMainMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          iconColor: Colors.green,
+          leading: Icon(Icons.add),
+          title: Text('Add PDF Files'),
+          onTap: () {
+            context.closeNavigator();
+            _addPdfFromScanner();
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showItemMenu(PdfFile pdf) {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          iconColor: Colors.red,
+          leading: Icon(Icons.delete_forever),
+          title: Text('Delete PDF File'),
+          onTap: () {
+            context.closeNavigator();
+            _deleteConfirm(pdf);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _addPdfFromScanner() {
+    goRoute(
+      context,
+      builder: (scannerMainContext) => PdfScannerScreen(
+        title: Text('Add Multiple Pdf'),
+        isMultipleSelected: true,
+        onChoosed: (scannerContext, files) {
+          scannerContext.closeNavigator();
+          showFileCopyDialog(
+            context,
+            fileCopySources: files
+                .map(
+                  (e) => FileCopySource(
+                    sourceFile: File(e.path),
+                    destFile: File(pathJoin(widget.novel.path, e.title)),
+                  ),
+                )
+                .toList(),
+            onClosed: init,
+          );
+        },
+      ),
+    );
+  }
+
+  // item menu funcs
+  void _deleteConfirm(PdfFile pdf) async {
+    showTConfirmDialog(
+      context,
+      contentText: 'ဖျက်ချင်တာ သေချာပြီလား?',
+      submitText: 'Delete Forever',
+      onSubmit: () {
+        context.read<PdfListCubit>().deleteForever(pdf);
       },
     );
   }

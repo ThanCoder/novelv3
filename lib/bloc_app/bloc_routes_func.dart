@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_bookmark_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
+import 'package:novel_v3/bloc_app/ui/components/file_copy_dialog_func.dart';
 import 'package:novel_v3/bloc_app/ui/content/content_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_novel_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_supported_site_dialog.dart';
@@ -14,11 +17,14 @@ import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
+import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 void goBlocRoute(
   BuildContext context, {
@@ -36,6 +42,50 @@ Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
         goRoute(
           context,
           builder: (context) => AddNovelFromOnlineScreen(site: site),
+        );
+      },
+    ),
+  );
+}
+
+Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
+  goRoute(
+    mainContext,
+    builder: (pdfScannerContext) => PdfScannerScreen(
+      title: Text('New Novel From PDF'),
+      onClicked: (pdfContext, pdf) async {
+        final novel = await pdfContext.read<NovelListCubit>().createNewNovel(
+          title: pdf.path.getName(withExt: false),
+        );
+        if (!pdfContext.mounted) return;
+
+        showSingleFileCopyDialog(
+          pdfContext,
+          sourcePath: pdf.path,
+          destPath: pathJoin(novel.path, pdf.title),
+          onClosed: () async {
+            final coverFile = File(pdf.getCoverPath);
+            if (coverFile.existsSync()) {
+              await coverFile.copy(novel.getCoverPath);
+            }
+            if (!pdfContext.mounted) return;
+            pdfContext.closeNavigator();
+
+            if (!pdfScannerContext.mounted) return;
+            pdfScannerContext.closeNavigator();
+
+            // showTMessageDialog(pdfScannerContext, 'Novel ကိုဖန်တီးပြီးပါပြီ');
+
+            goRoute(
+              mainContext,
+              builder: (context) => NovelEditFormScreen(
+                novel: novel,
+                onUpdated: (updatedNovel) async {
+                  await context.read<NovelListCubit>().update(updatedNovel);
+                },
+              ),
+            );
+          },
         );
       },
     ),

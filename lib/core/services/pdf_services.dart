@@ -24,7 +24,9 @@ class PdfServices {
     return list;
   }
 
-  Future<void> delete() async {}
+  Future<void> delete(PdfFile pdf) async {
+    await pdf.deleteForever();
+  }
 
   Future<void> genPdfThumbnail(
     PdfFile pdf,
