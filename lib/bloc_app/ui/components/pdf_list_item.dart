@@ -32,9 +32,10 @@ class _PdfListItemState extends State<PdfListItem> {
 
   @override
   void didUpdateWidget(covariant PdfListItem oldWidget) {
-    if (oldWidget.pdf.path != widget.pdf.path) {
-      setState(() {});
-    }
+    // if (oldWidget.pdf. != widget.pdf.path) {
+    //   setState(() {});
+    // }
+    setState(() {});
     super.didUpdateWidget(oldWidget);
   }
 

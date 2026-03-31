@@ -127,6 +127,7 @@ Future<void> goBlocPdfReader(
     builder: (context) => PdfrxReaderScreen(
       sourcePath: pdf.path,
       pdfConfig: pdfConfig,
+      bookmarkPath: pdf.getCurrentBookmarkConfigPath,
       title: pdf.title,
       onConfigUpdated: (updatedPdfConfig) {
         updatedPdfConfig.savePath(pdf.getCurrentConfigPath);

@@ -25,32 +25,43 @@ class NovelTypeTabbarCubit extends Cubit<NovelTypes> {
       return;
     }
 
+    if (type == NovelTypes.latest && _allNovelList.isNotEmpty) {
+      novelListCubit.setList(_allNovelList);
+      return;
+    }
     if (type == NovelTypes.latest) {
       await novelListCubit.fetchNovel();
       _allNovelList.clear();
       _allNovelList.addAll(novelListCubit.state.list);
       return;
     }
+
     if (_allNovelList.isEmpty && novelListCubit.state.list.isNotEmpty) {
       _allNovelList.addAll(novelListCubit.state.list);
     }
 
-    final list = _allNovelList;
-
     if (type == NovelTypes.adult) {
-      novelListCubit.setList(list.where((e) => e.meta.isAdult).toList());
+      novelListCubit.setList(
+        _allNovelList.where((e) => e.meta.isAdult).toList(),
+      );
       return;
     }
     if (type == NovelTypes.notAdult) {
-      novelListCubit.setList(list.where((e) => !e.meta.isAdult).toList());
+      novelListCubit.setList(
+        _allNovelList.where((e) => !e.meta.isAdult).toList(),
+      );
       return;
     }
     if (type == NovelTypes.onGoing) {
-      novelListCubit.setList(list.where((e) => !e.meta.isCompleted).toList());
+      novelListCubit.setList(
+        _allNovelList.where((e) => !e.meta.isCompleted).toList(),
+      );
       return;
     }
     if (type == NovelTypes.completed) {
-      novelListCubit.setList(list.where((e) => e.meta.isCompleted).toList());
+      novelListCubit.setList(
+        _allNovelList.where((e) => e.meta.isCompleted).toList(),
+      );
       return;
     }
   }

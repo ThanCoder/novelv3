@@ -22,12 +22,13 @@ class PdfListCubit extends Cubit<PdfListCubitState> {
     try {
       if (state.isLoading) return;
 
-      emit(state.copyWith(isLoading: true, errorMessage: ''));
+      emit(state.copyWith(isLoading: true, errorMessage: '', list: []));
 
       final novelPath = PathUtil.getSourcePath(
         name: novelDetailCubit.state.currentNovel!.id,
       );
       final list = await pdfServices.getAll(novelPath);
+      await Future.delayed(Duration(milliseconds: 500));
       // sort
       if (state.sortId == 1) {
         list.sortTitle(aToZ: state.sortAsc);

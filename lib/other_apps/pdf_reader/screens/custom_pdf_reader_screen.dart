@@ -85,21 +85,4 @@ class _CustomPdfReaderScreenState extends State<CustomPdfReaderScreen> {
       );
     }
   }
-
-  // Widget _getColorFilteredPdfReader() {
-  //   return Column(
-  //     children: [
-  //       // SizedBox(height: isFullScreen ? 0 : 40),
-  //       Expanded(
-  //         child: ColorFiltered(
-  //           colorFilter: ColorFilter.mode(
-  //             Colors.white,
-  //             config.isDarkMode ? BlendMode.difference : BlendMode.dst,
-  //           ),
-  //           child: _getCurrentPdfReader(),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 }
