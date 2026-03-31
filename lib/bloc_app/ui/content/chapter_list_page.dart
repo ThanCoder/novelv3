@@ -4,6 +4,7 @@ import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_chapter_from_online_screen.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/add_chapter_list_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/forms/add_chapter_form.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -167,16 +168,71 @@ class _ChapterListPageState extends State<ChapterListPage> {
         ),
         ListTile(
           leading: Icon(Icons.add),
+          title: Text('Add Chapter List From Online'),
+          onTap: () {
+            context.closeNavigator();
+            _addChapterListFromOnline();
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
           title: Text('Add Chapter From Online'),
           onTap: () {
             context.closeNavigator();
-            goBlocRoute(
-              context,
-              builder: (context) => AddChapterFromOnlineScreen(),
-            );
+            _addChapterFromOnline();
           },
         ),
       ],
+    );
+  }
+
+  void _addChapterFromOnline() {
+    goBlocRoute(
+      context,
+      builder: (context) => AddChapterFromOnlineScreen(
+        // url: 'https://mmxianxia.com/chapters/1362057/',
+        existsChapterNumber: (chapterNumber) =>
+            context.read<ChapterListCubit>().existsChapterNumber(chapterNumber),
+        onSaved: (result) async {
+          final (isAdded, isUpdated) = await context
+              .read<ChapterListCubit>()
+              .addOrUpdate(
+                Chapter.create(
+                  number: result.number,
+                  novelId: widget.novel.id,
+                  title: result.title,
+                  content: result.content,
+                ),
+              );
+          if (!mounted) return;
+          showTSnackBar(context, isAdded ? 'Added' : 'Updated');
+        },
+      ),
+    );
+  }
+
+  void _addChapterListFromOnline() {
+    goBlocRoute(
+      context,
+      builder: (context) => AddChapterListFromOnlineScreen(
+        url: widget.novel.meta.pageUrls.first,
+        existsChapterNumber: (chapterNumber) =>
+            context.read<ChapterListCubit>().existsChapterNumber(chapterNumber),
+        onSaved: (result) async {
+          final (isAdded, isUpdated) = await context
+              .read<ChapterListCubit>()
+              .addOrUpdate(
+                Chapter.create(
+                  number: result.number,
+                  novelId: widget.novel.id,
+                  title: result.title,
+                  content: result.content,
+                ),
+              );
+          if (!mounted) return;
+          showTSnackBar(context, isAdded ? 'Added' : 'Updated');
+        },
+      ),
     );
   }
 

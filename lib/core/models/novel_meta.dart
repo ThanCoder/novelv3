@@ -63,21 +63,33 @@ class NovelMeta {
     return NovelMeta.create();
   }
 
-  factory NovelMeta.create({String title = 'Untitled', String? id}) {
+  factory NovelMeta.create({
+    String title = 'Untitled',
+    String? id,
+    String author = 'Unknown',
+    String mc = 'Unknown',
+    String translator = 'Unknown',
+    String desc = '',
+    bool isAdult = false,
+    bool isCompleted = false,
+    List<String> pageUrls = const [],
+    List<String> tags = const [],
+    List<String> otherTitleList = const [],
+  }) {
     return NovelMeta(
       id: id ?? Uuid().v4(),
       title: title,
+      author: author,
+      mc: mc,
+      translator: translator,
+      desc: desc,
+      otherTitleList: otherTitleList,
+      isAdult: isAdult,
+      isCompleted: isCompleted,
+      pageUrls: pageUrls,
+      tags: tags,
       originalTitle: '',
       englishTitle: '',
-      author: 'Unknown',
-      mc: 'Unknown',
-      translator: 'Unknown',
-      desc: '',
-      otherTitleList: [],
-      isAdult: false,
-      isCompleted: false,
-      pageUrls: [],
-      tags: [],
       readed: 0,
       date: DateTime.now(),
     );

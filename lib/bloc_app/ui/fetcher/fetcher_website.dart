@@ -3,12 +3,56 @@ import 'package:than_pkg/than_pkg.dart';
 class FetcherWebsite {
   final String url;
   final String title;
+  final NovelListPageQuery novelListPageQuery;
   final ChapterPageQuery? chapterPageQuery;
+  final DetailPageQuery? detailPageQuery;
 
   const FetcherWebsite({
     required this.url,
     required this.title,
+    required this.novelListPageQuery,
     this.chapterPageQuery,
+    this.detailPageQuery,
+  });
+}
+
+class NovelListPageQuery {
+  final String querySelectorAll;
+  final FetcherQuery pageUrlQuery;
+  final FetcherQuery titleQuery;
+  final FetcherQuery coverUrlQuery;
+  final FetcherQuery nextUrlQuery;
+
+  const NovelListPageQuery({
+    required this.querySelectorAll,
+    required this.titleQuery,
+    required this.pageUrlQuery,
+    required this.coverUrlQuery,
+    required this.nextUrlQuery,
+  });
+
+  factory NovelListPageQuery.createEmpty() {
+    return NovelListPageQuery(
+      querySelectorAll: '',
+      titleQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
+      pageUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
+      coverUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
+      nextUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
+    );
+  }
+}
+
+class DetailPageQuery {
+  final FetcherQuery otherTitles;
+  final FetcherQuery author;
+  final FetcherQuery translator;
+  final FetcherQuery description;
+
+  const DetailPageQuery({
+    required this.otherTitles,
+    required this.author,
+    required this.translator,
+    required this.description,
   });
 }
 

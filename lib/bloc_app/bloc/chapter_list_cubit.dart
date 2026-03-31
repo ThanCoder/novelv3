@@ -4,51 +4,6 @@ import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/services/chapter_services.dart';
 
-class ChapterListState {
-  final String currentNovelId;
-  final List<Chapter> list;
-  final bool isLoading;
-  final String? errorMessage;
-  final bool sortAsc;
-
-  const ChapterListState({
-    required this.currentNovelId,
-    required this.list,
-    required this.isLoading,
-    this.errorMessage,
-    this.sortAsc = true,
-  });
-
-  factory ChapterListState.createState({
-    bool isLoading = false,
-    bool sortAsc = true,
-  }) {
-    return ChapterListState(
-      list: [],
-      isLoading: isLoading,
-      currentNovelId: '-1',
-      errorMessage: null,
-      sortAsc: sortAsc,
-    );
-  }
-
-  ChapterListState copyWith({
-    String? currentNovelId,
-    List<Chapter>? list,
-    bool? isLoading,
-    String? errorMessage,
-    bool? sortAsc,
-  }) {
-    return ChapterListState(
-      currentNovelId: currentNovelId ?? this.currentNovelId,
-      list: list ?? this.list,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage ?? this.errorMessage,
-      sortAsc: sortAsc ?? this.sortAsc,
-    );
-  }
-}
-
 class ChapterListCubit extends Cubit<ChapterListState> {
   final ChapterServices chapterServices;
   final NovelDetailCubit novelDetailCubit;
@@ -126,6 +81,11 @@ class ChapterListCubit extends Cubit<ChapterListState> {
     emit(state.copyWith(list: list));
   }
 
+  bool existsChapterNumber(int number) {
+    final index = state.list.indexWhere((e) => e.number == number);
+    return index != -1;
+  }
+
   ///
   /// ###  return (isAdded, isUpdated);
   ///
@@ -195,6 +155,51 @@ class ChapterListCubit extends Cubit<ChapterListState> {
       readedChapter: readedChapter,
       readedNextChapter: readedNextChapter,
       readedPrevChapter: readedPrevChapter,
+    );
+  }
+}
+
+class ChapterListState {
+  final String currentNovelId;
+  final List<Chapter> list;
+  final bool isLoading;
+  final String? errorMessage;
+  final bool sortAsc;
+
+  const ChapterListState({
+    required this.currentNovelId,
+    required this.list,
+    required this.isLoading,
+    this.errorMessage,
+    this.sortAsc = true,
+  });
+
+  factory ChapterListState.createState({
+    bool isLoading = false,
+    bool sortAsc = true,
+  }) {
+    return ChapterListState(
+      list: [],
+      isLoading: isLoading,
+      currentNovelId: '-1',
+      errorMessage: null,
+      sortAsc: sortAsc,
+    );
+  }
+
+  ChapterListState copyWith({
+    String? currentNovelId,
+    List<Chapter>? list,
+    bool? isLoading,
+    String? errorMessage,
+    bool? sortAsc,
+  }) {
+    return ChapterListState(
+      currentNovelId: currentNovelId ?? this.currentNovelId,
+      list: list ?? this.list,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+      sortAsc: sortAsc ?? this.sortAsc,
     );
   }
 }

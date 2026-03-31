@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
@@ -8,8 +9,18 @@ import 'package:than_pkg/than_pkg.dart';
 
 class AddChapterFromOnlineScreen extends StatefulWidget {
   final FetcherWebsite? website;
-  final void Function(FetcherWebsiteResult result)? onSaved;
-  const AddChapterFromOnlineScreen({super.key, this.onSaved, this.website});
+  final String? url;
+  final int chapterNumber;
+  final void Function(ChapterOnlineContentResult result)? onSaved;
+  final bool Function(int chapterNumber)? existsChapterNumber;
+  const AddChapterFromOnlineScreen({
+    super.key,
+    this.onSaved,
+    this.website,
+    this.url,
+    this.chapterNumber = 1,
+    this.existsChapterNumber,
+  });
 
   @override
   State<AddChapterFromOnlineScreen> createState() =>
@@ -20,15 +31,23 @@ class _AddChapterFromOnlineScreenState
     extends State<AddChapterFromOnlineScreen> {
   @override
   initState() {
-    urlController.text = 'https://mmxianxia.com/chapters/1392176/';
+    chNumberController.text = widget.chapterNumber.toString();
+    urlController.text = widget.url ?? '';
     super.initState();
-    currentSite = widget.website ?? list.first;
+    currentSite = list.first;
+
     setState(() {});
+    if (widget.website != null) {
+      currentSite = list.firstWhere((e) => e.title == widget.website!.title);
+      setState(() {});
+      WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+    }
   }
 
   @override
   void dispose() {
     urlController.dispose();
+    chNumberController.dispose();
     titleController.dispose();
     contentController.dispose();
     super.dispose();
@@ -36,10 +55,12 @@ class _AddChapterFromOnlineScreenState
 
   final urlController = TextEditingController();
   final titleController = TextEditingController();
+  final chNumberController = TextEditingController();
   final contentController = TextEditingController();
   bool isLoading = false;
   final list = FetchServices.instance.fetcherWebsiteList();
   FetcherWebsite? currentSite;
+  String? chapterErrorText;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +72,7 @@ class _AddChapterFromOnlineScreenState
             children: [
               Expanded(
                 child: TTextField(
-                  label: Text('Web Url'),
+                  label: Text('Chapter Url'),
                   controller: urlController,
                 ),
               ),
@@ -61,6 +82,15 @@ class _AddChapterFromOnlineScreenState
           _supportedSite(),
           // content
           TTextField(label: Text('Title'), controller: titleController),
+          TTextField(
+            label: Text('Chapter Number'),
+            controller: chNumberController,
+            maxLines: 1,
+            textInputType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            errorText: chapterErrorText,
+            onChanged: (value) => _chapterOnCheck(),
+          ),
           TTextField(
             label: Text('Content'),
             controller: contentController,
@@ -115,7 +145,8 @@ class _AddChapterFromOnlineScreenState
               context.closeNavigator();
             }
             widget.onSaved?.call(
-              FetcherWebsiteResult(
+              ChapterOnlineContentResult(
+                number: int.parse(chNumberController.text),
                 title: titleController.text,
                 content: contentController.text,
               ),
@@ -125,6 +156,22 @@ class _AddChapterFromOnlineScreenState
         ),
       ],
     );
+  }
+
+  bool _existsChapter() {
+    return (widget.existsChapterNumber?.call(
+          int.tryParse(chNumberController.text) ?? 0,
+        ) ??
+        false);
+  }
+
+  void _chapterOnCheck() {
+    if (_existsChapter()) {
+      chapterErrorText = 'Chapter ရှိနေပါတယ်';
+    } else {
+      chapterErrorText = null;
+    }
+    setState(() {});
   }
 
   void _pasteUrl() async {
@@ -146,6 +193,7 @@ class _AddChapterFromOnlineScreenState
   }
 
   void _fetch() async {
+    _chapterOnCheck();
     try {
       if (currentSite == null) {
         showTMessageDialogError(context, 'Site တစ်ခုကို ရွေးချယ်ပါ');
