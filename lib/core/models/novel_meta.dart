@@ -158,7 +158,9 @@ class NovelMeta {
       originalTitle: originalTitle,
       englishTitle: englishTitle,
       date: DateTime.fromMillisecondsSinceEpoch(date),
-      otherTitleList: List<String>.from(otherTitles).toSet().toList(),
+      otherTitleList: List<String>.from(
+        otherTitles,
+      ).toSet().where((e) => e.isNotEmpty).toList(),
       pageUrls: List<String>.from(pageUrls),
       tags: List<String>.from(tags),
       coverUrl: map['coverUrl'],

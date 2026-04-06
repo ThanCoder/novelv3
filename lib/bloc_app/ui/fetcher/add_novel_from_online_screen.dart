@@ -79,7 +79,7 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
             itemCount: result!.list.length,
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
-              mainAxisExtent: 180,
+              mainAxisExtent: 220,
               mainAxisSpacing: 4,
               crossAxisSpacing: 4,
             ),

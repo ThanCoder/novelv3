@@ -30,6 +30,9 @@ class _BlocTagViewState extends State<BlocTagView> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.values.isEmpty) {
+      return SizedBox.shrink();
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,6 +5,10 @@ import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/add_novel_detail_from_online_screen.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/fetch_novel_from_url_menu.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
+
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -128,6 +132,23 @@ class _HomePageState extends State<HomePage> {
           title: Text('New Novel'),
           onTap: () async {
             context.closeNavigator();
+            _showAddNovelMenu();
+          },
+        ),
+      ],
+    );
+  }
+
+  // add novel menu
+  void _showAddNovelMenu() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('New Novel From'),
+          onTap: () async {
+            context.closeNavigator();
             final newNovel = await context
                 .read<NovelListCubit>()
                 .createNewNovel();
@@ -137,10 +158,18 @@ class _HomePageState extends State<HomePage> {
         ),
         ListTile(
           leading: Icon(Icons.add),
-          title: Text('Add From Internet'),
+          title: Text('Add From Internet Websites'),
           onTap: () {
             context.closeNavigator();
             goAddNovelFromInternetScreen(context);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Add From Internet Website Url'),
+          onTap: () {
+            context.closeNavigator();
+            _showAddFromWebsiteUrl();
           },
         ),
         ListTile(
@@ -155,6 +184,29 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _showAddFromWebsiteUrl() {
+    showTMenuBottomSheetSingle(
+      context,
+      title: Text('Fetch Website Info From Url'),
+      child: FetchNovelFromUrlMenu(
+        onApply: (url, site) {
+          goBlocRoute(
+            context,
+            builder: (context) => AddNovelDetailFromOnlineScreen(
+              item: NovelItemResult(title: '', pageUrl: url, coverUrl: ''),
+              site: site,
+              onClosed: (createdNovel) {
+                if (createdNovel == null) return;
+                context.read<NovelListCubit>().addNew(createdNovel);
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // item menu
   void _onItemMenu(Novel novel) {
     showTMenuBottomSheet(
       context,

@@ -56,7 +56,19 @@ class FetchServices {
         attr: Attribute(website.detailPageQuery!.description.attribue),
         selector: website.detailPageQuery!.description.selector,
       );
+      final title = QueryResult(
+        index: website.detailPageQuery!.title.index,
+        attr: Attribute(website.detailPageQuery!.title.attribue),
+        selector: website.detailPageQuery!.title.selector,
+      );
+      final coverUrl = QueryResult(
+        index: website.detailPageQuery!.coverUrl.index,
+        attr: Attribute(website.detailPageQuery!.coverUrl.attribue),
+        selector: website.detailPageQuery!.coverUrl.selector,
+      );
       return NovelDetailResult(
+        title: title.getResult(html) ?? '',
+        coverUrl: coverUrl.getResult(html) ?? '',
         otherTitles: otherTitles.getResult(html) ?? '',
         author: author.getResult(html) ?? '',
         translator: translator.getResult(html) ?? '',
@@ -208,6 +220,16 @@ class FetchServices {
           ),
         ),
         detailPageQuery: DetailPageQuery(
+          title: FetcherQuery(
+            index: 0,
+            attribue: HtmlAttribute.text.value,
+            selector: '.entry-title',
+          ),
+          coverUrl: FetcherQuery(
+            index: 0,
+            attribue: 'data-src',
+            selector: '.wp-post-image',
+          ),
           otherTitles: FetcherQuery(
             index: 0,
             attribue: HtmlAttribute.text.value,

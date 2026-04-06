@@ -47,8 +47,12 @@ class DetailPageQuery {
   final FetcherQuery author;
   final FetcherQuery translator;
   final FetcherQuery description;
+  final FetcherQuery title;
+  final FetcherQuery coverUrl;
 
   const DetailPageQuery({
+    required this.title,
+    required this.coverUrl,
     required this.otherTitles,
     required this.author,
     required this.translator,

@@ -63,29 +63,34 @@ class _AddChapterListFromOnlineScreenState
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Row(
-              children: [
-                Expanded(
-                  child: TTextField(
-                    label: Text('Web Url'),
-                    controller: urlController,
+      body: isLoading
+          ? Center(child: TLoader.random())
+          : RefreshIndicator.noSpinner(
+              onRefresh: _fetch,
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TTextField(
+                            label: Text('Web Url'),
+                            controller: urlController,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: _pasteUrl,
+                          icon: Icon(Icons.paste_rounded),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: _pasteUrl,
-                  icon: Icon(Icons.paste_rounded),
-                ),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(child: _supportedSite()),
+                  SliverToBoxAdapter(child: _supportedSite()),
 
-          _list(),
-        ],
-      ),
+                  _list(),
+                ],
+              ),
+            ),
       floatingActionButton: isLoading
           ? null
           : FloatingActionButton(
@@ -215,7 +220,7 @@ class _AddChapterListFromOnlineScreenState
     setState(() {});
   }
 
-  void _fetch() async {
+  Future<void> _fetch() async {
     try {
       setState(() {
         isLoading = true;

@@ -66,38 +66,43 @@ class _AddChapterFromOnlineScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add Chapter From Online')),
-      body: TScrollableColumn(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TTextField(
-                  label: Text('Chapter Url'),
-                  controller: urlController,
+      body: isLoading
+          ? Center(child: TLoader.random())
+          : TScrollableColumn(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TTextField(
+                        label: Text('Chapter Url'),
+                        controller: urlController,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _pasteUrl,
+                      icon: Icon(Icons.paste_rounded),
+                    ),
+                  ],
                 ),
-              ),
-              IconButton(onPressed: _pasteUrl, icon: Icon(Icons.paste_rounded)),
-            ],
-          ),
-          _supportedSite(),
-          // content
-          TTextField(label: Text('Title'), controller: titleController),
-          TTextField(
-            label: Text('Chapter Number'),
-            controller: chNumberController,
-            maxLines: 1,
-            textInputType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            errorText: chapterErrorText,
-            onChanged: (value) => _chapterOnCheck(),
-          ),
-          TTextField(
-            label: Text('Content'),
-            controller: contentController,
-            maxLines: null,
-          ),
-        ],
-      ),
+                _supportedSite(),
+                // content
+                TTextField(label: Text('Title'), controller: titleController),
+                TTextField(
+                  label: Text('Chapter Number'),
+                  controller: chNumberController,
+                  maxLines: 1,
+                  textInputType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  errorText: chapterErrorText,
+                  onChanged: (value) => _chapterOnCheck(),
+                ),
+                TTextField(
+                  label: Text('Content'),
+                  controller: contentController,
+                  maxLines: null,
+                ),
+              ],
+            ),
       floatingActionButton: _floatingActionButton(),
     );
   }

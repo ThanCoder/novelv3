@@ -97,6 +97,12 @@ class NovelListCubit extends Cubit<NovelListState> {
     return novel;
   }
 
+  void addNew(Novel novel) {
+    final list = state.list;
+    list.insert(0, novel);
+    emit(state.copyWith(list: list));
+  }
+
   void sort(int sortId, bool sortAsc) {
     final list = state.list;
     if (sortId == 1) {

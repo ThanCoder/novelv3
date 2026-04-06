@@ -48,13 +48,35 @@ class NovelDetailResult {
   final String author;
   final String translator;
   final String description;
+  final String title;
+  final String coverUrl;
 
   const NovelDetailResult({
     required this.otherTitles,
     required this.author,
     required this.translator,
     required this.description,
+    required this.title,
+    required this.coverUrl,
   });
+
+  NovelDetailResult copyWith({
+    String? otherTitles,
+    String? author,
+    String? translator,
+    String? description,
+    String? title,
+    String? coverUrl,
+  }) {
+    return NovelDetailResult(
+      otherTitles: otherTitles ?? this.otherTitles,
+      author: author ?? this.author,
+      translator: translator ?? this.translator,
+      description: description ?? this.description,
+      title: title ?? this.title,
+      coverUrl: coverUrl ?? this.coverUrl,
+    );
+  }
 }
 
 class MultiChapterResult {
