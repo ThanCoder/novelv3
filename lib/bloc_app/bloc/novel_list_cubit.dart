@@ -103,6 +103,11 @@ class NovelListCubit extends Cubit<NovelListState> {
     emit(state.copyWith(list: list));
   }
 
+  bool isExists(String title) {
+    final index = state.list.indexWhere((e) => e.meta.title == title);
+    return index != -1;
+  }
+
   void sort(int sortId, bool sortAsc) {
     final list = state.list;
     if (sortId == 1) {

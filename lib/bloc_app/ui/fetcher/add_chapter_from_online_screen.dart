@@ -10,7 +10,9 @@ import 'package:than_pkg/than_pkg.dart';
 class AddChapterFromOnlineScreen extends StatefulWidget {
   final FetcherWebsite? website;
   final String? url;
+  final String? title;
   final int chapterNumber;
+
   final void Function(ChapterOnlineContentResult result)? onSaved;
   final bool Function(int chapterNumber)? existsChapterNumber;
   const AddChapterFromOnlineScreen({
@@ -18,6 +20,7 @@ class AddChapterFromOnlineScreen extends StatefulWidget {
     this.onSaved,
     this.website,
     this.url,
+    this.title,
     this.chapterNumber = 1,
     this.existsChapterNumber,
   });

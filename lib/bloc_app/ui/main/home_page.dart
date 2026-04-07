@@ -195,6 +195,8 @@ class _HomePageState extends State<HomePage> {
             builder: (context) => AddNovelDetailFromOnlineScreen(
               item: NovelItemResult(title: '', pageUrl: url, coverUrl: ''),
               site: site,
+              isExists: (title) =>
+                  context.read<NovelListCubit>().isExists(title),
               onClosed: (createdNovel) {
                 if (createdNovel == null) return;
                 context.read<NovelListCubit>().addNew(createdNovel);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/other_apps/share/libs/share_receive_url_form_dialog.dart';
-import 'package:novel_v3/other_apps/share/receive/novel_receive_screen.dart';
+import 'package:novel_v3/other_apps/share/receive/novel_receive_home_screen.dart';
 import 'package:novel_v3/other_apps/share/send/novel_share_screen.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
 import 'package:novel_v3/old_app/routes.dart';
@@ -84,7 +84,7 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
         onSuccess: (url) {
           goRoute(
             context,
-            builder: (context) => NovelReceiveScreen(hostUrl: url),
+            builder: (context) => NovelReceiveHomeScreen(hostUrl: url),
           );
         },
       ),

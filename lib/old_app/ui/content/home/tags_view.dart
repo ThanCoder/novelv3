@@ -77,7 +77,7 @@ class _TagsViewState extends State<TagsView> {
     return GestureDetector(
       onTap: () => onTap?.call(name),
       child: MouseRegion(
-        cursor: SystemMouseCursors.click,
+        cursor: onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
         child: Container(
           decoration: BoxDecoration(
             color: bgColor ?? const Color.fromARGB(255, 34, 33, 33),

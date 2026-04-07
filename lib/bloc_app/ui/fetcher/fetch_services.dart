@@ -36,43 +36,19 @@ class FetchServices {
     final html = res.data.toString();
 
     if (website.detailPageQuery != null) {
-      final otherTitles = QueryResult(
-        index: website.detailPageQuery!.otherTitles.index,
-        attr: Attribute(website.detailPageQuery!.otherTitles.attribue),
-        selector: website.detailPageQuery!.otherTitles.selector,
-      );
-      final author = QueryResult(
-        index: website.detailPageQuery!.author.index,
-        attr: Attribute(website.detailPageQuery!.author.attribue),
-        selector: website.detailPageQuery!.author.selector,
-      );
-      final translator = QueryResult(
-        index: website.detailPageQuery!.translator.index,
-        attr: Attribute(website.detailPageQuery!.translator.attribue),
-        selector: website.detailPageQuery!.translator.selector,
-      );
-      final description = QueryResult(
-        index: website.detailPageQuery!.description.index,
-        attr: Attribute(website.detailPageQuery!.description.attribue),
-        selector: website.detailPageQuery!.description.selector,
-      );
-      final title = QueryResult(
-        index: website.detailPageQuery!.title.index,
-        attr: Attribute(website.detailPageQuery!.title.attribue),
-        selector: website.detailPageQuery!.title.selector,
-      );
-      final coverUrl = QueryResult(
-        index: website.detailPageQuery!.coverUrl.index,
-        attr: Attribute(website.detailPageQuery!.coverUrl.attribue),
-        selector: website.detailPageQuery!.coverUrl.selector,
-      );
       return NovelDetailResult(
-        title: title.getResult(html) ?? '',
-        coverUrl: coverUrl.getResult(html) ?? '',
-        otherTitles: otherTitles.getResult(html) ?? '',
-        author: author.getResult(html) ?? '',
-        translator: translator.getResult(html) ?? '',
-        description: (description.getResult(html) ?? '').cleanHtmlTag(),
+        title: website.detailPageQuery!.title.getResult(html).join(','),
+        coverUrl: website.detailPageQuery!.coverUrl.getResult(html).join(''),
+        otherTitles: website.detailPageQuery!.otherTitles.getResult(html),
+        author: website.detailPageQuery!.author.getResult(html).join(''),
+        translator: website.detailPageQuery!.translator
+            .getResult(html)
+            .join(''),
+        description: website.detailPageQuery!.description
+            .getResult(html)
+            .join('')
+            .cleanHtmlTag(),
+        tags: website.detailPageQuery!.tags.getResult(html),
       );
     }
     return null;
@@ -221,9 +197,9 @@ class FetchServices {
         ),
         detailPageQuery: DetailPageQuery(
           title: FetcherQuery(
-            index: 0,
             attribue: HtmlAttribute.text.value,
-            selector: '.entry-title',
+            selector: '.entry-title,.cat-series',
+            type: FetcherQueryType.list,
           ),
           coverUrl: FetcherQuery(
             index: 0,
@@ -241,7 +217,7 @@ class FetchServices {
             selector: '.sertoauth .serval',
           ),
           translator: FetcherQuery(
-            index: 1,
+            index: 2,
             attribue: HtmlAttribute.text.value,
             selector: '.sertoauth .serval',
           ),
@@ -250,25 +226,30 @@ class FetchServices {
             attribue: HtmlAttribute.html.value,
             selector: '.entry-content',
           ),
-        ),
-      ),
-      FetcherWebsite(
-        url: 'https://novelhi.com',
-        title: 'Novel HI',
-        novelListPageQuery: NovelListPageQuery.createEmpty(),
-        chapterPageQuery: ChapterPageQuery(
-          titleQuery: FetcherQuery(
-            index: 0,
-            attribue: HtmlAttribute.text.name,
-            selector: '.book_title h1',
-          ),
-          contentQuery: FetcherQuery(
-            index: 0,
-            attribue: HtmlAttribute.text.name,
-            selector: '.readBox',
+          tags: FetcherQuery(
+            attribue: HtmlAttribute.text.value,
+            selector: '.sertogenre a',
+            type: FetcherQueryType.list,
           ),
         ),
       ),
+      // FetcherWebsite(
+      //   url: 'https://novelhi.com',
+      //   title: 'Novel HI',
+      //   novelListPageQuery: NovelListPageQuery.createEmpty(),
+      //   chapterPageQuery: ChapterPageQuery(
+      //     titleQuery: FetcherQuery(
+      //       index: 0,
+      //       attribue: HtmlAttribute.text.name,
+      //       selector: '.book_title h1',
+      //     ),
+      //     contentQuery: FetcherQuery(
+      //       index: 0,
+      //       attribue: HtmlAttribute.text.name,
+      //       selector: '.readBox',
+      //     ),
+      //   ),
+      // ),
     ];
   }
 }

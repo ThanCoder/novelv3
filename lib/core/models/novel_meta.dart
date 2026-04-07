@@ -24,6 +24,7 @@ class NovelMetaAdapter extends HBAdapter<NovelMeta> {
 
 class NovelMeta {
   static final String metaName = 'meta.json';
+
   final String id;
   final String title;
   final String author;
@@ -166,6 +167,7 @@ class NovelMeta {
       coverUrl: map['coverUrl'],
     );
   }
+
   static List<String> _parseList(dynamic mapVal) {
     if (mapVal == null) {
       return [];

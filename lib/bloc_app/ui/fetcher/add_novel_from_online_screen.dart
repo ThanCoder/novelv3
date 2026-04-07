@@ -5,12 +5,20 @@ import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_proxy.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
+import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AddNovelFromOnlineScreen extends StatefulWidget {
   final FetcherWebsite site;
-  const AddNovelFromOnlineScreen({super.key, required this.site});
+  final void Function(Novel? createdNovel)? onClosed;
+  final bool Function(String title)? isExists;
+  const AddNovelFromOnlineScreen({
+    super.key,
+    required this.site,
+    this.onClosed,
+    this.isExists,
+  });
 
   @override
   State<AddNovelFromOnlineScreen> createState() =>
@@ -102,15 +110,27 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
   }
 
   Widget _listItem(NovelItemResult item) {
+    final exists = (widget.isExists?.call(item.title) ?? false);
     return InkWell(
       onTap: () => goBlocRoute(
         context,
-        builder: (context) =>
-            AddNovelDetailFromOnlineScreen(item: item, site: widget.site),
+        builder: (context) => AddNovelDetailFromOnlineScreen(
+          item: item,
+          site: widget.site,
+          isExists: widget.isExists,
+          onClosed: (createdNovel) async {
+            widget.onClosed?.call(createdNovel);
+            await Future.delayed(Duration(seconds: 1));
+            if (!mounted) return;
+            setState(() {});
+          },
+        ),
       ),
       child: Stack(
         children: [
+          // cover
           Positioned.fill(child: TImage(source: item.coverUrl)),
+          // title
           Positioned(
             bottom: 0,
             left: 0,
@@ -134,6 +154,17 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
                   color: Colors.white,
                 ),
               ),
+            ),
+          ),
+          //added mark
+          Positioned(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.7),
+              ),
+              child: exists
+                  ? Icon(Icons.check, color: Colors.teal)
+                  : Icon(Icons.add),
             ),
           ),
         ],

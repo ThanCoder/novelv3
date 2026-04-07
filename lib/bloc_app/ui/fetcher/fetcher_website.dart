@@ -1,3 +1,6 @@
+import 'package:novel_v3/bloc_app/ui/fetcher/query_result_list.dart';
+import 'package:t_html_parser/core/q_result/attributes.dart';
+import 'package:t_html_parser/core/q_result/query_result.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class FetcherWebsite {
@@ -49,6 +52,7 @@ class DetailPageQuery {
   final FetcherQuery description;
   final FetcherQuery title;
   final FetcherQuery coverUrl;
+  final FetcherQuery tags;
 
   const DetailPageQuery({
     required this.title,
@@ -57,6 +61,7 @@ class DetailPageQuery {
     required this.author,
     required this.translator,
     required this.description,
+    required this.tags,
   });
 }
 
@@ -86,19 +91,63 @@ class ChapterPageQuery {
   }
 }
 
+enum FetcherQueryType {
+  single,
+  list;
+
+  static FetcherQueryType fromName(String name) {
+    if (name == list.name) {
+      return list;
+    }
+    return single;
+  }
+}
+
 class FetcherQuery {
   final int index;
   final String attribue;
   final String selector;
+  final FetcherQueryType type;
 
   const FetcherQuery({
-    required this.index,
     required this.attribue,
     required this.selector,
+    this.index = 0,
+    this.type = FetcherQueryType.single,
   });
 
+  List<String> getResult(String html) {
+    List<String> results = [];
+    if (type == FetcherQueryType.single) {
+      final res = QueryResult(
+        index: index,
+        attr: Attribute(attribue),
+        selector: selector,
+      ).getResult(html);
+      if (res != null && res.isNotEmpty) {
+        results.add(res);
+      }
+    }
+    // list
+    if (type == FetcherQueryType.list) {
+      final res = QueryResultList(
+        attr: Attribute(attribue),
+        selector: selector,
+      ).getResult(html);
+      if (res.isNotEmpty) {
+        results.addAll(res);
+      }
+    }
+    return results;
+  }
+
   Map<String, dynamic> toJson() {
-    return {'index': index, 'attribue': attribue, 'selector': selector};
+    return {
+      'index': index,
+      'attribue': attribue,
+      'selector': selector,
+      'type': type.name,
+    };
   }
 
   factory FetcherQuery.fromJson(Map<String, dynamic> json) {
@@ -106,6 +155,7 @@ class FetcherQuery {
       index: json.getInt(['index']),
       attribue: json.getString(['attribue']),
       selector: json.getString(['selector']),
+      type: FetcherQueryType.fromName(json.getString(['type'])),
     );
   }
 }

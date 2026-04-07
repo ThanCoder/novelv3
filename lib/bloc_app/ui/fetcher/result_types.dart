@@ -44,12 +44,13 @@ class NovelItemResult {
 }
 
 class NovelDetailResult {
-  final String otherTitles;
+  final List<String> otherTitles;
   final String author;
   final String translator;
   final String description;
   final String title;
   final String coverUrl;
+  final List<String> tags;
 
   const NovelDetailResult({
     required this.otherTitles,
@@ -58,15 +59,17 @@ class NovelDetailResult {
     required this.description,
     required this.title,
     required this.coverUrl,
+    required this.tags,
   });
 
   NovelDetailResult copyWith({
-    String? otherTitles,
+    List<String>? otherTitles,
     String? author,
     String? translator,
     String? description,
     String? title,
     String? coverUrl,
+    List<String>? tags,
   }) {
     return NovelDetailResult(
       otherTitles: otherTitles ?? this.otherTitles,
@@ -75,6 +78,7 @@ class NovelDetailResult {
       description: description ?? this.description,
       title: title ?? this.title,
       coverUrl: coverUrl ?? this.coverUrl,
+      tags: tags ?? this.tags,
     );
   }
 }

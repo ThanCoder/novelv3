@@ -32,14 +32,50 @@ class _NovelPageComponentState extends State<NovelPageComponent> {
   }
 
   void _showGotoDialog() {
-    showTListDialog<String>(
+    showTMenuBottomSheet(
       context,
-      list: widget.novel.meta.pageUrls,
-      listItemBuilder: (context, item) => ListTile(
-        title: Text(item, style: TextStyle(fontSize: 11)),
+      title: Text('Page Urls'),
+      children: List.generate(
+        widget.novel.meta.pageUrls.length,
+        (index) => _listItem(widget.novel.meta.pageUrls[index]),
+      ),
+    );
+  }
+
+  Widget _listItem(String url) {
+    return InkWell(
+      onSecondaryTap: () {
+        try {
+          ThanPkg.appUtil.copyText(url);
+          if (TPlatform.isDesktop) {
+            showTSnackBar(context, 'Url Copied');
+          }
+          context.closeNavigator();
+        } catch (e) {
+          showTMessageDialogError(context, e.toString());
+        }
+      },
+      child: ListTile(
+        title: Text(
+          url,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 11),
+        ),
         onTap: () {
           try {
-            ThanPkg.platform.launch(item);
+            ThanPkg.platform.launch(url);
+            context.closeNavigator();
+          } catch (e) {
+            showTMessageDialogError(context, e.toString());
+          }
+        },
+        onLongPress: () {
+          try {
+            ThanPkg.appUtil.copyText(url);
+            if (TPlatform.isDesktop) {
+              showTSnackBar(context, 'Url Copied');
+            }
             context.closeNavigator();
           } catch (e) {
             showTMessageDialogError(context, e.toString());

@@ -8,11 +8,12 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AddChapterListFromOnlineScreen extends StatefulWidget {
+  static bool startChapterNumberSmallToBig = false;
+  static bool sortChapterSmToBig = true;
+
   final String url;
   final void Function(ChapterOnlineContentResult result)? onSaved;
   final bool Function(int chapterNumber)? existsChapterNumber;
-  static bool startChapterNumberSmallToBig = true;
-  static bool sortChapterSmToBig = true;
   const AddChapterListFromOnlineScreen({
     super.key,
     required this.url,
@@ -231,6 +232,14 @@ class _AddChapterListFromOnlineScreenState
         startChapterNumberSmallToBig:
             AddChapterListFromOnlineScreen.startChapterNumberSmallToBig,
       );
+
+      resultList.sort((a, b) {
+        if (AddChapterListFromOnlineScreen.sortChapterSmToBig) {
+          return a.chNumber.compareTo(b.chNumber);
+        } else {
+          return b.chNumber.compareTo(a.chNumber);
+        }
+      });
       if (!mounted) return;
       setState(() {
         isLoading = false;

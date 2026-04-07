@@ -41,7 +41,14 @@ Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
       onChoosed: (site) {
         goRoute(
           context,
-          builder: (context) => AddNovelFromOnlineScreen(site: site),
+          builder: (context) => AddNovelFromOnlineScreen(
+            site: site,
+            isExists: (title) => context.read<NovelListCubit>().isExists(title),
+            onClosed: (createdNovel) {
+              if (createdNovel == null) return;
+              context.read<NovelListCubit>().addNew(createdNovel);
+            },
+          ),
         );
       },
     ),

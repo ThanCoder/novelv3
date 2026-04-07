@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
 import 'package:t_client/t_client.dart';
@@ -114,24 +112,26 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
     );
   }
 
-  final http = HttpClient();
-
   void _checkHost() async {
     try {
       setState(() {
         isLoading = true;
+        errorText = null;
       });
       final url =
           'http://${urlController.text}:${ServerServices.getInstance.server.port}';
 
       // final res = await client.get(url);
-      http.connectionTimeout = Duration(seconds: 8);
+      // client.connectionTimeout = Duration(seconds: 8);
 
-      final request = await http.getUrl(Uri.parse(url));
-      final res = await request.close();
-      await res.drain();
-
-      // print('res.statusCode: ${res.statusCode} - url: $url');
+      final res = await client.get(
+        '$url/api',
+        receiveTimeout: Duration(seconds: 3),
+        sendTimeout: Duration(seconds: 3),
+      );
+      if (res.statusCode != 200) {
+        throw Exception('statusCode: ${res.statusCode}');
+      }
       if (!mounted) return;
 
       setState(() {
@@ -139,7 +139,7 @@ class _ShareReceiveUrlFormDialogState extends State<ShareReceiveUrlFormDialog> {
         errorText = null;
       });
       widget.onConnectedUrl?.call(urlController.text);
-      if (!mounted) return;
+
       Navigator.pop(context);
       widget.onSuccess(url);
     } catch (e) {

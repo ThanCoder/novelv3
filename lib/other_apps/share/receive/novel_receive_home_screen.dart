@@ -11,15 +11,15 @@ import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-class NovelReceiveScreen extends StatefulWidget {
+class NovelReceiveHomeScreen extends StatefulWidget {
   final String hostUrl;
-  const NovelReceiveScreen({super.key, required this.hostUrl});
+  const NovelReceiveHomeScreen({super.key, required this.hostUrl});
 
   @override
-  State<NovelReceiveScreen> createState() => _NovelReceiveScreenState();
+  State<NovelReceiveHomeScreen> createState() => _NovelReceiveHomeScreenState();
 }
 
-class _NovelReceiveScreenState extends State<NovelReceiveScreen> {
+class _NovelReceiveHomeScreenState extends State<NovelReceiveHomeScreen> {
   @override
   void initState() {
     super.initState();
