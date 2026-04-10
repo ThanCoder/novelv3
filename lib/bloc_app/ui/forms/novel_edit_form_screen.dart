@@ -230,6 +230,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
     final novel = widget.novel.copyWith(
       date: DateTime.now(),
       meta: updatedMeta,
+      size: widget.novel.getAllSize(),
     );
     Navigator.pop(context);
     widget.onUpdated(novel);

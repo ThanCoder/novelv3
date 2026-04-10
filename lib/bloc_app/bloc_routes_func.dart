@@ -64,10 +64,10 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
         final novel = await pdfContext.read<NovelListCubit>().createNewNovel(
           title: pdf.path.getName(withExt: false),
         );
-        if (!pdfContext.mounted) return;
+        if (!mainContext.mounted) return;
 
         showSingleFileCopyDialog(
-          pdfContext,
+          mainContext,
           sourcePath: pdf.path,
           destPath: pathJoin(novel.path, pdf.title),
           onClosed: () async {
@@ -75,14 +75,9 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
             if (coverFile.existsSync()) {
               await coverFile.copy(novel.getCoverPath);
             }
-            if (!pdfContext.mounted) return;
-            pdfContext.closeNavigator();
-
-            if (!pdfScannerContext.mounted) return;
-            pdfScannerContext.closeNavigator();
 
             // showTMessageDialog(pdfScannerContext, 'Novel ကိုဖန်တီးပြီးပါပြီ');
-
+            if (!mainContext.mounted) return;
             goRoute(
               mainContext,
               builder: (context) => NovelEditFormScreen(

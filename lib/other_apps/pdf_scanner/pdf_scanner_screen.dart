@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_extension.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_list_item.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner.dart';
@@ -112,8 +113,12 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () =>
-                        widget.onChoosed?.call(context, selectedList),
+                    onPressed: () {
+                      if (widget.onChoosed != null) {
+                        widget.onChoosed?.call(context, selectedList);
+                        context.closeNavigator();
+                      }
+                    },
                     child: Text('Choose'),
                   ),
                 ],
@@ -185,7 +190,10 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
 
   void _onItemClicked(PdfFile pdf) {
     if (!widget.isMultipleSelected) {
-      widget.onClicked?.call(context, pdf);
+      if (widget.onClicked != null) {
+        widget.onClicked?.call(context, pdf);
+        context.closeNavigator();
+      }
       return;
     }
     // is multi

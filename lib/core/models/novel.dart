@@ -30,6 +30,16 @@ class Novel {
 
   DateTime get getDate => Directory(path).modified;
 
+  int getAllSize() {
+    int size = 0;
+    final dir = Directory(path);
+    for (var file in dir.listSync(followLinks: false)) {
+      if (!file.isFile) continue;
+      size += file.size;
+    }
+    return size;
+  }
+
   List<String> get getConfigFiles {
     List<String> list = [];
     final dir = Directory(path);
