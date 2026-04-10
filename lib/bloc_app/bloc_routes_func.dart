@@ -24,6 +24,7 @@ import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 void goBlocRoute(
@@ -61,33 +62,88 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
     builder: (pdfScannerContext) => PdfScannerScreen(
       title: Text('New Novel From PDF'),
       onClicked: (pdfContext, pdf) async {
-        final novel = await pdfContext.read<NovelListCubit>().createNewNovel(
-          title: pdf.path.getName(withExt: false),
-        );
-        if (!mainContext.mounted) return;
+        // menu
+        showTMenuBottomSheet(
+          pdfScannerContext,
+          children: [
+            // move
+            ListTile(
+              title: Text('Move PDF And Create'),
+              onTap: () async {
+                pdfScannerContext.closeNavigator();
+                final novel = await pdfContext
+                    .read<NovelListCubit>()
+                    .createNewNovel(title: pdf.path.getName(withExt: false));
+                // move pdf
+                final coverFile = File(pdf.getCoverPath);
+                if (coverFile.existsSync()) {
+                  await coverFile.copy(novel.getCoverPath);
+                }
+                final pdfFile = File(pdf.path);
+                final distFile = File(pathJoin(novel.path, pdf.title));
+                if (pdfFile.existsSync()) {
+                  if (distFile.existsSync()) {
+                    await distFile.delete();
+                  }
+                  await pdfFile.rename(distFile.path);
+                }
+                if (pdfScannerContext.mounted) {
+                  pdfScannerContext.closeNavigator();
+                }
 
-        showSingleFileCopyDialog(
-          mainContext,
-          sourcePath: pdf.path,
-          destPath: pathJoin(novel.path, pdf.title),
-          onClosed: () async {
-            final coverFile = File(pdf.getCoverPath);
-            if (coverFile.existsSync()) {
-              await coverFile.copy(novel.getCoverPath);
-            }
+                if (!mainContext.mounted) return;
+                goRoute(
+                  mainContext,
+                  builder: (context) => NovelEditFormScreen(
+                    novel: novel,
+                    onUpdated: (updatedNovel) async {
+                      await context.read<NovelListCubit>().update(updatedNovel);
+                    },
+                  ),
+                );
+              },
+            ),
+            // copy
+            ListTile(
+              title: Text('Copy PDF And Create'),
+              onTap: () async {
+                pdfScannerContext.closeNavigator();
+                final novel = await pdfContext
+                    .read<NovelListCubit>()
+                    .createNewNovel(title: pdf.path.getName(withExt: false));
 
-            // showTMessageDialog(pdfScannerContext, 'Novel ကိုဖန်တီးပြီးပါပြီ');
-            if (!mainContext.mounted) return;
-            goRoute(
-              mainContext,
-              builder: (context) => NovelEditFormScreen(
-                novel: novel,
-                onUpdated: (updatedNovel) async {
-                  await context.read<NovelListCubit>().update(updatedNovel);
-                },
-              ),
-            );
-          },
+                if (!pdfScannerContext.mounted) return;
+                showSingleFileCopyDialog(
+                  pdfScannerContext,
+                  sourcePath: pdf.path,
+                  destPath: pathJoin(novel.path, pdf.title),
+                  onClosed: () async {
+                    final coverFile = File(pdf.getCoverPath);
+                    if (coverFile.existsSync()) {
+                      await coverFile.copy(novel.getCoverPath);
+                    }
+                    if (pdfScannerContext.mounted) {
+                      pdfScannerContext.closeNavigator();
+                    }
+
+                    // showTMessageDialog(pdfScannerContext, 'Novel ကိုဖန်တီးပြီးပါပြီ');
+                    if (!mainContext.mounted) return;
+                    goRoute(
+                      mainContext,
+                      builder: (context) => NovelEditFormScreen(
+                        novel: novel,
+                        onUpdated: (updatedNovel) async {
+                          await context.read<NovelListCubit>().update(
+                            updatedNovel,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
         );
       },
     ),

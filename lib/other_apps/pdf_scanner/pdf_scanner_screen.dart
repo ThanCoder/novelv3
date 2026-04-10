@@ -114,10 +114,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      if (widget.onChoosed != null) {
-                        widget.onChoosed?.call(context, selectedList);
-                        context.closeNavigator();
-                      }
+                      widget.onChoosed?.call(context, selectedList);
                     },
                     child: Text('Choose'),
                   ),
@@ -190,11 +187,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
 
   void _onItemClicked(PdfFile pdf) {
     if (!widget.isMultipleSelected) {
-      if (widget.onClicked != null) {
-        widget.onClicked?.call(context, pdf);
-        context.closeNavigator();
-      }
-      return;
+      widget.onClicked?.call(context, pdf);
     }
     // is multi
     if (selectedList.isEmpty) {
