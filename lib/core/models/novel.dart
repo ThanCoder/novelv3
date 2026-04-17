@@ -9,7 +9,7 @@ class Novel {
   final String path;
   final NovelMeta meta;
   final DateTime date;
-  final int size;
+  int size;
   Novel({
     required this.id,
     required this.path,
@@ -30,13 +30,16 @@ class Novel {
 
   DateTime get getDate => Directory(path).modified;
 
-  int getAllSize() {
-    int size = 0;
+  Future<int> getAllSize() async {
+    if (size != 0) return size;
+
+    int total = 0;
     final dir = Directory(path);
-    for (var file in dir.listSync(followLinks: false)) {
+    await for (var file in dir.list(followLinks: false)) {
       if (!file.isFile) continue;
-      size += file.size;
+      total += await file.sizeAsync();
     }
+    size = total;
     return size;
   }
 
@@ -86,10 +89,10 @@ class Novel {
     final dir = Directory(path);
     if (!dir.existsSync()) return null;
     int size = 0;
-    for (var file in dir.listSync(followLinks: false)) {
-      if (!file.isFile) continue;
-      size += await file.sizeAsync();
-    }
+    // for (var file in dir.listSync(followLinks: false)) {
+    //   if (!file.isFile) continue;
+    //   size += await file.sizeAsync();
+    // }
     return Novel(
       id: path.getName(),
       path: path,

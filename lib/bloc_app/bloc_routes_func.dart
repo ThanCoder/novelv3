@@ -239,7 +239,7 @@ Future<void> goBlocChapterReader(
   goBlocRoute(
     context,
     builder: (context) => ChapterReaderScreen(
-      currentNovel: novel,
+      novel: novel,
       allList: context.read<ChapterListCubit>().state.list,
       getReaded: () => novel.meta.readed,
       onUpdateReaded: (context, readed) async {

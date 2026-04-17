@@ -30,12 +30,13 @@ void main() async {
     initialThemeServices: true,
     defaultImageAssetsPath: 'assets/logo_3.jpg',
     isDarkTheme: () => Setting.getAppConfig.isDarkTheme,
-    getCachePath: (url) => PathUtil.getCachePath(
-      name: '${url.split('/').last.replaceAll(':', '-')}.png',
-    ),
-    onDownloadImage: (url, savePath) async {
-      await client.download(url, savePath: savePath);
-    },
+    getCachePath: (url, cacheName) => PathUtil.getCachePath(name: cacheName),
+    // getCachePath: (url) => PathUtil.getCachePath(
+    //   name: '${url.split('/').last.replaceAll(':', '-')}.png',
+    // ),
+    // onDownloadImage: (url, savePath) async {
+    //   await client.download(url, savePath: savePath);
+    // },
   );
   await PdfReader.instance.init(
     getDarkTheme: () => Setting.getAppConfig.isDarkTheme,

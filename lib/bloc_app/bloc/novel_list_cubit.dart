@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -13,7 +14,7 @@ class NovelListCubit extends Cubit<NovelListState> {
   static List<TSort> sortList = [
     TSort(id: 1, title: 'Title', ascTitle: 'A-Z', descTitle: 'Z-A'),
     TSort(id: 2, title: 'Size', ascTitle: 'Smallest', descTitle: 'Biggest'),
-    TSort(id: 3, title: 'Added', ascTitle: 'Newest', descTitle: 'Oldest'),
+    TSort(id: 3, title: 'Date', ascTitle: 'Newest', descTitle: 'Oldest'),
     TSort(id: 4, title: 'Adult', ascTitle: 'isAdult', descTitle: 'Not Adult'),
     TSort(
       id: 5,
@@ -108,13 +109,22 @@ class NovelListCubit extends Cubit<NovelListState> {
     return index != -1;
   }
 
-  void sort(int sortId, bool sortAsc) {
-    final list = state.list;
+  void refreshState() async {
+    emit(state.copyWith(isLoading: true));
+    await Future.delayed(Duration(milliseconds: 600));
+    emit(state.copyWith(isLoading: false));
+  }
+
+  void sort(int sortId, bool sortAsc) async {
+    final list = state.list.toList();
+
     if (sortId == 1) {
-      state.list.sortTitle(aToZ: sortAsc);
+      list.sortTitle(aToZ: sortAsc);
     }
     if (sortId == 2) {
-      state.list.sortSize(isSmallest: sortAsc);
+      emit(state.copyWith(isLoading: true));
+      await compute(_calcuteNovelSize, list);
+      list.sortSize(isSmallest: sortAsc);
     }
     if (sortId == 3) {
       list.sortDate(isNewest: sortAsc);
@@ -125,7 +135,14 @@ class NovelListCubit extends Cubit<NovelListState> {
     if (sortId == 5) {
       list.sortCompleted(isCompleted: sortAsc);
     }
-    emit(state.copyWith(list: list, sortId: sortId, sortAsc: sortAsc));
+    emit(
+      state.copyWith(
+        list: list,
+        sortId: sortId,
+        sortAsc: sortAsc,
+        isLoading: false,
+      ),
+    );
     // set recent
     TRecentDB.getInstance.putInt('novel-list-sort-id', sortId);
     TRecentDB.getInstance.putBool('novel-list-sort-asc', sortAsc);
@@ -188,4 +205,9 @@ class NovelListState {
       isInit: isInit ?? this.isInit,
     );
   }
+}
+
+Future<List<Novel>> _calcuteNovelSize(List<Novel> list) async {
+  Future.wait(list.map((e) => e.getAllSize()));
+  return list;
 }

@@ -50,7 +50,7 @@ Future<void> goChapterReader(
   goRoute(
     context,
     builder: (context) => ChapterReaderScreen(
-      currentNovel: novel,
+      novel: novel,
       allList: context.read<ChapterProvider>().list,
       getReaded: () => context.read<NovelProvider>().currentNovel!.meta.readed,
       // bookmark

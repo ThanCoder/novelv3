@@ -103,7 +103,7 @@ Future<List<Novel>> _fetchNovelsInBackground(String sourcePath) async {
 
   // listSync ထက် list() (Stream) က ပိုကောင်းနိုင်ပေမယ့်
   // background မှာမို့ Sync သုံးလည်း UI ကို မထိခိုက်တော့ပါဘူး
-  for (var file in dir.listSync(followLinks: false)) {
+  await for (var file in dir.list(followLinks: false)) {
     if (file is! Directory) continue;
 
     final novel = await Novel.fromPath(file.path);

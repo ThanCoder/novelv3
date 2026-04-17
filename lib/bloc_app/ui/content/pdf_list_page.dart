@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/file_copy_dialog_func.dart';
@@ -155,8 +156,31 @@ class _PdfListPageState extends State<PdfListPage> {
             _deleteConfirm(pdf);
           },
         ),
+        ListTile(
+          iconColor: Colors.green,
+          leading: Icon(Icons.now_wallpaper),
+          title: Text('Set PDF Cover'),
+          onTap: () {
+            context.closeNavigator();
+            _setCoverImage(pdf.getCoverPath);
+          },
+        ),
       ],
     );
+  }
+
+  void _setCoverImage(String path) async {
+    try {
+      final cover = File(path);
+      if (!cover.existsSync()) return;
+      await cover.copy(widget.novel.getCoverPath);
+      if (!mounted) return;
+      showTSnackBar(context, 'Novel Cover Added', showCloseIcon: true);
+      context.read<NovelListCubit>().refreshState();
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+    }
   }
 
   void _addPdfFromScanner() {

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
-import 'package:novel_v3/core/utils.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_extension.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_list_item.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner.dart';

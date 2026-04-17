@@ -6,7 +6,6 @@ import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
-import 'package:novel_v3/old_app/ui/content/home/tags_view.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -134,7 +133,7 @@ class _AddNovelDetailFromOnlineScreenState
           'Other Titles: ${result?.otherTitles}',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        TagsView(tags: result!.tags),
+        TagsView(values: result!.tags),
         Divider(),
         Text(result!.description),
       ],

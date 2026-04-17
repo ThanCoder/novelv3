@@ -9,13 +9,13 @@ class ChapterBookmarkAction extends StatefulWidget {
   final Chapter chapter;
   final String? title;
   final ReaderTheme? theme;
-  final Novel currentNovel;
+  final Novel novel;
   final bool Function(int chpaterNumber) isExistsChapterBookmark;
   final Future<void> Function(int chpaterNumber) onRemoveChapter;
   final Future<void> Function(ChapterBookmark bookmark) onAddChapterBookmark;
   const ChapterBookmarkAction({
     super.key,
-    required this.currentNovel,
+    required this.novel,
     required this.chapter,
     required this.isExistsChapterBookmark,
     required this.onRemoveChapter,

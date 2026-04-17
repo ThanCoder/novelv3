@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/utils.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_theme_listener.dart';
@@ -16,7 +17,7 @@ typedef OnGetChapterContentCallback =
     Future<String?> Function(BuildContext context, int chapterNumber);
 
 class ChapterReaderScreen extends StatefulWidget {
-  final Novel currentNovel;
+  final Novel novel;
   final Chapter chapter;
   final List<Chapter> allList;
   final ChapterReaderConfig config;
@@ -31,7 +32,7 @@ class ChapterReaderScreen extends StatefulWidget {
   final Future<void> Function(ChapterBookmark bookmark) onAddChapterBookmark;
   const ChapterReaderScreen({
     super.key,
-    required this.currentNovel,
+    required this.novel,
     required this.chapter,
     required this.allList,
     required this.config,
@@ -44,6 +45,8 @@ class ChapterReaderScreen extends StatefulWidget {
     this.onReaderClosed,
     this.onUpdateConfig,
   });
+
+  static final Set<String> showConfigDialogMap = {};
 
   @override
   State<ChapterReaderScreen> createState() => _ChapterReaderScreenState();
@@ -89,7 +92,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   void init() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // readed = context.read<NovelProvider>().currentNovel!.meta.readed;
+      // readed = context.read<NovelProvider>().novel!.meta.readed;
       readed = widget.getReaded();
       if (viewList.isEmpty) return;
       final chapter = viewList.last;
@@ -119,9 +122,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print('canGoback: $canGoback');
+    // print('canGoback: ${!_isShowConfigDialog() || canGoback}');
     return PopScope(
-      canPop: canGoback,
+      canPop: !_isShowConfigDialog() || canGoback,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
@@ -284,7 +287,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       chapter: chapter,
       title: 'BookMark',
       isExistsChapterBookmark: widget.isExistsChapterBookmark,
-      currentNovel: widget.currentNovel,
+      novel: widget.novel,
       onRemoveChapter: widget.onRemoveChapter,
       onAddChapterBookmark: widget.onAddChapterBookmark,
     );
@@ -429,6 +432,9 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     );
   }
 
+  bool _isShowConfigDialog() =>
+      !ChapterReaderScreen.showConfigDialogMap.contains(widget.novel.id);
+
   void _toggleFullScreen() {
     isFullScreen = !isFullScreen;
     ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
@@ -457,10 +463,42 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
       // readed ကို စစ်မယ်
       if (!canGoback && viewList.isNotEmpty && viewList.last.number > readed) {
         final chapter = viewList.last;
+        showDialog(
+          context: context,
+          builder: (dialogContext) => ConfirmDialog(
+            content: Text(
+              'ယခု Chapter: `${chapter.number}`\nReaded Chapter: `$readed`\n\nသိမ်းဆည်းထားချင်ပါသလား?',
+            ),
+            middleButton: (btnContext) => TextButton(
+              onPressed: () {
+                context.closeNavigator();
+                canGoback = true;
+                ChapterReaderScreen.showConfigDialogMap.add(widget.novel.id);
+                setState(() {});
+              },
+              child: Text('ထပ်မပြနဲ့တော့'),
+            ),
+            cancelButton: (btnContext, callback) => TextButton(
+              onPressed: () {
+                callback();
+                _closePage();
+              },
+              child: Text('မသိမ်းဘူး', style: TextStyle(color: Colors.red)),
+            ),
+            submitButton: (btnContext, callback) => TextButton(
+              onPressed: () {
+                callback();
+                _closePageAndCallUpdateCallback();
+              },
+              child: Text('သိမ်းမယ်', style: TextStyle(color: Colors.blue)),
+            ),
+          ),
+        );
+        /*
         showTConfirmDialog(
           context,
           contentText:
-              'ယခု Chapter: `${chapter.number}`\nReaded Chapter: `$readed`\nသိမ်းဆည်းထားချင်ပါသလား?',
+             
           submitText: 'သိမ်းမယ်',
           cancelText: 'မသိမ်းဘူး',
           // barrierDismissible: false,
@@ -474,15 +512,6 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           onSubmit: () async {
             canGoback = true;
             setState(() {});
-            //current novel မှာသိမ်းဆည်းမယ်
-            // final provider = context.read<NovelProvider>();
-            // await provider.update(
-            //   provider.currentNovel!.copyWith(
-            //     meta: provider.currentNovel!.meta.copyWith(
-            //       readed: chapter.number,
-            //     ),
-            //   ),
-            // );
             await widget.onUpdateReaded(context, chapter.number);
 
             await Future.delayed(Duration.zero);
@@ -490,6 +519,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
             Navigator.pop(context);
           },
         );
+        */
         return;
       }
       // backpress
@@ -507,5 +537,24 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
     } catch (e) {
       debugPrint('[_onBackConfirm]: ${e.toString()}');
     }
+  }
+
+  void _closePage() async {
+    canGoback = true;
+    setState(() {});
+    await Future.delayed(Duration.zero);
+    if (!mounted) return;
+    Navigator.pop(context);
+  }
+
+  void _closePageAndCallUpdateCallback() async {
+    final chapter = viewList.last;
+    canGoback = true;
+    setState(() {});
+    await widget.onUpdateReaded(context, chapter.number);
+
+    await Future.delayed(Duration.zero);
+    if (!mounted) return;
+    Navigator.pop(context);
   }
 }

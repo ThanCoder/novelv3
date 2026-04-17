@@ -24,8 +24,9 @@ class PdfFile {
 
   int get getSize => File(path).getSize;
 
-  String get getCoverPath =>
-      PathUtil.getCachePath(name: '${path.getName(withExt: false)}-cover.png');
+  String get getCoverPath => PathUtil.getCachePath(
+    name: 'cache-${path.getName(withExt: false)}-cover.png',
+  );
 
   String get getParentPath => File(path).parent.path;
 

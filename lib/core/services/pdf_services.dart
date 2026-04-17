@@ -30,37 +30,46 @@ class PdfServices {
 
   Future<void> genPdfThumbnail(
     PdfFile pdf,
-    String cachePath, {
+    String savePath, {
+    bool saveOverride = false,
     bool runInBackground = false,
-    double fullWidth = 110,
-    double fullHeight = 130,
+    double width = 110,
+    double height = 130,
+    int quality = 75,
   }) async {
+    final saveFile = File(savePath);
+    if (saveFile.existsSync() && !saveOverride) return;
+
     if (runInBackground) {
       await compute(_genPdfThumbnailInBackground, (
         pdf.path,
-        cachePath,
-        fullWidth,
-        fullHeight,
+        savePath,
+        width,
+        height,
       ));
     } else {
       if (Platform.isAndroid) {
         await ThanPkg.android.thumbnail.genPdfImage(
           pdfPath: pdf.path,
-          outPath: cachePath,
+          outPath: savePath,
         );
         return;
       }
       await pdfrxInitialize();
-      final cacheFile = File(cachePath);
+
       final document = await PdfDocument.openFile(pdf.path);
       final page = document.pages[0]; // first page
       final pageImage = await page.render(
-        fullWidth: (page.width * fullWidth / 72),
-        fullHeight: (page.height * fullHeight / 72),
+        /// Standard size
+        // fullWidth: (page.width * fullWidth / 72),
+        // fullHeight: (page.height * fullHeight / 72),
+        // for cover size
+        fullWidth: width,
+        fullHeight: height,
       );
       if (pageImage != null) {
         final image = pageImage.createImageNF();
-        await cacheFile.writeAsBytes(img.encodePng(image));
+        await saveFile.writeAsBytes(img.encodeJpg(image, quality: quality));
         pageImage.dispose();
       }
       await document.dispose();

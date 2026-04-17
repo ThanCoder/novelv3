@@ -205,7 +205,10 @@ class _ChapterListPageState extends State<ChapterListPage> {
                 ),
               );
           if (!mounted) return;
-          showTSnackBar(context, isAdded ? 'Added' : 'Updated');
+          showTSnackBar(
+            context,
+            isAdded ? '${result.number}: Added' : '${result.number}: Updated',
+          );
         },
       ),
     );
@@ -230,7 +233,11 @@ class _ChapterListPageState extends State<ChapterListPage> {
                 ),
               );
           if (!mounted) return;
-          showTSnackBar(context, isAdded ? 'Added' : 'Updated');
+          showTSnackBar(
+            context,
+            isAdded ? '${result.number}: Added' : '${result.number}: Updated',
+            showCloseIcon: true,
+          );
         },
       ),
     );

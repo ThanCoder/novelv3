@@ -4,9 +4,9 @@ import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/pdf_services.dart';
-import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class PdfListItem extends StatefulWidget {
   final PdfFile pdf;
@@ -40,6 +40,7 @@ class _PdfListItemState extends State<PdfListItem> {
   }
 
   bool isLoading = false;
+
   Future<void> init() async {
     try {
       if (isLoading) return;
@@ -64,11 +65,7 @@ class _PdfListItemState extends State<PdfListItem> {
     }
   }
 
-  File get cacheFile => File(
-    PathUtil.getCachePath(
-      name: 'cache-${widget.pdf.title.getName(withExt: false)}.png',
-    ),
-  );
+  File get cacheFile => File(widget.pdf.getCoverPath);
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +89,32 @@ class _PdfListItemState extends State<PdfListItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
             children: [
-              Text(
-                widget.pdf.title,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              Row(
+                spacing: 2,
+                children: [
+                  Icon(Icons.title),
+                  Text(
+                    widget.pdf.title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
-              Text('Size: ${widget.pdf.getSize.fileSizeLabel()}'),
+              Row(
+                spacing: 2,
+                children: [
+                  Icon(Icons.storage),
+                  Text(widget.pdf.getSize.fileSizeLabel()),
+                ],
+              ),
+              Row(
+                spacing: 2,
+                children: [
+                  Icon(Icons.date_range),
+                  Text(widget.pdf.date.toParseTime()),
+                ],
+              ),
             ],
           ),
         ],

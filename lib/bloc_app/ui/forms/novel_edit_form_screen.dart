@@ -213,7 +213,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
     );
   }
 
-  void _onUpdate() {
+  void _onUpdate() async {
     final updatedMeta = widget.novel.meta.copyWith(
       title: titleController.text,
       author: authorController.text,
@@ -230,8 +230,9 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
     final novel = widget.novel.copyWith(
       date: DateTime.now(),
       meta: updatedMeta,
-      size: widget.novel.getAllSize(),
+      size: await widget.novel.getAllSize(),
     );
+    if (!mounted) return;
     Navigator.pop(context);
     widget.onUpdated(novel);
   }

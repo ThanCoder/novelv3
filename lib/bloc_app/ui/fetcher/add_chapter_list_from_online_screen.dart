@@ -12,7 +12,7 @@ class AddChapterListFromOnlineScreen extends StatefulWidget {
   static bool sortChapterSmToBig = true;
 
   final String url;
-  final void Function(ChapterOnlineContentResult result)? onSaved;
+  final Future<void> Function(ChapterOnlineContentResult result)? onSaved;
   final bool Function(int chapterNumber)? existsChapterNumber;
   const AddChapterListFromOnlineScreen({
     super.key,
@@ -54,50 +54,53 @@ class _AddChapterListFromOnlineScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Chapter List From Online'),
-        actions: [
-          IconButton(
-            onPressed: _sortChapterNumber,
-            icon: Icon(Icons.sort_by_alpha),
-          ),
-        ],
-      ),
-      body: isLoading
-          ? Center(child: TLoader.random())
-          : RefreshIndicator.noSpinner(
-              onRefresh: _fetch,
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TTextField(
-                            label: Text('Web Url'),
-                            controller: urlController,
+    return Theme(
+      data: ThemeData.dark(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Add Chapter List From Online'),
+          actions: [
+            IconButton(
+              onPressed: _autosortChapterNumber,
+              icon: Icon(Icons.sort_by_alpha),
+            ),
+          ],
+        ),
+        body: isLoading
+            ? Center(child: TLoader.random())
+            : RefreshIndicator.noSpinner(
+                onRefresh: _fetch,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TTextField(
+                              label: Text('Web Url'),
+                              controller: urlController,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: _pasteUrl,
-                          icon: Icon(Icons.paste_rounded),
-                        ),
-                      ],
+                          IconButton(
+                            onPressed: _pasteUrl,
+                            icon: Icon(Icons.paste_rounded),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SliverToBoxAdapter(child: _supportedSite()),
+                    SliverToBoxAdapter(child: _supportedSite()),
 
-                  _list(),
-                ],
+                    _list(),
+                  ],
+                ),
               ),
-            ),
-      floatingActionButton: isLoading
-          ? null
-          : FloatingActionButton(
-              onPressed: _fetch,
-              child: Icon(Icons.download),
-            ),
+        floatingActionButton: isLoading
+            ? null
+            : FloatingActionButton(
+                onPressed: _fetch,
+                child: Icon(Icons.download),
+              ),
+      ),
     );
   }
 
@@ -165,11 +168,19 @@ class _AddChapterListFromOnlineScreenState
             children: [
               Text(
                 ch.chNumber.toString(),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               SizedBox(width: 10),
-              Text(ch.title),
-              Spacer(),
+              Expanded(
+                child: Text(
+                  ch.title,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: TextStyle(fontSize: 13),
+                ),
+              ),
+              SizedBox(width: 10),
+
               Icon(exists ? Icons.download_done : Icons.download),
             ],
           ),
@@ -178,7 +189,7 @@ class _AddChapterListFromOnlineScreenState
     );
   }
 
-  void _sortChapterNumber() {
+  void _autosortChapterNumber() {
     resultList.sort((a, b) {
       if (AddChapterListFromOnlineScreen.sortChapterSmToBig) {
         return a.chNumber.compareTo(b.chNumber);
@@ -262,10 +273,15 @@ class _AddChapterListFromOnlineScreenState
         chapterNumber: ch.chNumber,
         existsChapterNumber: widget.existsChapterNumber,
         onSaved: (result) async {
-          widget.onSaved?.call(result);
-          await Future.delayed(Duration(seconds: 1));
+          final index = resultList.indexWhere((e) => e.chNumber == ch.chNumber);
+          if (index != -1) {
+            resultList[index] = ch.copyWith(chNumber: result.number);
+          }
+          await widget.onSaved?.call(result);
+          // await Future.delayed(Duration(sele: 1));
           if (!mounted) return;
           setState(() {});
+          // _onSort();
         },
       ),
     );
