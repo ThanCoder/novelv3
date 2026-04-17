@@ -31,9 +31,9 @@ class MultiApp extends StatefulWidget {
 class _MultiAppState extends State<MultiApp> {
   @override
   Widget build(BuildContext context) {
-    if (MultiApp.getConfigType() == MultiAppType.blocApp) {
-      return BlocApp();
+    if (MultiApp.getConfigType() == MultiAppType.oldApp) {
+      return OldApp();
     }
-    return OldApp();
+    return BlocApp();
   }
 }

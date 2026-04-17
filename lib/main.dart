@@ -29,7 +29,7 @@ void main() async {
   await TWidgets.instance.init(
     initialThemeServices: true,
     defaultImageAssetsPath: 'assets/logo_3.jpg',
-    isDarkTheme: () => Setting.getAppConfig.isDarkTheme,
+    // isDarkTheme: () => Setting.getAppConfig.isDarkTheme,
     getCachePath: (url, cacheName) => PathUtil.getCachePath(name: cacheName),
     // getCachePath: (url) => PathUtil.getCachePath(
     //   name: '${url.split('/').last.replaceAll(':', '-')}.png',

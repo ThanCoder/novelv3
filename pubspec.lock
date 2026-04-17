@@ -801,10 +801,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: "5037fe0ba6cc3cb66df1b9e402662d4a639789f1b5429bcb36075235ed10a34f"
+      sha256: "48eefd04ae47c2fdd03a3d27ad698ba41b26ef0047eb4cf1a0cfa9c2532afbeb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   term_glyph:
     dependency: transitive
     description:
