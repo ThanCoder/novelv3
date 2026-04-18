@@ -8,7 +8,6 @@ import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_type_tabbar_cubit.dart';
 import 'package:novel_v3/bloc_app/bloc/pdf_list_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/main/bloc_home_screen.dart';
-import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/core/services/novel_bookmark_services.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/core/services/pdf_services.dart';
@@ -22,7 +21,6 @@ class BlocApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => NovelServices()),
-        RepositoryProvider(create: (context) => ChapterServices()),
         RepositoryProvider(create: (context) => NovelBookmarkServices()),
         RepositoryProvider(create: (context) => PdfServices()),
       ],
@@ -40,7 +38,6 @@ class BlocApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ChapterListCubit(
-              context.read<ChapterServices>(),
               novelDetailCubit: context.read<NovelDetailCubit>(),
             ),
           ),

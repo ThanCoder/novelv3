@@ -22,13 +22,19 @@ class ChapterDB {
     return digest.toString();
   }
 
-  static void clearAll() {
+  static Future<void> clearAll() async {
+    for (var db in _dbMap.values) {
+      await db.close();
+    }
     _dbMap.clear();
   }
 
-  static void clear(String dbPath) {
-    final key = _pathToKey(dbPath);
-    _dbMap.remove(key);
+  static Future<void> clear(String novelId) async {
+    final key = _pathToKey(getDBPath(novelId));
+    if (_dbMap.containsKey(key)) {
+      await _dbMap[key]!.close();
+      _dbMap.remove(key);
+    }
   }
 
   static Future<TDB> _getCurrentDB(String dbPath) async {
@@ -56,13 +62,13 @@ class ChapterDB {
     final chapterBox = await getChapterBox(novelId);
     final contentBox = await getChapterContentBox(novelId);
 
-    final dbFile = File(novelId);
+    final dbFile = File(getDBPath(novelId));
 
-    if (dbFile.lengthSync() > 9) {
+    if (dbFile.existsSync() && dbFile.lengthSync() > 9) {
       return await chapterBox.getAll();
     } else {
       //chapter file တွေကို db ထဲထည့်မယ်
-      final dir = Directory(novelId);
+      final dir = Directory(getDBPath(novelId));
       for (var file in dir.listSync(followLinks: false)) {
         if (!file.isFile) continue;
 
@@ -209,11 +215,11 @@ Future<List<Chapter>> getAllChapterInBackground(String novelPath) async {
   TDBox<Chapter> getChapterBox = db.getBox<Chapter>();
   TDBox<ChapterContent> getChapterContentBox = db.getBox<ChapterContent>();
 
-  if (dbFile.lengthSync() > 9) {
+  if (dbFile.existsSync() && dbFile.lengthSync() > 9) {
     return await getChapterBox.getAll();
   } else {
     //chapter file တွေကို db ထဲထည့်မယ်
-    final dir = Directory(novelId);
+    final dir = Directory(novelPath);
     for (var file in dir.listSync(followLinks: false)) {
       if (!file.isFile) continue;
 

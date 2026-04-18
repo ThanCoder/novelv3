@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/other_apps/share/html_pages/html_content_page.dart';
 import 'package:novel_v3/other_apps/share/html_pages/html_home_page.dart';
 import 'package:novel_v3/other_apps/share/libs/novel_chapter.dart';
@@ -19,7 +19,7 @@ class NovelShareServices {
     List<NovelChapter> chapters = [];
     final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
     if (dir.existsSync()) {
-      for (var chapter in await ChapterServices().getAll(novelId: novel.id)) {
+      for (var chapter in await ChapterDB.getAll(novel.id)) {
         chapters.add(
           NovelChapter(
             id: chapter.autoId,
@@ -45,7 +45,8 @@ class NovelShareServices {
     String? content;
     final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
     if (dir.existsSync()) {
-      content = await ChapterServices().getContent(chapterNumber, dir.path);
+      final res = await ChapterDB.getContent(chapterNumber, dir.path);
+      content = res?.content;
     }
     return jsonEncode({'chapter_content': content ?? ''});
   }

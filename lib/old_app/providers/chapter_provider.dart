@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
-import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class ChapterProvider extends ChangeNotifier {
@@ -22,8 +22,8 @@ class ChapterProvider extends ChangeNotifier {
 
       isLoading = true;
       notifyListeners();
-      list = await ChapterServices().getAll(
-        novelId: novelProvider.currentNovel!.id,
+      list = await ChapterDB.getAll(
+        novelProvider.currentNovel!.id,
       );
 
       sort(currentSortId, sortAsc);
@@ -41,7 +41,7 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> add(Chapter chapter) async {
-    final autoId = await ChapterServices().add(
+    final autoId = await ChapterDB.add(
       chapter,
       novelId: chapter.novelId,
     );
@@ -60,7 +60,7 @@ class ChapterProvider extends ChangeNotifier {
     final index = list.indexWhere((e) => e.number == chapter.number);
     if (index == -1) return;
     list.removeAt(index);
-    await ChapterServices().delete(
+    await ChapterDB.delete(
       chapter,
       novelId: novelProvider.currentNovel!.id,
     );
@@ -68,7 +68,7 @@ class ChapterProvider extends ChangeNotifier {
   }
 
   Future<void> deleteAllById(List<int> ids) async {
-    await ChapterServices().deleteAllById(
+    await ChapterDB.deleteAllById(
       List<int>.from(ids),
       novelId: novelProvider.currentNovel!.id,
     );
@@ -87,7 +87,7 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
 
     list.clear();
-    await ChapterServices().deleteAll(novelId: novelProvider.currentNovel!.id);
+    await ChapterDB.deleteAll(novelId: novelProvider.currentNovel!.id);
     isLoading = false;
     notifyListeners();
   }
@@ -97,7 +97,7 @@ class ChapterProvider extends ChangeNotifier {
     notifyListeners();
 
     list.clear();
-    await ChapterServices().deleteDBFile(novelProvider.currentNovel!.id);
+    await ChapterDB.deleteDBFile(novelProvider.currentNovel!.id);
     isLoading = false;
     notifyListeners();
   }
@@ -115,12 +115,12 @@ class ChapterProvider extends ChangeNotifier {
 
   Future<String?> getContent(int chapterNumber) async {
     try {
-      final content = await ChapterServices().getContent(
+      final content = await ChapterDB.getContent(
         chapterNumber,
         novelProvider.currentNovel!.id,
       );
 
-      return content;
+      return content?.content;
     } catch (e) {
       debugPrint('[ChapterProvider:getContent]: ${e.toString()}');
       return null;
@@ -132,7 +132,7 @@ class ChapterProvider extends ChangeNotifier {
     if (index == -1) {
       return;
     }
-    await ChapterServices().update(
+    await ChapterDB.update(
       chapter,
       novelId: novelProvider.currentNovel!.id,
     );

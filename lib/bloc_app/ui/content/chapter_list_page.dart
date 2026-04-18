@@ -74,12 +74,11 @@ class _ChapterListPageState extends State<ChapterListPage> {
           ? null
           : Text('Count: ${state.list.length}', style: TextStyle(fontSize: 16)),
       actions: [
-        !TPlatform.isDesktop
-            ? SizedBox.shrink()
-            : IconButton(
-                onPressed: () => init(isCached: false),
-                icon: Icon(Icons.refresh),
-              ),
+        if (TPlatform.isDesktop)
+          IconButton(
+            onPressed: () => init(isCached: false),
+            icon: Icon(Icons.refresh),
+          ),
         state.list.isEmpty
             ? SizedBox.shrink()
             : IconButton(

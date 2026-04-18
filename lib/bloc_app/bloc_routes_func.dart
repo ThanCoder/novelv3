@@ -13,10 +13,10 @@ import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_supported_site_dialog.dart'
 import 'package:novel_v3/bloc_app/ui/forms/novel_edit_form_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_result_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_screen.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
-import 'package:novel_v3/core/services/chapter_services.dart';
 import 'package:novel_v3/core/utils.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/old_app/routes.dart';
@@ -259,10 +259,8 @@ Future<void> goBlocChapterReader(
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
       getChapterContent: (context, chapterNumber) async {
-        return await ChapterServices.instance.getContent(
-          chapterNumber,
-          novel.id,
-        );
+        final res = await ChapterDB.getContent(chapterNumber, novel.id);
+        return res?.content;
       },
       onUpdateConfig: (updatedConfig) {
         updatedConfig.savePath(configPath);

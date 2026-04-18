@@ -1,12 +1,22 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/foundation.dart';
 import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
-class ChapterServices {
-  ChapterServices._();
-  static final instance = ChapterServices._();
-  factory ChapterServices() => instance;
+class _ChapterServices {
+  _ChapterServices._();
+  static final instance = _ChapterServices._();
+  factory _ChapterServices() => instance;
+
+  Future<void> clearAll() async {
+    await ChapterDB.clearAll();
+  }
+
+  Future<void> clear(String novelId) async {
+    await ChapterDB.clear(novelId);
+  }
 
   Future<List<Chapter>> getAll({
     required String novelId,

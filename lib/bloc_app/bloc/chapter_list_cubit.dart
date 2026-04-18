@@ -1,13 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
-import 'package:novel_v3/core/services/chapter_services.dart';
 
 class ChapterListCubit extends Cubit<ChapterListState> {
-  final ChapterServices chapterServices;
   final NovelDetailCubit novelDetailCubit;
-  ChapterListCubit(this.chapterServices, {required this.novelDetailCubit})
+  ChapterListCubit({required this.novelDetailCubit})
     : super(ChapterListState.createState());
 
   Future<void> fetchList({bool isCached = true}) async {
@@ -29,8 +28,9 @@ class ChapterListCubit extends Cubit<ChapterListState> {
       emit(
         ChapterListState.createState(isLoading: true, sortAsc: state.sortAsc),
       );
-
-      final list = await chapterServices.getAll(novelId: novel.id);
+      //cache clean up
+      await ChapterDB.clearAll();
+      final list = await ChapterDB.getAll(novel.id);
 
       // sort
       list.sortChapterNumber(isSort: state.sortAsc);
@@ -50,28 +50,29 @@ class ChapterListCubit extends Cubit<ChapterListState> {
   }
 
   Future<String?> getChapterContent(int number) async {
-    return await chapterServices.getContent(
+    final content = await ChapterDB.getContent(
       number,
       novelDetailCubit.state.currentNovel!.id,
     );
+    return content?.content;
   }
 
   Future<int> add(Chapter chapter) async {
-    return await chapterServices.add(
+    return await ChapterDB.add(
       chapter,
       novelId: novelDetailCubit.state.currentNovel!.id,
     );
   }
 
   Future<void> update(Chapter chapter) async {
-    await chapterServices.update(
+    await ChapterDB.update(
       chapter,
       novelId: novelDetailCubit.state.currentNovel!.id,
     );
   }
 
   Future<void> delete(Chapter chapter) async {
-    await chapterServices.delete(
+    await ChapterDB.delete(
       chapter,
       novelId: novelDetailCubit.state.currentNovel!.id,
     );

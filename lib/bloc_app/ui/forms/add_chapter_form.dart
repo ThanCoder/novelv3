@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -443,6 +444,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
   }
 
   void _backpress() {
+    ChapterDB.clear(widget.novel.id);
     if (!isChanged) return;
     widget.onClosed?.call();
   }
