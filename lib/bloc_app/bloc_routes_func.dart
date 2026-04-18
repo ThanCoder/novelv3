@@ -259,21 +259,10 @@ Future<void> goBlocChapterReader(
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
       getChapterContent: (context, chapterNumber) async {
-        try {
-          final res = await ChapterServices().getContent(
-            chapterNumber,
-            novel.id,
-          );
-          // set recent
-          // await TRecentDB.getInstance.putString(
-          //   'recent-chapter-name:${novel.path.getName()}',
-          //   chapterNumber.toString(),
-          // );
-          return res;
-        } catch (e) {
-          debugPrint('[goBlocChapterReader]: $e');
-        }
-        return null;
+        return await ChapterServices.instance.getContent(
+          chapterNumber,
+          novel.id,
+        );
       },
       onUpdateConfig: (updatedConfig) {
         updatedConfig.savePath(configPath);

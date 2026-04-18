@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -306,7 +307,28 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: TLoader.random(color: Colors.blue));
         }
-        final text = snapshot.data ?? '';
+        final text = snapshot.data;
+        if (text == null) {
+          return Center(
+            child: Column(
+              children: [
+                RefreshButton(
+                  text: Text('Novel Is Null'),
+                  onClicked: () => setState(() {}),
+                ),
+                RefreshButton(
+                  text: Text('Clear DB Cache'),
+                  icon: Icon(Icons.cleaning_services),
+                  onClicked: () {
+                    ChapterDB.clear(widget.novel.path);
+                    // ChapterDB.clearAll();
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+          );
+        }
         viewList[index] = chapter.copyWith(content: text);
         return Text(
           'Chapter: ${chapter.number}\n\n$text',
@@ -472,9 +494,8 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
             middleButton: (btnContext) => TextButton(
               onPressed: () {
                 context.closeNavigator();
-                canGoback = true;
                 ChapterReaderScreen.showConfigDialogMap.add(widget.novel.id);
-                setState(() {});
+                _closePage();
               },
               child: Text('ထပ်မပြနဲ့တော့'),
             ),
@@ -494,32 +515,6 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
             ),
           ),
         );
-        /*
-        showTConfirmDialog(
-          context,
-          contentText:
-             
-          submitText: 'သိမ်းမယ်',
-          cancelText: 'မသိမ်းဘူး',
-          // barrierDismissible: false,
-          onCancel: () async {
-            canGoback = true;
-            setState(() {});
-            await Future.delayed(Duration.zero);
-            if (!mounted) return;
-            Navigator.pop(context);
-          },
-          onSubmit: () async {
-            canGoback = true;
-            setState(() {});
-            await widget.onUpdateReaded(context, chapter.number);
-
-            await Future.delayed(Duration.zero);
-            if (!mounted) return;
-            Navigator.pop(context);
-          },
-        );
-        */
         return;
       }
       // backpress

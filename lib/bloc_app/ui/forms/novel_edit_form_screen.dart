@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_list_cubit.dart';
 import 'package:novel_v3/bloc_app/ui/components/bloc_tag_view.dart';
+import 'package:novel_v3/bloc_app/ui/components/cover_chooser.dart';
 import 'package:novel_v3/bloc_app/ui/components/rename_bottom_sheet.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:provider/provider.dart';
@@ -115,7 +116,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
   }
 
   Widget _novelCoverWidget() {
-    return TCoverChooser(coverPath: widget.novel.getCoverPath);
+    return CoverChooser(coverPath: widget.novel.getCoverPath);
   }
 
   Widget _pageUrlForm() {

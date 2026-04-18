@@ -104,4 +104,9 @@ class Chapter {
       content: content ?? this.content,
     );
   }
+
+  @override
+  String toString() {
+    return 'ID: $autoId - Number: $number - T: $title';
+  }
 }

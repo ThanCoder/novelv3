@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_content.dart';
@@ -13,33 +14,55 @@ class ChapterDB {
     saveLocalDBLock: false,
     saveBackupDBCompact: false,
   );
-  static Future<void> _openAlreadyDB(String path) async {
-    if (!_dbMap.containsKey(path)) {
-      await _getCurrentDB(path).open(path, config: _config);
-    }
+
+  static String _pathToKey(String path) {
+    // final file = File(path);
+    // return file.parent.getName();
+    final digest = sha256.convert(utf8.encode(path));
+    return digest.toString();
   }
 
-  static TDB _getCurrentDB(String path) {
-    if (_dbMap[path] != null) return _dbMap[path]!;
+  static void clearAll() {
+    _dbMap.clear();
+  }
+
+  static void clear(String dbPath) {
+    final key = _pathToKey(dbPath);
+    _dbMap.remove(key);
+  }
+
+  static Future<TDB> _getCurrentDB(String dbPath) async {
+    final key = _pathToKey(dbPath);
+    if (_dbMap.containsKey(key)) return _dbMap[key]!;
     final db = TDB();
     db.setAdapter<Chapter>(ChapterAdapter());
     db.setAdapter<ChapterContent>(ChapterContentAdapter());
-    _dbMap[path] = db;
+    await db.open(dbPath, config: _config);
+    _dbMap[key] = db;
+    // print(_dbMap);
     return db;
   }
 
-  static Future<List<Chapter>> getAll(String novelId) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
+  static Future<TDBox<Chapter>> getChapterBox(String novelId) async =>
+      (await _getCurrentDB(getDBPath(novelId))).getBox<Chapter>();
+  static Future<TDBox<ChapterContent>> getChapterContentBox(
+    String novelId,
+  ) async => (await _getCurrentDB(getDBPath(novelId))).getBox<ChapterContent>();
 
-    final dbFile = File(novelPath);
+  static String getDBPath(String novelId) =>
+      pathJoin(PathUtil.getSourcePath(name: novelId), 'chapters.db');
+
+  static Future<List<Chapter>> getAll(String novelId) async {
+    final chapterBox = await getChapterBox(novelId);
+    final contentBox = await getChapterContentBox(novelId);
+
+    final dbFile = File(novelId);
 
     if (dbFile.lengthSync() > 9) {
-      return await getChapterBox(novelPath).getAll();
+      return await chapterBox.getAll();
     } else {
       //chapter file တွေကို db ထဲထည့်မယ်
-      final dir = Directory(novelPath);
+      final dir = Directory(novelId);
       for (var file in dir.listSync(followLinks: false)) {
         if (!file.isFile) continue;
 
@@ -52,17 +75,17 @@ class ChapterDB {
           novelId: novelId,
         );
         final chapterFile = File(file.path);
-        final autoId = await getChapterBox(novelPath).add(chapter);
+        final autoId = await chapterBox.add(chapter);
         // add content
         final content = await chapterFile.readAsString();
-        await getChapterContentBox(
-          novelPath,
-        ).add(ChapterContent(chapterId: autoId, content: content));
+        await contentBox.add(
+          ChapterContent(chapterId: autoId, content: content),
+        );
         // delete added chapter file
         await chapterFile.delete();
       }
     }
-    return await getChapterBox(novelPath).getAll();
+    return await chapterBox.getAll();
   }
 
   static Future<ChapterContent?> getContent(
@@ -70,17 +93,16 @@ class ChapterDB {
     String novelId,
   ) async {
     try {
-      final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-      // open db
-      await _openAlreadyDB(novelPath);
+      final chapterBox = await getChapterBox(novelId);
+      final contentBox = await getChapterContentBox(novelId);
 
-      final chapter = await getChapterBox(
-        novelPath,
-      ).getOne((value) => value.number == chapterNumber);
+      final chapter = await chapterBox.getOne(
+        (value) => value.number == chapterNumber,
+      );
       if (chapter == null) return null;
-      return await getChapterContentBox(
-        novelPath,
-      ).getOne((value) => value.chapterId == chapter.autoId);
+      return await contentBox.getOne(
+        (value) => value.chapterId == chapter.autoId,
+      );
     } catch (e) {
       debugPrint('[ChapterDB:getContent]: $e');
       return null;
@@ -91,93 +113,87 @@ class ChapterDB {
   /// return `newId`
   ///
   static Future<int> add(Chapter chapter, {required String novelId}) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
+    final chapterBox = await getChapterBox(novelId);
+    final contentBox = await getChapterContentBox(novelId);
 
     //add new chapter
-    final id = await getChapterBox(novelPath).add(chapter);
+    final id = await chapterBox.add(chapter);
     if (chapter.content != null) {
-      await getChapterContentBox(
-        novelPath,
-      ).add(ChapterContent(chapterId: id, content: chapter.content ?? ''));
+      await contentBox.add(
+        ChapterContent(chapterId: id, content: chapter.content ?? ''),
+      );
     }
+    final db = await _getCurrentDB(getDBPath(novelId));
+    await db.flush();
     return id;
   }
 
   static Future<void> update(Chapter chapter, {required String novelId}) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
     if (chapter.autoId == 0) throw Exception('`chapter.autoId` is 0');
 
-    // update chapter
-    await getChapterBox(novelPath).updateById(chapter.autoId, chapter);
+    final chapterBox = await getChapterBox(novelId);
+    final contentBox = await getChapterContentBox(novelId);
 
-    final content = await getChapterContentBox(
-      novelPath,
-    ).getOne((value) => value.chapterId == chapter.autoId);
+    // update chapter
+    await chapterBox.updateById(chapter.autoId, chapter);
+
+    final content = await contentBox.getOne(
+      (value) => value.chapterId == chapter.autoId,
+    );
 
     // check content
     if (content != null) {
       // delete
-      await getChapterContentBox(novelPath).deleteById(content.autoId);
+      await contentBox.deleteById(content.autoId);
     }
-    await getChapterContentBox(novelPath).add(
+    await contentBox.add(
       ChapterContent(chapterId: chapter.autoId, content: chapter.content ?? ''),
     );
+
+    final db = await _getCurrentDB(getDBPath(novelId));
+    await db.flush();
   }
 
   static Future<void> delete(Chapter chapter, {required String novelId}) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
-    await getChapterBox(novelPath).deleteById(chapter.autoId);
+    final box = await getChapterBox(novelId);
+    await box.deleteById(chapter.autoId);
+
+    final db = await _getCurrentDB(getDBPath(novelId));
+    await db.flush();
   }
 
   static Future<void> deleteAll({required String novelId}) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
+    final box = await getChapterBox(novelId);
 
-    await getChapterBox(novelPath).deleteAllRecord();
-    await getChapterContentBox(novelPath).deleteAllRecord();
+    await box.deleteAllRecord();
+    await box.deleteAllRecord();
+
+    final db = await _getCurrentDB(getDBPath(novelId));
+    await db.flush();
   }
 
   static Future<void> deleteAllById(
     List<int> ids, {
     required String novelId,
   }) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
-
-    await getChapterBox(novelPath).deleteAll(ids);
+    final box = await getChapterBox(novelId);
+    await box.deleteAll(ids);
+    final db = await _getCurrentDB(getDBPath(novelId));
+    await db.flush();
   }
 
   static Future<void> deleteDBFile(String novelId) async {
-    final novelPath = getDBPath(PathUtil.getSourcePath(name: novelId));
-    // open db
-    await _openAlreadyDB(novelPath);
-
-    final file = File(getDBPath(novelPath));
+    final file = File(getDBPath(novelId));
     if (file.existsSync()) {
       await file.delete();
     }
   }
-
-  static TDBox<Chapter> getChapterBox(String path) =>
-      _getCurrentDB(path).getBox<Chapter>();
-  static TDBox<ChapterContent> getChapterContentBox(String path) =>
-      _getCurrentDB(path).getBox<ChapterContent>();
-
-  static String getDBPath(String novelPath) =>
-      pathJoin(novelPath, 'chapters.db');
 }
 
+//in background
 Future<List<Chapter>> getAllChapterInBackground(String novelPath) async {
   final dbFile = File(pathJoin(novelPath, 'chapters.db'));
-  final novelId = novelPath.getName();
+  final novelId = dbFile.getName();
 
   final db = TDB();
   await db.open(
@@ -197,7 +213,7 @@ Future<List<Chapter>> getAllChapterInBackground(String novelPath) async {
     return await getChapterBox.getAll();
   } else {
     //chapter file တွေကို db ထဲထည့်မယ်
-    final dir = Directory(novelPath);
+    final dir = Directory(novelId);
     for (var file in dir.listSync(followLinks: false)) {
       if (!file.isFile) continue;
 

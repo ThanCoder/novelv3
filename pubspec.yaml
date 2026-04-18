@@ -33,6 +33,7 @@ dependencies:
   dart_core_extensions: ^0.1.1
   image: ^4.8.0
   t_html_parser: 1.2.0
+  crypto: ^3.0.7
 
 dev_dependencies:
   flutter_test:
