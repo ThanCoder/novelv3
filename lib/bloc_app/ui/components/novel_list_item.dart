@@ -36,7 +36,7 @@ class NovelListItem extends StatelessWidget {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: TImage(source: novel.getCoverPath),
+                        child: TImageFile(path: novel.getCoverPath),
                       ),
                       Positioned.fill(
                         child: Container(

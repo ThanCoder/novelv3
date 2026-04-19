@@ -6,6 +6,7 @@ linux,android
 
 # Needed lib from linux
 
+    sudo apt install libwebkit2gtk-4.1-dev //for webview
     sudo apt install net-tools  // wifi
     sudo apt install poppler-utils //pdf thumbnail
     sudo apt install ffmpeg //video thumbnail

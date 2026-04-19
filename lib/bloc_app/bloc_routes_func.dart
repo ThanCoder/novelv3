@@ -34,6 +34,10 @@ void goBlocRoute(
   Navigator.push(context, MaterialPageRoute(builder: builder));
 }
 
+void goWebview(BuildContext context) async {
+  // context.goRoute(builder: (context) => FetchWebviewScreen());
+}
+
 Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
   showAdaptiveDialog(
     barrierDismissible: true,

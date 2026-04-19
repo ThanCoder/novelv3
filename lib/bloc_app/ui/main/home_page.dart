@@ -13,6 +13,7 @@ import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/other_apps/novel_clean_up/novel_clean_up_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -133,6 +134,14 @@ class _HomePageState extends State<HomePage> {
           onTap: () async {
             context.closeNavigator();
             _showAddNovelMenu();
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.cleaning_services),
+          title: Text('Novel Clean Up'),
+          onTap: () async {
+            context.closeNavigator();
+            context.goRoute(builder: (context) => NovelCleanUpScreen());
           },
         ),
       ],

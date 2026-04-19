@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 extension NavigatorExtension on BuildContext {
@@ -10,6 +9,10 @@ extension NavigatorExtension on BuildContext {
     } else {
       Navigator.pop(this);
     }
+  }
+
+  void goRoute({required Widget Function(BuildContext context) builder}) {
+    Navigator.push(this, MaterialPageRoute(builder: builder));
   }
 }
 

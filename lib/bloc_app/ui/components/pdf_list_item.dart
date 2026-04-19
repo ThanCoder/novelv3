@@ -85,37 +85,44 @@ class _PdfListItemState extends State<PdfListItem> {
                 ? TLoader.random()
                 : TImage(source: cacheFile.path),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 4,
-            children: [
-              Row(
-                spacing: 2,
-                children: [
-                  Icon(Icons.title),
-                  Text(
-                    widget.pdf.title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-              Row(
-                spacing: 2,
-                children: [
-                  Icon(Icons.storage),
-                  Text(widget.pdf.getSize.fileSizeLabel()),
-                ],
-              ),
-              Row(
-                spacing: 2,
-                children: [
-                  Icon(Icons.date_range),
-                  Text(widget.pdf.date.toParseTime()),
-                ],
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Row(
+                  spacing: 2,
+                  children: [
+                    Icon(Icons.title),
+                    Expanded(
+                      child: Text(
+                        widget.pdf.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  spacing: 2,
+                  children: [
+                    Icon(Icons.storage),
+                    Text(widget.pdf.getSize.fileSizeLabel()),
+                  ],
+                ),
+                Row(
+                  spacing: 2,
+                  children: [
+                    Icon(Icons.date_range),
+                    Text(widget.pdf.date.toParseTime()),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

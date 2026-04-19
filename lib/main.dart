@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/types/home_page_list_style_type.dart';
-import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
@@ -14,34 +13,18 @@ import 'package:novel_v3/more_libs/setting/setting.dart';
 void main() async {
   await ThanPkg.instance.init();
 
-  final novelProvider = NovelProvider();
-
   await Setting.instance.init(
     appName: 'NV 3',
     releaseUrl: 'https://github.com/ThanCoder/novelv3/releases',
-    onSettingSaved: (context, message) {
-      showTSnackBar(context, message);
-      novelProvider.init(isUsedCache: false);
-    },
   );
   final client = TClient();
 
   await TWidgets.instance.init(
     initialThemeServices: true,
     defaultImageAssetsPath: 'assets/logo_3.jpg',
-    // isDarkTheme: () => Setting.getAppConfig.isDarkTheme,
     getCachePath: (url, cacheName) => PathUtil.getCachePath(name: cacheName),
-    
-    // getCachePath: (url) => PathUtil.getCachePath(
-    //   name: '${url.split('/').last.replaceAll(':', '-')}.png',
-    // ),
-    // onDownloadImage: (url, savePath) async {
-    //   await client.download(url, savePath: savePath);
-    // },
   );
-  await PdfReader.instance.init(
-    getDarkTheme: () => Setting.getAppConfig.isDarkTheme,
-  );
+  await PdfReader.instance.init();
 
   // recent
   await TRecentDB.getInstance.init(

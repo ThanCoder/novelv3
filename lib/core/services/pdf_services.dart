@@ -33,8 +33,8 @@ class PdfServices {
     String savePath, {
     bool saveOverride = false,
     bool runInBackground = false,
-    double width = 110,
-    double height = 130,
+    double width = 800,
+    double height = 1200,
     int quality = 75,
   }) async {
     final saveFile = File(savePath);

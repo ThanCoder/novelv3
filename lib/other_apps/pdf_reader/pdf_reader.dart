@@ -18,11 +18,9 @@ class PdfReader {
   static bool isShowDebugLog = true;
 
   Future<void> init({
-    bool Function()? getDarkTheme,
     void Function(BuildContext context, String msg)? showMessage,
     bool isShowDebugLog = true,
   }) async {
-    this.getDarkTheme = getDarkTheme ?? () => false;
     this.showMessage = showMessage;
     PdfReader.isShowDebugLog = isShowDebugLog;
   }

@@ -69,7 +69,8 @@ class ChapterDB {
     } else {
       //chapter file တွေကို db ထဲထည့်မယ်
       final dir = Directory(getDBPath(novelId));
-      for (var file in dir.listSync(followLinks: false)) {
+      if (!dir.existsSync()) return [];
+      await for (var file in dir.list(followLinks: false)) {
         if (!file.isFile) continue;
 
         final title = file.getName();
@@ -220,6 +221,7 @@ Future<List<Chapter>> getAllChapterInBackground(String novelPath) async {
   } else {
     //chapter file တွေကို db ထဲထည့်မယ်
     final dir = Directory(novelPath);
+    if (!dir.existsSync()) return [];
     for (var file in dir.listSync(followLinks: false)) {
       if (!file.isFile) continue;
 

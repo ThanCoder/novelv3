@@ -8,8 +8,8 @@ enum MultiAppType {
   blocApp;
 
   static MultiAppType getName(String name) {
-    if (name == blocApp.name) return blocApp;
-    return oldApp;
+    if (name == oldApp.name) return oldApp;
+    return blocApp;
   }
 }
 

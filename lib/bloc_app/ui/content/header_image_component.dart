@@ -13,7 +13,7 @@ class HeaderImageComponent extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        TImage(source: novel.getCoverPath),
+        TImageFile(path: novel.getCoverPath),
         ClipRRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -24,10 +24,10 @@ class HeaderImageComponent extends StatelessWidget {
           child: SizedBox(
             width: 200,
             height: 220,
-            child: TImage(
+            child: TImageFile(
               // fit: BoxFit.contain,
               borderRadius: 10,
-              source: novel.getCoverPath,
+              path: novel.getCoverPath,
             ),
           ),
         ),

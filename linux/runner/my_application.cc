@@ -7,6 +7,10 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
+// my_application_activate (သို့မဟုတ်) main function ထဲမှာ ထည့်ပါ
+// setenv("WEBKIT_FORCE_SANDBOX", "0", 1);
+// setenv("WEBKIT_DISABLE_COMPOSITING_MODE", "1", 1);
+
 struct _MyApplication
 {
   GtkApplication parent_instance;
@@ -58,6 +62,7 @@ static void my_application_activate(GApplication *application)
   gtk_window_set_default_size(window, 1280, 720);
   gtk_widget_show(GTK_WIDGET(window));
 
+  // default not webview
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
 
@@ -66,6 +71,32 @@ static void my_application_activate(GApplication *application)
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
+  // webview_all
+  // g_autoptr(FlDartProject) project = fl_dart_project_new();
+  // fl_dart_project_set_dart_entrypoint_arguments(
+  //     project, self->dart_entrypoint_arguments);
+
+  // FlView *view = fl_view_new(project);
+
+  // // ၁။ အကျယ်အဝန်း သတ်မှတ်ချက်ကို View ဆောက်ပြီးချင်း ထည့်ပါ
+  // gtk_widget_set_hexpand(GTK_WIDGET(view), TRUE);
+  // gtk_widget_set_vexpand(GTK_WIDGET(view), TRUE);
+  // gtk_widget_show(GTK_WIDGET(view));
+
+  // // ၂။ အရေးကြီးဆုံးအချက်: Plugin တွေကို View ကို realize မလုပ်ခင် ကြိုတင် Register လုပ်ပါ
+  // // ဒါမှသာ Mouse/Keyboard events တွေကို Plugin တွေက ကောင်းကောင်းလက်ခံနိုင်မှာပါ
+  // fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
+  // // ၃။ Overlay တည်ဆောက်ပုံ
+  // GtkWidget *overlay = gtk_overlay_new();
+  // gtk_container_add(GTK_CONTAINER(overlay), GTK_WIDGET(view));
+  // gtk_container_add(GTK_CONTAINER(window), overlay);
+  // gtk_widget_show(overlay);
+
+  // // ၄။ Signal ချိတ်ဆက်ပြီးမှ Realize လုပ်ပါ
+  // g_signal_connect_swapped(view, "first-frame", G_CALLBACK(first_frame_cb), self);
+  // gtk_widget_realize(GTK_WIDGET(view));
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
 }
