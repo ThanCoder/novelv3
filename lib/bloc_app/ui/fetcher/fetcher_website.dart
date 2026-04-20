@@ -1,21 +1,46 @@
 import 'package:novel_v3/bloc_app/ui/fetcher/query_result_list.dart';
 import 'package:t_html_parser/core/q_result/attributes.dart';
 import 'package:t_html_parser/core/q_result/query_result.dart';
+import 'package:t_html_parser/t_html_parser.dart';
 import 'package:than_pkg/than_pkg.dart';
+
+enum FetchType { request, webview }
 
 class FetcherWebsite {
   final String url;
+  final String hostUrl;
   final String title;
+  final FetchType type;
   final NovelListPageQuery novelListPageQuery;
   final ChapterPageQuery? chapterPageQuery;
   final DetailPageQuery? detailPageQuery;
+  final ChapterListPageQuery? chapterListPageQuery;
 
   const FetcherWebsite({
+    required this.hostUrl,
     required this.url,
     required this.title,
+    this.type = FetchType.request,
     required this.novelListPageQuery,
     this.chapterPageQuery,
     this.detailPageQuery,
+    this.chapterListPageQuery,
+  });
+}
+
+class ChapterListPageQuery {
+  final String querySelectorAll;
+  final FetcherQuery pageUrlQuery;
+  final FetcherQuery titleQuery;
+  final FetcherQuery numberQuery;
+  final NextUrlQuery? nextUrlQuery;
+
+  const ChapterListPageQuery({
+    required this.querySelectorAll,
+    required this.pageUrlQuery,
+    required this.titleQuery,
+    required this.numberQuery,
+    this.nextUrlQuery,
   });
 }
 
@@ -24,7 +49,7 @@ class NovelListPageQuery {
   final FetcherQuery pageUrlQuery;
   final FetcherQuery titleQuery;
   final FetcherQuery coverUrlQuery;
-  final FetcherQuery nextUrlQuery;
+  final NextUrlQuery nextUrlQuery;
 
   const NovelListPageQuery({
     required this.querySelectorAll,
@@ -40,15 +65,37 @@ class NovelListPageQuery {
       titleQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
       pageUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
       coverUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
-      nextUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
+      nextUrlQuery: NextUrlQuery.empty(),
     );
   }
 }
 
+class NextUrlQuery {
+  final String querySelectorAll;
+  final String? hostUrl;
+  final FetcherQuery itemUrlQuery;
+  final FetcherQuery itemTextQuery;
+
+  factory NextUrlQuery.empty() {
+    return NextUrlQuery(
+      querySelectorAll: '',
+      itemUrlQuery: FetcherQuery(attribue: '', selector: ''),
+      itemTextQuery: FetcherQuery(attribue: '', selector: ''),
+    );
+  }
+
+  const NextUrlQuery({
+    required this.querySelectorAll,
+    this.hostUrl,
+    required this.itemUrlQuery,
+    required this.itemTextQuery,
+  });
+}
+
 class DetailPageQuery {
-  final FetcherQuery otherTitles;
   final FetcherQuery author;
-  final FetcherQuery translator;
+  final FetcherQuery? otherTitles;
+  final FetcherQuery? translator;
   final FetcherQuery description;
   final FetcherQuery title;
   final FetcherQuery coverUrl;
@@ -57,9 +104,9 @@ class DetailPageQuery {
   const DetailPageQuery({
     required this.title,
     required this.coverUrl,
-    required this.otherTitles,
     required this.author,
-    required this.translator,
+    this.otherTitles,
+    this.translator,
     required this.description,
     required this.tags,
   });
@@ -115,6 +162,25 @@ class FetcherQuery {
     this.index = 0,
     this.type = FetcherQueryType.single,
   });
+
+  String getFromElement(Element ele) {
+    if (attribue == 'text') {
+      if (selector.isEmpty) {
+        return ele.text.trim();
+      }
+      return ele.getQuerySelectorText(selector: selector).trim();
+    }
+    if (attribue == 'html') {
+      if (selector.isEmpty) {
+        return ele.innerHtml.cleanHtmlTag();
+      }
+      return ele.getQuerySelectorHtml(selector: selector).cleanHtmlTag();
+    }
+    if (selector.isEmpty) {
+      return (ele.attributes[attribue] ?? '').trim();
+    }
+    return ele.getQuerySelectorAttr(selector: selector, attr: attribue).trim();
+  }
 
   List<String> getResult(String html) {
     List<String> results = [];

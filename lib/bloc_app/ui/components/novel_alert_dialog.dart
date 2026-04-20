@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 
 typedef NovelAlertDialogButtonCallback =
     Widget Function(BuildContext alertContext);

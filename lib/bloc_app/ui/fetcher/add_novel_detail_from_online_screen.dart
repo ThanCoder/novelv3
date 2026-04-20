@@ -34,7 +34,7 @@ class _AddNovelDetailFromOnlineScreenState
   void initState() {
     coverUrl = widget.item.coverUrl;
     super.initState();
-    init();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   bool isLoading = false;
@@ -49,6 +49,7 @@ class _AddNovelDetailFromOnlineScreenState
       });
 
       result = await FetchServices.instance.fetchNovelDetail(
+        context,
         widget.item.pageUrl,
         website: widget.site,
       );
@@ -74,13 +75,21 @@ class _AddNovelDetailFromOnlineScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.item.title, style: TextStyle(fontSize: 13)),
-        actions: [_openUrlIcon(), FetcherProxyIcon()],
-      ),
-      body: TScrollableColumn(
-        children: [
-          SizedBox(width: 180, height: 200, child: TImage(source: coverUrl)),
-          _result(),
+        actions: [
+          if (TPlatform.isDesktop && !isLoading)
+            IconButton(onPressed: init, icon: Icon(Icons.refresh)),
+          _openUrlIcon(),
+          FetcherProxyIcon(),
         ],
+      ),
+      body: RefreshIndicator.adaptive(
+        onRefresh: init,
+        child: TScrollableColumn(
+          children: [
+            SizedBox(width: 180, height: 200, child: TImage(source: coverUrl)),
+            _result(),
+          ],
+        ),
       ),
       floatingActionButton: isLoading
           ? null

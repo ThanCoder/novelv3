@@ -1,18 +1,31 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:than_pkg/than_pkg.dart';
 
-extension NavigatorExtension on BuildContext {
-  void closeNavigator({bool? isReturned}) {
-    if (isReturned != null) {
-      Navigator.pop(this, isReturned);
-    } else {
-      Navigator.pop(this);
-    }
+extension UtilStringExtensions on String {
+  String formatUrl(String hostUrl) {
+    return Utils.formatUrl(this, hostUrl);
   }
+}
 
-  void goRoute({required Widget Function(BuildContext context) builder}) {
-    Navigator.push(this, MaterialPageRoute(builder: builder));
+class Utils {
+  static String formatUrl(String rawUrl, String hostUrl) {
+    if (rawUrl.isEmpty) return rawUrl;
+    String result = rawUrl;
+    if (rawUrl.startsWith('/')) {
+      result = '$hostUrl$rawUrl';
+      result = result.replaceAll('//', '/');
+      result = result.replaceAll(':/', '://');
+    }
+    if (rawUrl.startsWith('./')) {
+      result = '$hostUrl${rawUrl.replaceAll('./', '/')}';
+      result = result.replaceAll('//', '/');
+      result = result.replaceAll(':/', '://');
+    }
+    if (rawUrl.startsWith('?')) {
+      result = '$hostUrl$rawUrl';
+    }
+    return result;
   }
 }
 

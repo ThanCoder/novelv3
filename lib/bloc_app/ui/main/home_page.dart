@@ -11,8 +11,9 @@ import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
+import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_screen.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/novel_clean_up/novel_clean_up_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -142,6 +143,14 @@ class _HomePageState extends State<HomePage> {
           onTap: () async {
             context.closeNavigator();
             context.goRoute(builder: (context) => NovelCleanUpScreen());
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.open_in_browser),
+          title: Text('Webview'),
+          onTap: () async {
+            context.closeNavigator();
+            context.goRoute(builder: (context) => FetchWebviewScreen());
           },
         ),
       ],

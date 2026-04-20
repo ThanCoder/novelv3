@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 
 class FetcherSupportedSiteDialog extends StatefulWidget {
   final void Function(FetcherWebsite site) onChoosed;
@@ -15,16 +15,6 @@ class FetcherSupportedSiteDialog extends StatefulWidget {
 class _FetcherSupportedSiteDialogState
     extends State<FetcherSupportedSiteDialog> {
   final list = FetchServices.instance.fetcherWebsiteList();
-
-  // @override
-  // initState() {
-  //   list.addAll(FetchServices.instance.fetcherWebsiteList());
-  //   list.addAll(FetchServices.instance.fetcherWebsiteList());
-  //   list.addAll(FetchServices.instance.fetcherWebsiteList());
-  //   list.addAll(FetchServices.instance.fetcherWebsiteList());
-  //   list.addAll(FetchServices.instance.fetcherWebsiteList());
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {

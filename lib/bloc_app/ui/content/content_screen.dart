@@ -51,33 +51,4 @@ class _ContentScreenState extends State<ContentScreen> {
       ),
     );
   }
-
-  // List<Widget> _actions() {
-  //   return [
-  //     CircleButton(
-  //       icon: Icon(Icons.more_vert, color: Colors.white),
-  //       onTap: _showMainMenu,
-  //     ),
-  //   ];
-  // }
-
-  // show menu
-  // void _showMainMenu() {
-  //   showTMenuBottomSheet(
-  //     context,
-  //     children: [
-  //       ListTile(
-  //         leading: Icon(Icons.add),
-  //         title: Text('Add Chapter'),
-  //         onTap: () {
-  //           context.closeNavigator();
-  //           goBlocRoute(
-  //             context,
-  //             builder: (context) => AddChapterForm(novel: widget.novel),
-  //           );
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
 }

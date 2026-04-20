@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:image/image.dart' as img;
@@ -21,12 +21,6 @@ class _CoverImageSizeReducerDialogState
   void initState() {
     super.initState();
     init();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 
   bool isLoading = false;

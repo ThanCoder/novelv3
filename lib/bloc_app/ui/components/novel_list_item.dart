@@ -118,12 +118,7 @@ class NovelListItem extends StatelessWidget {
                             child: FutureBuilder(
                               future: novel.getAllSize(),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Text('Loading...');
-                                }
-                                final size = snapshot.data ?? 0;
-                                return Text(size.fileSizeLabel());
+                                return Text(novel.size.fileSizeLabel());
                               },
                             ),
                           ),

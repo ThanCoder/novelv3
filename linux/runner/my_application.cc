@@ -18,6 +18,11 @@ struct _MyApplication
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+// webview_all
+static void first_frame_cb(MyApplication *self, FlView *view)
+{
+  gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
+}
 
 // Implements GApplication::activate.
 static void my_application_activate(GApplication *application)
@@ -63,42 +68,38 @@ static void my_application_activate(GApplication *application)
   gtk_widget_show(GTK_WIDGET(window));
 
   // default not webview
+  // g_autoptr(FlDartProject) project = fl_dart_project_new();
+  // fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
+
+  // FlView *view = fl_view_new(project);
+  // gtk_widget_show(GTK_WIDGET(view));
+  // gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
+
+  // fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
+  // webview_all
   g_autoptr(FlDartProject) project = fl_dart_project_new();
-  fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
+  fl_dart_project_set_dart_entrypoint_arguments(
+      project, self->dart_entrypoint_arguments);
 
   FlView *view = fl_view_new(project);
+  gtk_widget_set_can_focus(GTK_WIDGET(view), TRUE); // ဒါလေး ထည့်ပါ
   gtk_widget_show(GTK_WIDGET(view));
-  gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
+
+  GtkWidget *overlay = gtk_overlay_new();
+  gtk_widget_set_can_focus(overlay, FALSE); // Overlay ကို focus မယူခိုင်းပါနဲ့
+  gtk_widget_show(overlay);
+  gtk_container_add(GTK_CONTAINER(overlay), GTK_WIDGET(view));
+  gtk_container_add(GTK_CONTAINER(window), overlay);
+
+  g_signal_connect_swapped(view, "first-frame", G_CALLBACK(first_frame_cb), self);
+  gtk_widget_realize(GTK_WIDGET(view));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
-  // webview_all
-  // g_autoptr(FlDartProject) project = fl_dart_project_new();
-  // fl_dart_project_set_dart_entrypoint_arguments(
-  //     project, self->dart_entrypoint_arguments);
-
-  // FlView *view = fl_view_new(project);
-
-  // // ၁။ အကျယ်အဝန်း သတ်မှတ်ချက်ကို View ဆောက်ပြီးချင်း ထည့်ပါ
-  // gtk_widget_set_hexpand(GTK_WIDGET(view), TRUE);
-  // gtk_widget_set_vexpand(GTK_WIDGET(view), TRUE);
-  // gtk_widget_show(GTK_WIDGET(view));
-
-  // // ၂။ အရေးကြီးဆုံးအချက်: Plugin တွေကို View ကို realize မလုပ်ခင် ကြိုတင် Register လုပ်ပါ
-  // // ဒါမှသာ Mouse/Keyboard events တွေကို Plugin တွေက ကောင်းကောင်းလက်ခံနိုင်မှာပါ
-  // fl_register_plugins(FL_PLUGIN_REGISTRY(view));
-
-  // // ၃။ Overlay တည်ဆောက်ပုံ
-  // GtkWidget *overlay = gtk_overlay_new();
-  // gtk_container_add(GTK_CONTAINER(overlay), GTK_WIDGET(view));
-  // gtk_container_add(GTK_CONTAINER(window), overlay);
-  // gtk_widget_show(overlay);
-
-  // // ၄။ Signal ချိတ်ဆက်ပြီးမှ Realize လုပ်ပါ
-  // g_signal_connect_swapped(view, "first-frame", G_CALLBACK(first_frame_cb), self);
-  // gtk_widget_realize(GTK_WIDGET(view));
-
   gtk_widget_grab_focus(GTK_WIDGET(view));
+  // Flutter View ကို Focus အတင်းပေးခြင်း
+  gtk_window_set_focus(GTK_WINDOW(window), GTK_WIDGET(view));
 }
 
 // Implements GApplication::local_command_line.

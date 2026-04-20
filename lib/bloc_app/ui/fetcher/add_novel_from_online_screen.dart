@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_novel_detail_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_proxy.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -43,6 +43,7 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
         isLoading = true;
       });
       result = await FetchServices.instance.fetchNovelList(
+        context,
         widget.site.url,
         website: widget.site,
       );
@@ -68,6 +69,13 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
         actions: [
           if (TPlatform.isDesktop)
             IconButton(onPressed: init, icon: Icon(Icons.refresh)),
+
+          IconButton(
+            onPressed: () {
+              ThanPkg.platform.launch(widget.site.url);
+            },
+            icon: Icon(Icons.open_in_browser),
+          ),
           FetcherProxyIcon(),
         ],
       ),
@@ -95,13 +103,12 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
           ),
         if (isNextLoading)
           SliverToBoxAdapter(child: Center(child: TLoader.random()))
-        else if (result != null && result!.nextUrl.isNotEmpty)
+        else if (result != null && result!.nextUrls.isNotEmpty)
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: _nextPage,
-                icon: Icon(Icons.navigate_next_rounded, size: 40),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: _pagiListWidet(),
               ),
             ),
           ),
@@ -112,8 +119,9 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
   Widget _listItem(NovelItemResult item) {
     final exists = (widget.isExists?.call(item.title) ?? false);
     return InkWell(
-      onTap: () => goBlocRoute(
-        context,
+      mouseCursor: SystemMouseCursors.click,
+      // onTap: () => print(item.coverUrl),
+      onTap: () => context.goRoute(
         builder: (context) => AddNovelDetailFromOnlineScreen(
           item: item,
           site: widget.site,
@@ -172,19 +180,43 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
     );
   }
 
-  void _nextPage() async {
+  Widget _pagiListWidet() {
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: result!.nextUrls
+          .map(
+            (e) => TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.blue),
+              onPressed: () {
+                _nextPage(e.url);
+                // print(e.url);
+              },
+              child: Text(
+                e.title,
+                style: TextStyle(fontSize: 17, color: Colors.yellow),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  void _nextPage(String nextUrl) async {
     if (isNextLoading || result == null) return;
     try {
       setState(() {
         isNextLoading = true;
       });
+
       final res = await FetchServices.instance.fetchNovelList(
-        result!.nextUrl,
+        context,
+        nextUrl,
         website: widget.site,
       );
       final list = result!.list;
       list.addAll(res.list);
-      result = result!.copyWith(list: list, nextUrl: res.nextUrl);
+      result = result!.copyWith(list: list, nextUrls: res.nextUrls);
 
       if (!mounted) return;
       setState(() {

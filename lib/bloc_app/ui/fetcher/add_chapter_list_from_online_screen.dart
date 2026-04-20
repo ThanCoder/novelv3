@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_chapter_from_online_screen.dart';
@@ -35,7 +36,7 @@ class _AddChapterListFromOnlineScreenState
     currentSite = list.first;
     setState(() {});
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetch();
+      _autoChooseWebsiteType();
     });
   }
 
@@ -73,19 +74,24 @@ class _AddChapterListFromOnlineScreenState
                 child: CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TTextField(
-                              label: Text('Web Url'),
-                              controller: urlController,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TTextField(
+                                label: Text('Web Url'),
+                                controller: urlController,
+                                maxLines: 1,
+                                enabled: true,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: _pasteUrl,
-                            icon: Icon(Icons.paste_rounded),
-                          ),
-                        ],
+                            IconButton(
+                              onPressed: _pasteUrl,
+                              icon: Icon(Icons.paste_rounded),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     SliverToBoxAdapter(child: _supportedSite()),
@@ -190,16 +196,16 @@ class _AddChapterListFromOnlineScreenState
   }
 
   void _autosortChapterNumber() {
+    setState(() {
+      AddChapterListFromOnlineScreen.sortChapterSmToBig =
+          !AddChapterListFromOnlineScreen.sortChapterSmToBig;
+    });
     resultList.sort((a, b) {
       if (AddChapterListFromOnlineScreen.sortChapterSmToBig) {
         return a.chNumber.compareTo(b.chNumber);
       } else {
         return b.chNumber.compareTo(a.chNumber);
       }
-    });
-    setState(() {
-      AddChapterListFromOnlineScreen.sortChapterSmToBig =
-          !AddChapterListFromOnlineScreen.sortChapterSmToBig;
     });
   }
 
@@ -229,7 +235,12 @@ class _AddChapterListFromOnlineScreenState
     });
     if (index == -1) return;
     currentSite = list[index];
+    if (urlController.text.startsWith('https://lightnovelworld.org')) {
+      final newUrl = '${urlController.text.getCleanBackSlash}/chapters';
+      urlController.text = newUrl;
+    }
     setState(() {});
+    _fetch();
   }
 
   Future<void> _fetch() async {
@@ -238,7 +249,8 @@ class _AddChapterListFromOnlineScreenState
         isLoading = true;
       });
       resultList = await FetchServices.instance.fetchMultiChapter(
-        widget.url,
+        context,
+        urlController.text,
         website: currentSite!,
         startChapterNumberSmallToBig:
             AddChapterListFromOnlineScreen.startChapterNumberSmallToBig,
@@ -265,9 +277,13 @@ class _AddChapterListFromOnlineScreenState
   }
 
   void _fetchChapterContent(MultiChapterResult ch) {
+    // print(ch.url.split("'"));
+    // return;
+    if (ch.url.isEmpty) return;
     goBlocRoute(
       context,
       builder: (context) => AddChapterFromOnlineScreen(
+        hostUrl: widget.url,
         website: currentSite,
         url: ch.url,
         chapterNumber: ch.chNumber,

@@ -4,7 +4,7 @@ import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_bookmark_action.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_theme_listener.dart';

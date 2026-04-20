@@ -8,7 +8,7 @@ import 'package:novel_v3/bloc_app/ui/fetcher/add_chapter_list_from_online_screen
 import 'package:novel_v3/bloc_app/ui/forms/add_chapter_form.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/progress_manager/progress_dialog.dart';
 import 'package:t_widgets/progress_manager/progress_manager_interface.dart';

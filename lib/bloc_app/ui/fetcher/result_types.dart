@@ -19,16 +19,26 @@ class ChapterOnlineContentResult {
 
 class FetcherNovelResult {
   final List<NovelItemResult> list;
-  final String nextUrl;
+  final List<FetcherNovelNextUrl> nextUrls;
 
-  const FetcherNovelResult({required this.list, required this.nextUrl});
+  const FetcherNovelResult({required this.list, required this.nextUrls});
 
-  FetcherNovelResult copyWith({List<NovelItemResult>? list, String? nextUrl}) {
+  FetcherNovelResult copyWith({
+    List<NovelItemResult>? list,
+    List<FetcherNovelNextUrl>? nextUrls,
+  }) {
     return FetcherNovelResult(
       list: list ?? this.list,
-      nextUrl: nextUrl ?? this.nextUrl,
+      nextUrls: nextUrls ?? this.nextUrls,
     );
   }
+}
+
+class FetcherNovelNextUrl {
+  final String title;
+  final String url;
+
+  const FetcherNovelNextUrl({required this.title, required this.url});
 }
 
 class NovelItemResult {

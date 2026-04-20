@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
-import 'package:novel_v3/core/utils.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AddChapterFromOnlineScreen extends StatefulWidget {
   final FetcherWebsite? website;
+  final String? hostUrl;
   final String? url;
   final String? title;
   final int chapterNumber;
@@ -19,6 +20,7 @@ class AddChapterFromOnlineScreen extends StatefulWidget {
     super.key,
     this.onSaved,
     this.website,
+    this.hostUrl,
     this.url,
     this.title,
     this.chapterNumber = 1,
@@ -35,6 +37,7 @@ class _AddChapterFromOnlineScreenState
   @override
   initState() {
     chNumberController.text = widget.chapterNumber.toString();
+    hostUrlController.text = widget.hostUrl ?? '';
     urlController.text = widget.url ?? '';
     super.initState();
     currentSite = list.first;
@@ -49,6 +52,7 @@ class _AddChapterFromOnlineScreenState
 
   @override
   void dispose() {
+    hostUrlController.dispose();
     urlController.dispose();
     chNumberController.dispose();
     titleController.dispose();
@@ -57,6 +61,7 @@ class _AddChapterFromOnlineScreenState
   }
 
   final urlController = TextEditingController();
+  final hostUrlController = TextEditingController();
   final titleController = TextEditingController();
   final chNumberController = TextEditingController();
   final contentController = TextEditingController();
@@ -64,6 +69,7 @@ class _AddChapterFromOnlineScreenState
   final list = FetchServices.instance.fetcherWebsiteList();
   FetcherWebsite? currentSite;
   String? chapterErrorText;
+  String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +79,12 @@ class _AddChapterFromOnlineScreenState
           ? Center(child: TLoader.random())
           : TScrollableColumn(
               children: [
+                TTextField(
+                  label: Text('Host Url'),
+                  controller: hostUrlController,
+                  maxLines: 1,
+                ),
+
                 Row(
                   children: [
                     Expanded(
@@ -99,11 +111,22 @@ class _AddChapterFromOnlineScreenState
                   errorText: chapterErrorText,
                   onChanged: (value) => _chapterOnCheck(),
                 ),
-                TTextField(
-                  label: Text('Content'),
-                  controller: contentController,
-                  maxLines: null,
-                ),
+                if (errorText != null)
+                  Center(
+                    child: Text(
+                      errorText!,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                else
+                  TTextField(
+                    label: Text('Content'),
+                    controller: contentController,
+                    maxLines: null,
+                  ),
               ],
             ),
       floatingActionButton: _floatingActionButton(),
@@ -146,22 +169,23 @@ class _AddChapterFromOnlineScreenState
           onPressed: _fetch,
           child: Icon(Icons.downloading_sharp),
         ),
-        FloatingActionButton(
-          heroTag: 'save',
-          onPressed: () {
-            if (widget.onSaved != null) {
-              context.closeNavigator();
-            }
-            widget.onSaved?.call(
-              ChapterOnlineContentResult(
-                number: int.parse(chNumberController.text),
-                title: titleController.text,
-                content: contentController.text,
-              ),
-            );
-          },
-          child: Icon(Icons.save_as_rounded),
-        ),
+        if (errorText == null)
+          FloatingActionButton(
+            heroTag: 'save',
+            onPressed: () {
+              if (widget.onSaved != null) {
+                context.closeNavigator();
+              }
+              widget.onSaved?.call(
+                ChapterOnlineContentResult(
+                  number: int.parse(chNumberController.text),
+                  title: titleController.text,
+                  content: contentController.text,
+                ),
+              );
+            },
+            child: Icon(Icons.save_as_rounded),
+          ),
       ],
     );
   }
@@ -208,6 +232,7 @@ class _AddChapterFromOnlineScreenState
         return;
       }
       setState(() {
+        errorText = null;
         isLoading = true;
       });
 
@@ -229,8 +254,9 @@ class _AddChapterFromOnlineScreenState
       if (!mounted) return;
       setState(() {
         isLoading = false;
+        errorText = e.toString();
       });
-      showTMessageDialogError(context, e.toString());
+      // showTMessageDialogError(context, e.toString());
     }
   }
 
