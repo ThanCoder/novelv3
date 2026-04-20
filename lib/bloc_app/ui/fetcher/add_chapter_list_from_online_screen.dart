@@ -33,7 +33,6 @@ class _AddChapterListFromOnlineScreenState
   initState() {
     urlController.text = widget.url;
     super.initState();
-    currentSite = list.first;
     setState(() {});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _autoChooseWebsiteType();
@@ -47,11 +46,28 @@ class _AddChapterListFromOnlineScreenState
   }
 
   bool isLoading = false;
-  final list = FetchServices.instance.fetcherWebsiteList();
+  List<FetcherWebsite> list = [];
   FetcherWebsite? currentSite;
   final urlController = TextEditingController();
 
   List<MultiChapterResult> resultList = [];
+  
+  Future<void> init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      list = await FetchServices.instance.getWebsiteList();
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

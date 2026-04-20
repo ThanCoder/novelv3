@@ -14,12 +14,12 @@ class FetchNovelFromUrlMenu extends StatefulWidget {
 
 class _FetchNovelFromUrlMenuState extends State<FetchNovelFromUrlMenu> {
   final urlController = TextEditingController();
-  final siteList = FetchServices.instance.fetcherWebsiteList();
+  bool isLoading = false;
+  List<FetcherWebsite> siteList = [];
   FetcherWebsite? currentSite;
 
   @override
   void initState() {
-    currentSite = siteList.first;
     urlController.text = 'https://mmxianxia.com/novels/blind-sword-master/';
     super.initState();
   }
@@ -28,6 +28,23 @@ class _FetchNovelFromUrlMenuState extends State<FetchNovelFromUrlMenu> {
   void dispose() {
     urlController.dispose();
     super.dispose();
+  }
+
+  Future<void> init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      siteList = await FetchServices.instance.getWebsiteList();
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+    }
   }
 
   @override

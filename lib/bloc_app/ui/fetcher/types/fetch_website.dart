@@ -47,8 +47,8 @@ class FetcherWebsite {
       ),
       chapterPageQuery: json['chapterPageQuery'] == null
           ? null
-          : ChapterPageQuery.fromJson(json['detailPageQuery']),
-      detailPageQuery: json['chapterListPageQuery'] == null
+          : ChapterPageQuery.fromJson(json['chapterPageQuery']),
+      detailPageQuery: json['detailPageQuery'] == null
           ? null
           : DetailPageQuery.fromJson(json['detailPageQuery']),
       chapterListPageQuery: json['chapterListPageQuery'] == null

@@ -82,7 +82,9 @@ class NovelListPageQuery {
       pageUrlQuery: FetcherQuery.fromJson(json['pageUrlQuery']),
       titleQuery: FetcherQuery.fromJson(json['titleQuery']),
       coverUrlQuery: FetcherQuery.fromJson(json['coverUrlQuery']),
-      nextUrlQuery: NextUrlQuery.fromJson(json['nextUrlQuery']),
+      nextUrlQuery: json['nextUrlQuery'] == null
+          ? null
+          : NextUrlQuery.fromJson(json['nextUrlQuery']),
     );
   }
 }
@@ -161,10 +163,12 @@ class DetailPageQuery {
   factory DetailPageQuery.fromJson(Map<String, dynamic> json) {
     return DetailPageQuery(
       author: FetcherQuery.fromJson(json['author']),
-      otherTitles:
-          json['otherTitles'] ?? FetcherQuery.fromJson(json['otherTitles']),
-      translator:
-          json['translator'] ?? FetcherQuery.fromJson(json['translator']),
+      otherTitles: json['otherTitles'] == null
+          ? null
+          : FetcherQuery.fromJson(json['otherTitles']),
+      translator: json['translator'] == null
+          ? null
+          : FetcherQuery.fromJson(json['translator']),
       description: FetcherQuery.fromJson(json['description']),
       title: FetcherQuery.fromJson(json['title']),
       coverUrl: FetcherQuery.fromJson(json['coverUrl']),
@@ -191,10 +195,8 @@ class ChapterPageQuery {
 
   factory ChapterPageQuery.fromJson(Map<String, dynamic> json) {
     return ChapterPageQuery(
-      titleQuery:
-          json['titleQuery'] ?? FetcherQuery.fromJson(json['titleQuery']),
-      contentQuery:
-          json['contentQuery'] ?? FetcherQuery.fromJson(json['contentQuery']),
+      titleQuery: FetcherQuery.fromJson(json['titleQuery']),
+      contentQuery: FetcherQuery.fromJson(json['contentQuery']),
     );
   }
 }

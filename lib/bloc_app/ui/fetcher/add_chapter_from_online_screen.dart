@@ -41,13 +41,12 @@ class _AddChapterFromOnlineScreenState
     hostUrlController.text = widget.hostUrl ?? '';
     urlController.text = widget.url ?? '';
     super.initState();
-    currentSite = list.first;
 
     setState(() {});
     if (widget.website != null) {
       currentSite = list.firstWhere((e) => e.title == widget.website!.title);
       setState(() {});
-      WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+      WidgetsBinding.instance.addPostFrameCallback((_) => init());
     }
   }
 
@@ -67,10 +66,27 @@ class _AddChapterFromOnlineScreenState
   final chNumberController = TextEditingController();
   final contentController = TextEditingController();
   bool isLoading = false;
-  final list = FetchServices.instance.fetcherWebsiteList();
+  List<FetcherWebsite> list = [];
   FetcherWebsite? currentSite;
   String? chapterErrorText;
   String? errorText;
+
+  Future<void> init() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      list = await FetchServices.instance.getWebsiteList();
+
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      showTMessageDialogError(context, e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

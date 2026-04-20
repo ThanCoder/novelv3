@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
@@ -224,8 +226,39 @@ class FetchServices {
     return list;
   }
 
-  Future<List<FetcherWebsite>> fetcherWebsiteList() async {
-    return [
+  static List<FetcherWebsite> _websiteListCache = [];
+
+  Future<List<FetcherWebsite>> getWebsiteList({bool isLocal = false}) async {
+    if (_websiteListCache.isNotEmpty) {
+      return _websiteListCache;
+    }
+    if (isLocal) {
+      final file = File('fetch-websites-list.json');
+      if (file.existsSync()) {
+        List<dynamic> jsonList = jsonDecode(await file.readAsString());
+        _websiteListCache = jsonList
+            .map((e) => FetcherWebsite.fromJson(e))
+            .toList();
+        return _websiteListCache;
+      }
+    } else {
+      //onlie
+      final url =
+          'https://raw.githubusercontent.com/ThanCoder/novelv3/refs/heads/main/fetch-websites-list.json';
+      final res = await client.get(url);
+      if (res.statusCode == 200) {
+        try {
+          List<dynamic> jsonList = jsonDecode(res.data.toString());
+          _websiteListCache = jsonList
+              .map((e) => FetcherWebsite.fromJson(e))
+              .toList();
+          return _websiteListCache;
+        } catch (e) {
+          debugPrint('[getWebsiteList:online->api]: $e');
+        }
+      }
+    }
+    _websiteListCache = [
       FetcherWebsite(
         hostUrl: 'https://mmxianxia.com',
         url: 'https://mmxianxia.com',
@@ -459,5 +492,6 @@ class FetchServices {
         ),
       ),
     ];
+    return _websiteListCache;
   }
 }
