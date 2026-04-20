@@ -1,0 +1,351 @@
+[
+  {
+    "url": "https://mmxianxia.com",
+    "hostUrl": "https://mmxianxia.com",
+    "title": "MM Xianxia",
+    "type": "request",
+    "novelListPageQuery": {
+      "querySelectorAll": ".styletree",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": ".luf a",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".luf a h3",
+        "type": "single"
+      },
+      "coverUrlQuery": {
+        "index": 0,
+        "attribue": "data-src",
+        "selector": ".ts-post-image",
+        "type": "single"
+      },
+      "nextUrlQuery": {
+        "querySelectorAll": ".hpage a",
+        "hostUrl": null,
+        "itemUrlQuery": {
+          "index": 0,
+          "attribue": "href",
+          "selector": "",
+          "type": "single"
+        },
+        "itemTextQuery": {
+          "index": 0,
+          "attribue": "text",
+          "selector": "",
+          "type": "single"
+        }
+      }
+    },
+    "chapterPageQuery": {
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".entry-title",
+        "type": "single"
+      },
+      "contentQuery": {
+        "index": 0,
+        "attribue": "html",
+        "selector": ".entry-content",
+        "type": "single"
+      }
+    },
+    "detailPageQuery": {
+      "author": {
+        "index": 1,
+        "attribue": "text",
+        "selector": ".sertoauth .serval",
+        "type": "single"
+      },
+      "otherTitles": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".sertoinfo .alter",
+        "type": "single"
+      },
+      "translator": {
+        "index": 2,
+        "attribue": "text",
+        "selector": ".sertoauth .serval",
+        "type": "single"
+      },
+      "description": {
+        "index": 0,
+        "attribue": "html",
+        "selector": ".entry-content",
+        "type": "single"
+      },
+      "title": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".entry-title,.cat-series",
+        "type": "list"
+      },
+      "coverUrl": {
+        "index": 0,
+        "attribue": "data-src",
+        "selector": ".wp-post-image",
+        "type": "single"
+      },
+      "tags": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".sertogenre a",
+        "type": "list"
+      }
+    },
+    "chapterListPageQuery": {
+      "querySelectorAll": ".ts-chl-collapsible-content ul li",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": "a",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".epl-title",
+        "type": "single"
+      },
+      "numberQuery": {
+        "index": 0,
+        "attribue": "",
+        "selector": "",
+        "type": "single"
+      },
+      "nextUrlQuery": null
+    }
+  },
+  {
+    "url": "https://lightnovelworld.org/genre-all/?order=new",
+    "hostUrl": "https://lightnovelworld.org",
+    "title": "Light Novel World",
+    "type": "webview",
+    "novelListPageQuery": {
+      "querySelectorAll": ".results-section .recommendation-card",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": ".card-cover-link",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".card-title",
+        "type": "single"
+      },
+      "coverUrlQuery": {
+        "index": 0,
+        "attribue": "src",
+        "selector": ".card-cover img",
+        "type": "single"
+      },
+      "nextUrlQuery": {
+        "querySelectorAll": ".pagination a",
+        "hostUrl": "https://lightnovelworld.org/genre-all",
+        "itemUrlQuery": {
+          "index": 0,
+          "attribue": "href",
+          "selector": "",
+          "type": "single"
+        },
+        "itemTextQuery": {
+          "index": 0,
+          "attribue": "text",
+          "selector": "",
+          "type": "single"
+        }
+      }
+    },
+    "chapterPageQuery": {
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".chapter-title",
+        "type": "single"
+      },
+      "contentQuery": {
+        "index": 0,
+        "attribue": "html",
+        "selector": ".chapter-content",
+        "type": "single"
+      }
+    },
+    "detailPageQuery": {
+      "author": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".novel-author a",
+        "type": "single"
+      },
+      "otherTitles": null,
+      "translator": null,
+      "description": {
+        "index": 0,
+        "attribue": "html",
+        "selector": ".summary-section",
+        "type": "single"
+      },
+      "title": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".novel-title",
+        "type": "single"
+      },
+      "coverUrl": {
+        "index": 0,
+        "attribue": "src",
+        "selector": ".novel-cover",
+        "type": "single"
+      },
+      "tags": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".genre-tags",
+        "type": "list"
+      }
+    },
+    "chapterListPageQuery": {
+      "querySelectorAll": ".chapters-grid .chapter-card",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "onclick",
+        "selector": "",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".chapter-title",
+        "type": "single"
+      },
+      "numberQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".chapter-number",
+        "type": "single"
+      },
+      "nextUrlQuery": {
+        "querySelectorAll": ".pagination-pages .page-link",
+        "hostUrl": null,
+        "itemUrlQuery": {
+          "index": 0,
+          "attribue": "href",
+          "selector": "",
+          "type": "single"
+        },
+        "itemTextQuery": {
+          "index": 0,
+          "attribue": "title",
+          "selector": "",
+          "type": "single"
+        }
+      }
+    }
+  },
+  {
+    "url": "https://novelhi.com/novel",
+    "hostUrl": "https://novelhi.com",
+    "title": "Novel HI",
+    "type": "webview",
+    "novelListPageQuery": {
+      "querySelectorAll": "#bookList .box",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": ".list-title",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".list-title",
+        "type": "single"
+      },
+      "coverUrlQuery": {
+        "index": 0,
+        "attribue": "src",
+        "selector": ".list-img",
+        "type": "single"
+      },
+      "nextUrlQuery": null
+    },
+    "chapterPageQuery": {
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".book_title h1",
+        "type": "single"
+      },
+      "contentQuery": {
+        "index": 0,
+        "attribue": "html",
+        "selector": "#readcontent",
+        "type": "single"
+      }
+    },
+    "detailPageQuery": {
+      "author": {
+        "index": 2,
+        "attribue": "text",
+        "selector": ".list .item",
+        "type": "single"
+      },
+      "otherTitles": null,
+      "translator": null,
+      "description": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".detail-desc",
+        "type": "single"
+      },
+      "title": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".book_info .tit h1",
+        "type": "single"
+      },
+      "coverUrl": {
+        "index": 0,
+        "attribue": "src",
+        "selector": ".book_cover",
+        "type": "single"
+      },
+      "tags": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".genre-tags a",
+        "type": "list"
+      }
+    },
+    "chapterListPageQuery": {
+      "querySelectorAll": ".chapter-list-item",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": "a",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": "a",
+        "type": "single"
+      },
+      "numberQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": "a",
+        "type": "single"
+      },
+      "nextUrlQuery": null
+    }
+  }
+]

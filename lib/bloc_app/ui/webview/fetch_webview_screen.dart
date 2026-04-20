@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/bloc_app/ui/components/app_rename_dialog.dart';
 import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_result_screen.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -157,18 +158,19 @@ DomHandlerResult.postMessage(document.querySelector('body').innerHTML)
   }
 
   void _showSettingMenu() {
-    showTReanmeDialog(
-      context,
-      title: Text('Load Url'),
-      text: url,
-      submitText: 'Load',
-      onSubmit: (text) {
-        setState(() {
-          url = text;
-        });
+    showDialog(
+      context: context,
+      builder: (context) => AppRenameDialog(
+        value: url,
+        title: Text('Load Url'),
+        onSubmitted: (text) {
+          setState(() {
+            url = text;
+          });
 
-        _load();
-      },
+          _load();
+        },
+      ),
     );
   }
 }

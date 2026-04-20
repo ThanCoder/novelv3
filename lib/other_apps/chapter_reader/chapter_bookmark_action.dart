@@ -4,6 +4,7 @@ import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/chapter_reader/reader_theme.dart';
 import 'package:t_widgets/t_widgets.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ChapterBookmarkAction extends StatefulWidget {
   final Chapter chapter;
@@ -43,7 +44,18 @@ class _ChapterBookmarkActionState extends State<ChapterBookmarkAction> {
         child: Row(
           spacing: 5,
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [Text(widget.title!), _getAction()],
+          children: [
+            if (widget.chapter.content != null &&
+                widget.chapter.content!.isNotEmpty)
+              IconButton(
+                onPressed: () {
+                  ThanPkg.appUtil.copyText(widget.chapter.content!);
+                },
+                icon: Icon(Icons.copy_all),
+              ),
+            Text(widget.title!),
+            _getAction(),
+          ],
         ),
       );
     }

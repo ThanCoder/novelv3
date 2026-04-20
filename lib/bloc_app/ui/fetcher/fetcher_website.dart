@@ -4,30 +4,6 @@ import 'package:t_html_parser/core/q_result/query_result.dart';
 import 'package:t_html_parser/t_html_parser.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-enum FetchType { request, webview }
-
-class FetcherWebsite {
-  final String url;
-  final String hostUrl;
-  final String title;
-  final FetchType type;
-  final NovelListPageQuery novelListPageQuery;
-  final ChapterPageQuery? chapterPageQuery;
-  final DetailPageQuery? detailPageQuery;
-  final ChapterListPageQuery? chapterListPageQuery;
-
-  const FetcherWebsite({
-    required this.hostUrl,
-    required this.url,
-    required this.title,
-    this.type = FetchType.request,
-    required this.novelListPageQuery,
-    this.chapterPageQuery,
-    this.detailPageQuery,
-    this.chapterListPageQuery,
-  });
-}
-
 class ChapterListPageQuery {
   final String querySelectorAll;
   final FetcherQuery pageUrlQuery;
@@ -42,6 +18,28 @@ class ChapterListPageQuery {
     required this.numberQuery,
     this.nextUrlQuery,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'querySelectorAll': querySelectorAll,
+      'pageUrlQuery': pageUrlQuery.toJson(),
+      'titleQuery': titleQuery.toJson(),
+      'numberQuery': numberQuery.toJson(),
+      'nextUrlQuery': nextUrlQuery?.toJson(),
+    };
+  }
+
+  factory ChapterListPageQuery.fromJson(Map<String, dynamic> json) {
+    return ChapterListPageQuery(
+      querySelectorAll: json['querySelectorAll'],
+      pageUrlQuery: FetcherQuery.fromJson(json['pageUrlQuery']),
+      titleQuery: FetcherQuery.fromJson(json['titleQuery']),
+      numberQuery: FetcherQuery.fromJson(json['numberQuery']),
+      nextUrlQuery: json['nextUrlQuery'] == null
+          ? null
+          : NextUrlQuery.fromJson(json['nextUrlQuery']),
+    );
+  }
 }
 
 class NovelListPageQuery {
@@ -49,14 +47,14 @@ class NovelListPageQuery {
   final FetcherQuery pageUrlQuery;
   final FetcherQuery titleQuery;
   final FetcherQuery coverUrlQuery;
-  final NextUrlQuery nextUrlQuery;
+  final NextUrlQuery? nextUrlQuery;
 
   const NovelListPageQuery({
     required this.querySelectorAll,
     required this.titleQuery,
     required this.pageUrlQuery,
     required this.coverUrlQuery,
-    required this.nextUrlQuery,
+    this.nextUrlQuery,
   });
 
   factory NovelListPageQuery.createEmpty() {
@@ -65,7 +63,26 @@ class NovelListPageQuery {
       titleQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
       pageUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
       coverUrlQuery: FetcherQuery(index: 0, attribue: '', selector: ''),
-      nextUrlQuery: NextUrlQuery.empty(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'querySelectorAll': querySelectorAll,
+      'pageUrlQuery': pageUrlQuery.toJson(),
+      'titleQuery': titleQuery.toJson(),
+      'coverUrlQuery': coverUrlQuery.toJson(),
+      'nextUrlQuery': nextUrlQuery?.toJson(),
+    };
+  }
+
+  factory NovelListPageQuery.fromJson(Map<String, dynamic> json) {
+    return NovelListPageQuery(
+      querySelectorAll: json['querySelectorAll'],
+      pageUrlQuery: FetcherQuery.fromJson(json['pageUrlQuery']),
+      titleQuery: FetcherQuery.fromJson(json['titleQuery']),
+      coverUrlQuery: FetcherQuery.fromJson(json['coverUrlQuery']),
+      nextUrlQuery: NextUrlQuery.fromJson(json['nextUrlQuery']),
     );
   }
 }
@@ -90,6 +107,24 @@ class NextUrlQuery {
     required this.itemUrlQuery,
     required this.itemTextQuery,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'querySelectorAll': querySelectorAll,
+      'hostUrl': hostUrl,
+      'itemUrlQuery': itemUrlQuery.toJson(),
+      'itemTextQuery': itemTextQuery.toJson(),
+    };
+  }
+
+  factory NextUrlQuery.fromJson(Map<String, dynamic> json) {
+    return NextUrlQuery(
+      querySelectorAll: json['querySelectorAll'],
+      hostUrl: json['hostUrl'],
+      itemUrlQuery: FetcherQuery.fromJson(json['itemUrlQuery']),
+      itemTextQuery: FetcherQuery.fromJson(json['itemTextQuery']),
+    );
+  }
 }
 
 class DetailPageQuery {
@@ -110,6 +145,32 @@ class DetailPageQuery {
     required this.description,
     required this.tags,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'author': author.toJson(),
+      'otherTitles': otherTitles?.toJson(),
+      'translator': translator?.toJson(),
+      'description': description.toJson(),
+      'title': title.toJson(),
+      'coverUrl': coverUrl.toJson(),
+      'tags': tags.toJson(),
+    };
+  }
+
+  factory DetailPageQuery.fromJson(Map<String, dynamic> json) {
+    return DetailPageQuery(
+      author: FetcherQuery.fromJson(json['author']),
+      otherTitles:
+          json['otherTitles'] ?? FetcherQuery.fromJson(json['otherTitles']),
+      translator:
+          json['translator'] ?? FetcherQuery.fromJson(json['translator']),
+      description: FetcherQuery.fromJson(json['description']),
+      title: FetcherQuery.fromJson(json['title']),
+      coverUrl: FetcherQuery.fromJson(json['coverUrl']),
+      tags: FetcherQuery.fromJson(json['tags']),
+    );
+  }
 }
 
 class ChapterPageQuery {

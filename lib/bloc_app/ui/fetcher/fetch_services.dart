@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_screen.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/utils.dart';
@@ -121,25 +122,31 @@ class FetchServices {
     }
     // fetch next urls
     final nextUrls = <FetcherNovelNextUrl>[];
-    if (website.novelListPageQuery.nextUrlQuery.querySelectorAll.isNotEmpty) {
-      for (var ele in dom.querySelectorAll(
-        website.novelListPageQuery.nextUrlQuery.querySelectorAll,
-      )) {
-        final title = website.novelListPageQuery.nextUrlQuery.itemTextQuery
-            .getFromElement(ele);
-        final nextUrl = website.novelListPageQuery.nextUrlQuery.itemUrlQuery
-            .getFromElement(ele);
-        // print(url.formatUrl(website.hostUrl));
+    if (website.novelListPageQuery.nextUrlQuery != null) {
+      if (website
+          .novelListPageQuery
+          .nextUrlQuery!
+          .querySelectorAll
+          .isNotEmpty) {
+        for (var ele in dom.querySelectorAll(
+          website.novelListPageQuery.nextUrlQuery!.querySelectorAll,
+        )) {
+          final title = website.novelListPageQuery.nextUrlQuery!.itemTextQuery
+              .getFromElement(ele);
+          final nextUrl = website.novelListPageQuery.nextUrlQuery!.itemUrlQuery
+              .getFromElement(ele);
+          // print(url.formatUrl(website.hostUrl));
 
-        nextUrls.add(
-          FetcherNovelNextUrl(
-            title: title,
-            url: nextUrl.formatUrl(
-              website.novelListPageQuery.nextUrlQuery.hostUrl ??
-                  website.hostUrl,
+          nextUrls.add(
+            FetcherNovelNextUrl(
+              title: title,
+              url: nextUrl.formatUrl(
+                website.novelListPageQuery.nextUrlQuery!.hostUrl ??
+                    website.hostUrl,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
 
@@ -147,11 +154,11 @@ class FetchServices {
   }
 
   Future<ChapterContentResult> fetchChapter(
+    BuildContext context,
     String url, {
     required FetcherWebsite website,
   }) async {
-    final res = await client.get(getProxyUrl(url));
-    final html = res.data.toString();
+    final html = await _fetchView(context, url, website.type);
     String? title, content;
 
     if (website.chapterPageQuery != null) {
@@ -217,7 +224,7 @@ class FetchServices {
     return list;
   }
 
-  List<FetcherWebsite> fetcherWebsiteList() {
+  Future<List<FetcherWebsite>> fetcherWebsiteList() async {
     return [
       FetcherWebsite(
         hostUrl: 'https://mmxianxia.com',
@@ -318,7 +325,7 @@ class FetchServices {
           titleQuery: FetcherQuery(attribue: 'text', selector: '.card-title'),
           pageUrlQuery: FetcherQuery(
             attribue: 'href',
-            selector: '.card-cover-link"',
+            selector: '.card-cover-link',
           ),
           coverUrlQuery: FetcherQuery(
             attribue: 'src',
@@ -376,25 +383,81 @@ class FetchServices {
             itemTextQuery: FetcherQuery(attribue: 'title', selector: ''),
           ),
         ),
+        chapterPageQuery: ChapterPageQuery(
+          titleQuery: FetcherQuery(
+            attribue: 'text',
+            selector: '.chapter-title',
+          ),
+          contentQuery: FetcherQuery(
+            attribue: 'html',
+            selector: '.chapter-content',
+          ),
+        ),
       ),
-
-      // FetcherWebsite(
-      //   url: 'https://novelhi.com',
-      //   title: 'Novel HI',
-      //   novelListPageQuery: NovelListPageQuery.createEmpty(),
-      //   chapterPageQuery: ChapterPageQuery(
-      //     titleQuery: FetcherQuery(
-      //       index: 0,
-      //       attribue: HtmlAttribute.text.name,
-      //       selector: '.book_title h1',
-      //     ),
-      //     contentQuery: FetcherQuery(
-      //       index: 0,
-      //       attribue: HtmlAttribute.text.name,
-      //       selector: '.readBox',
-      //     ),
-      //   ),
-      // ),
+      FetcherWebsite(
+        type: FetchType.webview,
+        hostUrl: 'https://novelhi.com',
+        url: 'https://novelhi.com/novel',
+        title: 'Novel HI',
+        novelListPageQuery: NovelListPageQuery(
+          querySelectorAll: '#bookList .box',
+          titleQuery: FetcherQuery(attribue: 'text', selector: '.list-title'),
+          pageUrlQuery: FetcherQuery(attribue: 'href', selector: '.list-title'),
+          coverUrlQuery: FetcherQuery(attribue: 'src', selector: '.list-img'),
+          // nextUrlQuery: NextUrlQuery(
+          //   querySelectorAll: '.pagination a',
+          //   hostUrl: 'https://lightnovelworld.org/genre-all',
+          //   itemTextQuery: FetcherQuery(attribue: 'text', selector: ''),
+          //   itemUrlQuery: FetcherQuery(attribue: 'href', selector: ''),
+          // ),
+        ),
+        detailPageQuery: DetailPageQuery(
+          title: FetcherQuery(
+            attribue: HtmlAttribute.text.value,
+            selector: '.book_info .tit h1',
+          ),
+          author: FetcherQuery(
+            index: 2,
+            attribue: HtmlAttribute.text.value,
+            selector: '.list .item',
+          ),
+          coverUrl: FetcherQuery(
+            attribue: HtmlAttribute.src.value,
+            selector: '.book_cover',
+          ),
+          description: FetcherQuery(
+            attribue: HtmlAttribute.text.value,
+            selector: '.detail-desc',
+          ),
+          tags: FetcherQuery(
+            attribue: HtmlAttribute.text.value,
+            selector: '.genre-tags a',
+            type: FetcherQueryType.list,
+          ),
+        ),
+        chapterListPageQuery: ChapterListPageQuery(
+          querySelectorAll: '.chapter-list-item',
+          pageUrlQuery: FetcherQuery(attribue: 'href', selector: 'a'),
+          titleQuery: FetcherQuery(
+            attribue: HtmlAttribute.text.value,
+            selector: 'a',
+          ),
+          numberQuery: FetcherQuery(
+            attribue: HtmlAttribute.text.value,
+            selector: 'a',
+          ),
+        ),
+        chapterPageQuery: ChapterPageQuery(
+          titleQuery: FetcherQuery(
+            attribue: 'text',
+            selector: '.book_title h1',
+          ),
+          contentQuery: FetcherQuery(
+            attribue: 'html',
+            selector: '#readcontent',
+          ),
+        ),
+      ),
     ];
   }
 }

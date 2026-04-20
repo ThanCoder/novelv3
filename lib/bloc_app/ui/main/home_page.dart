@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_bookmark_list_cubit.dart';
@@ -7,6 +10,7 @@ import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_novel_detail_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_novel_from_url_menu.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
@@ -14,6 +18,7 @@ import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_screen.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
+import 'package:novel_v3/more_libs/fetcher_v1.0.0/services/website_services.dart';
 import 'package:novel_v3/other_apps/novel_clean_up/novel_clean_up_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -81,6 +86,21 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            try {
+              final list = await FetchServices.instance.fetcherWebsiteList();
+
+              final file = File('fetch-websites-list.json');
+              final mapList = list.map((e) => e.toJson()).toList();
+              final json = JsonEncoder.withIndent(' ').convert(mapList);
+              await file.writeAsString(json);
+              print('sucess');
+            } catch (e) {
+              print(e.toString());
+            }
           },
         ),
       ),

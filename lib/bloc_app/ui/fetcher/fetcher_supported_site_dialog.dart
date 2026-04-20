@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
-import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 
 class FetcherSupportedSiteDialog extends StatefulWidget {

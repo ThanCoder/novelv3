@@ -1,7 +1,8 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
-import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -79,10 +80,23 @@ class _AddChapterFromOnlineScreenState
           ? Center(child: TLoader.random())
           : TScrollableColumn(
               children: [
-                TTextField(
-                  label: Text('Host Url'),
-                  controller: hostUrlController,
-                  maxLines: 1,
+                Row(
+                  children: [
+                    Expanded(
+                      child: TTextField(
+                        label: Text('Host Url'),
+                        controller: hostUrlController,
+                        maxLines: 1,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        urlController.text =
+                            '${hostUrlController.text.getCleanBackSlash}/${urlController.text}';
+                      },
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
                 ),
 
                 Row(
@@ -169,7 +183,7 @@ class _AddChapterFromOnlineScreenState
           onPressed: _fetch,
           child: Icon(Icons.downloading_sharp),
         ),
-        if (errorText == null)
+        if (errorText == null && contentController.text.isNotEmpty)
           FloatingActionButton(
             heroTag: 'save',
             onPressed: () {
@@ -237,6 +251,7 @@ class _AddChapterFromOnlineScreenState
       });
 
       final res = await FetchServices.instance.fetchChapter(
+        context,
         urlController.text,
         website: currentSite!,
       );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/bloc_routes_func.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/add_chapter_from_online_screen.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
-import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
