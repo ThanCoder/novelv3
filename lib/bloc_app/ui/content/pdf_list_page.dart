@@ -12,6 +12,7 @@ import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/old_app/routes.dart';
+import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -139,6 +140,15 @@ class _PdfListPageState extends State<PdfListPage> {
             _addPdfFromScanner();
           },
         ),
+
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Pdf Reader Setting'),
+          onTap: () {
+            context.closeNavigator();
+            _shwoPdfReaderChooser();
+          },
+        ),
       ],
     );
   }
@@ -218,5 +228,9 @@ class _PdfListPageState extends State<PdfListPage> {
         context.read<PdfListCubit>().deleteForever(pdf);
       },
     );
+  }
+
+  void _shwoPdfReaderChooser() {
+    showTAlertDialog(context, content: PdfReaderTypeChooserDialog());
   }
 }

@@ -22,7 +22,9 @@ import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
+import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
+import 'package:novel_v3/other_apps/pdf_reader/screens/pdf_single_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -184,6 +186,20 @@ Future<void> goBlocPdfReader(
   required PdfFile pdf,
 }) async {
   final pdfConfig = PdfConfig.fromPath(pdf.getCurrentConfigPath);
+
+  final readerType = PdfReaderTypeChooserDialog.getType();
+  if (readerType == PdfReaderType.singlePage) {
+    context.goRoute(
+      builder: (context) => PdfSingleReaderScreen(
+        path: pdf.path,
+        pdfConfig: pdfConfig,
+        onConfigUpdated: (updatedPdfConfig) {
+          updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
+        },
+      ),
+    );
+    return;
+  }
   goBlocRoute(
     context,
     builder: (context) => PdfrxReaderScreen(

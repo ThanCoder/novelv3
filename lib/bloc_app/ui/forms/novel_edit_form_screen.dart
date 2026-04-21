@@ -4,6 +4,7 @@ import 'package:novel_v3/bloc_app/ui/components/bloc_tag_view.dart';
 import 'package:novel_v3/bloc_app/ui/components/cover_chooser.dart';
 import 'package:novel_v3/bloc_app/ui/components/rename_bottom_sheet.dart';
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:provider/provider.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -23,18 +24,9 @@ class NovelEditFormScreen extends StatefulWidget {
 class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
   @override
   void initState() {
-    titleController.text = widget.novel.meta.title;
-    authorController.text = widget.novel.meta.author;
-    translatorController.text = widget.novel.meta.translator;
-    mcController.text = widget.novel.meta.mc;
-    descController.text = widget.novel.meta.desc;
-    otherTitleList = widget.novel.meta.otherTitleList;
-    pageUrls = widget.novel.meta.pageUrls;
-    isAdult = widget.novel.meta.isAdult;
-    isCompleted = widget.novel.meta.isCompleted;
-    allTags = context.read<NovelListCubit>().allTags();
-    tags = widget.novel.meta.tags;
+    meta = widget.novel.meta;
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   @override
@@ -47,17 +39,24 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
     super.dispose();
   }
 
+  late NovelMeta meta;
+  List<String> allTags = [];
+
+  void init() {
+    titleController.text = meta.title;
+    authorController.text = meta.author;
+    translatorController.text = meta.translator;
+    mcController.text = meta.mc;
+    descController.text = meta.desc;
+    allTags = context.read<NovelListCubit>().allTags();
+    setState(() {});
+  }
+
   final titleController = TextEditingController();
   final authorController = TextEditingController();
   final translatorController = TextEditingController();
   final mcController = TextEditingController();
   final descController = TextEditingController();
-  List<String> otherTitleList = [];
-  List<String> pageUrls = [];
-  List<String> allTags = [];
-  List<String> tags = [];
-  bool isAdult = false;
-  bool isCompleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +83,17 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
           TTextField(label: Text('MC'), maxLines: 1, controller: mcController),
           SwitchListTile.adaptive(
             title: Text('Is Adult'),
-            value: isAdult,
+            value: meta.isAdult,
             onChanged: (value) {
-              isAdult = value;
+              meta = meta.copyWith(isAdult: value);
               setState(() {});
             },
           ),
           SwitchListTile.adaptive(
             title: Text('Is Completed'),
-            value: isCompleted,
+            value: meta.isCompleted,
             onChanged: (value) {
-              isCompleted = value;
+              meta = meta.copyWith(isCompleted: value);
               setState(() {});
             },
           ),
@@ -121,7 +120,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
 
   Widget _pageUrlForm() {
     return BlocTagView(
-      values: pageUrls,
+      values: meta.pageUrls,
       title: Text('Page Urls'),
       onAdd: () {
         showRenameBottomSheet(
@@ -130,7 +129,9 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
           rename: '',
           onApply: (text) {
             if (text.isEmpty) return;
-            pageUrls.add(text);
+            final list = meta.pageUrls.toList();
+            list.add(text);
+            meta = meta.copyWith(pageUrls: list);
             setState(() {});
           },
         );
@@ -142,19 +143,24 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
           rename: value,
           onApply: (text) {
             if (text.isEmpty) return;
-            pageUrls.add(text);
+            final list = meta.pageUrls.toList();
+            list.add(text);
+            meta = meta.copyWith(pageUrls: list);
             setState(() {});
           },
           onUpdated: (original, updated) {
-            final index = pageUrls.indexWhere((e) => e == original);
+            final list = meta.pageUrls.toList();
+            final index = list.indexWhere((e) => e == original);
             if (index == -1) return;
-            pageUrls[index] = updated;
+            list[index] = updated;
+            meta = meta.copyWith(pageUrls: list);
             setState(() {});
           },
         );
       },
       onDelete: (value) {
-        pageUrls.remove(value);
+        final list = meta.pageUrls.toList()..remove(value);
+        meta = meta.copyWith(pageUrls: list);
         setState(() {});
       },
     );
@@ -162,7 +168,7 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
 
   Widget _otherTitleWidget() {
     return BlocTagView(
-      values: otherTitleList,
+      values: meta.otherTitleList,
       title: Text('Other Titles'),
       onAdd: () {
         showRenameBottomSheet(
@@ -171,7 +177,9 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
           rename: '',
           onApply: (text) {
             if (text.isEmpty) return;
-            otherTitleList.add(text);
+            final list = meta.otherTitleList.toList()..add(text);
+            meta = meta.copyWith(otherTitleList: list);
+
             setState(() {});
           },
         );
@@ -183,49 +191,47 @@ class _NovelEditFormScreenState extends State<NovelEditFormScreen> {
           rename: value,
           onApply: (text) {
             if (text.isEmpty) return;
-            otherTitleList.add(text);
+            final list = meta.otherTitleList.toList()..add(text);
+            meta = meta.copyWith(otherTitleList: list);
             setState(() {});
           },
           onUpdated: (original, updated) {
-            final index = otherTitleList.indexWhere((e) => e == original);
+            final list = meta.otherTitleList.toList();
+            final index = list.indexWhere((e) => e == original);
             if (index == -1) return;
-            otherTitleList[index] = updated;
+            list[index] = updated;
+            meta = meta.copyWith(otherTitleList: list);
             setState(() {});
           },
         );
       },
       onDelete: (value) {
-        otherTitleList.remove(value);
+        final list = meta.otherTitleList.toList()..remove(value);
+        meta = meta.copyWith(otherTitleList: list);
         setState(() {});
       },
     );
   }
 
   Widget _getTagsWidget() {
-    return // tags
-    TTagsWrapView(
+    return TTagsWrapView(
       title: Text('Tags'),
-      values: tags,
+      values: meta.tags,
       allTags: allTags,
       onApply: (values) {
-        tags = values;
+        meta = meta.copyWith(tags: values);
         setState(() {});
       },
     );
   }
 
   void _onUpdate() async {
-    final updatedMeta = widget.novel.meta.copyWith(
+    final updatedMeta = meta.copyWith(
       title: titleController.text,
       author: authorController.text,
       mc: mcController.text,
       translator: translatorController.text,
       desc: descController.text,
-      otherTitleList: otherTitleList,
-      pageUrls: pageUrls,
-      isAdult: isAdult,
-      isCompleted: isCompleted,
-      tags: tags,
       date: DateTime.now(),
     );
     final novel = widget.novel.copyWith(

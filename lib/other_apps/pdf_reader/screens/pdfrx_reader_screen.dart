@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
@@ -222,7 +223,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       return const SizedBox.shrink();
     }
     return Container(
-      color: PdfReader.instance.getDarkTheme() ? Colors.black : Colors.white,
+      color: context.isAppDark ? Colors.black : Colors.white,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -514,6 +515,12 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
             _resetViewer();
           }
           if (config.useProgressiveLoading != oldConfig.useProgressiveLoading) {
+            _resetViewer();
+          }
+          if (config.scrollByMouseWheel != oldConfig.scrollByMouseWheel) {
+            _resetViewer();
+          }
+          if (config.scrollByArrowKey != oldConfig.scrollByArrowKey) {
             _resetViewer();
           }
         },

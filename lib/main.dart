@@ -5,6 +5,7 @@ import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/multi_app/multi_app.dart';
 import 'package:novel_v3/multi_app/restart_widget.dart';
+import 'package:pdfrx/pdfrx.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -12,6 +13,9 @@ import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main() async {
   await ThanPkg.instance.init();
+
+  pdfrxInitialize();
+  pdfrxFlutterInitialize();
 
   await Setting.instance.init(
     appName: 'NV 3',

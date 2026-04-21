@@ -12,8 +12,6 @@ class PdfReader {
   static final PdfReader instance = PdfReader._();
   PdfReader._();
   factory PdfReader() => instance;
-  // PdfReader.instance.init()
-  late bool Function() getDarkTheme;
   void Function(BuildContext context, String msg)? showMessage;
   static bool isShowDebugLog = true;
 

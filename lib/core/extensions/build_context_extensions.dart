@@ -12,4 +12,10 @@ extension BuildContextExtensions on BuildContext {
   void goRoute({required Widget Function(BuildContext context) builder}) {
     Navigator.push(this, MaterialPageRoute(builder: builder));
   }
+
+  Brightness get brightness {
+    return Theme.of(this).brightness;
+  }
+
+  bool get isAppDark => brightness == Brightness.dark;
 }

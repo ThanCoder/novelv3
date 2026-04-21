@@ -73,6 +73,12 @@ class _CoverImageSizeReducerDialogState
         if (!isLoading && errorText.isNotEmpty)
           Text(errorText, style: TextStyle(color: Colors.red)),
         if (!isLoading && _reduceImageList.isNotEmpty) _reduceImagesWidget(),
+        if (!isLoading && _reduceImageList.isEmpty)
+          Text(
+            'လုပ်စရာမလိုအပ်ပါ!',
+            style: TextStyle(fontSize: 17, color: Colors.green),
+          ),
+
         if (isSuccess)
           Text('Success', style: TextStyle(fontSize: 17, color: Colors.green)),
         SizedBox(height: 20),
@@ -119,7 +125,9 @@ class _CoverImageSizeReducerDialogState
           child: Text('ထွက်မယ်'),
         ),
         TextButton(
-          onPressed: isLoading ? null : _reduceImages,
+          onPressed: isLoading || _reduceImageList.isEmpty
+              ? null
+              : _reduceImages,
           child: Text('Size လျော့ချမယ်'),
         ),
       ],
