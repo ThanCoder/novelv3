@@ -79,7 +79,7 @@ class PdfConfig {
     bool isLockScreen = true,
     bool? isShowScrollThumb,
     double offsetDx = 0,
-    double zoom = 0,
+    double zoom = 1.0,
     bool isKeepScreen = false,
     bool isTextSelection = false,
     bool isFullscreen = false,
@@ -144,7 +144,7 @@ class PdfConfig {
       isOnBackpressConfirm: map.getBool(['isOnBackpressConfirm']),
       offsetDx: map.getDouble(['offsetDx']),
       scrollByMouseWheel: map.getDouble(['scrollByMouseWheel'], def: 1.2),
-      zoom: map.getDouble(['zoom']),
+      zoom: map.getDouble(['zoom'], def: 1.0),
       scrollByArrowKey: map.getDouble(['scrollByArrowKey'], def: 50),
     );
   }

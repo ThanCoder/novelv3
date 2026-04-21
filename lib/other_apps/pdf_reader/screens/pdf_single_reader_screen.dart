@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_single_reader_setting_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/functions/dialog_func.dart';
@@ -33,8 +34,11 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
   @override
   void dispose() {
     _dom?.dispose();
-    widget.onConfigUpdated?.call(pdfConfig.copyWith(page: currentPage));
+    widget.onConfigUpdated?.call(
+      pdfConfig.copyWith(page: currentPage, zoom: _currentZoom),
+    );
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    keyboardFocus.dispose();
     super.dispose();
   }
 
@@ -43,13 +47,20 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
   final TransformationController _zoomController = TransformationController();
   final _pageController = PageController();
   double _currentZoom = 1.0;
-  final double _zoomRange = 0.1;
+  double _zoomRange = 0.1;
   int currentPage = 1;
   int pageCount = 0;
   late PdfConfig pdfConfig;
+  final keyboardFocus = FocusNode();
 
   void init() async {
     try {
+      // setconfig
+      _zoomRange = PdfSingleReaderSettingDialog.getPdfRange;
+      if (pdfConfig.isFullscreen) {
+        ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
+      }
+
       setState(() {
         isLoading = true;
       });
@@ -61,9 +72,12 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
       setState(() {
         isLoading = false;
       });
+
       Future.delayed(Duration(milliseconds: 1100)).then((_) {
         if (!mounted) return;
         _goToPage(pdfConfig.page);
+        _updateZoom(pdfConfig.zoom == 0 ? 1.0 : pdfConfig.zoom);
+        keyboardFocus.requestFocus();
       });
     } catch (e) {
       if (!mounted) return;
@@ -155,9 +169,52 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
 
         if (pdfConfig.isFullscreen)
           Positioned(
-            child: IconButton(
-              onPressed: _toggleFullscreen,
-              icon: Icon(Icons.fullscreen_exit),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: _toggleFullscreen,
+                  icon: Icon(Icons.fullscreen_exit),
+                ),
+                // current page
+                TextButton(
+                  onPressed: () {
+                    showTReanmeDialog(
+                      context,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      textInputType: TextInputType.number,
+                      text: currentPage.toString(),
+                      submitText: 'GoToPage',
+                      onSubmit: (text) {
+                        _goToPage(int.parse(text));
+
+                        // Future.delayed(Duration(milliseconds: 1300)).then((_) {
+                        //   _goToPage(int.parse(text));
+                        // });
+                      },
+                    );
+                  },
+                  child: Text(
+                    '$currentPage/$pageCount',
+                    // style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+                // zoom out
+                IconButton(
+                  onPressed: () {
+                    _updateZoom(_currentZoom - _zoomRange);
+                  },
+                  icon: Icon(Icons.zoom_out),
+                ),
+                // zoom in
+                IconButton(
+                  onPressed: () {
+                    _updateZoom(_currentZoom + _zoomRange);
+                  },
+                  icon: Icon(Icons.zoom_in),
+                ),
+                // setting
+                IconButton(onPressed: _showSetting, icon: Icon(Icons.settings)),
+              ],
             ),
           ),
       ],
@@ -225,19 +282,40 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
               pdfConfig.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
             ),
           ),
+          IconButton(onPressed: _showSetting, icon: Icon(Icons.settings)),
         ],
       ),
     ),
   );
 
   Widget get _pdfSinglePage {
-    return PageView.builder(
-      itemCount: pageCount,
-      controller: _pageController,
-      onPageChanged: (value) => setState(() {
-        currentPage = value + 1;
-      }),
-      itemBuilder: (context, index) => _pdfItem(_dom!.pages[index], index),
+    return KeyboardListener(
+      focusNode: keyboardFocus,
+      onKeyEvent: (value) {
+        if (value is KeyDownEvent) {
+          // print(value.logicalKey);
+          // arrow right
+          if (value.logicalKey.keyId == 0x100000303) {
+            _goToPage(currentPage + 1);
+          }
+          //arrow left
+          if (value.logicalKey.keyId == 0x100000302) {
+            _goToPage(currentPage - 1);
+          }
+          // Key F
+          if (value.logicalKey.keyId == 0x00000066) {
+            _toggleFullscreen();
+          }
+        }
+      },
+      child: PageView.builder(
+        itemCount: pageCount,
+        controller: _pageController,
+        onPageChanged: (value) => setState(() {
+          currentPage = value + 1;
+        }),
+        itemBuilder: (context, index) => _pdfItem(_dom!.pages[index], index),
+      ),
     );
   }
 
@@ -254,12 +332,9 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
             child: SizedBox(
               width: page.width,
               height: page.height,
-              child: GestureDetector(
-                onDoubleTap: () => _toggleFullscreen,
-                child: PdfPageView(
-                  document: page.document,
-                  pageNumber: index + 1,
-                ),
+              child: PdfPageView(
+                document: page.document,
+                pageNumber: index + 1,
               ),
             ),
           ),
@@ -280,6 +355,8 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
 
   void _goToPage(int page) async {
     try {
+      if (page == -1 || page == 0) return;
+      if ((page - 1) > _dom!.pages.length) return;
       // _pageController.animateToPage(
       //   page - 1,
       //   duration: Duration(milliseconds: 700),
@@ -291,10 +368,12 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
     }
   }
 
-  void _toggleFullscreen() {
+  void _toggleFullscreen() async {
     pdfConfig = pdfConfig.copyWith(isFullscreen: !pdfConfig.isFullscreen);
     setState(() {});
     ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
+    await Future.delayed(Duration(milliseconds: 800));
+    _updateZoom(_currentZoom);
   }
 
   void _updateZoom(double zoom) {
@@ -311,5 +390,17 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
       // _zoomController.value = Matrix4.identity()
       //   ..scaleByVector3(Vector3(_currentZoom, _currentZoom, 1.0));
     });
+  }
+
+  void _showSetting() {
+    showDialog(
+      context: context,
+      builder: (context) => PdfSingleReaderSettingDialog(
+        onClosed: (result) {
+          _zoomRange = result.zoomRange;
+          setState(() {});
+        },
+      ),
+    );
   }
 }
