@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
@@ -97,6 +99,9 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
     _zoomRange = PdfSingleReaderSettingDialog.getPdfRange;
     if (pdfConfig.isFullscreen) {
       ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
+    }
+    if (Platform.isAndroid) {
+      ThanPkg.android.app.requestOrientation(type: pdfConfig.screenOrientation);
     }
     isCanGoBack = !pdfConfig.isOnBackpressConfirm;
     setState(() {});

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart' hide Text;
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
@@ -72,17 +73,62 @@ class FetchServices {
   ) async {
     final completer = Completer<String>();
     if (type == FetchType.webview) {
-      context.goRoute(
-        builder: (context) => FetchWebviewScreen(
-          url: url,
-          onResult: (resultHtml) => completer.complete(resultHtml),
-          onClosed: () {
-            if (!completer.isCompleted) {
-              completer.complete('');
-            }
-          },
-        ),
-      );
+      if (Platform.isLinux) {
+        final webview = await WebviewWindow.create(
+          configuration: CreateConfiguration(
+            title: 'Fetcher',
+            windowWidth: 600,
+            windowHeight: 400,
+          ),
+        );
+        webview.launch(getProxyUrl(url));
+
+        String cleanHtml = '';
+        Future.delayed(Duration(seconds: 1)).then((_) async {
+          final rawHtml = await webview.evaluateJavaScript(
+            "document.querySelector('body').innerHTML",
+          );
+          try {
+            final decodedHtml = jsonDecode(rawHtml ?? '');
+            cleanHtml = decodedHtml;
+          } catch (e) {
+            cleanHtml = rawHtml ?? '';
+          }
+        });
+
+        Future.delayed(Duration(seconds: 3)).then((_) async {
+          final rawHtml = await webview.evaluateJavaScript(
+            "document.querySelector('body').innerHTML",
+          );
+          try {
+            final decodedHtml = jsonDecode(rawHtml ?? '');
+            cleanHtml = decodedHtml;
+          } catch (e) {
+            cleanHtml = rawHtml ?? '';
+          }
+        });
+
+        await webview.onClose;
+        // \n, \r, \t တွေကို ရှာပြီး space တစ်ခုစာနဲ့ အစားထိုးမယ်
+        cleanHtml = cleanHtml.replaceAll(RegExp(r'[\n\r\t]'), '');
+
+        // Space အပိုတွေကို တစ်ခုတည်းဖြစ်အောင် ထပ်ရှင်းမယ် (Optional)
+        cleanHtml = cleanHtml.replaceAll(RegExp(r'\s+'), ' ').trim();
+        // print(cleanHtml);
+        completer.complete(cleanHtml);
+      } else {
+        context.goRoute(
+          builder: (context) => FetchWebviewScreen(
+            url: url,
+            onResult: (resultHtml) => completer.complete(resultHtml),
+            onClosed: () {
+              if (!completer.isCompleted) {
+                completer.complete('');
+              }
+            },
+          ),
+        );
+      }
     } else {
       final res = await client.get(getProxyUrl(url));
       completer.complete(res.data.toString());

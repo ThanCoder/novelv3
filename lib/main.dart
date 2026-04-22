@@ -1,3 +1,4 @@
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/types/home_page_list_style_type.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
@@ -11,11 +12,21 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 
-void main() async {
-  await ThanPkg.instance.init();
+void main(List<String> args) async {
+  if (runWebViewTitleBarWidget(args)) {
+    return; // ဒါက window အသစ်တွေအတွက် သီးသန့် အလုပ်လုပ်တာ
+  }
+  WidgetsFlutterBinding.ensureInitialized();
+  // await ThanPkg.instance.init();
 
   pdfrxInitialize();
   pdfrxFlutterInitialize();
+
+  // Add this your main method.
+  // used to show a webview title bar.
+  // if (runWebViewTitleBarWidget(args)) {
+  //   return;
+  // }
 
   await Setting.instance.init(
     appName: 'NV 3',
@@ -47,20 +58,20 @@ void main() async {
     },
   );
 
-  if (TPlatform.isDesktop) {
-    WindowOptions windowOptions = WindowOptions(
-      size: Size(602, 568), // စတင်ဖွင့်တဲ့အချိန် window size
+  // if (TPlatform.isDesktop) {
+  //   WindowOptions windowOptions = WindowOptions(
+  //     size: Size(602, 568), // စတင်ဖွင့်တဲ့အချိန် window size
 
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      center: false,
-      title: Setting.instance.appName,
-    );
+  //     backgroundColor: Colors.transparent,
+  //     skipTaskbar: false,
+  //     center: false,
+  //     title: Setting.instance.appName,
+  //   );
 
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      // await windowManager.focus();
-    });
-  }
+  //   windowManager.waitUntilReadyToShow(windowOptions, () async {
+  //     await windowManager.show();
+  //     // await windowManager.focus();
+  //   });
+  // }
   runApp(const RestartWidget(child: MultiApp()));
 }

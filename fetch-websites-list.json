@@ -437,7 +437,7 @@
       "titleQuery": {
         "index": 0,
         "attribue": "text",
-        "selector": "a .chapter-title",
+        "selector": "a span",
         "type": "single"
       },
       "numberQuery": {
