@@ -214,6 +214,7 @@
     },
     "chapterListPageQuery": {
       "querySelectorAll": ".chapters-grid .chapter-card",
+      "autoAddUrlParam": "/chapters",
       "pageUrlQuery": {
         "index": 0,
         "attribue": "onclick",

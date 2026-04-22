@@ -57,7 +57,7 @@ class _AddChapterListFromOnlineScreenState
       setState(() {
         isLoading = true;
       });
-      list = await FetchServices.instance.getWebsiteList(isLocal: true);
+      list = await FetchServices.instance.getWebsiteList();
 
       if (!mounted) return;
       setState(() {
