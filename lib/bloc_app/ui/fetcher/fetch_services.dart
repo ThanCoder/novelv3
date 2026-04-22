@@ -88,11 +88,12 @@ class FetchServices {
           final rawHtml = await webview.evaluateJavaScript(
             "document.querySelector('body').innerHTML",
           );
+          if (rawHtml == null) return;
           try {
-            final decodedHtml = jsonDecode(rawHtml ?? '');
+            final decodedHtml = jsonDecode(rawHtml);
             cleanHtml = decodedHtml;
           } catch (e) {
-            cleanHtml = rawHtml ?? '';
+            cleanHtml = rawHtml;
           }
         });
 
@@ -100,11 +101,12 @@ class FetchServices {
           final rawHtml = await webview.evaluateJavaScript(
             "document.querySelector('body').innerHTML",
           );
+          if (rawHtml == null) return;
           try {
-            final decodedHtml = jsonDecode(rawHtml ?? '');
+            final decodedHtml = jsonDecode(rawHtml);
             cleanHtml = decodedHtml;
           } catch (e) {
-            cleanHtml = rawHtml ?? '';
+            cleanHtml = rawHtml;
           }
         });
 

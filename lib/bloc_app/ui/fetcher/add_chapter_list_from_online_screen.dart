@@ -9,7 +9,7 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AddChapterListFromOnlineScreen extends StatefulWidget {
-  static bool startChapterNumberSmallToBig = false;
+  static bool startChapterNumberSmallToBig = true;
   static bool sortChapterSmToBig = true;
 
   final String url;
@@ -72,58 +72,55 @@ class _AddChapterListFromOnlineScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData.dark(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Add Chapter List From Online'),
-          actions: [
-            IconButton(
-              onPressed: _autosortChapterNumber,
-              icon: Icon(Icons.sort_by_alpha),
-            ),
-          ],
-        ),
-        body: isLoading
-            ? Center(child: TLoader.random())
-            : RefreshIndicator.noSpinner(
-                onRefresh: _fetch,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TTextField(
-                                label: Text('Web Url'),
-                                controller: urlController,
-                                maxLines: 1,
-                                enabled: true,
-                              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Chapter List From Online'),
+        actions: [
+          IconButton(
+            onPressed: _autosortChapterNumber,
+            icon: Icon(Icons.sort_by_alpha),
+          ),
+        ],
+      ),
+      body: isLoading
+          ? Center(child: TLoader.random())
+          : RefreshIndicator.noSpinner(
+              onRefresh: _fetch,
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TTextField(
+                              label: Text('Web Url'),
+                              controller: urlController,
+                              maxLines: 1,
+                              enabled: true,
                             ),
-                            IconButton(
-                              onPressed: _pasteUrl,
-                              icon: Icon(Icons.paste_rounded),
-                            ),
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                            onPressed: _pasteUrl,
+                            icon: Icon(Icons.paste_rounded),
+                          ),
+                        ],
                       ),
                     ),
-                    SliverToBoxAdapter(child: _supportedSite),
+                  ),
+                  SliverToBoxAdapter(child: _supportedSite),
 
-                    _list(),
-                  ],
-                ),
+                  _list(),
+                ],
               ),
-        floatingActionButton: isLoading
-            ? null
-            : FloatingActionButton(
-                onPressed: _fetch,
-                child: Icon(Icons.download),
-              ),
-      ),
+            ),
+      floatingActionButton: isLoading
+          ? null
+          : FloatingActionButton(
+              onPressed: _fetch,
+              child: Icon(Icons.download),
+            ),
     );
   }
 
@@ -186,7 +183,7 @@ class _AddChapterListFromOnlineScreenState
       onDoubleTap: () => showTMessageDialog(context, ch.toString()),
       onSecondaryTap: () => showTMessageDialog(context, ch.toString()),
       child: Card(
-        color: exists ? Colors.amber : null,
+        color: exists ? Colors.green : null,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

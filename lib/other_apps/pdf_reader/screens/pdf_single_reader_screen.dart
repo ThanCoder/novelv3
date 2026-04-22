@@ -10,6 +10,7 @@ import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/dialogs/t_confirm_dialog.dart';
 import 'package:t_widgets/functions/dialog_func.dart';
 import 'package:t_widgets/functions/message_func.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
@@ -44,6 +45,14 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
       pdfConfig.copyWith(page: currentPage, zoom: _currentZoom),
     );
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    if (Platform.isAndroid) {
+      ThanPkg.platform.toggleKeepScreen(isKeep: false);
+      ThanPkg.android.app.requestOrientation(
+        type: ScreenOrientationTypes.portrait,
+      );
+      // ThanPkg.android.
+    }
+
     keyboardFocus.dispose();
     super.dispose();
   }
@@ -97,11 +106,11 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
 
   void _initConfig() {
     _zoomRange = PdfSingleReaderSettingDialog.getPdfRange;
-    if (pdfConfig.isFullscreen) {
-      ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
-    }
+    ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
     if (Platform.isAndroid) {
+      ThanPkg.platform.toggleKeepScreen(isKeep: pdfConfig.isKeepScreen);
       ThanPkg.android.app.requestOrientation(type: pdfConfig.screenOrientation);
+      // ThanPkg.android.
     }
     isCanGoBack = !pdfConfig.isOnBackpressConfirm;
     setState(() {});
