@@ -38,26 +38,23 @@ class _PdfReaderTypeChooserDialogState
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog.adaptive(
-      title: Text('PDF Reader Types'),
-      content: SingleChildScrollView(
-        child: DropdownButton<PdfReaderType>(
-          value: value,
-          items: list
-              .map(
-                (e) => DropdownMenuItem<PdfReaderType>(
-                  value: e,
-                  child: Text(e.name.toCaptalize),
-                ),
-              )
-              .toList(),
-          onChanged: (value) {
-            setState(() {
-              this.value = value;
-            });
-            PdfReaderTypeChooserDialog.setType(this.value!);
-          },
-        ),
+    return SingleChildScrollView(
+      child: DropdownButton<PdfReaderType>(
+        value: value,
+        items: list
+            .map(
+              (e) => DropdownMenuItem<PdfReaderType>(
+                value: e,
+                child: Text(e.name.toCaptalize),
+              ),
+            )
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            this.value = value;
+          });
+          PdfReaderTypeChooserDialog.setType(this.value!);
+        },
       ),
     );
   }

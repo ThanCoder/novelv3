@@ -14,7 +14,7 @@ dependencies:
   pdfrx: ^2.2.24
   pdfrx_engine: ^0.3.9
   than_pkg: ^5.0.0
-  t_widgets: ^2.2.2
+  t_widgets: ^2.3.3
   desktop_drop: ^0.7.1
   uuid: ^4.5.3
   provider: ^6.1.5

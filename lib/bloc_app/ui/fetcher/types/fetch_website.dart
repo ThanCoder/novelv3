@@ -1,4 +1,5 @@
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/types/chapter_list_page_query.dart';
 
 enum FetchType { request, webview }
 

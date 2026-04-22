@@ -231,6 +231,10 @@ class _PdfListPageState extends State<PdfListPage> {
   }
 
   void _shwoPdfReaderChooser() {
-    showTAlertDialog(context, content: PdfReaderTypeChooserDialog());
+    showTAlertDialog(
+      context,
+      title: Text('PDF Reader Types'),
+      content: PdfReaderTypeChooserDialog(),
+    );
   }
 }

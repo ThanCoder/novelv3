@@ -121,6 +121,8 @@ class _AddNovelFromOnlineScreenState extends State<AddNovelFromOnlineScreen> {
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       // onTap: () => print(item.coverUrl),
+      onSecondaryTap: () => showTMessageDialog(context, item.toString()),
+      onLongPress: () => showTMessageDialog(context, item.toString()),
       onTap: () => context.goRoute(
         builder: (context) => AddNovelDetailFromOnlineScreen(
           item: item,

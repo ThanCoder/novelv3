@@ -327,6 +327,7 @@
     },
     "chapterListPageQuery": {
       "querySelectorAll": ".chapter-list-item",
+      "autoAddUrlParam": "/chapters",
       "pageUrlQuery": {
         "index": 0,
         "attribue": "href",
@@ -337,6 +338,105 @@
         "index": 0,
         "attribue": "text",
         "selector": "a",
+        "type": "single"
+      },
+      "numberQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": "a",
+        "type": "single"
+      },
+      "nextUrlQuery": null
+    }
+  },
+  {
+    "url": "https://novelbin.com/sort/latest",
+    "hostUrl": "https://novelbin.com",
+    "title": "Novel Bin",
+    "type": "webview",
+    "novelListPageQuery": {
+      "querySelectorAll": ".list-novel .row",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": ".col-xs-7 .novel-title a",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".col-xs-7 .novel-title a",
+        "type": "single"
+      },
+      "coverUrlQuery": {
+        "index": 0,
+        "attribue": "src",
+        "selector": ".col-xs-3 .cover",
+        "type": "single"
+      },
+      "nextUrlQuery": null
+    },
+    "detailPageQuery": {
+      "otherTitles": null,
+      "translator": null,
+      "title": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".title",
+        "type": "single"
+      },
+      "author": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".info-meta a",
+        "type": "single"
+      },
+      "description": {
+        "index": 0,
+        "attribue": "html",
+        "selector": ".desc-text",
+        "type": "single"
+      },
+      "coverUrl": {
+        "index": 0,
+        "attribue": "src",
+        "selector": ".book img",
+        "type": "single"
+      },
+      "tags": {
+        "index": 1,
+        "attribue": "text",
+        "selector": ".info-meta li a",
+        "type": "list"
+      }
+    },
+    "chapterPageQuery": {
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": ".chr-text",
+        "type": "single"
+      },
+      "contentQuery": {
+        "index": 0,
+        "attribue": "html",
+        "selector": "#chr-content",
+        "type": "single"
+      }
+    },
+    "chapterListPageQuery": {
+      "querySelectorAll": ".list-chapter li",
+      "autoAddUrlParam": "#tab-chapters-title",
+      "pageUrlQuery": {
+        "index": 0,
+        "attribue": "href",
+        "selector": "a",
+        "type": "single"
+      },
+      "titleQuery": {
+        "index": 0,
+        "attribue": "text",
+        "selector": "a .chapter-title",
         "type": "single"
       },
       "numberQuery": {

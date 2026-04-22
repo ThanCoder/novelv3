@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
+import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_setting_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_single_reader_setting_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
 import 'package:pdfrx/pdfrx.dart';
+import 'package:t_widgets/dialogs/t_confirm_dialog.dart';
 import 'package:t_widgets/functions/dialog_func.dart';
 import 'package:t_widgets/functions/message_func.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -27,6 +30,7 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
   @override
   void initState() {
     pdfConfig = widget.pdfConfig;
+    isCanGoBack = !pdfConfig.isOnBackpressConfirm;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
@@ -52,19 +56,20 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
   int pageCount = 0;
   late PdfConfig pdfConfig;
   final keyboardFocus = FocusNode();
+  bool isCanGoBack = true;
 
   void init() async {
     try {
       // setconfig
-      _zoomRange = PdfSingleReaderSettingDialog.getPdfRange;
-      if (pdfConfig.isFullscreen) {
-        ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
-      }
+      _initConfig();
 
       setState(() {
         isLoading = true;
       });
-      _dom = await PdfDocument.openFile(widget.path);
+      _dom = await PdfDocument.openFile(
+        widget.path,
+        useProgressiveLoading: pdfConfig.useProgressiveLoading,
+      );
       if (_dom != null) {
         pageCount = _dom!.pages.length;
       }
@@ -88,15 +93,31 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
     }
   }
 
+  void _initConfig() {
+    _zoomRange = PdfSingleReaderSettingDialog.getPdfRange;
+    if (pdfConfig.isFullscreen) {
+      ThanPkg.platform.toggleFullScreen(isFullScreen: pdfConfig.isFullscreen);
+    }
+    isCanGoBack = !pdfConfig.isOnBackpressConfirm;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: pdfConfig.isDarkMode ? ThemeData.dark() : ThemeData.light(),
-      child: Scaffold(
-        appBar: pdfConfig.isFullscreen
-            ? null
-            : AppBar(title: Text('PDF Viewer')),
-        body: _views,
+      child: PopScope(
+        canPop: isCanGoBack,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          _onBackpress();
+        },
+        child: Scaffold(
+          appBar: pdfConfig.isFullscreen
+              ? null
+              : AppBar(title: Text('PDF Viewer')),
+          body: _views,
+        ),
       ),
     );
   }
@@ -344,13 +365,20 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
   }
 
   Widget _darkModePdfView({required Widget child}) {
-    if (pdfConfig.isDarkMode) {
-      return ColorFiltered(
-        colorFilter: ColorFilter.mode(Colors.white, BlendMode.difference),
-        child: child,
-      );
-    }
-    return child;
+    return ColorFiltered(
+      colorFilter: ColorFilter.mode(
+        pdfConfig.isDarkMode ? Colors.white : Colors.transparent,
+        pdfConfig.isDarkMode ? BlendMode.difference : BlendMode.dst,
+      ),
+      child: child,
+    );
+    // if (pdfConfig.isDarkMode) {
+    //   return ColorFiltered(
+    //     colorFilter: ColorFilter.mode(Colors.white, BlendMode.difference),
+    //     child: child,
+    //   );
+    // }
+    // return child;
   }
 
   void _goToPage(int page) async {
@@ -393,12 +421,59 @@ class _PdfSingleReaderScreenState extends State<PdfSingleReaderScreen> {
   }
 
   void _showSetting() {
+    showTMenuBottomSheet(
+      context,
+      children: [
+        ListTile(
+          leading: Icon(Icons.zoom_in_map),
+          title: Text('Reader Zoom Range'),
+          onTap: () {
+            context.closeNavigator();
+            showDialog(
+              context: context,
+              builder: (context) => PdfSingleReaderSettingDialog(
+                onClosed: (result) {
+                  _zoomRange = result.zoomRange;
+                  setState(() {});
+                },
+              ),
+            );
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Reader Config'),
+          onTap: () {
+            context.closeNavigator();
+            showDialog(
+              context: context,
+              builder: (context) => PdfReaderSettingDialog(
+                config: pdfConfig,
+                onApply: (config) {
+                  pdfConfig = config;
+                  _initConfig();
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  void _onBackpress() async {
+    if (!pdfConfig.isOnBackpressConfirm) return;
+
     showDialog(
       context: context,
-      builder: (context) => PdfSingleReaderSettingDialog(
-        onClosed: (result) {
-          _zoomRange = result.zoomRange;
+      builder: (dialogContext) => TConfirmDialog(
+        contentText: 'အပြင်ထွက်ချင်ပါသလား?',
+        submitText: 'ထွက်မယ်',
+        cancelText: 'မထွက်ဘူး',
+        onSubmit: () {
+          isCanGoBack = true;
           setState(() {});
+          context.closeNavigator();
         },
       ),
     );

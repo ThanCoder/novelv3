@@ -71,6 +71,7 @@ class _FetcherSupportedSiteDialogState
                 },
               ),
             ),
+      actions: [IconButton(onPressed: init, icon: Icon(Icons.refresh))],
     );
   }
 }

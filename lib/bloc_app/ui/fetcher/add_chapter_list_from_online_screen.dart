@@ -35,7 +35,7 @@ class _AddChapterListFromOnlineScreenState
     super.initState();
     setState(() {});
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _autoChooseWebsiteType();
+      init();
     });
   }
 
@@ -51,18 +51,19 @@ class _AddChapterListFromOnlineScreenState
   final urlController = TextEditingController();
 
   List<MultiChapterResult> resultList = [];
-  
+
   Future<void> init() async {
     try {
       setState(() {
         isLoading = true;
       });
-      list = await FetchServices.instance.getWebsiteList();
+      list = await FetchServices.instance.getWebsiteList(isLocal: true);
 
       if (!mounted) return;
       setState(() {
         isLoading = false;
       });
+      _autoChooseWebsiteType();
     } catch (e) {
       if (!mounted) return;
       showTMessageDialogError(context, e.toString());
@@ -110,7 +111,7 @@ class _AddChapterListFromOnlineScreenState
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(child: _supportedSite()),
+                    SliverToBoxAdapter(child: _supportedSite),
 
                     _list(),
                   ],
@@ -126,7 +127,7 @@ class _AddChapterListFromOnlineScreenState
     );
   }
 
-  Widget _supportedSite() {
+  Widget get _supportedSite {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -182,6 +183,8 @@ class _AddChapterListFromOnlineScreenState
     return InkWell(
       mouseCursor: SystemMouseCursors.click,
       onTap: () => _fetchChapterContent(ch),
+      onDoubleTap: () => showTMessageDialog(context, ch.toString()),
+      onSecondaryTap: () => showTMessageDialog(context, ch.toString()),
       child: Card(
         color: exists ? Colors.amber : null,
         child: Padding(
@@ -251,12 +254,13 @@ class _AddChapterListFromOnlineScreenState
     });
     if (index == -1) return;
     currentSite = list[index];
-    if (urlController.text.startsWith('https://lightnovelworld.org')) {
-      final newUrl = '${urlController.text.getCleanBackSlash}/chapters';
+    if (urlController.text.startsWith(currentSite!.hostUrl)) {
+      final newUrl =
+          '${urlController.text.getCleanBackSlash}${currentSite!.chapterListPageQuery!.autoAddUrlParam}';
       urlController.text = newUrl;
     }
     setState(() {});
-    _fetch();
+    // _fetch();
   }
 
   Future<void> _fetch() async {

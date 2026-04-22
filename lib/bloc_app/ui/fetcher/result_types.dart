@@ -51,6 +51,10 @@ class NovelItemResult {
     required this.pageUrl,
     required this.coverUrl,
   });
+  @override
+  String toString() {
+    return 'Title: $title\nUrl: $pageUrl\nCoverUrl: $coverUrl';
+  }
 }
 
 class NovelDetailResult {
@@ -110,5 +114,10 @@ class MultiChapterResult {
       title: title ?? this.title,
       url: url ?? this.url,
     );
+  }
+
+  @override
+  String toString() {
+    return 'CH: $chNumber\nTitle: $title\nUrl: $url';
   }
 }

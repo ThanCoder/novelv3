@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/types/chapter_list_page_query.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_screen.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
@@ -12,7 +13,7 @@ import 'package:novel_v3/core/utils.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_html_parser/core/q_result/attributes.dart';
 import 'package:t_html_parser/core/q_result/query_result.dart';
-import 'package:t_html_parser/core/t_html_extensions.dart';
+import 'package:t_html_parser/t_html_parser.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class FetchServices {
@@ -114,6 +115,7 @@ class FetchServices {
         selector: website.novelListPageQuery.coverUrlQuery.selector,
         attr: website.novelListPageQuery.coverUrlQuery.attribue,
       );
+      if (title.isEmpty) continue;
       list.add(
         NovelItemResult(
           title: title,
@@ -169,14 +171,36 @@ class FetchServices {
         attr: Attribute(website.chapterPageQuery!.titleQuery.attribue),
         selector: website.chapterPageQuery!.titleQuery.selector,
       ).getResult(html);
-      content = QueryResult(
-        index: website.chapterPageQuery!.contentQuery.index,
-        attr: Attribute(website.chapterPageQuery!.contentQuery.attribue),
-        selector: website.chapterPageQuery!.contentQuery.selector,
-        afterQuery: (attr, result) {
-          return result?.cleanHtmlTag();
-        },
-      ).getResult(html);
+
+      // content = QueryResult(
+      //   index: website.chapterPageQuery!.contentQuery.index,
+      //   attr: Attribute(website.chapterPageQuery!.contentQuery.attribue),
+      //   selector: website.chapterPageQuery!.contentQuery.selector,
+      //   afterQuery: (attr, result) {
+      //     return result?.cleanHtmlTag();
+      //   },
+      // ).getResult(html);
+      final dom = html.toHtmlDocument;
+      // ၁။ မလိုအပ်တဲ့ Tag တွေနဲ့ အထဲက Data တွေကို အကုန်အရင်ဖယ်ထုတ်မယ် (ဥပမာ script, style)
+      dom
+          .querySelectorAll('script, style, div[id^="pf-"]')
+          .forEach((el) => el.remove());
+
+      final ele = dom.querySelector(
+        website.chapterPageQuery!.contentQuery.selector,
+      );
+      if (ele != null) {
+        // ၂။ <br> tag တွေကို \n အဖြစ် ပြောင်းမယ်
+        ele.querySelectorAll('br').forEach((br) {
+          br.replaceWith(Text('\n'));
+        });
+
+        // ၃။ <p> ဒါမှမဟုတ် <div> တွေကိုလည်း line break အနေနဲ့ သတ်မှတ်ချင်ရင်
+        ele.querySelectorAll('p, div').forEach((el) {
+          el.append(Text('\n'));
+        });
+        content = ele.text.trim();
+      }
     }
     return ChapterContentResult(title: title ?? '', content: content ?? '');
   }
@@ -229,7 +253,7 @@ class FetchServices {
   static List<FetcherWebsite> _websiteListCache = [];
 
   Future<List<FetcherWebsite>> getWebsiteList({bool isLocal = false}) async {
-    if (_websiteListCache.isNotEmpty) {
+    if (_websiteListCache.isNotEmpty && !isLocal) {
       return _websiteListCache;
     }
     if (isLocal) {
@@ -346,6 +370,7 @@ class FetchServices {
           pageUrlQuery: FetcherQuery(attribue: 'href', selector: 'a'),
           titleQuery: FetcherQuery(attribue: 'text', selector: '.epl-title'),
           numberQuery: FetcherQuery(attribue: '', selector: ''),
+          autoAddUrlParam: '',
         ),
       ),
       FetcherWebsite(

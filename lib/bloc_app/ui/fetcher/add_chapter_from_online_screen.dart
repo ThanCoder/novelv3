@@ -44,8 +44,6 @@ class _AddChapterFromOnlineScreenState
 
     setState(() {});
     if (widget.website != null) {
-      currentSite = list.firstWhere((e) => e.title == widget.website!.title);
-      setState(() {});
       WidgetsBinding.instance.addPostFrameCallback((_) => init());
     }
   }
@@ -77,7 +75,7 @@ class _AddChapterFromOnlineScreenState
         isLoading = true;
       });
       list = await FetchServices.instance.getWebsiteList();
-
+      currentSite = list.firstWhere((e) => e.title == widget.website!.title);
       if (!mounted) return;
       setState(() {
         isLoading = false;
@@ -272,10 +270,7 @@ class _AddChapterFromOnlineScreenState
         website: currentSite!,
       );
       titleController.text = res.title;
-      contentController.text = res.content.replaceAll(
-        '(adsbygoogle = window.adsbygoogle || []).push({});',
-        '',
-      );
+      contentController.text = res.content;
 
       if (!mounted) return;
       setState(() {

@@ -4,44 +4,6 @@ import 'package:t_html_parser/core/q_result/query_result.dart';
 import 'package:t_html_parser/t_html_parser.dart';
 import 'package:than_pkg/than_pkg.dart';
 
-class ChapterListPageQuery {
-  final String querySelectorAll;
-  final FetcherQuery pageUrlQuery;
-  final FetcherQuery titleQuery;
-  final FetcherQuery numberQuery;
-  final NextUrlQuery? nextUrlQuery;
-
-  const ChapterListPageQuery({
-    required this.querySelectorAll,
-    required this.pageUrlQuery,
-    required this.titleQuery,
-    required this.numberQuery,
-    this.nextUrlQuery,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'querySelectorAll': querySelectorAll,
-      'pageUrlQuery': pageUrlQuery.toJson(),
-      'titleQuery': titleQuery.toJson(),
-      'numberQuery': numberQuery.toJson(),
-      'nextUrlQuery': nextUrlQuery?.toJson(),
-    };
-  }
-
-  factory ChapterListPageQuery.fromJson(Map<String, dynamic> json) {
-    return ChapterListPageQuery(
-      querySelectorAll: json['querySelectorAll'],
-      pageUrlQuery: FetcherQuery.fromJson(json['pageUrlQuery']),
-      titleQuery: FetcherQuery.fromJson(json['titleQuery']),
-      numberQuery: FetcherQuery.fromJson(json['numberQuery']),
-      nextUrlQuery: json['nextUrlQuery'] == null
-          ? null
-          : NextUrlQuery.fromJson(json['nextUrlQuery']),
-    );
-  }
-}
-
 class NovelListPageQuery {
   final String querySelectorAll;
   final FetcherQuery pageUrlQuery;
