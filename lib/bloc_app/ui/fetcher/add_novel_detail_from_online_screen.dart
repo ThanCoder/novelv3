@@ -150,6 +150,7 @@ class _AddNovelDetailFromOnlineScreenState
   }
 
   bool isExistsTitle() {
+    if (result == null) return false;
     final title = widget.item.title.isEmpty ? result!.title : widget.item.title;
     return widget.isExists?.call(title) ?? false;
   }

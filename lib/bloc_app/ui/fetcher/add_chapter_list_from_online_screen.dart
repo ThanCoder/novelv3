@@ -7,6 +7,7 @@ import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/website_services.dart';
 
 class AddChapterListFromOnlineScreen extends StatefulWidget {
   static bool startChapterNumberSmallToBig = true;
@@ -57,7 +58,7 @@ class _AddChapterListFromOnlineScreenState
       setState(() {
         isLoading = true;
       });
-      list = await FetchServices.instance.getWebsiteList();
+      list = await WebsiteServices.instance.getList();
 
       if (!mounted) return;
       setState(() {

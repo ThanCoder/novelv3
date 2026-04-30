@@ -1,6 +1,7 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
-import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
+import 'package:novel_v3/bloc_app/ui/fetcher/website_services.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -14,14 +15,12 @@ class FetchNovelFromUrlMenu extends StatefulWidget {
 
 class _FetchNovelFromUrlMenuState extends State<FetchNovelFromUrlMenu> {
   final urlController = TextEditingController();
-  bool isLoading = false;
-  List<FetcherWebsite> siteList = [];
-  FetcherWebsite? currentSite;
 
   @override
   void initState() {
     urlController.text = 'https://mmxianxia.com/novels/blind-sword-master/';
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   @override
@@ -30,12 +29,20 @@ class _FetchNovelFromUrlMenuState extends State<FetchNovelFromUrlMenu> {
     super.dispose();
   }
 
+  bool isLoading = false;
+  List<FetcherWebsite> list = [];
+  FetcherWebsite? currentSite;
+
   Future<void> init() async {
     try {
       setState(() {
         isLoading = true;
       });
-      siteList = await FetchServices.instance.getWebsiteList();
+
+      list = await WebsiteServices.instance.getList();
+
+      // await Future.delayed(Duration(seconds: 2));
+      _autoChooseWebsiteType();
 
       if (!mounted) return;
       setState(() {
@@ -61,47 +68,78 @@ class _FetchNovelFromUrlMenuState extends State<FetchNovelFromUrlMenu> {
             isSelectedAll: true,
             controller: urlController,
           ),
-          Text('Fetcher Website'),
-          DropdownButton<FetcherWebsite>(
-            borderRadius: BorderRadius.circular(4),
-            value: currentSite,
-            items: siteList
-                .map(
-                  (e) => DropdownMenuItem<FetcherWebsite>(
-                    value: e,
-                    child: Text(e.title),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                currentSite = value;
-              });
-            },
+          TextButton(
+            onPressed: _autoChooseWebsiteType,
+            child: Text('Auto Choose Type'),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    context.closeNavigator();
-                  },
-                  child: Text('Close'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.closeNavigator();
-                    widget.onApply(urlController.text, currentSite!);
-                  },
-                  child: Text('Apply'),
-                ),
-              ],
+          Text('Fetcher Website'),
+          _chooserWidget,
+          _actionsWidget,
+        ],
+      ),
+    );
+  }
+
+  Widget get _chooserWidget {
+    if (isLoading) {
+      return TLoader();
+    }
+    return DropdownButton<FetcherWebsite>(
+      borderRadius: BorderRadius.circular(4),
+      value: currentSite,
+      items: list
+          .map(
+            (e) => DropdownMenuItem<FetcherWebsite>(
+              value: e,
+              child: Text(e.title),
             ),
+          )
+          .toList(),
+      onChanged: (value) {
+        setState(() {
+          currentSite = value;
+        });
+      },
+    );
+  }
+
+  Widget get _actionsWidget {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () {
+              context.closeNavigator();
+            },
+            child: Text('Close'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.closeNavigator();
+              widget.onApply(urlController.text, currentSite!);
+            },
+            child: Text('Apply'),
           ),
         ],
       ),
     );
+  }
+
+  void _autoChooseWebsiteType() {
+    final index = list.indexWhere((e) {
+      final hostname = Uri.parse(e.url).host;
+      final currentHostname = Uri.parse(urlController.text).host;
+      return hostname == currentHostname;
+    });
+    if (index == -1) return;
+    currentSite = list[index];
+    if (urlController.text.startsWith(currentSite!.hostUrl)) {
+      final newUrl =
+          '${urlController.text.getCleanBackSlash}${currentSite!.chapterListPageQuery!.autoAddUrlParam}';
+      urlController.text = newUrl;
+    }
+    setState(() {});
   }
 }
