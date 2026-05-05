@@ -135,7 +135,8 @@ class _HomePageState extends State<HomePage> {
       currentId: context.read<NovelListCubit>().state.sortId,
       isAsc: context.read<NovelListCubit>().state.sortAsc,
       sortDialogCallback: (id, isAsc) {
-        context.read<NovelListCubit>().sort(id, isAsc);
+        context.read<NovelListCubit>().setSort(id, isAsc);
+        context.read<NovelListCubit>().sort();
       },
     );
   }

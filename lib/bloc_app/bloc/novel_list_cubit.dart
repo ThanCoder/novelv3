@@ -32,24 +32,9 @@ class NovelListCubit extends Cubit<NovelListState> {
       // await Future.delayed(Duration(seconds: 2));
       final list = await novelServices.getAll();
 
-      // sort
-      if (state.sortId == 1) {
-        state.list.sortTitle(aToZ: state.sortAsc);
-      }
-      if (state.sortId == 2) {
-        state.list.sortSize(isSmallest: state.sortAsc);
-      }
-      if (state.sortId == 3) {
-        list.sortDate(isNewest: state.sortAsc);
-      }
-      if (state.sortId == 4) {
-        list.sortAdult(isAdult: state.sortAsc);
-      }
-      if (state.sortId == 5) {
-        list.sortCompleted(isCompleted: state.sortAsc);
-      }
-
       emit(state.copyWith(list: list, isLoading: false, isInit: false));
+
+      sort();
     } catch (e) {
       emit(
         state.copyWith(
@@ -115,37 +100,35 @@ class NovelListCubit extends Cubit<NovelListState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  void sort(int sortId, bool sortAsc) async {
-    final list = state.list.toList();
-
-    if (sortId == 1) {
-      list.sortTitle(aToZ: sortAsc);
-    }
-    if (sortId == 2) {
-      emit(state.copyWith(isLoading: true));
-      await compute(_calcuteNovelSize, list);
-      list.sortSize(isSmallest: sortAsc);
-    }
-    if (sortId == 3) {
-      list.sortDate(isNewest: sortAsc);
-    }
-    if (sortId == 4) {
-      list.sortAdult(isAdult: sortAsc);
-    }
-    if (sortId == 5) {
-      list.sortCompleted(isCompleted: sortAsc);
-    }
-    emit(
-      state.copyWith(
-        list: list,
-        sortId: sortId,
-        sortAsc: sortAsc,
-        isLoading: false,
-      ),
-    );
+  void setSort(int sortId, bool sortAsc) {
+    emit(state.copyWith(sortId: sortId, sortAsc: sortAsc, isLoading: false));
     // set recent
     TRecentDB.getInstance.putInt('novel-list-sort-id', sortId);
     TRecentDB.getInstance.putBool('novel-list-sort-asc', sortAsc);
+  }
+
+  void sort() async {
+    List<Novel> list = state.list.toList();
+
+    if (state.sortId == 1) {
+      list.sortTitle(aToZ: state.sortAsc);
+    }
+    if (state.sortId == 2) {
+      emit(state.copyWith(isLoading: true));
+      list = await compute(_calcuteNovelSize, list);
+      list.sortSize(isSmallest: state.sortAsc);
+      emit(state.copyWith(isLoading: false, list: list));
+    }
+    if (state.sortId == 3) {
+      list.sortDate(isNewest: state.sortAsc);
+    }
+    if (state.sortId == 4) {
+      list.sortAdult(isAdult: state.sortAsc);
+    }
+    if (state.sortId == 5) {
+      list.sortCompleted(isCompleted: state.sortAsc);
+    }
+    emit(state.copyWith(list: list));
   }
 
   List<String> allTags() {
