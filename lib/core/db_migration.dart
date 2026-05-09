@@ -13,17 +13,18 @@ import 'package:t_db/t_db.dart';
 import 'package:t_widgets/progress_manager/progress_dialog.dart';
 import 'package:t_widgets/progress_manager/progress_manager_interface.dart';
 import 'package:t_widgets/progress_manager/progress_message.dart';
+import 'package:than_pkg/than_pkg.dart' hide pathJoin;
 
 class DbMigration {
   static bool isDBMigration(String novelId) {
     final newDB = File(
-      PathUtil.getSourcePath(
-        name: novelId,
+      StringPathExtensions(
+        PathUtil.getSourcePath(name: novelId),
       ).pathJoin(ChapterDBManager.newChapterDBName),
     );
     final oldDB = File(
-      PathUtil.getSourcePath(
-        name: novelId,
+      StringPathExtensions(
+        PathUtil.getSourcePath(name: novelId),
       ).pathJoin(ChapterDBManager.oldChapterDBName),
     );
     // new db မရှိဘူး old db ကို ပြန်စစ်တယ်
@@ -75,6 +76,9 @@ class MigrationManager extends ProgressManagerInterface {
   @override
   Future<void> start(StreamController<ProgressMessage> streamController) async {
     try {
+      if (Platform.isAndroid) {
+        ThanPkg.android.app.toggleKeepScreenOn(isKeep: true);
+      }
       final novelPath = PathUtil.getSourcePath(name: novelId);
 
       streamController.add(
@@ -82,7 +86,11 @@ class MigrationManager extends ProgressManagerInterface {
       );
 
       final cdb = ChaptersDB();
-      await cdb.open(novelPath.pathJoin(ChapterDBManager.newChapterDBName));
+      await cdb.open(
+        StringPathExtensions(
+          novelPath,
+        ).pathJoin(ChapterDBManager.newChapterDBName),
+      );
       final newBox = cdb.getDefaultBox();
 
       // old db
@@ -90,7 +98,11 @@ class MigrationManager extends ProgressManagerInterface {
       tdb.setAdapterNotExists<Chapter>(ChapterTDBAdapter());
       tdb.setAdapterNotExists<ChapterContent>(ChapterContentTDBAdapter());
 
-      await tdb.open(novelPath.pathJoin(ChapterDBManager.oldChapterDBName));
+      await tdb.open(
+        StringPathExtensions(
+          novelPath,
+        ).pathJoin(ChapterDBManager.oldChapterDBName),
+      );
       final chBox = tdb.getBox<Chapter>();
       final contentBox = tdb.getBox<ChapterContent>();
       final list = await chBox.getAll();
@@ -132,7 +144,9 @@ class MigrationManager extends ProgressManagerInterface {
 
       if (isCancel) {
         final newDbFile = File(
-          novelPath.pathJoin(ChapterDBManager.newChapterDBName),
+          StringPathExtensions(
+            novelPath,
+          ).pathJoin(ChapterDBManager.newChapterDBName),
         );
         if (newDbFile.existsSync()) {
           await newDbFile.delete();
@@ -144,6 +158,10 @@ class MigrationManager extends ProgressManagerInterface {
     } catch (e) {
       streamController.addError(e);
       completer.completeError(e);
+    } finally {
+      if (Platform.isAndroid) {
+        ThanPkg.android.app.toggleKeepScreenOn(isKeep: false);
+      }
     }
   }
 }
