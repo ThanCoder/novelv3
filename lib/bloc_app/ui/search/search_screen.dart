@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/core/extensions/novel_filters_extension.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/old_app/ui/components/wrap_more_less.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -144,7 +143,9 @@ class _SearchScreenState extends State<SearchScreen> {
     List<String> names, {
     void Function(String name)? onClicked,
   }) {
-    return WrapMoreLess(title: title, names: names, onClicked: onClicked);
+    // return WrapMoreLess(title: title, names: names, onClicked: onClicked);
+    // return Expan
+    return Text('Warp view');
   }
 
   void _onSearchChanged(String text) {

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/querys/chapter_query.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/selector_rules.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/soup_extractor.dart';
-import 'package:t_html_parser/core/t_html_extensions.dart';
+import 'package:t_html_parser/t_html_parser.dart' hide Text;
 import '../types/chapter_query_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 import '../fetcher.dart';

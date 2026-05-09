@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'n3_data_worker.dart';
 
 class N3DataExportDialog extends StatefulWidget {
@@ -37,12 +37,12 @@ class _N3DataExportDialogState extends State<N3DataExportDialog> {
       },
       onSuccess: () {
         if (!mounted) return;
-        closeContext(context);
+        context.closeNavigator();
         widget.onSuccess?.call();
       },
       onError: (message) {
         if (!mounted) return;
-        closeContext(context);
+        context.closeNavigator();
         debugPrint(message);
       },
     );

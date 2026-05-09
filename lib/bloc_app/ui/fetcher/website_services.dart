@@ -6,7 +6,7 @@ import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/types/chapter_list_page_query.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/types/fetch_website.dart';
 import 'package:t_client/t_client.dart';
-import 'package:t_html_parser/core/q_result/attributes.dart';
+import 'package:t_html_parser/core/types/attributes.dart';
 
 class WebsiteServices {
   static final WebsiteServices instance = WebsiteServices._();

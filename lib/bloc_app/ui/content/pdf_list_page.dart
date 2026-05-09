@@ -11,7 +11,6 @@ import 'package:novel_v3/bloc_app/ui/components/refresh_btn_component.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -194,8 +193,7 @@ class _PdfListPageState extends State<PdfListPage> {
   }
 
   void _addPdfFromScanner() {
-    goRoute(
-      context,
+    context.goRoute(
       builder: (scannerMainContext) => PdfScannerScreen(
         title: Text('Add Multiple Pdf'),
         isMultipleSelected: true,

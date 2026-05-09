@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/old_app/routes.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'n3_data.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -38,7 +38,7 @@ class _N3DataInstallDialogState extends State<N3DataInstallDialog> {
 
     // await Future.delayed(Duration(seconds: 2));
     if (!mounted) return;
-    closeContext(context);
+    context.closeNavigator();
     widget.onSuccess?.call();
   }
 

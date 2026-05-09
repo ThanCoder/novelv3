@@ -1,8 +1,9 @@
+import 'package:chapters_db/chapters_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_list_cubit.dart';
-import 'package:novel_v3/core/databases/chapter_db.dart';
+import 'package:novel_v3/core/databases/chapter_db_manager.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -37,6 +38,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
   final contentFocusNode = FocusNode();
   late ChapterListCubit _chapterListCubit;
   List<Chapter> allList = [];
+  late final ChBox<DefaultChapter> box;
 
   @override
   void initState() {
@@ -61,6 +63,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
       setState(() {
         isLoading = true;
       });
+      box = await ChapterDBManager.getBox(widget.novel.id);
 
       allList.addAll(_chapterListCubit.state.list);
       allList.sortChapterNumber();
@@ -319,14 +322,27 @@ class _AddChapterFormState extends State<AddChapterForm> {
   }
 
   Future<String> _getChapterFileContent() async {
+    // if (isLoading) return '';
     setState(() {
       isChapterContentLoading = true;
     });
-    final res = await _chapterListCubit.getChapterContent(chapterNumber);
+    final info = await box.getOne(
+      (value) => value.chapterNumber == chapterNumber,
+    );
+    // print(await box.getAll());
+
+    if (info == null) {
+      setState(() {
+        isChapterContentLoading = false;
+      });
+      return '';
+    }
+    final data = await info.getContent();
     setState(() {
       isChapterContentLoading = false;
     });
-    return res ?? '';
+
+    return data.body;
   }
 
   void _paste({_PasteType pasteType = _PasteType.add}) async {
@@ -420,20 +436,29 @@ class _AddChapterFormState extends State<AddChapterForm> {
 
   Future<void> setChapterContent() async {
     try {
-      final chapter = Chapter.create(
-        title: titleController.text,
-        number: chapterNumber,
-        novelId: widget.novel.id,
-        content: contentController.text,
+      final foundInfo = await box.getOne(
+        (value) => value.chapterNumber == chapterNumber,
       );
-      final (isAdded, _) = await _chapterListCubit.addOrUpdate(chapter);
-
-      if (isAdded) {
-        allList.add(chapter);
-        allList.sortChapterNumber();
-        setState(() {});
+      if (foundInfo != null) {
+        await box.updateById(
+          foundInfo.id,
+          DefaultChapter(
+            title: titleController.text,
+            chapterNumber: chapterNumber,
+            body: contentController.text,
+          ),
+        );
+      } else {
+        await box.add(
+          DefaultChapter(
+            title: titleController.text,
+            chapterNumber: chapterNumber,
+            body: contentController.text,
+          ),
+        );
       }
     } catch (e) {
+      if (!mounted) return;
       showTMessageDialogError(context, e.toString());
     }
   }
@@ -444,7 +469,6 @@ class _AddChapterFormState extends State<AddChapterForm> {
   }
 
   void _backpress() {
-    ChapterDB.clear(widget.novel.id);
     if (!isChanged) return;
     widget.onClosed?.call();
   }

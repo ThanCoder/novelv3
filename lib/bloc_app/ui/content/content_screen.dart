@@ -24,7 +24,7 @@ class _ContentScreenState extends State<ContentScreen> {
 
   void _init() async {
     try {
-      await context.read<ChapterListCubit>().fetchList();
+      await context.read<ChapterListCubit>().fetchList(context);
     } catch (e) {
       if (!mounted) return;
       showTMessageDialogError(context, e.toString());

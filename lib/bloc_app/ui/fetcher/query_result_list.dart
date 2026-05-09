@@ -1,5 +1,5 @@
-import 'package:t_html_parser/core/q_result/attributes.dart';
 import 'package:t_html_parser/core/q_result/web_utils.dart';
+import 'package:t_html_parser/core/types/attributes.dart';
 import 'package:t_html_parser/t_html_parser.dart';
 
 class QueryResultList {

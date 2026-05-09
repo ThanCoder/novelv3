@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data_scanner_screen.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_scanner_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:novel_v3/other_apps/share/share_home_screen.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
 class OtherAppListTile extends StatelessWidget {
@@ -25,7 +25,7 @@ class OtherAppListTile extends StatelessWidget {
               leading: Icon(Icons.file_present),
               title: Text('Novl Data Scanner'),
               onTap: () {
-                goRoute(context, builder: (context) => NovlDataScannerScreen());
+                context.goRoute(builder: (context) => NovlDataScannerScreen());
               },
             ),
             Divider(),
@@ -33,7 +33,7 @@ class OtherAppListTile extends StatelessWidget {
               leading: Icon(Icons.file_present),
               title: Text('N3 Data Scanner'),
               onTap: () {
-                goRoute(context, builder: (context) => N3DataScannerScreen());
+                context.goRoute(builder: (context) => N3DataScannerScreen());
               },
             ),
             Divider(),
@@ -41,15 +41,13 @@ class OtherAppListTile extends StatelessWidget {
               leading: Icon(Icons.picture_as_pdf_rounded),
               title: Text('PDF Scanner'),
               onTap: () {
-                goRoute(
-                  context,
+                context.goRoute(
                   builder: (context) => PdfScannerScreen(
                     onClicked: (context, pdf) {
                       final cacheConfig = PathUtil.getCachePath(
                         name: '${pdf.title}.config.json',
                       );
-                      goRoute(
-                        context,
+                      context.goRoute(
                         builder: (context) => PdfrxReaderScreen(
                           title: pdf.title,
                           sourcePath: pdf.path,
@@ -68,7 +66,7 @@ class OtherAppListTile extends StatelessWidget {
               leading: Icon(Icons.share),
               title: Text('Novel Share'),
               onTap: () {
-                goRoute(context, builder: (context) => ShareHomeScreen());
+                context.goRoute(builder: (context) => ShareHomeScreen());
               },
             ),
           ],

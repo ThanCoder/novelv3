@@ -73,6 +73,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  chapters_db:
+    dependency: "direct main"
+    description:
+      path: "/home/thancoder/projects/plugins/chapters_db"
+      relative: false
+    source: path
+    version: "0.1.0"
   characters:
     dependency: transitive
     description:
@@ -105,6 +112,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  code_assets:
+    dependency: transitive
+    description:
+      name: code_assets
+      sha256: "83ccdaa064c980b5596c35dd64a8d3ecc68620174ab9b90b6343b753aa721687"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   collection:
     dependency: transitive
     description:
@@ -360,6 +375,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  hooks:
+    dependency: transitive
+    description:
+      name: hooks
+      sha256: "025f060e86d2d4c3c47b56e33caf7f93bf9283340f26d23424ebcfccf34f621e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   html:
     dependency: transitive
     description:
@@ -440,6 +463,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.0"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      sha256: c8245ada5f1717ed44271ed1c26b8ce85ca3228fd2ffdb75468ab01979309d61
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0"
   markdown:
     dependency: transitive
     description:
@@ -572,34 +603,34 @@ packages:
     dependency: transitive
     description:
       name: pdfium_dart
-      sha256: f1683b9070ddc5c9189c6ee008c285791da66328ce1b882c7162d3393f3a4a74
+      sha256: "58ad7325da54fd6b36860b0dcda8193b26214a3e8494036404bb3954c7795b07"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.3"
+    version: "0.2.0"
   pdfium_flutter:
     dependency: transitive
     description:
       name: pdfium_flutter
-      sha256: "0c8b7d5d11d20a1486eade599648e907067568955bd14a1b06de076a968b60a1"
+      sha256: "05b15269ddeb81f0c1e4748c9f9fd61bc2109ae5e193962456ec15d885332af3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.9"
+    version: "0.2.0"
   pdfrx:
     dependency: "direct main"
     description:
       name: pdfrx
-      sha256: e32e0c786528eec2b3c56b43f59ef1debce3a27c7accd862b95413f949afcfa9
+      sha256: ba1003bc45454de82ba4911791561533108cfb5ebecb54d8d06489ff6b7f8ebc
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.24"
+    version: "2.3.2"
   pdfrx_engine:
     dependency: "direct main"
     description:
       name: pdfrx_engine
-      sha256: a8914433d1f6188b903c53d36b9d7dc908bfa89131591a9db22f1a22470d3a48
+      sha256: bbb71414a7828128e87a017c97f3c392e379b9e171beaaa37aa225c597ca4f6e
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.9"
+    version: "0.4.1"
   petitparser:
     dependency: transitive
     description:
@@ -640,6 +671,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5+1"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      sha256: "5bfcf68ca79ef689f8990d1160781b4bad40a3bd5e5218ad4076ddb7f4081585"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
+  record_use:
+    dependency: transitive
+    description:
+      name: record_use
+      sha256: "2551bd8eecfe95d14ae75f6021ad0248be5c27f138c2ec12fcb52b500b3ba1ed"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   rxdart:
     dependency: transitive
     description:
@@ -777,26 +824,26 @@ packages:
     dependency: "direct main"
     description:
       name: t_client
-      sha256: baeccaf8eed075b051f95bf24d87553d9d68db10226bfd821bd53e8edf617075
+      sha256: "770fee2a804ab355109c9f978e658e4199240ae6ac5e06a032b071918a8f4d93"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.3.0"
   t_db:
     dependency: "direct main"
     description:
       name: t_db
-      sha256: "2b8acce2af0feddf08a9ad34c659b765c7d3f0ac72fe5d0c32d9a33d7bc0d486"
+      sha256: "66290334346332a2d87fef88d2303c02c45203ad7647b2d91e4927f4ccd94bfe"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "2.1.0"
   t_html_parser:
     dependency: "direct main"
     description:
       name: t_html_parser
-      sha256: "3de24b47159e436e40c64e88c8497283f927616c650c3b92448248de7f8f1080"
+      sha256: aa9141e550be81645b01bd832405a14a168dc736cec9276f27005aee7eb99af1
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.5.0"
   t_server:
     dependency: "direct main"
     description:
@@ -809,10 +856,10 @@ packages:
     dependency: "direct main"
     description:
       name: t_widgets
-      sha256: "4e142cf2faa69b4d95faa3a3c46a6adc71df86fb179944bdff7864c1ddfeb454"
+      sha256: "095fa37f68183b9f1fd13f5f1e37f6f79b68d6dd7e283a0ebf362588341459b7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "2.5.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1054,5 +1101,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.10.1 <4.0.0"
-  flutter: ">=3.35.1"
+  dart: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/share/libs/share_receive_url_form_dialog.dart';
 import 'package:novel_v3/other_apps/share/receive/novel_receive_home_screen.dart';
 import 'package:novel_v3/other_apps/share/send/novel_share_screen.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/t_database/index.dart';
 
@@ -46,7 +46,7 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
           children: [
             ElevatedButton(
               onPressed: () {
-                goRoute(context, builder: (context) => NovelShareScreen());
+                context.goRoute(builder: (context) => NovelShareScreen());
               },
               child: Column(
                 children: [Icon(Icons.share, size: 70), Text('မျှဝေမယ်')],
@@ -82,8 +82,7 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
           TRecentDB.getInstance.putString(key, connectedUrl);
         },
         onSuccess: (url) {
-          goRoute(
-            context,
+          context.goRoute(
             builder: (context) => NovelReceiveHomeScreen(hostUrl: url),
           );
         },

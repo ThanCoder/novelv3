@@ -1,13 +1,11 @@
-import 'package:chapters_db/chapters_db.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 
 class Chapter {
   final int autoId;
   final int number;
   final String title;
   final DateTime date;
-  final ChapterInfo<DefaultChapter>? info;
-  final String novelId;
+  String novelId;
   String? content;
 
   Chapter({
@@ -17,7 +15,6 @@ class Chapter {
     required this.date,
     required this.novelId,
     this.content,
-    this.info,
   });
   factory Chapter.create({
     required int number,
@@ -31,19 +28,6 @@ class Chapter {
       date: DateTime.now(),
       content: content,
       novelId: novelId,
-    );
-  }
-  factory Chapter.fromInfo(
-    ChapterInfo<DefaultChapter> info, {
-    required String novelId,
-  }) {
-    return Chapter(
-      autoId: info.id,
-      number: info.chapterNumber,
-      title: info.title,
-      date: DateTime.now(),
-      novelId: novelId,
-      info: info,
     );
   }
 

@@ -10,8 +10,7 @@ import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_screen.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/utils.dart';
 import 'package:t_client/t_client.dart';
-import 'package:t_html_parser/core/q_result/attributes.dart';
-import 'package:t_html_parser/core/q_result/query_result.dart';
+import 'package:t_html_parser/core/types/attributes.dart';
 import 'package:t_html_parser/t_html_parser.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -55,8 +54,7 @@ class FetchServices {
             website.detailPageQuery!.translator?.getResult(html).join('') ?? '',
         description: website.detailPageQuery!.description
             .getResult(html)
-            .join('')
-            .cleanHtmlTag(),
+            .join(''),
         tags: website.detailPageQuery!.tags.getResult(html),
       );
     }
@@ -155,11 +153,11 @@ class FetchServices {
       );
       final pageUrl = ele.getQuerySelectorAttr(
         selector: website.novelListPageQuery.pageUrlQuery.selector,
-        attr: website.novelListPageQuery.pageUrlQuery.attribue,
+        attr: Attribute(website.novelListPageQuery.pageUrlQuery.attribue),
       );
       final coverUrl = ele.getQuerySelectorAttr(
         selector: website.novelListPageQuery.coverUrlQuery.selector,
-        attr: website.novelListPageQuery.coverUrlQuery.attribue,
+        attr: Attribute(website.novelListPageQuery.coverUrlQuery.attribue),
       );
       if (title.isEmpty) continue;
       list.add(
@@ -213,7 +211,7 @@ class FetchServices {
 
     if (website.chapterPageQuery != null) {
       title = QueryResult(
-        index: website.chapterPageQuery!.titleQuery.index,
+        // index: website.chapterPageQuery!.titleQuery.index,
         attr: Attribute(website.chapterPageQuery!.titleQuery.attribue),
         selector: website.chapterPageQuery!.titleQuery.selector,
       ).getResult(html);

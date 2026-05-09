@@ -1,6 +1,9 @@
+import 'package:chapters_db/chapters_db.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/novel_detail_cubit.dart';
-import 'package:novel_v3/core/databases/chapter_db.dart';
+import 'package:novel_v3/core/databases/chapter_db_manager.dart';
+import 'package:novel_v3/core/db_migration.dart';
 import 'package:novel_v3/core/extensions/chapter_extension.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 
@@ -9,12 +12,9 @@ class ChapterListCubit extends Cubit<ChapterListState> {
   ChapterListCubit({required this.novelDetailCubit})
     : super(ChapterListState.createState());
 
-  Future<void> fetchList({bool isCached = true}) async {
+  Future<void> fetchList(BuildContext context, {bool isCached = true}) async {
     try {
       if (state.isLoading) return;
-
-      //delay
-      // await Future.delayed(Duration(seconds: 3));
 
       final novel = novelDetailCubit.state.currentNovel;
       if (novel == null) return;
@@ -29,9 +29,16 @@ class ChapterListCubit extends Cubit<ChapterListState> {
         ChapterListState.createState(isLoading: true, sortAsc: state.sortAsc),
       );
       //cache clean up
-      await ChapterDB.clearAll();
-      final list = await ChapterDB.getAll(novel.id);
-
+      if (DbMigration.isDBMigration(novel.id)) {
+        ChapterDBManager.removeDB(novel.id);
+        await DbMigration.migrate(context, novel.id);
+      }
+      final box = await ChapterDBManager.getBox(novel.id);
+      final list = <Chapter>[];
+      await for (var info in box.getAllStream()) {
+        list.add(Chapter.fromInfo(info, novelId: novel.id));
+      }
+      // print(list);
       // sort
       list.sortChapterNumber(isSort: state.sortAsc);
 
@@ -50,36 +57,63 @@ class ChapterListCubit extends Cubit<ChapterListState> {
   }
 
   Future<String?> getChapterContent(int number) async {
-    final content = await ChapterDB.getContent(
-      number,
-      novelDetailCubit.state.currentNovel!.id,
-    );
-    return content?.content;
+    try {
+      final index = state.list.indexWhere((e) => e.number == number);
+      if (index != -1) {
+        final ch = state.list[index];
+        if (ch.info == null) {
+          return ch.content;
+        }
+        final data = await ch.info!.getContent();
+        return data.body;
+      }
+    } catch (e) {
+      debugPrint('[ChapterListCubit:getChapterContent]: $e');
+    }
+    return null;
   }
 
-  Future<int> add(Chapter chapter) async {
-    return await ChapterDB.add(
-      chapter,
-      novelId: novelDetailCubit.state.currentNovel!.id,
-    );
+  Future<void> add(Chapter chapter) async {
+    try {
+      final box = await ChapterDBManager.getBox(state.currentNovelId);
+      box.add(
+        DefaultChapter(
+          title: chapter.title,
+          chapterNumber: chapter.number,
+          body: chapter.content!,
+        ),
+      );
+      final list = state.list;
+      list.add(chapter);
+      emit(state.copyWith(list: list));
+    } catch (e) {
+      debugPrint('[ChapterListCubit:add]: $e');
+    }
   }
 
-  Future<void> update(Chapter chapter) async {
-    await ChapterDB.update(
-      chapter,
-      novelId: novelDetailCubit.state.currentNovel!.id,
+  Future<void> update(int id, Chapter chapter) async {
+    final box = await ChapterDBManager.getBox(state.currentNovelId);
+    box.updateById(
+      id,
+      DefaultChapter(
+        id: id,
+        title: chapter.title,
+        chapterNumber: chapter.number,
+        body: chapter.content!,
+      ),
     );
   }
 
   Future<void> delete(Chapter chapter) async {
-    await ChapterDB.delete(
-      chapter,
-      novelId: novelDetailCubit.state.currentNovel!.id,
-    );
-    final index = state.list.indexWhere((e) => e.number == chapter.number);
-    final list = state.list;
-    list.removeAt(index);
-    emit(state.copyWith(list: list));
+    final box = await ChapterDBManager.getBox(state.currentNovelId);
+
+    final isDeleted = await box.deleteById(chapter.autoId);
+    if (isDeleted) {
+      final index = state.list.indexWhere((e) => e.number == chapter.number);
+      final list = state.list;
+      list.removeAt(index);
+      emit(state.copyWith(list: list));
+    }
   }
 
   bool existsChapterNumber(int number) {
@@ -99,17 +133,11 @@ class ChapterListCubit extends Cubit<ChapterListState> {
     if (index == -1) {
       //new
       await add(chapter);
-      list.add(chapter);
       isAdded = true;
     } else {
       //update
-      final updatedChapter = list[index].copyWith(
-        title: chapter.title,
-        number: chapter.number,
-        content: chapter.content,
-      );
-      await update(updatedChapter);
-      list[index] = updatedChapter;
+      list[index] = chapter;
+      await update(chapter.autoId, chapter);
       isUpdated = true;
     }
     list.sortChapterNumber(isSort: state.sortAsc);

@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_extension.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_list_item.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -235,7 +235,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
           leading: Icon(Icons.info),
           title: Text('Infomation'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _showInfo(pdf);
           },
         ),
@@ -243,7 +243,8 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
           leading: Icon(Icons.edit_document),
           title: Text('Rename'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
+
             _rename(pdf);
           },
         ),
@@ -252,7 +253,8 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
           leading: Icon(Icons.delete_forever_rounded),
           title: Text('Delete'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
+
             _deleteConfirm(pdf);
           },
         ),

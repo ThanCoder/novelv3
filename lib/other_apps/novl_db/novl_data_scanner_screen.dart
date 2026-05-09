@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_extension.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_install_screen.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_services.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_list_item.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -149,7 +149,7 @@ class _N3DataScannerState extends State<NovlDataScannerScreen> {
           leading: Icon(Icons.info_outline_rounded),
           title: Text('Info'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _showInfo(data);
           },
         ),
@@ -157,7 +157,7 @@ class _N3DataScannerState extends State<NovlDataScannerScreen> {
           leading: Icon(Icons.install_desktop),
           title: Text('ထည့်သွင်းမယ်'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _installData(data);
           },
         ),
@@ -165,7 +165,7 @@ class _N3DataScannerState extends State<NovlDataScannerScreen> {
           leading: Icon(Icons.delete_forever, color: Colors.red),
           title: Text('ဖျက်မယ်'),
           onTap: () {
-            closeContext(context);
+            context.closeNavigator();
             _deleteConfirm(data);
           },
         ),
@@ -232,7 +232,7 @@ class _N3DataScannerState extends State<NovlDataScannerScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              closeContext(context);
+              context.closeNavigator();
             },
             child: Text('Close'),
           ),
@@ -247,7 +247,7 @@ class _N3DataScannerState extends State<NovlDataScannerScreen> {
       MaterialPageRoute(
         builder: (context) => NovlDataInstallScreen(
           data: data,
-          onClosed: () => closeContext(context),
+          onClosed: () => context.closeNavigator(),
         ),
       ),
     );

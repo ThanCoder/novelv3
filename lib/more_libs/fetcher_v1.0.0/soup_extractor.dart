@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/fetcher.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/selector_rules.dart';
+import 'package:t_html_parser/core/types/attributes.dart';
 import 'package:t_html_parser/t_html_parser.dart';
 
 class SoupExtractor {
@@ -32,7 +33,7 @@ class SoupExtractor {
         // is attr
         final res = ele.getQuerySelectorAttr(
           selector: val.selector,
-          attr: val.attribute!,
+          attr: Attribute(val.attribute!),
         );
         result[key] = res;
       }

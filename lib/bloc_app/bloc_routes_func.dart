@@ -13,13 +13,11 @@ import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_supported_site_dialog.dart'
 import 'package:novel_v3/bloc_app/ui/forms/novel_edit_form_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_result_screen.dart';
 import 'package:novel_v3/bloc_app/ui/search/search_screen.dart';
-import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_dialog.dart';
@@ -46,8 +44,7 @@ Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
     context: context,
     builder: (context) => FetcherSupportedSiteDialog(
       onChoosed: (site) {
-        goRoute(
-          context,
+        context.goRoute(
           builder: (context) => AddNovelFromOnlineScreen(
             site: site,
             isExists: (title) => context.read<NovelListCubit>().isExists(title),
@@ -63,8 +60,7 @@ Future<void> goAddNovelFromInternetScreen(BuildContext context) async {
 }
 
 Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
-  goRoute(
-    mainContext,
+  mainContext.goRoute(
     builder: (pdfScannerContext) => PdfScannerScreen(
       title: Text('New Novel From PDF'),
       onClicked: (pdfContext, pdf) async {
@@ -98,8 +94,7 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
                 }
 
                 if (!mainContext.mounted) return;
-                goRoute(
-                  mainContext,
+                mainContext.goRoute(
                   builder: (context) => NovelEditFormScreen(
                     novel: novel,
                     onUpdated: (updatedNovel) async {
@@ -134,8 +129,7 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
 
                     // showTMessageDialog(pdfScannerContext, 'Novel ကိုဖန်တီးပြီးပါပြီ');
                     if (!mainContext.mounted) return;
-                    goRoute(
-                      mainContext,
+                    mainContext.goRoute(
                       builder: (context) => NovelEditFormScreen(
                         novel: novel,
                         onUpdated: (updatedNovel) async {
@@ -160,8 +154,7 @@ Future<void> goNovelEditScreen(
   BuildContext context, {
   required Novel novel,
 }) async {
-  goRoute(
-    context,
+  context.goRoute(
     builder: (context) => NovelEditFormScreen(
       novel: novel,
       onUpdated: (updatedNovel) async {
@@ -177,7 +170,7 @@ Future<void> goNovelContentScreen(
 }) async {
   await context.read<NovelDetailCubit>().setCurrentNovel(novel);
   if (!context.mounted) return;
-  goRoute(context, builder: (context) => ContentScreen(novel: novel));
+  context.goRoute(builder: (context) => ContentScreen(novel: novel));
 }
 
 // go pdf reader
@@ -279,8 +272,10 @@ Future<void> goBlocChapterReader(
       chapter: chapter,
       config: ChapterReaderConfig.fromPath(configPath),
       getChapterContent: (context, chapterNumber) async {
-        final res = await ChapterDB.getContent(chapterNumber, novel.id);
-        return res?.content;
+        final res = await context.read<ChapterListCubit>().getChapterContent(
+          chapterNumber,
+        );
+        return res;
       },
       onUpdateConfig: (updatedConfig) {
         updatedConfig.savePath(configPath);

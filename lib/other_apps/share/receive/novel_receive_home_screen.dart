@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/share/libs/share_grid_item.dart';
 import 'package:novel_v3/other_apps/share/receive/novel_content_screen.dart';
 import 'package:novel_v3/other_apps/share/receive/novel_search_screen.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -222,8 +222,7 @@ class _NovelReceiveHomeScreenState extends State<NovelReceiveHomeScreen> {
   }
 
   void _onSearch() {
-    goRoute(
-      context,
+    context.goRoute(
       builder: (context) => NovelSearchScreen(
         hostUrl: widget.hostUrl,
         list: list,
@@ -233,8 +232,7 @@ class _NovelReceiveHomeScreenState extends State<NovelReceiveHomeScreen> {
   }
 
   void _goContentPage(Novel novel) {
-    goRoute(
-      context,
+    context.goRoute(
       builder: (context) =>
           NovelContentScreen(hostUrl: widget.hostUrl, novel: novel),
     );

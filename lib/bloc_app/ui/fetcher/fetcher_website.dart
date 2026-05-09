@@ -1,6 +1,5 @@
 import 'package:novel_v3/bloc_app/ui/fetcher/query_result_list.dart';
-import 'package:t_html_parser/core/q_result/attributes.dart';
-import 'package:t_html_parser/core/q_result/query_result.dart';
+import 'package:t_html_parser/core/types/attributes.dart';
 import 'package:t_html_parser/t_html_parser.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -197,25 +196,25 @@ class FetcherQuery {
     }
     if (attribue == 'html') {
       if (selector.isEmpty) {
-        return ele.innerHtml.cleanHtmlTag();
+        return ele.innerHtml;
       }
-      return ele.getQuerySelectorHtml(selector: selector).cleanHtmlTag();
+      return ele.getQuerySelectorHtml(selector: selector);
     }
     if (selector.isEmpty) {
       return (ele.attributes[attribue] ?? '').trim();
     }
-    return ele.getQuerySelectorAttr(selector: selector, attr: attribue).trim();
+    return ele.getQuerySelectorAttr(selector: selector, attr: Attribute(attribue)).trim();
   }
 
   List<String> getResult(String html) {
     List<String> results = [];
     if (type == FetcherQueryType.single) {
       final res = QueryResult(
-        index: index,
+        // index: index,
         attr: Attribute(attribue),
         selector: selector,
       ).getResult(html);
-      if (res != null && res.isNotEmpty) {
+      if (res.isNotEmpty) {
         results.add(res);
       }
     }

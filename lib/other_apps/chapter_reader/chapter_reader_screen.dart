@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/core/databases/chapter_db.dart';
 import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -320,7 +319,6 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
                   text: Text('Clear DB Cache'),
                   icon: Icon(Icons.cleaning_services),
                   onClicked: () {
-                    ChapterDB.clear(widget.novel.path);
                     // ChapterDB.clearAll();
                     setState(() {});
                   },

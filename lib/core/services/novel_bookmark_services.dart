@@ -3,13 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/other_apps/bookmark/novel_bookmark.dart';
+import 'package:novel_v3/core/models/novel_bookmark.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 
 class NovelBookmarkServices {
   NovelBookmarkServices._();
   static final instance = NovelBookmarkServices._();
   factory NovelBookmarkServices() => instance;
+
+  static final dbName = 'novel_bookmark.db.json';
 
   Future<void> setList(List<NovelBookmark> list) async {
     final file = getDBFile;
@@ -53,6 +55,5 @@ class NovelBookmarkServices {
     return list;
   }
 
-  static File get getDBFile =>
-      File(PathUtil.getLibaryPath(name: NovelBookmark.getDBName));
+  static File get getDBFile => File(PathUtil.getLibaryPath(name: dbName));
 }

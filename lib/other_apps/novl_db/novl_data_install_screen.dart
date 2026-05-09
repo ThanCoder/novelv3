@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hb_db/hb_db.dart';
-import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_db.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_install_progress_manager.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:provider/provider.dart';
 import 'package:t_widgets/progress_manager/progress_dialog.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/utils/f_path.dart';
@@ -200,7 +198,7 @@ class _NovlDataInstallScreenState extends State<NovlDataInstallScreen> {
           onDone: () {
             if (!mounted) return;
             _checkExistsAndAutoRemove();
-            context.read<NovelProvider>().init(isUsedCache: false);
+            // context.read<NovelProvider>().init(isUsedCache: false);
           },
         ),
       ),

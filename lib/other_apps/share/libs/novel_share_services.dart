@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:novel_v3/core/databases/chapter_db.dart';
+import 'package:novel_v3/core/databases/chapter_db_manager.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/share/html_pages/html_content_page.dart';
 import 'package:novel_v3/other_apps/share/html_pages/html_home_page.dart';
@@ -19,12 +19,12 @@ class NovelShareServices {
     List<NovelChapter> chapters = [];
     final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
     if (dir.existsSync()) {
-      for (var chapter in await ChapterDB.getAll(novel.id)) {
+      for (var info in await ChapterDBManager.getAll(novel.id)) {
         chapters.add(
           NovelChapter(
-            id: chapter.autoId,
+            id: info.id,
             novelId: novel.id,
-            chapter: chapter.number,
+            chapter: info.chapterNumber,
           ),
         );
       }
@@ -43,11 +43,11 @@ class NovelShareServices {
     int chapterNumber,
   ) async {
     String? content;
-    final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
-    if (dir.existsSync()) {
-      final res = await ChapterDB.getContent(chapterNumber, dir.path);
-      content = res?.content;
-    }
+    // final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
+    // if (dir.existsSync()) {
+    //   final res = await ChapterDB.getContent(chapterNumber, dir.path);
+    //   content = res?.content;
+    // }
     return jsonEncode({'chapter_content': content ?? ''});
   }
 

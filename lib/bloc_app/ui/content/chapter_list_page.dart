@@ -28,7 +28,10 @@ class _ChapterListPageState extends State<ChapterListPage> {
   }
 
   Future<void> init({bool isCached = true}) async {
-    await context.read<ChapterListCubit>().fetchList(isCached: isCached);
+    await context.read<ChapterListCubit>().fetchList(
+      context,
+      isCached: isCached,
+    );
   }
 
   @override

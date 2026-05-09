@@ -151,7 +151,7 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
         //   leading: Icon(Icons.info_outline_rounded),
         //   title: Text('Info'),
         //   onTap: () {
-        //     closeContext(context);
+        //    context.closeNavigator();;
         //     _showInfo(n3data);
         //   },
         // ),

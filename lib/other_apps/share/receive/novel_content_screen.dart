@@ -4,13 +4,11 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
-import 'package:novel_v3/old_app/providers/novel_provider.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/other_apps/share/libs/novel_file.dart';
 import 'package:novel_v3/other_apps/share/receive/client_download_manager.dart';
 import 'package:novel_v3/other_apps/share/receive/content_list.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
-import 'package:provider/provider.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -357,7 +355,7 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
             .toList(),
         onSuccess: () {
           if (!mounted) return;
-          context.read<NovelProvider>().init(isUsedCache: false);
+          // context.read<NovelProvider>().init(isUsedCache: false);
           setState(() {});
         },
       ),

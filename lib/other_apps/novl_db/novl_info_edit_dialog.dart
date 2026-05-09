@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_info.dart';
-import 'package:novel_v3/old_app/routes.dart';
 import 'package:t_widgets/widgets/index.dart';
 
 class NovlInfoEditDialog extends StatefulWidget {
@@ -64,13 +64,15 @@ class _NovlInfoEditDialogState extends State<NovlInfoEditDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            closeContext(context);
+            context.closeNavigator();
+            
           },
           child: Text('close'),
         ),
         TextButton(
           onPressed: () {
-            closeContext(context);
+            context.closeNavigator();
+            
             widget.onSubmit(NovlInfo(desc: controller.text));
           },
           child: Text('Export'),
