@@ -145,7 +145,11 @@ class _SearchScreenState extends State<SearchScreen> {
   }) {
     // return WrapMoreLess(title: title, names: names, onClicked: onClicked);
     // return Expan
-    return Text('Warp view');
+    return WrapMoreLess(
+      title: Text(title),
+      values: names,
+      onClicked: onClicked,
+    );
   }
 
   void _onSearchChanged(String text) {
@@ -211,4 +215,103 @@ class _SearchScreenState extends State<SearchScreen> {
   void _goSearchResultPage(String title, List<Novel> list) {
     widget.onSearchResultPage?.call(title, list);
   }
+}
+
+class WrapMoreLess extends StatefulWidget {
+  final Widget title;
+  final List<String> values;
+  final void Function(String value)? onClicked;
+  final int showCount;
+  const WrapMoreLess({
+    super.key,
+    required this.title,
+    required this.values,
+    this.onClicked,
+    this.showCount = 10,
+  });
+
+  @override
+  State<WrapMoreLess> createState() => _WrapMoreLessState();
+}
+
+class _WrapMoreLessState extends State<WrapMoreLess> {
+  bool isExpanded = false;
+
+  List<String> get _showList => isExpanded
+      ? widget.values
+      : widget.values.take(widget.showCount).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          widget.title,
+          SizedBox(height: 8),
+          Wrap(
+            spacing: 5,
+            runSpacing: 5,
+            children: [
+              ..._results,
+              if (isExpanded)
+                _lessText
+              else if (widget.values.length > _showList.length)
+                _moreText,
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get _moreText => TextButton(
+    onPressed: () {
+      setState(() {
+        isExpanded = true;
+      });
+    },
+    child: Text(
+      'More',
+      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+    ),
+  );
+  Widget get _lessText => TextButton(
+    onPressed: () => setState(() {
+      isExpanded = false;
+    }),
+    child: Text(
+      'Less',
+      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+    ),
+  );
+
+  Widget _resultItem(String value, {void Function(String value)? onClicked}) =>
+      InkWell(
+        mouseCursor: SystemMouseCursors.click,
+        onTap: () => onClicked?.call(value),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              value,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  List<Widget> get _results => _showList
+      .map((e) => _resultItem(e, onClicked: widget.onClicked))
+      .toList();
 }

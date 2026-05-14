@@ -24,6 +24,7 @@ class AddChapterForm extends StatefulWidget {
   });
 
   static bool initiallyExpanded = false;
+  static int readTitleLine = 0;
 
   @override
   State<AddChapterForm> createState() => _AddChapterFormState();
@@ -43,6 +44,8 @@ class _AddChapterFormState extends State<AddChapterForm> {
   @override
   void initState() {
     _chapterListCubit = context.read<ChapterListCubit>();
+    readTitleLine = AddChapterForm.readTitleLine;
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
@@ -96,7 +99,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
   bool isChanged = false;
   bool isAutoIncrement = true;
   int chapterNumber = 1;
-  int readTitleLine = -1;
+  int readTitleLine = 0;
   @override
   Widget build(BuildContext context) {
     return PopScope(

@@ -105,29 +105,37 @@ class MigrationManager extends ProgressManagerInterface {
       );
       final chBox = tdb.getBox<Chapter>();
       final contentBox = tdb.getBox<ChapterContent>();
-      final list = await chBox.getAll();
+      // cache ထဲသိမ်းထား
+      final Map<int, Chapter> chCache = {};
+      await for (var ch in chBox.getAllStream()) {
+        chCache[ch.autoId] = ch;
+        streamController.add(
+          ProgressMessage.progress(
+            index: 0,
+            indexLength: 0,
+            progress: 0,
+            message: 'Ch: ${ch.number} Fetching.....',
+          ),
+        );
+      }
       int index = 0;
-      for (var ch in list) {
+      await for (var content in contentBox.getAllStream()) {
         // await Future.delayed(Duration(milliseconds: 200));
         if (isCancel) {
           break;
         }
         index++;
+        final ch = chCache[content.chapterId];
+        if (ch == null) continue;
+
         streamController.add(
           ProgressMessage.progress(
             index: index,
-            indexLength: list.length,
-            progress: index / list.length,
+            indexLength: chCache.length,
+            progress: index / chCache.length,
             message: 'Database ပြောင်းလဲနေပါတယ်...\nChapter: ${ch.number}',
           ),
         );
-
-        final content = await contentBox.getOne(
-          (value) => value.chapterId == ch.autoId,
-        );
-        if (content == null) continue;
-        // print('content: ${content.chapterId}');
-        //add
         await newBox.add(
           DefaultChapter(
             title: ch.title,
