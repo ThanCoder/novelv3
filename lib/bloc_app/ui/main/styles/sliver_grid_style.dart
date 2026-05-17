@@ -72,6 +72,7 @@ class SliverGridStyle extends StatelessWidget {
           !novel.meta.isAdult
               ? SizedBox.shrink()
               : Positioned(
+                  left: 0,
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.7),
