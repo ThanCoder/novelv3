@@ -31,6 +31,7 @@ class NovelDetailPage extends StatelessWidget {
                   children: [
                     Spacer(),
                     Container(
+                      height: 330,
                       width: size.width * 0.6,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
