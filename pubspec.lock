@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  cf_lite:
+    dependency: "direct main"
+    description:
+      name: cf_lite
+      sha256: e7838cfad3485f8afaf9d42d960d9b01432b5924ed06f46006b7ea0bb469438b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   change_app_package_name:
     dependency: "direct dev"
     description:

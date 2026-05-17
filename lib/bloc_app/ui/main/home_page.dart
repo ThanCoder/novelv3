@@ -11,10 +11,13 @@ import 'package:novel_v3/bloc_app/ui/fetcher/fetch_novel_from_url_menu.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
 
 import 'package:novel_v3/bloc_app/ui/main/novel_type_tabbar.dart';
+import 'package:novel_v3/bloc_app/ui/main/styles/home_list_style_chooser_menu.dart';
+import 'package:novel_v3/bloc_app/ui/main/styles/sliver_grid_style.dart';
 import 'package:novel_v3/bloc_app/ui/main/styles/sliver_list_style.dart';
 import 'package:novel_v3/bloc_app/ui/webview/fetch_webview_screen.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
+import 'package:novel_v3/core/types/home_page_list_style_type.dart';
 import 'package:novel_v3/other_apps/novel_clean_up/novel_clean_up_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 
@@ -106,10 +109,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _listStyle(List<Novel> list) {
-    return SliverListStyle(
-      list: list,
-      onClicked: _onClicked,
-      onRightClicked: _onItemMenu,
+    return ValueListenableBuilder(
+      valueListenable: currentHomeListStyleNotifier,
+      builder: (context, value, child) {
+        if (value == HomeListStyleType.grid) {
+          return SliverGridStyle(
+            list: list,
+            onClicked: _onClicked,
+            onRightClicked: _onItemMenu,
+          );
+        }
+        return SliverListStyle(
+          list: list,
+          onClicked: _onClicked,
+          onRightClicked: _onItemMenu,
+        );
+      },
     );
   }
 
@@ -144,6 +159,17 @@ class _HomePageState extends State<HomePage> {
           onTap: () async {
             context.closeNavigator();
             context.goRoute(builder: (context) => NovelCleanUpScreen());
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.style),
+          title: Text('Home List Style'),
+          onTap: () async {
+            context.closeNavigator();
+            showTMenuBottomSheetSingle(
+              context,
+              child: HomeListStyleChooserMenu(),
+            );
           },
         ),
         ListTile(

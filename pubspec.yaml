@@ -43,6 +43,7 @@ dependencies:
   t_widgets:
     path: /home/thancoder/projects/plugins/t_widgets
   mime: ^2.0.0
+  cf_lite: ^0.2.0
 
 dev_dependencies:
   flutter_test:

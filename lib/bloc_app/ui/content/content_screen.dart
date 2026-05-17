@@ -34,7 +34,6 @@ class _ContentScreenState extends State<ContentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: BlocBuilder<NovelDetailCubit, NovelDetailState>(
         builder: (context, state) {
           if (state.isLoading) {

@@ -15,6 +15,7 @@ class NovelDetailPage extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
+          SizedBox(height: 30),
           SizedBox(
             height: 330,
             width: size.width,
@@ -35,7 +36,7 @@ class NovelDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(36),
-                          // bottomRight: Radius.circular(36),
+                          topLeft: Radius.circular(36),
                         ),
                       ),
                       child: TImage(

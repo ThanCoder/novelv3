@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-final homePageListStyleNotifier = ValueNotifier<ListStyleType>(
-  ListStyleType.list,
-);
-
-enum ListStyleType {
+enum HomeListStyleType {
   list,
   grid;
 
-  static ListStyleType getType(String type) {
+  static HomeListStyleType getType(String type) {
     if (type == grid.name) {
       return grid;
     }
     return list;
   }
 }
+
+final currentHomeListStyleNotifier = ValueNotifier<HomeListStyleType>(
+  HomeListStyleType.list,
+);

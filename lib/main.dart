@@ -1,3 +1,4 @@
+import 'package:cf_lite/cf_lite.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/bloc_app.dart';
@@ -38,9 +39,13 @@ void main(List<String> args) async {
   await TRecentDB.getInstance.init(
     rootPath: PathUtil.getConfigPath(name: 'recent.db.json'),
   );
-  // set home ui
-  homePageListStyleNotifier.value = ListStyleType.getType(
-    TRecentDB.getInstance.getString('home_page_list_style'),
+  await CFLite.getInstance().init(
+    dbPath: PathUtil.getConfigPath(name: 'recent.cf.db.json'),
+  );
+
+  // style
+  currentHomeListStyleNotifier.value = HomeListStyleType.getType(
+    CFLite.getInstance().getString('home_list_style_type'),
   );
 
   // fetcher

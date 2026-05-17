@@ -16,19 +16,21 @@ class ContentStyleTwo extends StatefulWidget {
 
 class _ContentStyleTwoState extends State<ContentStyleTwo> {
   int _selectedIndex = 0;
-  // Widget _getPage() {
-  //   if (_selectedIndex == 1) {
-  //     return ChapterListPage(novel: widget.novel);
-  //   }
-  //   if (_selectedIndex == 2) {
-  //     return PdfListPage(novel: widget.novel);
-  //   }
-  //   return NovelDetailPage(novel: widget.novel);
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // backgroundColor: Colors.black.withValues(alpha: 0.3),
+        // leading: IconButton(
+        //   color: Colors.red,
+        //   onPressed: () {
+        //     context.close();
+        //   },
+        //   icon: Icon(Icons.arrow_back),
+        // ),
+      ),
+
       body: IndexedStack(
         index: _selectedIndex,
         children: [
