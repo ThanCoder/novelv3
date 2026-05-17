@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
-import 'package:than_pkg/utils/f_path.dart';
 
 class ChapterBookmarkServices {
   static const String dbOldName = 'fav_list2.json';
@@ -22,7 +22,7 @@ class ChapterBookmarkServices {
   }
 
   Future<void> setAll(List<ChapterBookmark> list, String novelPath) async {
-    final dbFile = File(pathJoin(novelPath, dbName));
+    final dbFile = File(novelPath.join(dbName));
     final contents = list.map((e) => e.toMap()).toList();
     await dbFile.writeAsString(jsonEncode(contents));
   }
@@ -30,8 +30,8 @@ class ChapterBookmarkServices {
   Future<String> _getDBContent(String novelPath) async {
     final dir = Directory(novelPath);
     if (!dir.existsSync()) return '';
-    final dbFile = File(pathJoin(novelPath, dbName));
-    final oldDBFile = File(pathJoin(novelPath, dbOldName));
+    final dbFile = File(novelPath.join(dbName));
+    final oldDBFile = File(novelPath.join(dbOldName));
 
     if (dbFile.existsSync()) {
       //new db

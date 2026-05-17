@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class PdfFile {
   final String title;
@@ -19,10 +19,10 @@ class PdfFile {
 
   factory PdfFile.createPath(String path) {
     final file = File(path);
-    return PdfFile(title: path.getName(), path: path, date: file.getDate);
+    return PdfFile(title: path.getName(), path: path, date: file.modifiedDate);
   }
 
-  int get getSize => File(path).getSize;
+  int get getSize => File(path).size;
 
   String get getCoverPath => PathUtil.getCachePath(
     name: 'cache-${path.getName(withExt: false)}-cover.png',
@@ -35,7 +35,7 @@ class PdfFile {
       getBookmarkPath(getParentPath, title);
 
   Future<void> renameAllConfig(String oldName) async {
-    final oldFile = File(pathJoin(getParentPath, oldName));
+    final oldFile = File(getParentPath.join(oldName));
     if (!oldFile.existsSync()) return;
     // rename
     await oldFile.rename(path);

@@ -1,5 +1,5 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:t_server/core/method.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class ShareDoc {
   final String name;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:than_pkg/than_pkg.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
+import 'package:mime/mime.dart';
 
 class ShareDirFile {
   String name;
@@ -21,8 +22,8 @@ class ShareDirFile {
       name: file.getName(),
       path: file.path,
       mime: lookupMimeType(file.path) ?? '',
-      size: file.getSizeLabel(),
-      date: file.getDate,
+      size: file.size.fileSizeLabel(),
+      date: file.modifiedDate,
     );
   }
 

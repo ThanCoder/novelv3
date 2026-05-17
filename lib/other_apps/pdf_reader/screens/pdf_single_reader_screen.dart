@@ -7,10 +7,7 @@ import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_setting_dialog
 import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_single_reader_setting_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
 import 'package:pdfrx/pdfrx.dart';
-import 'package:t_widgets/dialogs/t_confirm_dialog.dart';
-import 'package:t_widgets/functions/dialog_func.dart';
-import 'package:t_widgets/functions/message_func.dart';
-import 'package:than_pkg/enums/screen_orientation_types.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 

@@ -6,7 +6,7 @@ import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/services/pdf_services.dart';
 
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+
 
 class PdfListItem extends StatefulWidget {
   final PdfFile pdf;
@@ -118,7 +118,7 @@ class _PdfListItemState extends State<PdfListItem> {
                   spacing: 2,
                   children: [
                     Icon(Icons.date_range),
-                    Text(widget.pdf.date.toParseTime()),
+                    Text(widget.pdf.date.toTimeAgoFull()),
                   ],
                 ),
               ],

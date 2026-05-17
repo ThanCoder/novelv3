@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:archive/archive.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/other_apps/n3_data/constants.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class N3Data {
   String path;
@@ -31,7 +31,7 @@ class N3Data {
 
   String get getSize {
     final file = File(path);
-    return file.statSync().size.toDouble().toFileSizeLabel();
+    return file.statSync().size.toDouble().fileSizeLabel();
   }
 
   String get getCoverPath {

@@ -1,6 +1,6 @@
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:than_pkg/t_database/t_recent_db.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 enum PdfReaderType { list, singlePage }
 

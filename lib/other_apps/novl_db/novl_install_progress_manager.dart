@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hb_db/hb_db.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
-import 'package:t_widgets/progress_manager/progress_manager_interface.dart';
-import 'package:t_widgets/progress_manager/progress_message.dart';
-import 'package:than_pkg/utils/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovlInstallProgressManager extends ProgressManagerInterface {
   final List<DBFEntry> installList;
@@ -36,7 +35,7 @@ class NovlInstallProgressManager extends ProgressManagerInterface {
       for (var file in installList) {
         index++;
         await file.extract(
-          pathJoin(installNovelPath, file.name),
+          installNovelPath.join(file.name),
           onProgress: (progress, message) {
             streamController.add(
               ProgressMessage.progress(

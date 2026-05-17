@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/bloc_app.dart';
-import 'package:than_pkg/t_database/t_recent_db.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 enum MultiAppType {
   oldApp,

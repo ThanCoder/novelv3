@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_db.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_info.dart';
-import 'package:t_widgets/progress_manager/progress_manager_interface.dart';
-import 'package:t_widgets/progress_manager/progress_message.dart';
+
 
 import 'package:novel_v3/core/models/novel.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovlExportProgressManager extends ProgressManagerInterface {
   final Novel novel;

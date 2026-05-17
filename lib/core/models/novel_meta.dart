@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:hb_db/hb_db.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide StringExtension;
 import 'package:uuid/uuid.dart';
 
 class NovelMetaAdapter extends HBAdapter<NovelMeta> {
@@ -105,7 +106,7 @@ class NovelMeta {
       if (source.isEmpty) return NovelMeta.create(title: novelPath.getName());
       return NovelMeta.fromMap(
         jsonDecode(source),
-        novelDirMiliDateNumber: novelDir.getDate.millisecondsSinceEpoch,
+        novelDirMiliDateNumber: novelDir.modifiedDate.millisecondsSinceEpoch,
       );
     } else {
       // read old files

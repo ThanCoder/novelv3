@@ -1,5 +1,5 @@
 import 'package:chapters_db/chapters_db.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 
 class Chapter {
   final int autoId;

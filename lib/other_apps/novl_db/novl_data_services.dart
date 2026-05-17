@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/interfaces/file_scanner_interface.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_db.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovlDataServices {
   static Future<List<NovlData>> getScanList() async {

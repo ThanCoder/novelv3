@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:than_pkg/than_pkg.dart';
+
 
 import '../setting.dart';
 import 'path_util.dart';
@@ -48,7 +49,7 @@ class _AppCacheManagerState extends State<AppCacheManager> {
       }
     }
     // await Future.delayed(Duration(seconds: 3));
-    final label = sizeInt > 0 ? sizeInt.toDouble().toFileSizeLabel() : '';
+    final label = sizeInt > 0 ? sizeInt.toDouble().fileSizeLabel() : '';
     return (label, itemCount);
   }
 
@@ -81,4 +82,3 @@ class _AppCacheManagerState extends State<AppCacheManager> {
 
   String get getCachePath => PathUtil.getCachePath();
 }
-

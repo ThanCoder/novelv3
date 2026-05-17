@@ -1,10 +1,10 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
-import 'package:t_widgets/widgets/index.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovlListItem extends StatelessWidget {
   NovlData data;
@@ -74,7 +74,7 @@ class NovlListItem extends StatelessWidget {
                       iconData: Icons.insert_drive_file,
                     ),
                     textIconWidget(
-                      data.size.toFileSizeLabel(),
+                      data.size.fileSizeLabel(),
                       iconData: Icons.sd_card,
                     ),
                     !(isExists?.call() ?? false)
@@ -84,7 +84,7 @@ class NovlListItem extends StatelessWidget {
                             style: TextStyle(color: Colors.red, fontSize: 11),
                           ),
                     textIconWidget(
-                      data.date.toParseTime(),
+                      data.date.formatTime(),
                       iconData: Icons.date_range,
                       fontSize: 12,
                     ),

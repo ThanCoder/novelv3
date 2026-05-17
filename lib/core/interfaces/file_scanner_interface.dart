@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/utils.dart';
-import 'package:than_pkg/than_pkg.dart';
-
 abstract class FileScannerInterface<T> {
   Future<T?> onParseFile(FileSystemEntity file);
   void onSort(List<T> list) {}

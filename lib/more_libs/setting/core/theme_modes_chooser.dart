@@ -1,8 +1,8 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/setting/app_config.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class ThemeModesChooser extends StatefulWidget {
   const ThemeModesChooser({super.key});
@@ -37,7 +37,7 @@ class _ThemeModesChooserState extends State<ThemeModesChooser> {
                       .map(
                         (e) => DropdownMenuItem<ThemeMode>(
                           value: e,
-                          child: Text(e.name.toCaptalize()),
+                          child: Text(e.name.toCaptalize),
                         ),
                       )
                       .toList(),

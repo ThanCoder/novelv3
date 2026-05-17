@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/multi_app/multi_app.dart';
 import 'package:novel_v3/multi_app/restart_widget.dart';
@@ -44,7 +45,7 @@ class _MultiAppChooserState extends State<MultiAppChooser> {
                       .map(
                         (e) => DropdownMenuItem<MultiAppType>(
                           value: e,
-                          child: Text(e.name.toCaptalize()),
+                          child: Text(e.name.toCaptalize),
                         ),
                       )
                       .toList(),

@@ -1,8 +1,9 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide TPlatform;
 
 class NovelPageComponent extends StatefulWidget {
   final Novel novel;

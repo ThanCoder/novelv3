@@ -3,7 +3,7 @@ import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_export_progress_manager.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_info_edit_dialog.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:t_widgets/progress_manager/progress_dialog.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class NovlExportListTile extends StatefulWidget {
   final Novel novel;

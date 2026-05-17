@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mime/mime.dart';
 import 'package:novel_v3/core/databases/chapter_db_manager.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/share/html_pages/html_content_page.dart';
@@ -9,7 +11,6 @@ import 'package:novel_v3/other_apps/share/html_pages/html_home_page.dart';
 import 'package:novel_v3/other_apps/share/libs/novel_chapter.dart';
 import 'package:novel_v3/other_apps/share/libs/novel_file.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelShareServices {
   ///
@@ -17,7 +18,7 @@ class NovelShareServices {
   ///
   static Future<String> viewChapters(Novel novel) async {
     List<NovelChapter> chapters = [];
-    final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
+    final dir = Directory(PathUtil.getSourcePath().join(novel.id));
     if (dir.existsSync()) {
       for (var info in await ChapterDBManager.getAll(novel.id)) {
         chapters.add(
@@ -53,7 +54,7 @@ class NovelShareServices {
 
   static String viewNovel(Novel novel) {
     List<NovelFile> files = [];
-    final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
+    final dir = Directory(PathUtil.getSourcePath().join(novel.id));
     if (dir.existsSync()) {
       for (final file in dir.listSync(followLinks: false)) {
         if (!file.isFile) continue;
@@ -61,8 +62,8 @@ class NovelShareServices {
           NovelFile(
             name: file.getName(),
             mime: lookupMimeType(file.path) ?? '',
-            size: file.getSize,
-            date: file.getDate,
+            size: file.size,
+            date: file.modifiedDate,
           ),
         );
       }
@@ -96,7 +97,7 @@ class NovelShareServices {
 
   static String viewWebNovel(Novel novel) {
     List<NovelFile> files = [];
-    final dir = Directory(pathJoin(PathUtil.getSourcePath(), novel.id));
+    final dir = Directory(PathUtil.getSourcePath().join(novel.id));
     if (dir.existsSync()) {
       for (final file in dir.listSync(followLinks: false)) {
         if (!file.isFile) continue;
@@ -104,8 +105,8 @@ class NovelShareServices {
           NovelFile(
             name: file.getName(),
             mime: lookupMimeType(file.path) ?? '',
-            size: file.getSize,
-            date: file.getDate,
+            size: file.size,
+            date: file.modifiedDate,
           ),
         );
       }

@@ -9,6 +9,10 @@ extension BuildContextExtensions on BuildContext {
     }
   }
 
+  void close({bool? isReturned}) {
+    closeNavigator(isReturned: isReturned);
+  }
+
   void goRoute({required Widget Function(BuildContext context) builder}) {
     Navigator.push(this, MaterialPageRoute(builder: builder));
   }

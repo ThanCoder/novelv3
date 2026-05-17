@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/querys/chapter_query.dart';
@@ -200,7 +201,7 @@ class _FetcherChapterScreenState extends State<FetcherChapterScreen> {
           .map(
             (e) => DropdownMenuItem<ChapterQueryTypes>(
               value: e,
-              child: Text(e.name.toCaptalize()),
+              child: Text(StringCoreExtensions(e.name).toCaptalize),
             ),
           )
           .toList(),

@@ -2,9 +2,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
-import 'package:than_pkg/services/t_map.dart';
 
 import 'package:novel_v3/other_apps/chapter_reader/reader_theme.dart';
 

@@ -1,8 +1,7 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:dart_html_dsl/dart_html_dsl.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/share/libs/novel_file.dart';
-import 'package:than_pkg/than_pkg.dart';
-
 
 class HtmlContentPage extends Html5Page {
   final Novel novel;
@@ -39,19 +38,19 @@ class HtmlContentPage extends Html5Page {
         Div(className: 'title', child: Text(file.name)),
         Div(
           className: 'size',
-          child: Text('Size: ${file.size.getSizeLabel()}'),
+          child: Text('Size: ${file.size.fileSizeLabel()}'),
         ),
         file.mime.isNotEmpty
             ? Div(className: 'type', child: Text(file.mime))
             : EmptyWidget(),
-        Div(className: 'date', child: Text('Date: ${file.date.toParseTime()}')),
+        Div(className: 'date', child: Text('Date: ${file.date.formatTime()}')),
 
         ColumnWidget(
           className: 'download',
           children: [
             Link(
               href: "/download/id/${novel.id}/name/${file.name}",
-              child: Text('Download')
+              child: Text('Download'),
             ),
           ],
         ),

@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_extension.dart';
@@ -8,7 +10,7 @@ import 'package:novel_v3/other_apps/pdf_scanner/pdf_list_item.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide TPlatform;
 
 typedef PdfScannerOnClickedCallback =
     void Function(BuildContext context, PdfFile pdf);
@@ -280,13 +282,13 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
         Row(
           children: [
             Icon(Icons.sd_card),
-            Expanded(child: Text(pdf.getSize.toFileSizeLabel())),
+            Expanded(child: Text(pdf.getSize.fileSizeLabel())),
           ],
         ),
         Row(
           children: [
             Icon(Icons.date_range),
-            Expanded(child: Text(pdf.date.toParseTime())),
+            Expanded(child: Text(pdf.date.formatTime())),
           ],
         ),
         Row(

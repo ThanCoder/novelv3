@@ -1,5 +1,5 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_website.dart';
-import 'package:than_pkg/services/index.dart';
 
 class ChapterListPageQuery {
   final String querySelectorAll;

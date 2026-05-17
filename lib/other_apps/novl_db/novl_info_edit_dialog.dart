@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_info.dart';
-import 'package:t_widgets/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
+
 
 class NovlInfoEditDialog extends StatefulWidget {
   final Novel? novel;

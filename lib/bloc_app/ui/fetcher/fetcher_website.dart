@@ -1,7 +1,7 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/query_result_list.dart';
 import 'package:t_html_parser/core/types/attributes.dart';
 import 'package:t_html_parser/t_html_parser.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelListPageQuery {
   final String querySelectorAll;
@@ -203,7 +203,9 @@ class FetcherQuery {
     if (selector.isEmpty) {
       return (ele.attributes[attribue] ?? '').trim();
     }
-    return ele.getQuerySelectorAttr(selector: selector, attr: Attribute(attribue)).trim();
+    return ele
+        .getQuerySelectorAttr(selector: selector, attr: Attribute(attribue))
+        .trim();
   }
 
   List<String> getResult(String html) {

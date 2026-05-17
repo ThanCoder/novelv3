@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/list_row_item.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
-import 'package:t_widgets/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
-import 'package:than_pkg/types/src_dest_type.dart';
 
 class PdfListItem extends StatefulWidget {
   final PdfFile pdf;
@@ -58,7 +58,7 @@ class _PdfListItemState extends State<PdfListItem> {
       });
       await ThanPkg.platform.genPdfThumbnail(
         pathList: [
-          SrcDestType(src: widget.pdf.path, dest: widget.pdf.getCoverPath),
+          SrcDistType(src: widget.pdf.path, dist: widget.pdf.getCoverPath),
         ],
       );
       if (!mounted) return;
@@ -131,11 +131,11 @@ class _PdfListItemState extends State<PdfListItem> {
                           fontWeight: FontWeight.bold,
                         ),
                         ListRowItem(
-                          text: widget.pdf.getSize.toFileSizeLabel(),
+                          text: widget.pdf.getSize.fileSizeLabel(),
                           iconData: Icons.sd_storage,
                         ),
                         ListRowItem(
-                          text: widget.pdf.date.toParseTime(),
+                          text: widget.pdf.date.formatTime(),
                           iconData: Icons.date_range,
                         ),
                       ],

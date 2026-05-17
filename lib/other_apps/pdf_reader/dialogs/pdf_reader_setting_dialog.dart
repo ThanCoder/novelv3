@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/enums/screen_orientation_types.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 import '../components/android_screen_orientation_chooser.dart';
 import '../types/pdf_config.dart';

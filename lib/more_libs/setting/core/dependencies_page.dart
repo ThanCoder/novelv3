@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t_widgets/widgets/index.dart';
+import 'package:t_widgets/t_widgets.dart';
 import 'package:yaml/yaml.dart';
 
 class DependenciesPage extends StatelessWidget {

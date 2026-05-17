@@ -12,7 +12,7 @@ class ChapterContentAdapter extends TDAdapter<ChapterContent> {
   }
 
   @override
-  int getUniqueFieldId() {
+  int get getUniqueFieldId {
     return 2;
   }
 

@@ -14,7 +14,7 @@ class ChapterTDBAdapter extends TDAdapter<Chapter> {
   }
 
   @override
-  int getUniqueFieldId() {
+  int get getUniqueFieldId {
     return 1;
   }
 
@@ -36,7 +36,7 @@ class ChapterContentTDBAdapter extends TDAdapter<ChapterContent> {
   }
 
   @override
-  int getUniqueFieldId() {
+  int get getUniqueFieldId {
     return 2;
   }
 

@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/website_info.dart';
 import 'package:t_html_parser/t_html_parser.dart' as html;
@@ -278,7 +279,7 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
           .map(
             (e) => DropdownMenuItem<SupportedWebSiteInterface>(
               value: e,
-              child: Text(e.title.toCaptalize()),
+              child: Text(e.title.toCaptalize),
             ),
           )
           .toList(),

@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/querys/desc_query.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/selector_rules.dart';
@@ -155,7 +156,7 @@ class _FetcherDescScreenState extends State<FetcherDescScreen> {
           .map(
             (e) => DropdownMenuItem<DescQueryTypes>(
               value: e,
-              child: Text(e.name.toCaptalize()),
+              child: Text(StringCoreExtensions(e.name).toCaptalize),
             ),
           )
           .toList(),

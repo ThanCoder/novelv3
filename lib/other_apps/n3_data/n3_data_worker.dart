@@ -3,12 +3,12 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:archive/archive_io.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/other_apps/n3_data/constants.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 typedef ProgressCallback = Function(double progress);
 typedef ErrorCallback = Function(String message);

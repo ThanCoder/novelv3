@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_bookmark_list_cubit.dart';
@@ -25,7 +26,6 @@ import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_reader/screens/pdf_single_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 void goBlocRoute(
   BuildContext context, {
@@ -82,7 +82,7 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
                   await coverFile.copy(novel.getCoverPath);
                 }
                 final pdfFile = File(pdf.path);
-                final distFile = File(pathJoin(novel.path, pdf.title));
+                final distFile = File(novel.path.join(pdf.title));
                 if (pdfFile.existsSync()) {
                   if (distFile.existsSync()) {
                     await distFile.delete();
@@ -117,7 +117,7 @@ Future<void> goAddFromPdfScreen(BuildContext mainContext) async {
                 showSingleFileCopyDialog(
                   pdfScannerContext,
                   sourcePath: pdf.path,
-                  destPath: pathJoin(novel.path, pdf.title),
+                  destPath: novel.path.join(pdf.title),
                   onClosed: () async {
                     final coverFile = File(pdf.getCoverPath);
                     if (coverFile.existsSync()) {

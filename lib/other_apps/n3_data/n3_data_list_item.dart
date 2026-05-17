@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:novel_v3/other_apps/n3_data/n3_data.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
-import 'package:t_widgets/widgets/index.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class N3DataListItem extends StatefulWidget {
   N3Data n3data;
@@ -91,7 +91,7 @@ class _N3DataListItemState extends State<N3DataListItem> {
                     Row(
                       children: [
                         Icon(Icons.date_range),
-                        Text(widget.n3data.getDate.toParseTime()),
+                        Text(widget.n3data.getDate.formatTime()),
                       ],
                     ),
                   ],

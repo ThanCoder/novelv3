@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:than_pkg/than_pkg.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 
 class PdfBookmark {
   final String title;
@@ -11,14 +11,9 @@ class PdfBookmark {
   }
 
   factory PdfBookmark.fromMap(Map<String, dynamic> map) {
-    var page = MapServices.get<int>(map, ['page_index'], defaultValue: 0);
-    if (map['page_index'] == null) {
-      page = MapServices.get<int>(map, ['page'], defaultValue: 0);
-    }
-
     return PdfBookmark(
-      title: MapServices.get<String>(map, ['title'], defaultValue: 'Untitled'),
-      page: page,
+      title: map.getString(['title'], def: 'Untitled'),
+      page: map.getInt(['page_index']),
     );
   }
 

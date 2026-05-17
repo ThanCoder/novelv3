@@ -1,5 +1,5 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class AndroidScreenOrientationChooser extends StatefulWidget {
@@ -46,7 +46,7 @@ class _AndroidScreenOrientationChooserState
         .map(
           (e) => DropdownMenuItem<ScreenOrientationTypes>(
             value: e,
-            child: Text(e.name.toCaptalize(), style: TextStyle(fontSize: 13)),
+            child: Text(e.name.toCaptalize, style: TextStyle(fontSize: 13)),
           ),
         )
         .toList();

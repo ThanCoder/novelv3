@@ -3,7 +3,6 @@ import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/bloc_app/ui/components/novel_bookmark_toggler.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelListItem extends StatelessWidget {
   final Novel novel;
@@ -127,7 +126,7 @@ class NovelListItem extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.date_range),
-                          Expanded(child: Text(novel.getDate.toParseTime())),
+                          Expanded(child: Text(novel.getDate.toTimeAgoFull())),
                         ],
                       ),
                     ],

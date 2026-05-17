@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
-import 'package:than_pkg/enums/screen_orientation_types.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide TPlatform;
 
 class PdfConfig {
   final int page;

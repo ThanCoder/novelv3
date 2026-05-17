@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/services.dart';
-import 'package:than_pkg/than_pkg.dart';
 import '../setting.dart';
 
 class PathUtil {
   static Future<String> getAssetRealPathPath(String rootPath) async {
-    final bytes = await rootBundle.load(pathJoin('assets', rootPath));
+    final bytes = await rootBundle.load('assets'.join(rootPath));
     final name = rootPath.getName();
     final cacheFile = File(PathUtil.getCachePath(name: name));
     if (!cacheFile.existsSync()) {
@@ -59,7 +59,7 @@ class PathUtil {
 
   static String getCachePath({String? name}) {
     String homeDir = createDir(Setting.appConfigPath);
-    final dirPath = createDir(pathJoin(homeDir, 'cache'));
+    final dirPath = createDir(homeDir.join('cache'));
     final fileName = (name != null && name.isNotEmpty)
         ? '${Platform.pathSeparator}$name'
         : '';
@@ -76,12 +76,11 @@ class PathUtil {
 
   static String getOutPath({String? name}) {
     String download = createDir(
-      pathJoin(
-        Setting.appExternalPath,
+      Setting.appExternalPath.join(
         Platform.isAndroid ? 'Download' : 'Downloads',
       ),
     );
-    final dirPath = createDir(pathJoin(download, Setting.instance.appName));
+    final dirPath = createDir(download.join(Setting.instance.appName));
     final fileName = (name != null && name.isNotEmpty)
         ? '${Platform.pathSeparator}$name'
         : '';
@@ -132,7 +131,7 @@ class PathUtil {
     await newDir.create();
     //file move
     for (var file in oldDir.listSync(followLinks: false)) {
-      final newPath = pathJoin(newDir.path, file.getName());
+      final newPath = newDir.path.join(file.getName());
       await file.rename(newPath);
     }
     // old dir delete

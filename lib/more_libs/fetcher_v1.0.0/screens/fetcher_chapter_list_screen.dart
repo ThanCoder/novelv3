@@ -1,10 +1,11 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/add_auto_multi_chapter_form_dialog.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/screens/add_auto_multi_chapter_screen.dart';
 import 'package:novel_v3/more_libs/fetcher_v1.0.0/types/fetcher_response.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide StringExtension;
 
 import '../fetcher.dart';
 import '../interfaces/fetcher_interface.dart';
@@ -178,7 +179,7 @@ class _FetcherChapterListScreenState extends State<FetcherChapterListScreen> {
           .map(
             (e) => DropdownMenuItem<SupportedWebSiteInterface>(
               value: e,
-              child: Text(e.title.toCaptalize()),
+              child: Text(e.title.toCaptalize),
             ),
           )
           .toList(),

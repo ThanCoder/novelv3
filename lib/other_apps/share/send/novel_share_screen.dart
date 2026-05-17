@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
 import 'package:novel_v3/core/models/novel.dart';
@@ -8,7 +9,6 @@ import 'package:novel_v3/other_apps/share/libs/share_doc.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:t_server/t_server.dart';
-import 'package:t_widgets/widgets/index.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class NovelShareScreen extends StatefulWidget {
@@ -228,7 +228,7 @@ class _NovelShareScreenState extends State<NovelShareScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return TScaffold(
+    return Scaffold(
       body: CustomScrollView(
         slivers: [
           _getAppBar(),

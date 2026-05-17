@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/bloc_app/bloc/chapter_bookmark_list_cubit.dart';
@@ -8,7 +9,6 @@ import 'package:novel_v3/core/models/chapter.dart';
 import 'package:novel_v3/core/models/chapter_bookmark.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/extensions/t_platform.dart';
 
 class ChapterBookmarkListPage extends StatefulWidget {
   final Novel novel;

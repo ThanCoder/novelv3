@@ -5,7 +5,7 @@ import 'package:novel_v3/other_apps/share/receive/novel_receive_home_screen.dart
 import 'package:novel_v3/other_apps/share/send/novel_share_screen.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/t_database/index.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 class ShareHomeScreen extends StatefulWidget {
   const ShareHomeScreen({super.key});

@@ -1,4 +1,4 @@
-import 'package:than_pkg/than_pkg.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 
 class ChapterBookmark {
   final String title;

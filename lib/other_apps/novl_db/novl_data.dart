@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_db.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_info.dart';
-import 'package:than_pkg/extensions/file_system_entity_extension.dart';
 
 class NovlData {
   final String title;
@@ -34,8 +34,8 @@ class NovlData {
     return NovlData(
       title: file.getName(),
       path: path,
-      date: file.getDate,
-      size: file.getSize,
+      date: file.modifiedDate,
+      size: file.size,
       info: info,
       novelMeta: meta,
       type: type!,

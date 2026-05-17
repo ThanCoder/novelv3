@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/utils/f_path.dart';
 
 class Novel {
   final String id;
@@ -27,11 +26,11 @@ class Novel {
     );
   }
 
-  String get getCoverPath => pathJoin(path, 'cover.png');
+  String get getCoverPath => path.join('cover.png');
 
-  String get databasePath => pathJoin(path, 'chapters.db');
+  String get databasePath => path.join('chapters.db');
 
-  DateTime get getDate => Directory(path).modified;
+  DateTime get getDate => Directory(path).modifiedDate;
 
   Future<int> getAllSize() async {
     if (size != 0) return size;
@@ -100,7 +99,7 @@ class Novel {
       id: path.getName(),
       path: path,
       meta: meta,
-      date: dir.modified,
+      date: dir.modifiedDate,
       size: size,
     );
   }

@@ -1,11 +1,10 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
-import 'package:than_pkg/extensions/file_system_entity_extension.dart';
-import 'package:than_pkg/utils/f_path.dart';
 import 'package:uuid/uuid.dart';
 
 class NovelServices {
@@ -62,7 +61,7 @@ class NovelServices {
   Future<NovelMeta?> getNovelMeta(String id) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) return null;
-    final file = File(pathJoin(dir.path, 'meta.json'));
+    final file = File(dir.path.join('meta.json'));
     if (!file.existsSync()) return null;
     return await NovelMeta.fromPath(file.path);
   }
@@ -75,7 +74,7 @@ class NovelServices {
   Future<bool> existsNovelMetaFile(String id) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) return dir.existsSync();
-    final file = File(pathJoin(dir.path, 'meta.json'));
+    final file = File(dir.path.join('meta.json'));
     return await file.exists();
   }
 
@@ -86,9 +85,9 @@ class NovelServices {
   }) async {
     final dir = Directory(PathUtil.getSourcePath(name: id));
     if (!dir.existsSync()) return dir.existsSync();
-    final file = File(pathJoin(dir.path, filename));
+    final file = File(dir.path.join(filename));
     if (checkSize != null && file.existsSync()) {
-      return file.getSize == checkSize;
+      return file.size == checkSize;
     }
     return await file.exists();
   }

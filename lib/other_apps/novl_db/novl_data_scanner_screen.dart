@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data.dart';
@@ -6,7 +7,7 @@ import 'package:novel_v3/other_apps/novl_db/novl_data_install_screen.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_data_services.dart';
 import 'package:novel_v3/other_apps/novl_db/novl_list_item.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide TPlatform;
 
 class NovlDataScannerScreen extends StatefulWidget {
   const NovlDataScannerScreen({super.key});
@@ -185,10 +186,10 @@ class _N3DataScannerState extends State<NovlDataScannerScreen> {
             textIconWidget(data.title, iconData: Icons.title),
             textIconWidget(data.type, iconData: Icons.insert_drive_file),
             textIconWidget(
-              data.size.toFileSizeLabel(),
+              data.size.fileSizeLabel(),
               iconData: Icons.sd_card,
             ),
-            textIconWidget(data.date.toParseTime(), iconData: Icons.date_range),
+            textIconWidget(data.date.formatTime(), iconData: Icons.date_range),
             SizedBox(height: 10),
 
             // Novel Meta

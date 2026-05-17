@@ -1,3 +1,4 @@
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetch_services.dart';
 import 'package:novel_v3/bloc_app/ui/fetcher/fetcher_proxy.dart';
@@ -8,7 +9,8 @@ import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+
+import 'package:than_pkg/than_pkg.dart' hide TPlatform;
 
 class AddNovelDetailFromOnlineScreen extends StatefulWidget {
   final NovelItemResult item;
