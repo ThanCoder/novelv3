@@ -25,7 +25,6 @@ dependencies:
   t_db: ^2.2.0
   hb_db: ^1.4.0
   dart_html_dsl: ^0.0.3
-  cached_network_image: ^3.4.1
   file_selector: ^1.1.0
   flutter_bloc: ^9.1.1
   image: ^4.8.0

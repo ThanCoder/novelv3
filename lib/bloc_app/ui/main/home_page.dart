@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
               onRefresh: context.read<NovelListCubit>().fetchNovel,
               child: CustomScrollView(
                 slivers: [
-                  SliverAppBar(title: Text('Novel Bloc'), actions: _actions()),
+                  SliverAppBar(title: Text('Novel'), actions: _actions()),
                   SliverAppBar(
                     floating: true,
                     snap: true,
@@ -83,21 +83,6 @@ class _HomePageState extends State<HomePage> {
             );
           },
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     try {
-        //       final list = await FetchServices.instance.getWebsiteList();
-
-        //       final file = File('fetch-websites-list.json');
-        //       final mapList = list.map((e) => e.toJson()).toList();
-        //       final json = JsonEncoder.withIndent(' ').convert(mapList);
-        //       await file.writeAsString(json);
-        //       print('sucess');
-        //     } catch (e) {
-        //       print(e.toString());
-        //     }
-        //   },
-        // ),
       ),
     );
   }

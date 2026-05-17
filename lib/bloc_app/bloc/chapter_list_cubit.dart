@@ -33,6 +33,10 @@ class ChapterListCubit extends Cubit<ChapterListState> {
         ChapterDBManager.removeDB(novel.id);
         await DbMigration.migrate(context, novel.id);
       }
+      // cache ပိတ်ထားရင် db cache ကိုဖျက်မယ်
+      if (!isCached) {
+        await ChapterDBManager.removeDB(novel.id);
+      }
       final box = await ChapterDBManager.getBox(novel.id);
       final list = <Chapter>[];
       await for (var info in box.getAllStream()) {

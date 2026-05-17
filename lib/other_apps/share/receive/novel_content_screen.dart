@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
@@ -107,11 +106,10 @@ class _NovelContentScreenState extends State<NovelContentScreen> {
         fit: StackFit.expand,
         children: [
           // TImageUrl(url: '${widget.hostUrl}/cover/id/${widget.novel.id}'),
-          CachedNetworkImage(
+          TCacheImage(
             fit: BoxFit.cover,
-            imageUrl: '${widget.hostUrl}/cover/id/${widget.novel.id}',
-            placeholder: (context, url) => TLoader.random(),
-            errorWidget: (context, url, error) =>
+            url: '${widget.hostUrl}/cover/id/${widget.novel.id}',
+            errorBuilder: (context, url, error) =>
                 Icon(Icons.broken_image_outlined),
           ),
           Container(

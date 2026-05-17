@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:novel_v3/other_apps/share/libs/novel_file.dart';
@@ -41,12 +41,11 @@ class _ContentListItemState extends State<ContentListItem> {
                   //   url:
                   //       '${widget.hostUrl}/cover/id/${widget.novelId}?name=${widget.file.name}',
                   // ),
-                  CachedNetworkImage(
+                  TCacheImage(
                     fit: BoxFit.cover,
-                    imageUrl:
+                    url:
                         '${widget.hostUrl}/cover/id/${widget.novelId}?name=${widget.file.name}',
-                    placeholder: (context, url) => TLoader.random(),
-                    errorWidget: (context, url, error) =>
+                    errorBuilder: (context, url, error) =>
                         Icon(Icons.broken_image_outlined, size: 90),
                   ),
             ),
@@ -72,7 +71,7 @@ class _ContentListItemState extends State<ContentListItem> {
                   Row(
                     children: [
                       Icon(Icons.sd_storage),
-                      Text(widget.file.size.toFileSizeLabel()),
+                      Text(widget.file.size.fileSizeLabel()),
                     ],
                   ),
                   widget.file.mime.isEmpty
@@ -88,7 +87,7 @@ class _ContentListItemState extends State<ContentListItem> {
                       Icon(Icons.date_range),
                       Expanded(
                         child: Text(
-                          widget.file.date.toParseTime(),
+                          widget.file.date.formatTime(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -138,7 +137,9 @@ class _ContentListItemState extends State<ContentListItem> {
       submitText: 'ReDownload',
       onSubmit: () async {
         // delete file
-        final novelPath = await NovelServices().getNovelFullPath(widget.novelId);
+        final novelPath = await NovelServices().getNovelFullPath(
+          widget.novelId,
+        );
         final file = File(pathJoin(novelPath, widget.file.name));
         if (file.existsSync()) {
           await file.delete();

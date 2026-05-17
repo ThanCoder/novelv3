@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -25,11 +24,10 @@ class ShareGridItem extends StatelessWidget {
           children: [
             Positioned.fill(
               // child: TImageUrl(url: '$hostUrl/cover/id/${novel.id}'),
-              child: CachedNetworkImage(
+              child: TCacheImage(
                 fit: BoxFit.cover,
-                imageUrl: '$hostUrl/cover/id/${novel.id}',
-                placeholder: (context, url) => TLoader.random(),
-                errorWidget: (context, url, error) =>
+                url: '$hostUrl/cover/id/${novel.id}',
+                errorBuilder: (context, url, error) =>
                     Icon(Icons.broken_image_outlined),
               ),
             ),

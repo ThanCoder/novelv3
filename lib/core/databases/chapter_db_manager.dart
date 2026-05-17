@@ -27,10 +27,16 @@ class ChapterDBManager {
     return db;
   }
 
-  static void removeDB(String novelId) {
+  static Future<void> removeDB(String novelId) async {
     if (_dbCache.containsKey(novelId)) {
-      _dbCache[novelId]!.close();
+      await _dbCache[novelId]!.close();
       _dbCache.remove(novelId);
+    }
+  }
+
+  static Future<void> removeAllDB() async {
+    for (var db in _dbCache.values) {
+      await db.close();
     }
   }
 

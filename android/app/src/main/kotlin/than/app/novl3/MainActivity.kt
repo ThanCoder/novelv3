@@ -1,4 +1,4 @@
-package thancoder.nv3.novel_v3
+package than.app.novl3
 
 import io.flutter.embedding.android.FlutterActivity
 

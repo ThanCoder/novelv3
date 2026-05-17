@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/multi_app/more_app.dart';
+import 'package:novel_v3/bloc_app/ui/main/more_app.dart';
 
 import 'home_page.dart';
 

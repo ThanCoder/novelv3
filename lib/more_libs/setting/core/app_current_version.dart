@@ -8,13 +8,13 @@ class AppCurrentVersion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: ThanPkg.platform.getPackageInfo(),
-      builder: (context, snapshot) {
-        final data = snapshot.data;
-        if (snapshot.hasData && data != null) {
-          return Card(
-            child: ListTile(
+    return Card(
+      child: FutureBuilder(
+        future: ThanPkg.platform.getPackageInfo(),
+        builder: (context, snapshot) {
+          final data = snapshot.data;
+          if (snapshot.hasData && data != null) {
+            return ListTile(
               leading: Icon(Icons.new_releases),
               title: Text(
                 'Current Version: ${data.version} ${Setting.appVersionLabel}',
@@ -24,11 +24,11 @@ class AppCurrentVersion extends StatelessWidget {
                   : () {
                       ThanPkg.platform.launch(Setting.instance.releaseUrl!);
                     },
-            ),
-          );
-        }
-        return SizedBox.shrink();
-      },
+            );
+          }
+          return SizedBox.shrink();
+        },
+      ),
     );
   }
 }

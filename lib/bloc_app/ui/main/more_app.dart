@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:novel_v3/more_libs/desktop_exe/desktop_exe.dart';
-import 'package:novel_v3/other_apps/other_app_list_tile.dart';
-import 'package:novel_v3/multi_app/multi_app_chooser.dart';
-import 'package:t_widgets/t_widgets.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
+import 'package:novel_v3/other_apps/other_app_list_tile.dart';
+import 'package:t_widgets/t_widgets.dart';
 
 class MoreApp extends StatelessWidget {
   const MoreApp({super.key});
@@ -19,7 +18,6 @@ class MoreApp extends StatelessWidget {
           Setting.getCurrentVersionWidget,
           Setting.getCacheManagerWidget,
           Divider(),
-          MultiAppChooser(),
           DesktopExe.createDesktopListTile(
             context,
             assetsIconPath: 'assets/logo_3.jpg',

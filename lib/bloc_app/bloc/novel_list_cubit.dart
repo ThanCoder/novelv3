@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
+import 'dart:isolate';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:novel_v3/core/databases/chapter_db_manager.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
@@ -30,6 +31,7 @@ class NovelListCubit extends Cubit<NovelListState> {
 
       emit(NovelListState.initState(isLoading: true));
       // await Future.delayed(Duration(seconds: 2));
+      ChapterDBManager.removeAllDB();
       final list = await novelServices.getAll();
 
       emit(state.copyWith(list: list, isLoading: false, isInit: false));
@@ -115,7 +117,7 @@ class NovelListCubit extends Cubit<NovelListState> {
     }
     if (state.sortId == 2) {
       emit(state.copyWith(isLoading: true));
-      list = await compute(_calcuteNovelSize, list);
+      list = await _calcuteNovelSize(list);
       list.sortSize(isSmallest: state.sortAsc);
       emit(state.copyWith(isLoading: false, list: list));
     }
@@ -191,6 +193,12 @@ class NovelListState {
 }
 
 Future<List<Novel>> _calcuteNovelSize(List<Novel> list) async {
-  Future.wait(list.map((e) => e.getAllSize()));
-  return list;
+  return await Isolate.run(() async {
+    final results = <Novel>[];
+    for (var no in list) {
+      await no.getAllSize();
+      results.add(no);
+    }
+    return results;
+  });
 }
