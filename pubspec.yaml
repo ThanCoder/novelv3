@@ -34,14 +34,16 @@ dependencies:
   vector_math: 2.2.0
   desktop_webview_window: ^0.2.3
   chapters_db:
+    # git:
+    # url: https://github.com/ThanCoder/chapters_db.git
     path: /home/thancoder/projects/plugins/chapters_db
   than_pkg:
-    # git: https://github.com/ThanCoder/than_pkg_flutter_lib
-    path: /home/thancoder/projects/plugins/than_pkg
+    git: https://github.com/ThanCoder/than_pkg_flutter_lib
   dart_core_extensions:
-    path: /home/thancoder/projects/plugins/dart_core_extensions
+    git: https://github.com/ThanCoder/dart_core_extensions
   t_widgets:
-    path: /home/thancoder/projects/plugins/t_widgets
+    git: https://github.com/ThanCoder/t_widget
+
   mime: ^2.0.0
   cf_lite: ^0.2.0
 

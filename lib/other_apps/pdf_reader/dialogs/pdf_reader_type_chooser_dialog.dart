@@ -45,7 +45,7 @@ class _PdfReaderTypeChooserDialogState
             .map(
               (e) => DropdownMenuItem<PdfReaderType>(
                 value: e,
-                child: Text(e.name.toCaptalize),
+                child: Text(StringCoreExtensions(e.name).toCaptalize),
               ),
             )
             .toList(),

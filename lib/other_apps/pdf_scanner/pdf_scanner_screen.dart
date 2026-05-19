@@ -308,7 +308,7 @@ class PdfScannerScreenState extends State<PdfScannerScreen> {
       barrierDismissible: false,
       title: Text('Rename'),
       submitText: 'Rename',
-      text: pdf.title.getName(withExt: false),
+      text: PathCoreExtensions(pdf.title).getName(withExt: false),
       onSubmit: (text) async {
         try {
           final index = list.indexWhere((e) => e.title == pdf.title);

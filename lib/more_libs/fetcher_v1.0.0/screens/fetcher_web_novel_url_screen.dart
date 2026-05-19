@@ -279,7 +279,7 @@ class _FetcherWebNovelUrlScreenState extends State<FetcherWebNovelUrlScreen> {
           .map(
             (e) => DropdownMenuItem<SupportedWebSiteInterface>(
               value: e,
-              child: Text(e.title.toCaptalize),
+              child: Text(StringCoreExtensions(e.title).toCaptalize),
             ),
           )
           .toList(),

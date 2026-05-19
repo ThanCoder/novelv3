@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:novel_v3/bloc_app/ui/components/novel_bookmark_toggler.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -103,11 +102,11 @@ class SliverGridStyle extends StatelessWidget {
             ),
           ),
           // bookmark
-          Positioned(
-            bottom: 10,
-            left: 0,
-            child: NovelBookmarkToggler(novel: novel),
-          ),
+          // Positioned(
+          //   bottom: 10,
+          //   left: 0,
+          //   child: NovelBookmarkToggler(novel: novel),
+          // ),
         ],
       ),
     );

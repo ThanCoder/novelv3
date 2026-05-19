@@ -46,7 +46,7 @@ class _AndroidScreenOrientationChooserState
         .map(
           (e) => DropdownMenuItem<ScreenOrientationTypes>(
             value: e,
-            child: Text(e.name.toCaptalize, style: TextStyle(fontSize: 13)),
+            child: Text(StringCoreExtensions(e.name).toCaptalize, style: TextStyle(fontSize: 13)),
           ),
         )
         .toList();

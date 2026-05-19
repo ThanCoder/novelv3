@@ -234,7 +234,7 @@ class _N3DataScannerState extends State<N3DataScannerScreen> {
       barrierDismissible: false,
       title: Text('Rename'),
       submitText: 'Rename',
-      text: n3data.getTitle.getName(withExt: false),
+      text: PathCoreExtensions(n3data.getTitle).getName(withExt: false),
       onSubmit: (text) async {
         try {
           final index = n3DataList.indexWhere(

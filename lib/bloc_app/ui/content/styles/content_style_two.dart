@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:novel_v3/bloc_app/ui/components/novel_bookmark_toggler.dart';
 import 'package:novel_v3/bloc_app/ui/content/chapter_bookmark_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/chapter_list_page.dart';
 import 'package:novel_v3/bloc_app/ui/content/novel_detail_page.dart';
@@ -20,16 +21,7 @@ class _ContentStyleTwoState extends State<ContentStyleTwo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // backgroundColor: Colors.black.withValues(alpha: 0.3),
-        // leading: IconButton(
-        //   color: Colors.red,
-        //   onPressed: () {
-        //     context.close();
-        //   },
-        //   icon: Icon(Icons.arrow_back),
-        // ),
-      ),
+      appBar: AppBar(actions: [NovelBookmarkToggler(novel: widget.novel)]),
 
       body: IndexedStack(
         index: _selectedIndex,

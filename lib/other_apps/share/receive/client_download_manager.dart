@@ -35,9 +35,9 @@ class ClientDownloadManager extends TDownloadManager {
         controller.add(TProgress.preparing(indexLength: urls.length));
         int index = 0;
         for (var url in urls) {
-          final name = url.getName();
+          final name = PathCoreExtensions(url).getName();
           final temFile = File(
-            '${saveDir.path}/${name.getName(withExt: false)}.tem',
+            '${saveDir.path}/${PathCoreExtensions(name).getName(withExt: false)}.tem',
           );
           index++;
           // skip

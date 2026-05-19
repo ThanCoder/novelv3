@@ -63,7 +63,7 @@ packages:
       path: "/home/thancoder/projects/plugins/chapters_db"
       relative: false
     source: path
-    version: "0.4.0"
+    version: "0.5.0"
   characters:
     dependency: transitive
     description:
@@ -147,9 +147,11 @@ packages:
   dart_core_extensions:
     dependency: "direct main"
     description:
-      path: "/home/thancoder/projects/plugins/dart_core_extensions"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "24dea6e686fc10d4ea3c0ee80c79033ae6789d25"
+      url: "https://github.com/ThanCoder/dart_core_extensions"
+    source: git
     version: "0.3.0"
   dart_html_dsl:
     dependency: "direct main"
@@ -806,9 +808,11 @@ packages:
   t_widgets:
     dependency: "direct main"
     description:
-      path: "/home/thancoder/projects/plugins/t_widgets"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "137440e184334cd8bf150c908f403deb1bfdc091"
+      url: "https://github.com/ThanCoder/t_widget"
+    source: git
     version: "2.6.1"
   term_glyph:
     dependency: transitive
@@ -829,9 +833,11 @@ packages:
   than_pkg:
     dependency: "direct main"
     description:
-      path: "/home/thancoder/projects/plugins/than_pkg"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: f0f5cb15fb7f287fabbb8c279db583df9981312a
+      url: "https://github.com/ThanCoder/than_pkg_flutter_lib"
+    source: git
     version: "5.1.0"
   timeago:
     dependency: transitive
