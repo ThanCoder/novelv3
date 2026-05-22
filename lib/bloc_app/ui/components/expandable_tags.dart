@@ -31,36 +31,13 @@ class _ExpandableTagsState extends State<ExpandableTags> {
     final showList = widget.showCount < widget.list.length && !isExpanded
         ? widget.list.take(widget.showCount)
         : widget.list;
-    final widgetList = [...showList.map((e) => _item(e))];
-    if (widget.showCount < widget.list.length && !isExpanded) {
-      // show expanded text
-      widgetList.add(
-        _item(
-          'Expanded',
-          text: widget.expandedText,
-          bgColor:
-              widget.expandedTextBgColor ??
-              const Color.fromARGB(255, 12, 55, 90),
-          onTap: (name) => setState(() {
-            isExpanded = true;
-          }),
-        ),
-      );
-    }
-    if (isExpanded) {
-      widgetList.add(
-        _item(
-          'Collapsed',
-          text: widget.collapsedText,
-          bgColor:
-              widget.collapsedTextBgColor ??
-              const Color.fromARGB(255, 12, 55, 90),
-          onTap: (name) => setState(() {
-            isExpanded = false;
-          }),
-        ),
-      );
-    }
+
+    final widgetList = <Widget>[
+      ...showList.map((e) => _item(e)),
+      if (widget.showCount < widget.list.length && !isExpanded) _expandedText,
+      if (isExpanded) _collapsedText,
+    ];
+
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 400),
       transitionBuilder: (child, animation) {
@@ -78,6 +55,30 @@ class _ExpandableTagsState extends State<ExpandableTags> {
     //   curve: Curves.easeInOut,
     //   child: Wrap(runSpacing: 4, spacing: 4, children: widgetList),
     // );
+  }
+
+  Widget get _expandedText {
+    return _item(
+      'Expanded',
+      text: widget.expandedText,
+      bgColor:
+          widget.expandedTextBgColor ?? const Color.fromARGB(255, 12, 55, 90),
+      onTap: (name) => setState(() {
+        isExpanded = true;
+      }),
+    );
+  }
+
+  Widget get _collapsedText {
+    return _item(
+      'Collapsed',
+      text: widget.collapsedText,
+      bgColor:
+          widget.collapsedTextBgColor ?? const Color.fromARGB(255, 12, 55, 90),
+      onTap: (name) => setState(() {
+        isExpanded = false;
+      }),
+    );
   }
 
   Widget _item(

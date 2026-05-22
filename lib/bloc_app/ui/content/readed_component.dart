@@ -42,6 +42,8 @@ class _ReadedComponentState extends State<ReadedComponent> {
 
           return Row(
             children: [
+              Text('Count: ${state.list.length}'),
+              SizedBox(width: 15),
               InkWell(
                 onTap: _showBottomSheet,
                 child: MouseRegion(
@@ -52,38 +54,35 @@ class _ReadedComponentState extends State<ReadedComponent> {
                   ),
                 ),
               ),
-              readedResponses.readedChapter == null
-                  ? SizedBox.shrink()
-                  : TextButton(
-                      onPressed: () =>
-                          _goReadedChapter(readedResponses.readedChapter!),
-                      child: Text(
-                        'Read',
-                        style: TextStyle(color: Colors.blue[600]),
-                      ),
-                    ),
-              readedResponses.readedPrevChapter == null
-                  ? SizedBox.shrink()
-                  : TextButton(
-                      onPressed: () => _goReadedPrevChapter(
-                        readedResponses.readedPrevChapter!,
-                      ),
-                      child: Text(
-                        'Prev Chapter',
-                        style: TextStyle(color: Colors.blue[600]),
-                      ),
-                    ),
-              readedResponses.readedNextChapter == null
-                  ? SizedBox.shrink()
-                  : TextButton(
-                      onPressed: () => _goReadedNextChapter(
-                        readedResponses.readedNextChapter!,
-                      ),
-                      child: Text(
-                        'Next Chapter',
-                        style: TextStyle(color: Colors.blue[600]),
-                      ),
-                    ),
+              if (readedResponses.readedChapter != null)
+                TextButton(
+                  onPressed: () =>
+                      _goReadedChapter(readedResponses.readedChapter!),
+                  child: Text(
+                    'Read',
+                    style: TextStyle(color: Colors.blue[600]),
+                  ),
+                ),
+              if (readedResponses.readedPrevChapter != null)
+                TextButton(
+                  onPressed: () =>
+                      _goReadedPrevChapter(readedResponses.readedPrevChapter!),
+                  child: Icon(
+                    Icons.keyboard_double_arrow_down_rounded,
+                    size: 35,
+                    color: Colors.blue,
+                  ),
+                ),
+              if (readedResponses.readedNextChapter != null)
+                TextButton(
+                  onPressed: () =>
+                      _goReadedNextChapter(readedResponses.readedNextChapter!),
+                  child: Icon(
+                    Icons.keyboard_double_arrow_up_rounded,
+                    size: 35,
+                    color: Colors.blue,
+                  ),
+                ),
             ],
           );
         },

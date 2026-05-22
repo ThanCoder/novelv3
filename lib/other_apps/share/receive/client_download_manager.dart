@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class ClientDownloadManager extends TDownloadManager {
   final TClientToken token;
@@ -59,7 +58,7 @@ class ClientDownloadManager extends TDownloadManager {
                   loaded: received,
                   total: total,
                   message:
-                      'Downloading...\n$name\nSpeed: ${speed.getAutoSpeedLabel()} - Left: ${eta?.getAutoTimeLabel()}',
+                      'Downloading...\n$name\nSpeed: ${speed.formatSpeed()} - Left: ${eta?.autoTimeLabel()}',
                 ),
               );
             },

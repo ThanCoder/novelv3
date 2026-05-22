@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
@@ -10,7 +11,6 @@ import 'package:novel_v3/other_apps/share/receive/content_list.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelContentScreen extends StatefulWidget {
   final String hostUrl;

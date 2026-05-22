@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
@@ -9,7 +10,6 @@ import 'package:novel_v3/other_apps/share/receive/novel_content_screen.dart';
 import 'package:novel_v3/other_apps/share/receive/novel_search_screen.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelReceiveHomeScreen extends StatefulWidget {
   final String hostUrl;

@@ -9,7 +9,6 @@ import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main(List<String> args) async {
@@ -36,9 +35,6 @@ void main(List<String> args) async {
   await PdfReader.instance.init();
 
   // recent
-  await TRecentDB.getInstance.init(
-    rootPath: PathUtil.getConfigPath(name: 'recent.db.json'),
-  );
   await CFLite.getInstance().init(
     dbPath: PathUtil.getConfigPath(name: 'recent.cf.db.json'),
   );

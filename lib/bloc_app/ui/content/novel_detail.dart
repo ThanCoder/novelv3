@@ -23,7 +23,7 @@ class NovelDetail extends StatelessWidget {
           ReadedComponent(novel: novel),
           ExpandableTags(list: novel.meta.tags),
           novel.meta.tags.isNotEmpty ? Divider() : SizedBox.shrink(),
-          SelectableText(novel.meta.desc),
+          SelectableText(novel.meta.desc, style: TextStyle(fontSize: 16)),
         ],
       ),
     );

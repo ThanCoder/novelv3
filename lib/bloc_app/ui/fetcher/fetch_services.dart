@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cf_lite/cf_lite.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart' hide Text;
 import 'package:novel_v3/bloc_app/ui/fetcher/result_types.dart';
@@ -12,7 +13,6 @@ import 'package:novel_v3/core/utils.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_html_parser/core/types/attributes.dart';
 import 'package:t_html_parser/t_html_parser.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class FetchServices {
   static final FetchServices instance = FetchServices._();
@@ -29,11 +29,11 @@ class FetchServices {
   }
 
   String getProxy() {
-    return TRecentDB.getInstance.getString('fetcher-proxy-url');
+    return CFLite.getInstance().getString('fetcher-proxy-url');
   }
 
   Future<void> setProxy(String proxyUrl) async {
-    TRecentDB.getInstance.putString('fetcher-proxy-url', proxyUrl);
+    CFLite.getInstance().put('fetcher-proxy-url', proxyUrl);
   }
 
   Future<NovelDetailResult?> fetchNovelDetail(

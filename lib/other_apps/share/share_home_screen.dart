@@ -1,3 +1,4 @@
+import 'package:cf_lite/cf_lite.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/share/libs/share_receive_url_form_dialog.dart';
@@ -5,7 +6,6 @@ import 'package:novel_v3/other_apps/share/receive/novel_receive_home_screen.dart
 import 'package:novel_v3/other_apps/share/send/novel_share_screen.dart';
 import 'package:novel_v3/other_apps/share/server_services.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class ShareHomeScreen extends StatefulWidget {
   const ShareHomeScreen({super.key});
@@ -70,7 +70,7 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
 
   void _goReceiveScreen() async {
     String key = 'share-host-address';
-    final url = TRecentDB.getInstance.getString(key);
+    final url = CFLite.getInstance().getString(key);
 
     if (!mounted) return;
     showDialog(
@@ -79,7 +79,7 @@ class _ShareHomeScreenState extends State<ShareHomeScreen> {
       builder: (context) => ShareReceiveUrlFormDialog(
         recentUrl: url,
         onConnectedUrl: (connectedUrl) {
-          TRecentDB.getInstance.putString(key, connectedUrl);
+          CFLite.getInstance().put(key, connectedUrl);
         },
         onSuccess: (url) {
           context.goRoute(

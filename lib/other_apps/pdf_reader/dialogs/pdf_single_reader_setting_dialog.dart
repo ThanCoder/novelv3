@@ -1,7 +1,7 @@
+import 'package:cf_lite/cf_lite.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class PdfSingleReaderSettingDialogResponse {
   final double zoomRange;
@@ -13,7 +13,7 @@ class PdfSingleReaderSettingDialog extends StatefulWidget {
   const PdfSingleReaderSettingDialog({super.key, this.onClosed});
 
   static double get getPdfRange =>
-      TRecentDB.getInstance.getDouble('pdf-single-reader-zoom-range', def: 0.1);
+      CFLite.getInstance().getDouble('pdf-single-reader-zoom-range', def: 0.1);
 
   @override
   State<PdfSingleReaderSettingDialog> createState() =>
@@ -53,7 +53,7 @@ class _PdfSingleReaderSettingDialogState
             textInputType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (value) {
               if (value.isEmpty) return;
-              TRecentDB.getInstance.putDouble(
+              CFLite.getInstance().put(
                 'pdf-single-reader-zoom-range',
                 double.tryParse(value) ?? 0.1,
               );

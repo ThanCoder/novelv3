@@ -34,8 +34,7 @@ dependencies:
   vector_math: 2.2.0
   desktop_webview_window: ^0.2.3
   chapters_db:
-    # git:
-    # url: https://github.com/ThanCoder/chapters_db.git
+    # git: https://github.com/ThanCoder/chapters_db.git
     path: /home/thancoder/projects/plugins/chapters_db
   than_pkg:
     git: https://github.com/ThanCoder/than_pkg_flutter_lib

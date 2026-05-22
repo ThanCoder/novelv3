@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'package:cf_lite/cf_lite.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:novel_v3/core/databases/chapter_db_manager.dart';
 import 'package:novel_v3/core/extensions/novel_extension.dart';
@@ -6,7 +7,6 @@ import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/novel_meta.dart';
 import 'package:novel_v3/core/services/novel_services.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 class NovelListCubit extends Cubit<NovelListState> {
   final NovelServices novelServices;
@@ -105,8 +105,8 @@ class NovelListCubit extends Cubit<NovelListState> {
   void setSort(int sortId, bool sortAsc) {
     emit(state.copyWith(sortId: sortId, sortAsc: sortAsc, isLoading: false));
     // set recent
-    TRecentDB.getInstance.putInt('novel-list-sort-id', sortId);
-    TRecentDB.getInstance.putBool('novel-list-sort-asc', sortAsc);
+    CFLite.getInstance().put('novel-list-sort-id', sortId);
+    CFLite.getInstance().put('novel-list-sort-asc', sortAsc);
   }
 
   void sort() async {
@@ -168,8 +168,8 @@ class NovelListState {
       isLoading: isLoading,
       isInit: isInit,
       errorMessage: '',
-      sortId: TRecentDB.getInstance.getInt('novel-list-sort-id', def: 3),
-      sortAsc: TRecentDB.getInstance.getBool('novel-list-sort-asc', def: true),
+      sortId: CFLite.getInstance().getInt('novel-list-sort-id', def: 3),
+      sortAsc: CFLite.getInstance().getBool('novel-list-sort-asc', def: true),
     );
   }
 

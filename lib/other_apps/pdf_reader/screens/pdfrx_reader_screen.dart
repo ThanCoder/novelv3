@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/t_widgets.dart';
-import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/than_pkg.dart' hide TPlatform;
 
 import '../pdf_reader.dart';
 
@@ -135,7 +136,7 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       showContextMenuAutomatically: true,
     ),
     pageDropShadow: null,
-    useAlternativeFitScaleAsMinScale: false,
+    // useAlternativeFitScaleAsMinScale: false,
     scrollByArrowKey: config.scrollByArrowKey,
     enableKeyboardNavigation: true,
     onGeneralTap: (context, controller, details) {

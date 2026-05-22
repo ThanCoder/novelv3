@@ -47,7 +47,7 @@ packages:
       path: "/home/thancoder/projects/plugins/chapters_db"
       relative: false
     source: path
-    version: "0.1.0"
+    version: "0.5.0"
   cli_config:
     dependency: transitive
     description:

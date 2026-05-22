@@ -295,7 +295,7 @@ class _WrapMoreLessState extends State<WrapMoreLess> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.black,
-            borderRadius: BorderRadius.circular(3),
+            borderRadius: BorderRadius.circular(5),
           ),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
@@ -303,7 +303,7 @@ class _WrapMoreLessState extends State<WrapMoreLess> {
               value,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
             ),
