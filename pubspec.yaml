@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.9
-  pdfrx: ^2.4.1
+  pdfrx: ^2.4.3
   pdfrx_engine: ^0.4.2
   desktop_drop: ^0.7.1
   uuid: ^4.5.3
@@ -34,12 +34,12 @@ dependencies:
   vector_math: 2.2.0
   desktop_webview_window: ^0.2.3
   chapters_db:
-    # git: https://github.com/ThanCoder/chapters_db.git
-    path: /home/thancoder/projects/plugins/chapters_db
+    # path: /home/thancoder/projects/plugins/chapters_db
+    git: https://github.com/ThanCoder/chapters_db.git 
   than_pkg:
     git: https://github.com/ThanCoder/than_pkg_flutter_lib
   dart_core_extensions:
-    git: https://github.com/ThanCoder/dart_core_extensions
+    git: https://github.com/ThanCoder/dart_core_extensions.git
   t_widgets:
     git: https://github.com/ThanCoder/t_widget
 

@@ -126,7 +126,9 @@ class NovelListItem extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.date_range),
-                          Expanded(child: Text(novel.getDate.toTimeAgoFull())),
+                          Expanded(
+                            child: Text(novel.meta.date.toTimeAgoFull()),
+                          ),
                         ],
                       ),
                     ],

@@ -30,8 +30,6 @@ class Novel {
 
   String get databasePath => path.join('chapters.db');
 
-  DateTime get getDate => Directory(path).modifiedDate;
-
   Future<int> getAllSize() async {
     if (size != 0) return size;
 

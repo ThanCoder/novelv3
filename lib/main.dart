@@ -12,45 +12,49 @@ import 'package:t_widgets/t_widgets.dart';
 import 'package:novel_v3/more_libs/setting/setting.dart';
 
 void main(List<String> args) async {
-  if (runWebViewTitleBarWidget(args)) {
-    return; // ဒါက window အသစ်တွေအတွက် သီးသန့် အလုပ်လုပ်တာ
+  try {
+    if (runWebViewTitleBarWidget(args)) {
+      return; // ဒါက window အသစ်တွေအတွက် သီးသန့် အလုပ်လုပ်တာ
+    }
+    WidgetsFlutterBinding.ensureInitialized();
+    // await ThanPkg.instance.init();
+
+    // pdfrxInitialize();
+    pdfrxFlutterInitialize();
+
+    await Setting.instance.init(
+      appName: 'NV 3',
+      releaseUrl: 'https://github.com/ThanCoder/novelv3/releases',
+    );
+    final client = TClient();
+
+    await TWidgets.instance.init(
+      initialThemeServices: true,
+      defaultImageAssetsPath: 'assets/logo_3.jpg',
+      getCachePath: (url, cacheName) => PathUtil.getCachePath(name: cacheName),
+    );
+    await PdfReader.instance.init();
+
+    // recent
+    await CFLite.getInstance().init(
+      dbPath: PathUtil.getConfigPath(name: 'recent.cf.db.json'),
+    );
+
+    // style
+    currentHomeListStyleNotifier.value = HomeListStyleType.getType(
+      CFLite.getInstance().getString('home_list_style_type'),
+    );
+
+    // fetcher
+    await Fetcher.instance.init(
+      onGetHtmlContent: (url) async {
+        final res = await client.get(url);
+        return res.data.toString();
+      },
+    );
+  } catch (e) {
+    debugPrint('[main]: $e');
   }
-  WidgetsFlutterBinding.ensureInitialized();
-  // await ThanPkg.instance.init();
-
-  pdfrxInitialize();
-  pdfrxFlutterInitialize();
-
-  await Setting.instance.init(
-    appName: 'NV 3',
-    releaseUrl: 'https://github.com/ThanCoder/novelv3/releases',
-  );
-  final client = TClient();
-
-  await TWidgets.instance.init(
-    initialThemeServices: true,
-    defaultImageAssetsPath: 'assets/logo_3.jpg',
-    getCachePath: (url, cacheName) => PathUtil.getCachePath(name: cacheName),
-  );
-  await PdfReader.instance.init();
-
-  // recent
-  await CFLite.getInstance().init(
-    dbPath: PathUtil.getConfigPath(name: 'recent.cf.db.json'),
-  );
-
-  // style
-  currentHomeListStyleNotifier.value = HomeListStyleType.getType(
-    CFLite.getInstance().getString('home_list_style_type'),
-  );
-
-  // fetcher
-  await Fetcher.instance.init(
-    onGetHtmlContent: (url) async {
-      final res = await client.get(url);
-      return res.data.toString();
-    },
-  );
 
   runApp(const BlocApp());
 }
