@@ -2,7 +2,7 @@ import 'package:cf_lite/cf_lite.dart';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 
-enum PdfReaderType { list, singlePage }
+enum PdfReaderType { list, singlePage, tPdfReader }
 
 class PdfReaderTypeChooserDialog extends StatefulWidget {
   static Future<void> setType(PdfReaderType type) async {
@@ -13,6 +13,9 @@ class PdfReaderTypeChooserDialog extends StatefulWidget {
     final name = CFLite.getInstance().getString('PdfReaderType');
     if (name == PdfReaderType.singlePage.name) {
       return PdfReaderType.singlePage;
+    }
+    if (name == PdfReaderType.tPdfReader.name) {
+      return PdfReaderType.tPdfReader;
     }
     return PdfReaderType.list;
   }

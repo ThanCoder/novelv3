@@ -25,6 +25,7 @@ import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_d
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_reader/screens/pdf_single_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
+import 'package:novel_v3/other_apps/t_pdf_reader/than_pdf_reader.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 void goBlocRoute(
@@ -181,6 +182,18 @@ Future<void> goBlocPdfReader(
   final pdfConfig = PdfConfig.fromPath(pdf.getCurrentConfigPath);
 
   final readerType = PdfReaderTypeChooserDialog.getType();
+  if (readerType == PdfReaderType.tPdfReader) {
+    context.goRoute(
+      builder: (context) => ThanPdfReader(
+        path: pdf.path,
+        pdfConfig: pdfConfig,
+        onConfigUpdated: (updatedPdfConfig) {
+          updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
+        },
+      ),
+    );
+    return;
+  }
   if (readerType == PdfReaderType.singlePage) {
     context.goRoute(
       builder: (context) => PdfSingleReaderScreen(

@@ -149,11 +149,10 @@ packages:
   dart_core_extensions:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "24dea6e686fc10d4ea3c0ee80c79033ae6789d25"
-      url: "https://github.com/ThanCoder/dart_core_extensions.git"
-    source: git
+      name: dart_core_extensions
+      sha256: e0fc804b73d3e9db4a93f75165bbae7617c41bb3c2de6a225a751ecc0c9df9e8
+      url: "https://pub.dev"
+    source: hosted
     version: "0.3.0"
   dart_html_dsl:
     dependency: "direct main"
@@ -831,6 +830,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  t_pdf_reader:
+    dependency: "direct main"
+    description:
+      path: "/home/thancoder/projects/plugins/t_pdf_reader"
+      relative: false
+    source: path
+    version: "0.0.1"
   t_server:
     dependency: "direct main"
     description:
@@ -977,6 +983,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:
