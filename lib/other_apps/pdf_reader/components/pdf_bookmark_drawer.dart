@@ -6,12 +6,12 @@ import '../types/pdf_bookmark_services.dart';
 
 class PdfBookmarkDrawer extends StatefulWidget {
   String bookmarkPath;
-  int currentPage;
+  int Function() getCurrentPage;
   void Function(int page) onClicked;
   PdfBookmarkDrawer({
     super.key,
     required this.bookmarkPath,
-    required this.currentPage,
+    required this.getCurrentPage,
     required this.onClicked,
   });
 
@@ -83,7 +83,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
   Widget _getListItem(PdfBookmark bm) {
     return GestureDetector(
       onTap: () {
-        if (bm.page == widget.currentPage) return;
+        if (bm.page == widget.getCurrentPage()) return;
         Navigator.pop(context);
         widget.onClicked(bm.page);
       },
@@ -96,7 +96,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
                 selectionColor: Colors.red,
                 '${bm.page} : ${bm.title}',
                 style: TextStyle(
-                  color: bm.page == widget.currentPage
+                  color: bm.page == widget.getCurrentPage()
                       ? const Color.fromARGB(234, 175, 175, 175)
                       : null,
                 ),
@@ -114,7 +114,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
   }
 
   bool get _isExistsPage {
-    final res = list.where((bm) => bm.page == widget.currentPage);
+    final res = list.where((bm) => bm.page == widget.getCurrentPage());
     if (res.isNotEmpty) return true;
     return false;
   }
@@ -127,7 +127,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
         text: 'Untitled',
         submitText: 'Add',
         onSubmit: (text) async {
-          final bm = PdfBookmark(title: text, page: widget.currentPage);
+          final bm = PdfBookmark(title: text, page: widget.getCurrentPage());
           list.add(bm);
           list.sort((a, b) => a.page.compareTo(b.page));
           await PdfBookmarkServices.setList(widget.bookmarkPath, list);
@@ -140,7 +140,7 @@ class _PdfBookmarkDrawerState extends State<PdfBookmarkDrawer> {
   }
 
   void _addQuick() async {
-    final bm = PdfBookmark.create(page: widget.currentPage);
+    final bm = PdfBookmark.create(page: widget.getCurrentPage());
     list.add(bm);
     list.sort((a, b) => a.page.compareTo(b.page));
     await PdfBookmarkServices.setList(widget.bookmarkPath, list);

@@ -1,9 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_core_extensions/dart_core_extensions.dart';
-import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:than_pkg/than_pkg.dart' hide TPlatform;
+
+import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
+import 'package:novel_v3/other_apps/pdf_reader/types/pdf_reader_type.dart';
 
 class PdfConfig {
   final int page;
@@ -20,9 +23,11 @@ class PdfConfig {
   final bool isOnBackpressConfirm;
   final bool isFullscreen;
   final bool useProgressiveLoading;
+  final PdfReaderType readerType;
 
   const PdfConfig({
     required this.page,
+    required this.readerType,
     required this.isDarkMode,
     required this.isLockScreen,
     required this.isShowScrollThumb,
@@ -37,41 +42,6 @@ class PdfConfig {
     required this.isFullscreen,
     required this.useProgressiveLoading,
   });
-
-  PdfConfig copyWith({
-    int? page,
-    bool? isDarkMode,
-    bool? isLockScreen,
-    bool? isShowScrollThumb,
-    double? offsetDx,
-    double? zoom,
-    bool? isKeepScreen,
-    bool? isTextSelection,
-    double? scrollByMouseWheel,
-    ScreenOrientationTypes? screenOrientation,
-    double? scrollByArrowKey,
-    bool? isOnBackpressConfirm,
-    bool? isFullscreen,
-    bool? useProgressiveLoading,
-  }) {
-    return PdfConfig(
-      page: page ?? this.page,
-      isDarkMode: isDarkMode ?? this.isDarkMode,
-      isLockScreen: isLockScreen ?? this.isLockScreen,
-      isShowScrollThumb: isShowScrollThumb ?? this.isShowScrollThumb,
-      offsetDx: offsetDx ?? this.offsetDx,
-      zoom: zoom ?? this.zoom,
-      isKeepScreen: isKeepScreen ?? this.isKeepScreen,
-      isTextSelection: isTextSelection ?? this.isTextSelection,
-      scrollByMouseWheel: scrollByMouseWheel ?? this.scrollByMouseWheel,
-      screenOrientation: screenOrientation ?? this.screenOrientation,
-      scrollByArrowKey: scrollByArrowKey ?? this.scrollByArrowKey,
-      isOnBackpressConfirm: isOnBackpressConfirm ?? this.isOnBackpressConfirm,
-      isFullscreen: isFullscreen ?? this.isFullscreen,
-      useProgressiveLoading:
-          useProgressiveLoading ?? this.useProgressiveLoading,
-    );
-  }
 
   factory PdfConfig.create({
     int page = 1,
@@ -88,9 +58,11 @@ class PdfConfig {
     double scrollByArrowKey = 50,
     ScreenOrientationTypes screenOrientation = ScreenOrientationTypes.portrait,
     bool useProgressiveLoading = false,
+    PdfReaderType readerType = PdfReaderType.RXPdfReader,
   }) {
     return PdfConfig(
       page: page,
+      readerType: readerType,
       isDarkMode: isDarkMode,
       isLockScreen: isLockScreen,
       isShowScrollThumb: isShowScrollThumb ?? TPlatform.isDesktop,
@@ -130,6 +102,7 @@ class PdfConfig {
   factory PdfConfig.fromMap(Map<String, dynamic> map) {
     final screenOrientationStr = map.getString(['screenOrientation']);
     return PdfConfig(
+      readerType: PdfReaderType.getType(map.getString(['pdf_reader_type'])),
       useProgressiveLoading: map.getBool(['useProgressiveLoading'], def: false),
       screenOrientation: ScreenOrientationTypes.getType(screenOrientationStr),
       page: map.getInt(['page'], def: 1),
@@ -166,6 +139,7 @@ class PdfConfig {
       'isOnBackpressConfirm': isOnBackpressConfirm,
       'isFullscreen': isFullscreen,
       'useProgressiveLoading': useProgressiveLoading,
+      'pdf_reader_type': readerType.name,
     };
   }
 
@@ -173,4 +147,41 @@ class PdfConfig {
 
   factory PdfConfig.fromJson(String source) =>
       PdfConfig.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  PdfConfig copyWith({
+    int? page,
+    bool? isDarkMode,
+    bool? isLockScreen,
+    bool? isShowScrollThumb,
+    double? offsetDx,
+    double? zoom,
+    bool? isKeepScreen,
+    bool? isTextSelection,
+    double? scrollByMouseWheel,
+    ScreenOrientationTypes? screenOrientation,
+    double? scrollByArrowKey,
+    bool? isOnBackpressConfirm,
+    bool? isFullscreen,
+    bool? useProgressiveLoading,
+    PdfReaderType? readerType,
+  }) {
+    return PdfConfig(
+      page: page ?? this.page,
+      isDarkMode: isDarkMode ?? this.isDarkMode,
+      isLockScreen: isLockScreen ?? this.isLockScreen,
+      isShowScrollThumb: isShowScrollThumb ?? this.isShowScrollThumb,
+      offsetDx: offsetDx ?? this.offsetDx,
+      zoom: zoom ?? this.zoom,
+      isKeepScreen: isKeepScreen ?? this.isKeepScreen,
+      isTextSelection: isTextSelection ?? this.isTextSelection,
+      scrollByMouseWheel: scrollByMouseWheel ?? this.scrollByMouseWheel,
+      screenOrientation: screenOrientation ?? this.screenOrientation,
+      scrollByArrowKey: scrollByArrowKey ?? this.scrollByArrowKey,
+      isOnBackpressConfirm: isOnBackpressConfirm ?? this.isOnBackpressConfirm,
+      isFullscreen: isFullscreen ?? this.isFullscreen,
+      useProgressiveLoading:
+          useProgressiveLoading ?? this.useProgressiveLoading,
+      readerType: readerType ?? this.readerType,
+    );
+  }
 }

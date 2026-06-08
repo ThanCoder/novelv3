@@ -6,6 +6,7 @@ import 'package:novel_v3/more_libs/setting/core/app_setting_list_tile.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/more_libs/setting/core/thancoder_about_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:novel_v3/more_libs/setting/core/theme_modes_chooser.dart';
 
@@ -73,7 +74,7 @@ class Setting {
       this.onSettingSaved = onSettingSaved;
       this.releaseUrl = releaseUrl;
       // set package
-      final pInfo = await ThanPkg.platform.getPackageInfo();
+      final pInfo = await PackageInfo.fromPlatform();
       packageName = customPackageName ?? pInfo.packageName;
       version = pInfo.version;
 

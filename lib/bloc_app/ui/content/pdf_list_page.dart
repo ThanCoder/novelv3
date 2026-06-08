@@ -13,6 +13,7 @@ import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_dialog.dart';
+import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart' hide TPlatform;
@@ -140,15 +141,6 @@ class _PdfListPageState extends State<PdfListPage> {
             _addPdfFromScanner();
           },
         ),
-
-        ListTile(
-          leading: Icon(Icons.settings),
-          title: Text('Pdf Reader Setting'),
-          onTap: () {
-            context.closeNavigator();
-            _shwoPdfReaderChooser();
-          },
-        ),
       ],
     );
   }
@@ -173,6 +165,14 @@ class _PdfListPageState extends State<PdfListPage> {
           onTap: () {
             context.closeNavigator();
             _setCoverImage(pdf.getCoverPath);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Pdf Reader Setting'),
+          onTap: () {
+            context.closeNavigator();
+            _shwoPdfReaderChooser(pdf);
           },
         ),
       ],
@@ -229,11 +229,16 @@ class _PdfListPageState extends State<PdfListPage> {
     );
   }
 
-  void _shwoPdfReaderChooser() {
+  void _shwoPdfReaderChooser(PdfFile pdf) {
     showTAlertDialog(
       context,
       title: Text('PDF Reader Types'),
-      content: PdfReaderTypeChooserDialog(),
+      content: PdfReaderTypeChooserDialog(
+        config: PdfConfig.fromPath(pdf.getCurrentConfigPath),
+        onChanged: (config) {
+          config.savePath(pdf.getCurrentConfigPath);
+        },
+      ),
     );
   }
 }

@@ -33,11 +33,12 @@ dependencies:
   webview_all: ^1.0.3
   vector_math: 2.2.0
   desktop_webview_window: ^0.2.3
+  package_info_plus: ^10.1.0
   chapters_db:
     # path: /home/thancoder/projects/plugins/chapters_db
     git: https://github.com/ThanCoder/chapters_db.git 
   than_pkg:
-    git: https://github.com/ThanCoder/than_pkg_flutter_lib
+    git: https://github.com/ThanCoder/than_pkg_flutter_lib.git
   dart_core_extensions: ^0.3.0
   t_widgets:
     git: https://github.com/ThanCoder/t_widget

@@ -21,11 +21,11 @@ import 'package:novel_v3/core/models/pdf_file.dart';
 import 'package:novel_v3/more_libs/setting/core/path_util.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_config.dart';
 import 'package:novel_v3/other_apps/chapter_reader/chapter_reader_screen.dart';
-import 'package:novel_v3/other_apps/pdf_reader/dialogs/pdf_reader_type_chooser_dialog.dart';
 import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_reader/screens/pdf_single_reader_screen.dart';
+import 'package:novel_v3/other_apps/pdf_reader/types/pdf_reader_type.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
-import 'package:novel_v3/other_apps/t_pdf_reader/than_pdf_reader.dart';
+import 'package:novel_v3/other_apps/pdf_reader/screens/than_pdf_reader.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 void goBlocRoute(
@@ -181,12 +181,13 @@ Future<void> goBlocPdfReader(
 }) async {
   final pdfConfig = PdfConfig.fromPath(pdf.getCurrentConfigPath);
 
-  final readerType = PdfReaderTypeChooserDialog.getType();
-  if (readerType == PdfReaderType.tPdfReader) {
+  final readerType = pdfConfig.readerType;
+  if (readerType == PdfReaderType.TPdfReader) {
     context.goRoute(
       builder: (context) => ThanPdfReader(
         path: pdf.path,
         pdfConfig: pdfConfig,
+        bookmarkPath: pdf.getCurrentBookmarkConfigPath,
         onConfigUpdated: (updatedPdfConfig) {
           updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
         },
@@ -194,7 +195,7 @@ Future<void> goBlocPdfReader(
     );
     return;
   }
-  if (readerType == PdfReaderType.singlePage) {
+  if (readerType == PdfReaderType.SinglePage) {
     context.goRoute(
       builder: (context) => PdfSingleReaderScreen(
         path: pdf.path,

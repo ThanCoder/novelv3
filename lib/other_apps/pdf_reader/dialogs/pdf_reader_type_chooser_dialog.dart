@@ -1,26 +1,16 @@
-import 'package:cf_lite/cf_lite.dart';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
-
-enum PdfReaderType { list, singlePage, tPdfReader }
+import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
+import 'package:novel_v3/other_apps/pdf_reader/types/pdf_reader_type.dart';
 
 class PdfReaderTypeChooserDialog extends StatefulWidget {
-  static Future<void> setType(PdfReaderType type) async {
-    await CFLite.getInstance().put('PdfReaderType', type.name);
-  }
-
-  static PdfReaderType getType() {
-    final name = CFLite.getInstance().getString('PdfReaderType');
-    if (name == PdfReaderType.singlePage.name) {
-      return PdfReaderType.singlePage;
-    }
-    if (name == PdfReaderType.tPdfReader.name) {
-      return PdfReaderType.tPdfReader;
-    }
-    return PdfReaderType.list;
-  }
-
-  const PdfReaderTypeChooserDialog({super.key});
+  final PdfConfig config;
+  final void Function(PdfConfig config) onChanged;
+  const PdfReaderTypeChooserDialog({
+    super.key,
+    required this.config,
+    required this.onChanged,
+  });
 
   @override
   State<PdfReaderTypeChooserDialog> createState() =>
@@ -30,11 +20,11 @@ class PdfReaderTypeChooserDialog extends StatefulWidget {
 class _PdfReaderTypeChooserDialogState
     extends State<PdfReaderTypeChooserDialog> {
   final list = PdfReaderType.values;
-  PdfReaderType? value = PdfReaderType.list;
+  PdfReaderType? value = PdfReaderType.RXPdfReader;
 
   @override
   void initState() {
-    value = PdfReaderTypeChooserDialog.getType();
+    value = widget.config.readerType;
     setState(() {});
     super.initState();
   }
@@ -56,7 +46,8 @@ class _PdfReaderTypeChooserDialogState
           setState(() {
             this.value = value;
           });
-          PdfReaderTypeChooserDialog.setType(this.value!);
+          // PdfReaderTypeChooserDialog.setType(this.value!);
+          widget.onChanged(widget.config.copyWith(readerType: value));
         },
       ),
     );

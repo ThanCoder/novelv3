@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/core/extensions/build_context_extensions.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart' hide TPlatform;
@@ -70,27 +69,132 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       onPopInvokedWithResult: (didPop, result) {
         _onBackpress();
       },
-      child: Scaffold(
-        appBar: config.isFullscreen
-            ? null
-            : AppBar(
-                title: Text(widget.title, style: const TextStyle(fontSize: 11)),
+      child: Theme(
+        data: config.isDarkMode ? ThemeData.dark() : ThemeData.light(),
+        child: Scaffold(
+          appBar: config.isFullscreen
+              ? null
+              : AppBar(
+                  title: Text(
+                    widget.title,
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                ),
+          endDrawer: widget.bookmarkPath == null
+              ? null
+              : PdfBookmarkDrawer(
+                  bookmarkPath: widget.bookmarkPath!,
+                  getCurrentPage: () => currentPage,
+                  onClicked: (pageIndex) {
+                    goPage(pageIndex);
+                  },
+                ),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                top: config.isFullscreen ? 0 : 40,
+                child: _pdfReader,
               ),
-        endDrawer: widget.bookmarkPath == null
-            ? null
-            : PdfBookmarkDrawer(
-                bookmarkPath: widget.bookmarkPath!,
-                currentPage: currentPage,
-                onClicked: (pageIndex) {
-                  goPage(pageIndex);
-                },
-              ),
-        body: Stack(
-          children: [
-            _getColorFilteredPdfReader(),
-            Positioned(top: 0, left: 0, right: 0, child: _getHeaderWidgets()),
-          ],
+              Positioned(top: 0, left: 0, right: 0, child: _getHeaderWidgets),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget get _pdfReader {
+    return ClipRect(
+      child: ColorFiltered(
+        colorFilter: ColorFilter.mode(
+          Colors.white,
+          config.isDarkMode ? BlendMode.difference : BlendMode.dst,
+        ),
+        child: Container(
+          color: Colors.white,
+          width: double.infinity,
+          height: double.infinity,
+          child: _getCurrentPdfReader(),
+        ),
+      ),
+    );
+  }
+
+  Widget get _getHeaderWidgets {
+    if (config.isFullscreen) {
+      return const SizedBox.shrink();
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          //page number
+          TextButton(
+            onPressed: () {
+              _showGoToDialog();
+            },
+            child: Text('$currentPage/$pageCount'),
+          ),
+          //theme mode
+          IconButton(
+            onPressed: () {
+              config = config.copyWith(isDarkMode: !config.isDarkMode);
+              setState(() {});
+            },
+            icon: Icon(config.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+          ),
+          //pan axis lock
+          // IconButton(
+          //   onPressed: () {
+          //     config = config.copyWith(isLockScreen: !config.isLockScreen);
+          //     setState(() {});
+          //   },
+          //   icon: Icon(config.isLockScreen ? Icons.lock : Icons.lock_open),
+          // ),
+          //zoom
+          IconButton(
+            onPressed: () {
+              pdfController.zoomDown();
+            },
+            icon: const Icon(Icons.zoom_out),
+          ),
+          IconButton(
+            onPressed: () {
+              pdfController.zoomUp();
+            },
+            icon: const Icon(Icons.zoom_in),
+          ),
+          //full screen
+          IconButton(
+            onPressed: () {
+              if (isLoading) return;
+              if (!config.isFullscreen) {
+                PdfReader.instance.showAutoMessage(
+                  context,
+                  'Double Tap Is Exist FullScreen!',
+                );
+              }
+              _setFullScreen(!config.isFullscreen);
+            },
+            icon: Icon(
+              config.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
+            ),
+          ),
+
+          //setting
+          IconButton(
+            onPressed: _showSetting,
+            icon: const Icon(Icons.more_vert),
+          ),
+          currentPage == oldPageNumber
+              ? SizedBox.shrink()
+              : IconButton(
+                  onPressed: _checkConfigPageIndex,
+                  icon: Icon(Icons.confirmation_num_sharp),
+                ),
+        ],
       ),
     );
   }
@@ -217,107 +321,6 @@ class _PdfrxReaderScreenState extends State<PdfrxReaderScreen> {
       ];
     },
   );
-
-  Widget _getHeaderWidgets() {
-    if (config.isFullscreen) {
-      return const SizedBox.shrink();
-    }
-    return Container(
-      color: context.isAppDark ? Colors.black : Colors.white,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            //page number
-            TextButton(
-              onPressed: () {
-                _showGoToDialog();
-              },
-              child: Text('$currentPage/$pageCount'),
-            ),
-            //theme mode
-            IconButton(
-              onPressed: () {
-                config = config.copyWith(isDarkMode: !config.isDarkMode);
-                setState(() {});
-              },
-              icon: Icon(
-                config.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-              ),
-            ),
-            //pan axis lock
-            // IconButton(
-            //   onPressed: () {
-            //     config = config.copyWith(isLockScreen: !config.isLockScreen);
-            //     setState(() {});
-            //   },
-            //   icon: Icon(config.isLockScreen ? Icons.lock : Icons.lock_open),
-            // ),
-            //zoom
-            IconButton(
-              onPressed: () {
-                pdfController.zoomDown();
-              },
-              icon: const Icon(Icons.zoom_out),
-            ),
-            IconButton(
-              onPressed: () {
-                pdfController.zoomUp();
-              },
-              icon: const Icon(Icons.zoom_in),
-            ),
-            //full screen
-            IconButton(
-              onPressed: () {
-                if (isLoading) return;
-                if (!config.isFullscreen) {
-                  PdfReader.instance.showAutoMessage(
-                    context,
-                    'Double Tap Is Exist FullScreen!',
-                  );
-                }
-                _setFullScreen(!config.isFullscreen);
-              },
-              icon: Icon(
-                config.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
-              ),
-            ),
-
-            //setting
-            IconButton(
-              onPressed: _showSetting,
-              icon: const Icon(Icons.more_vert),
-            ),
-            currentPage == oldPageNumber
-                ? SizedBox.shrink()
-                : IconButton(
-                    onPressed: _checkConfigPageIndex,
-                    icon: Icon(Icons.confirmation_num_sharp),
-                  ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _getColorFilteredPdfReader() {
-    return Column(
-      children: [
-        SizedBox(height: config.isFullscreen ? 0 : 40),
-        Expanded(
-          child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              Colors.white,
-              config.isDarkMode ? BlendMode.difference : BlendMode.dst,
-            ),
-            child: _getCurrentPdfReader(),
-          ),
-        ),
-      ],
-    );
-  }
 
   // viewer ready
   void _onViewerReady(

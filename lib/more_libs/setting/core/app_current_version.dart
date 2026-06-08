@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 import '../setting.dart';
@@ -10,7 +11,7 @@ class AppCurrentVersion extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: FutureBuilder(
-        future: ThanPkg.platform.getPackageInfo(),
+        future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {
           final data = snapshot.data;
           if (snapshot.hasData && data != null) {

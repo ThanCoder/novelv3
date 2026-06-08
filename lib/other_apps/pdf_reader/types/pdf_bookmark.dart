@@ -11,9 +11,13 @@ class PdfBookmark {
   }
 
   factory PdfBookmark.fromMap(Map<String, dynamic> map) {
+    var page = map.getInt(['page_index'], def: -1);
+    if (page == -1) {
+      page = map.getInt(['page']);
+    }
     return PdfBookmark(
       title: map.getString(['title'], def: 'Untitled'),
-      page: map.getInt(['page_index']),
+      page: page,
     );
   }
 

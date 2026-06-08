@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:novel_v3/other_apps/pdf_reader/components/pdf_bookmark_drawer.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
 import 'package:t_pdf_reader/t_pdf_reader.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -10,12 +11,14 @@ import 'package:than_pkg/than_pkg.dart';
 class ThanPdfReader extends StatefulWidget {
   final String path;
   final PdfConfig pdfConfig;
+  final String? bookmarkPath;
   final void Function(PdfConfig)? onConfigUpdated;
   const ThanPdfReader({
     super.key,
     required this.path,
     required this.pdfConfig,
     this.onConfigUpdated,
+    this.bookmarkPath,
   });
 
   @override
@@ -44,7 +47,12 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
 
   void init() {
     pdfController.onLoaded((totalPage, loadedElapsedTime) {
-      print('Pdf Loaded Time: ${loadedElapsedTime.inMilliseconds} ms');
+      // print('Pdf Loaded Time: ${loadedElapsedTime.inMilliseconds} ms');
+      showTSnackBar(
+        context,
+        'Pdf Loaded Time: ${loadedElapsedTime.inMilliseconds} ms',
+        showCloseIcon: true,
+      );
       pdfController.jumpToPage(widget.pdfConfig.page);
       pdfController.setZoom(widget.pdfConfig.zoom);
     });
@@ -63,6 +71,16 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
         appBar: isFullscreen
             ? null
             : AppBar(title: Text(widget.path.split('/').last)),
+        endDrawer: widget.bookmarkPath == null
+            ? null
+            : PdfBookmarkDrawer(
+                bookmarkPath: widget.bookmarkPath!,
+                getCurrentPage: () => pdfController.currentPage,
+                onClicked: (pageIndex) {
+                  pdfController.jumpToPage(pageIndex);
+                  // print('page: $pageIndex');
+                },
+              ),
         body: Stack(
           children: [
             Positioned.fill(
@@ -198,6 +216,7 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
       onCheckIsError: (text) {
         final number = int.tryParse(text);
         if (number == null) return 'Page Number is Required!';
+        if (number == 0) return 'Page Number Start 1';
         if (number > pdfController.totalPages) {
           return 'Page: `$number` > Total: `${pdfController.totalPages}`';
         }

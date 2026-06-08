@@ -25,7 +25,7 @@ class PdfBookmarkServices {
       final file = File(path);
       final data = list.map((bm) => bm.toMap).toList();
       final contents = const JsonEncoder.withIndent(' ').convert(data);
-
+      // print(contents);
       await file.writeAsString(contents);
     } catch (e) {
       debugPrint('[PdfBookmarkServices:setList] ${e.toString()}');
