@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:novel_v3/other_apps/pdf_reader/components/pdf_bookmark_drawer.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
+import 'package:t_client/t_client.dart';
 import 'package:t_pdf_reader/t_pdf_reader.dart';
 import 'package:t_widgets/t_widgets.dart';
 import 'package:than_pkg/than_pkg.dart';
@@ -36,6 +37,13 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
   @override
   void dispose() {
     ThanPkg.platform.toggleFullScreen(isFullScreen: false);
+    if (Platform.isAndroid) {
+      ThanPkg.android.app.toggleKeepScreenOn(isKeep: false);
+      ThanPkg.android.app.requestOrientation(
+        type: ScreenOrientationTypes.portrait,
+      );
+    }
+
     widget.onConfigUpdated?.call(
       widget.pdfConfig.copyWith(
         page: pdfController.currentPage,
@@ -46,19 +54,23 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
   }
 
   void init() {
-    pdfController.onLoaded((totalPage, loadedElapsedTime) {
-      // print('Pdf Loaded Time: ${loadedElapsedTime.inMilliseconds} ms');
-      showTSnackBar(
-        context,
-        'Pdf Loaded Time: ${loadedElapsedTime.inMilliseconds} ms',
-        showCloseIcon: true,
-      );
+    pdfController.onLoaded.listen((event) {
       pdfController.jumpToPage(widget.pdfConfig.page);
       pdfController.setZoom(widget.pdfConfig.zoom);
+
+      if (!mounted) return;
+      showTSnackBar(
+        context,
+        'Pdf Loaded Time: ${event.loadedElapsedTime.toAutoTimeLabel()}',
+        showCloseIcon: true,
+      );
     });
+    if (Platform.isAndroid) {
+      ThanPkg.android.app.toggleKeepScreenOn(isKeep: true);
+    }
   }
 
-  final pdfController = TPdfController();
+  final pdfController = TPdfControllerV2();
   bool isDarkMode = false;
   bool isScaleEnable = false;
   bool isFullscreen = false;
@@ -102,7 +114,7 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
                       color: Colors.white,
                       width: double.infinity,
                       height: double.infinity,
-                      child: TPdfReader(
+                      child: TPdfReaderV2(
                         source: widget.path,
                         controller: pdfController,
                       ),
@@ -188,17 +200,6 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
                   ),
                 ],
               ),
-            ),
-            StreamBuilder(
-              stream: pdfController.lowImageProgressStream.stream,
-              builder: (context, snapshot) {
-                double? value;
-                if (snapshot.hasData) {
-                  value = snapshot.data!.$2 / snapshot.data!.$1;
-                }
-                if (value == null || value == 1.0) return SizedBox.shrink();
-                return LinearProgressIndicator(value: value);
-              },
             ),
           ],
         ),

@@ -4,6 +4,9 @@ repository: https://github.com/ThanCoder/novelv3
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 4.5.0
 homepage: https://github.com/ThanCoder # ဒါမပါရင် error တက်တတ်ပါတယ်
+# build -appimage
+# fastforge package --platform linux --targets appimage
+# fastforge package --platform android --targets apk
 
 environment:
   sdk: ^3.9.0
