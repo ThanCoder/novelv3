@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:novel_v3/other_apps/pdf_reader/components/pdf_bookmark_drawer.dart';
-import 'package:novel_v3/other_apps/pdf_reader/types/pdf_config.dart';
+import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:t_client/t_client.dart';
 import 'package:t_pdf_reader/t_pdf_reader.dart';
 import 'package:t_widgets/t_widgets.dart';
@@ -13,7 +12,7 @@ class ThanPdfReader extends StatefulWidget {
   final String path;
   final PdfConfig pdfConfig;
   final String? bookmarkPath;
-  final void Function(PdfConfig)? onConfigUpdated;
+  final void Function(PdfConfig savedConfig)? onConfigUpdated;
   const ThanPdfReader({
     super.key,
     required this.path,
@@ -29,8 +28,9 @@ class ThanPdfReader extends StatefulWidget {
 class _ThanPdfReaderState extends State<ThanPdfReader> {
   @override
   void initState() {
-    isDarkMode = widget.pdfConfig.isDarkMode;
+    config = widget.pdfConfig;
     super.initState();
+    _initConfig();
     init();
   }
 
@@ -43,13 +43,7 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
         type: ScreenOrientationTypes.portrait,
       );
     }
-
-    widget.onConfigUpdated?.call(
-      widget.pdfConfig.copyWith(
-        page: pdfController.currentPage,
-        zoom: pdfController.currentZoom,
-      ),
-    );
+    _saveConfig();
     super.dispose();
   }
 
@@ -70,17 +64,19 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
     }
   }
 
-  final pdfController = TPdfControllerV2();
-  bool isDarkMode = false;
+  final pdfController = TPdfControllerV3(
+    customScrollbar: (context, pageIndex) =>
+        TCustomScrollbarWidget.ui3(pageIndex),
+  );
+  late PdfConfig config;
   bool isScaleEnable = false;
-  bool isFullscreen = false;
 
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+      data: config.isDarkMode ? ThemeData.dark() : ThemeData.light(),
       child: Scaffold(
-        appBar: isFullscreen
+        appBar: config.isFullscreen
             ? null
             : AppBar(title: Text(widget.path.split('/').last)),
         endDrawer: widget.bookmarkPath == null
@@ -96,17 +92,17 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
         body: Stack(
           children: [
             Positioned.fill(
-              top: isFullscreen ? 0 : 40,
+              top: config.isFullscreen ? 0 : 40,
               child: ClipRRect(
                 child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
                     Colors.white,
-                    isDarkMode ? BlendMode.difference : BlendMode.dst,
+                    config.isDarkMode ? BlendMode.difference : BlendMode.dst,
                   ),
                   child: GestureDetector(
                     onDoubleTap: () {
-                      if (!isFullscreen) return;
-                      isFullscreen = false;
+                      if (!config.isFullscreen) return;
+                      config = config.copyWith(isFullscreen: false);
                       setState(() {});
                       ThanPkg.platform.toggleFullScreen(isFullScreen: false);
                     },
@@ -114,7 +110,7 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
                       color: Colors.white,
                       width: double.infinity,
                       height: double.infinity,
-                      child: TPdfReaderV2(
+                      child: TPdfReaderV3(
                         source: widget.path,
                         controller: pdfController,
                       ),
@@ -123,7 +119,7 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
                 ),
               ),
             ),
-            if (!isFullscreen)
+            if (!config.isFullscreen)
               Positioned(left: 0, right: 0, top: 0, child: _header),
           ],
         ),
@@ -131,80 +127,116 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
     );
   }
 
-  Widget get _header => ListenableBuilder(
-    listenable: pdfController,
-    builder: (context, child) {
-      return Theme(
-        data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
-        child: Column(
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 6,
-                children: [
-                  SizedBox(width: 10),
-                  InkWell(
-                    mouseCursor: SystemMouseCursors.click,
-                    onTap: _showGoToPageDialog,
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Text(
+  Widget get _header => Theme(
+    data: config.isDarkMode ? ThemeData.dark() : ThemeData.light(),
+    child: Column(
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 6,
+            children: [
+              SizedBox(width: 10),
+              InkWell(
+                mouseCursor: SystemMouseCursors.click,
+                onTap: _showGoToPageDialog,
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: StreamBuilder(
+                    stream: pdfController.onPageChanged,
+                    builder: (context, asyncSnapshot) {
+                      return Text(
                         '${pdfController.currentPage}/${pdfController.totalPages}',
                         style: TextStyle(color: Colors.teal),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isDarkMode = !isDarkMode;
-                      });
-                    },
-                    icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
-                  ),
-                  Text('Zoom: ${(pdfController.currentZoom * 100).toInt()}%'),
-                  IconButton(
-                    icon: Icon(Icons.zoom_out),
-                    onPressed: () => pdfController.setZoom(
-                      pdfController.currentZoom - 0.25,
-                    ), // ၂၅% လျှော့မယ်
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.zoom_in),
-                    onPressed: () => pdfController.setZoom(
-                      pdfController.currentZoom + 0.25,
-                    ), // ၂၅% တိုးမယ်
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      isFullscreen = !isFullscreen;
-                      ThanPkg.platform.toggleFullScreen(
-                        isFullScreen: isFullscreen,
                       );
-                      setState(() {});
                     },
-                    icon: Icon(
-                      isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
-                    ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      isScaleEnable = !isScaleEnable;
-                      pdfController.setPanEnabled(isScaleEnable);
-                      if (Platform.isAndroid) {
-                        pdfController.setScaleEnabled(isScaleEnable);
-                      }
-                    },
-                    icon: Icon(isScaleEnable ? Icons.lock_open : Icons.lock),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+              IconButton(
+                onPressed: () {
+                  config = config.copyWith(isDarkMode: !config.isDarkMode);
+                  setState(() {});
+                },
+                icon: Icon(
+                  config.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                ),
+              ),
+              StreamBuilder(
+                stream: pdfController.onZoomChanged,
+                builder: (context, asyncSnapshot) {
+                  return Text(
+                    'Z: ${(pdfController.currentZoom * 100).toInt()}%',
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.zoom_out),
+                onPressed: () => pdfController.setZoom(
+                  pdfController.currentZoom - 0.2,
+                ), // ၂၅% လျှော့မယ်
+              ),
+              IconButton(
+                icon: Icon(Icons.zoom_in),
+                onPressed: () => pdfController.setZoom(
+                  pdfController.currentZoom + 0.2,
+                ), // ၂၅% တိုးမယ်
+              ),
+              IconButton(
+                onPressed: () {
+                  config = config.copyWith(isFullscreen: !config.isFullscreen);
+
+                  ThanPkg.platform.toggleFullScreen(
+                    isFullScreen: config.isFullscreen,
+                  );
+                  setState(() {});
+                },
+                icon: Icon(
+                  config.isFullscreen
+                      ? Icons.fullscreen_exit
+                      : Icons.fullscreen,
+                ),
+              ),
+              ListenableBuilder(
+                listenable: pdfController,
+                builder: (context, child) => IconButton(
+                  onPressed: () {
+                    isScaleEnable = !isScaleEnable;
+                    pdfController.setOffsetXAutoLockedEnable(!isScaleEnable);
+                    pdfController.setOffsetXLocked(!isScaleEnable);
+                    config = config.copyWith(isLockScreen: !isScaleEnable);
+                  },
+                  icon: Icon(!isScaleEnable ? Icons.lock : Icons.lock_open),
+                ),
+              ),
+              ListenableBuilder(
+                listenable: pdfController,
+                builder: (context, child) => IconButton(
+                  onPressed: () {
+                    pdfController.setShowScrollbar(
+                      !pdfController.isShowScrollbar,
+                    );
+                    config = config.copyWith(
+                      isShowScrollThumb: pdfController.isShowScrollbar,
+                    );
+                  },
+                  icon: Icon(
+                    pdfController.isShowScrollbar
+                        ? Icons.unfold_less
+                        : Icons.unfold_more_rounded,
+                  ),
+                ),
+              ),
+              //setting
+              IconButton(
+                onPressed: _showSetting,
+                icon: const Icon(Icons.more_vert),
+              ),
+            ],
+          ),
         ),
-      );
-    },
+      ],
+    ),
   );
 
   void _showGoToPageDialog() {
@@ -228,20 +260,70 @@ class _ThanPdfReaderState extends State<ThanPdfReader> {
       },
     );
   }
+
+  // setting
+  void _showSetting() {
+    showDialog(
+      context: context,
+      builder: (context) => PdfReaderSettingDialog(
+        config: config,
+        onApply: (changedConfig) {
+          config = changedConfig;
+          setState(() {});
+          _saveConfig();
+          _initConfig();
+        },
+      ),
+    );
+  }
+
+  void _saveConfig() {
+    try {
+      widget.onConfigUpdated?.call(
+        config.copyWith(
+          isShowScrollThumb: pdfController.isShowScrollbar,
+          page: pdfController.currentPage,
+          zoom: pdfController.currentZoom,
+          readerOffsetX: pdfController.currentReaderOffsetX,
+        ),
+      );
+    } catch (e) {
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:_saveConfig',
+      );
+    }
+  }
+
+  void _initConfig() async {
+    try {
+      // inif config
+      isScaleEnable = !config.isLockScreen;
+      pdfController.setOffsetXAutoLockedEnable(!isScaleEnable);
+      pdfController.setOffsetXLocked(!isScaleEnable);
+      pdfController.setShowScrollbar(config.isShowScrollThumb);
+      setState(() {});
+
+      if (Platform.isAndroid) {
+        await ThanPkg.android.app.toggleKeepScreenOn(
+          isKeep: config.isKeepScreen,
+        );
+        await ThanPkg.android.app.requestOrientation(
+          type: config.screenOrientation,
+        );
+        if (config.screenOrientation == ScreenOrientationTypes.landscape) {
+          //full screen
+          await ThanPkg.android.app.showFullScreen();
+        }
+      }
+      await ThanPkg.platform.toggleFullScreen(
+        isFullScreen: config.isFullscreen,
+      );
+    } catch (e) {
+      PdfReader.showDebugLog(
+        e.toString(),
+        tag: 'PdfrxReaderScreen:_initConfig',
+      );
+    }
+  }
 }
-
-/**
- * 
- StreamBuilder(
-                stream: pdfController.lowImageProgressStream.stream,
-                builder: (context, snapshot) {
-                  double? value;
-                  if (snapshot.hasData) {
-                    value = snapshot.data!.$2 / snapshot.data!.$1;
-                  }
-                  return LinearProgressIndicator(value: value);
-                },
-              ),
-
-             
- */

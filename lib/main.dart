@@ -39,6 +39,7 @@ void main(List<String> args) async {
     await CFLite.getInstance().init(
       dbPath: PathUtil.getConfigPath(name: 'recent.cf.db.json'),
     );
+    
 
     // style
     currentHomeListStyleNotifier.value = HomeListStyleType.getType(

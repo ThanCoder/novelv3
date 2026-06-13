@@ -102,11 +102,11 @@ class NovelListCubit extends Cubit<NovelListState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  void setSort(int sortId, bool sortAsc) {
+  void setSort(int sortId, bool sortAsc) async {
     emit(state.copyWith(sortId: sortId, sortAsc: sortAsc, isLoading: false));
     // set recent
-    CFLite.getInstance().put('novel-list-sort-id', sortId);
-    CFLite.getInstance().put('novel-list-sort-asc', sortAsc);
+    await CFLite.getInstance().put<int>('novel-list-sort-id', sortId);
+    await CFLite.getInstance().put<bool>('novel-list-sort-asc', sortAsc);
   }
 
   void sort() async {

@@ -24,8 +24,10 @@ class PdfConfig {
   final bool isFullscreen;
   final bool useProgressiveLoading;
   final PdfReaderType readerType;
+  final double readerOffsetX;
 
   const PdfConfig({
+    required this.readerOffsetX,
     required this.page,
     required this.readerType,
     required this.isDarkMode,
@@ -76,6 +78,7 @@ class PdfConfig {
       isOnBackpressConfirm: isOnBackpressConfirm,
       isFullscreen: isFullscreen,
       useProgressiveLoading: useProgressiveLoading,
+      readerOffsetX: 0.0,
     );
   }
 
@@ -102,6 +105,7 @@ class PdfConfig {
   factory PdfConfig.fromMap(Map<String, dynamic> map) {
     final screenOrientationStr = map.getString(['screenOrientation']);
     return PdfConfig(
+      readerOffsetX: map.getDouble(['readerOffsetX'], def: 0.0),
       readerType: PdfReaderType.getType(map.getString(['pdf_reader_type'])),
       useProgressiveLoading: map.getBool(['useProgressiveLoading'], def: false),
       screenOrientation: ScreenOrientationTypes.getType(screenOrientationStr),
@@ -125,6 +129,7 @@ class PdfConfig {
   // map
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'readerOffsetX': readerOffsetX,
       'page': page,
       'isDarkMode': isDarkMode,
       'isLockScreen': isLockScreen,
@@ -164,6 +169,7 @@ class PdfConfig {
     bool? isFullscreen,
     bool? useProgressiveLoading,
     PdfReaderType? readerType,
+    double? readerOffsetX,
   }) {
     return PdfConfig(
       page: page ?? this.page,
@@ -182,6 +188,7 @@ class PdfConfig {
       useProgressiveLoading:
           useProgressiveLoading ?? this.useProgressiveLoading,
       readerType: readerType ?? this.readerType,
+      readerOffsetX: readerOffsetX ?? this.readerOffsetX,
     );
   }
 }
