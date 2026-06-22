@@ -1,5 +1,5 @@
 name: novel_v3
-description: "WebNovel App"
+description: "WebNovel App No Dev"
 repository: https://github.com/ThanCoder/novelv3
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 4.5.0
