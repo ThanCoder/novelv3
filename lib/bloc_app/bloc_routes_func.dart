@@ -25,7 +25,6 @@ import 'package:novel_v3/other_apps/pdf_reader/pdf_reader.dart';
 import 'package:novel_v3/other_apps/pdf_reader/screens/pdf_single_reader_screen.dart';
 import 'package:novel_v3/other_apps/pdf_reader/types/pdf_reader_type.dart';
 import 'package:novel_v3/other_apps/pdf_scanner/pdf_scanner_screen.dart';
-import 'package:novel_v3/other_apps/pdf_reader/screens/than_pdf_reader.dart';
 import 'package:t_widgets/t_widgets.dart';
 
 void goBlocRoute(
@@ -182,19 +181,19 @@ Future<void> goBlocPdfReader(
   final pdfConfig = PdfConfig.fromPath(pdf.getCurrentConfigPath);
 
   final readerType = pdfConfig.readerType;
-  if (readerType == PdfReaderType.TPdfReader) {
-    context.goRoute(
-      builder: (context) => ThanPdfReader(
-        path: pdf.path,
-        pdfConfig: pdfConfig,
-        bookmarkPath: pdf.getCurrentBookmarkConfigPath,
-        onConfigUpdated: (updatedPdfConfig) {
-          updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
-        },
-      ),
-    );
-    return;
-  }
+  // if (readerType == PdfReaderType.TPdfReader) {
+  //   context.goRoute(
+  //     builder: (context) => ThanPdfReader(
+  //       path: pdf.path,
+  //       pdfConfig: pdfConfig,
+  //       bookmarkPath: pdf.getCurrentBookmarkConfigPath,
+  //       onConfigUpdated: (updatedPdfConfig) {
+  //         updatedPdfConfig.savePath(pdf.getCurrentConfigPath);
+  //       },
+  //     ),
+  //   );
+  //   return;
+  // }
   if (readerType == PdfReaderType.SinglePage) {
     context.goRoute(
       builder: (context) => PdfSingleReaderScreen(

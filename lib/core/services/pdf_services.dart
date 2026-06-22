@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dart_core_extensions/dart_core_extensions.dart';
 import 'package:novel_v3/core/models/pdf_file.dart';
-import 'package:t_pdf_reader/t_pdf_reader.dart';
 import 'package:than_pkg/than_pkg.dart' show ThanPkg;
 
 class PdfServices {
@@ -46,13 +45,13 @@ class PdfServices {
       );
       return;
     }
-    final bytes = await getPdfImage(
-      pdf.path,
-      0,
-      width: width.toInt(),
-      height: height.toInt(),
-    );
-    if (bytes == null) return;
-    await saveFile.writeAsBytes(bytes);
+    // final bytes = await getPdfImage(
+    //   pdf.path,
+    //   0,
+    //   width: width.toInt(),
+    //   height: height.toInt(),
+    // );
+    // if (bytes == null) return;
+    // await saveFile.writeAsBytes(bytes);
   }
 }
