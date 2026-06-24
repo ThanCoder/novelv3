@@ -14,7 +14,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.9
-  flutter_bloc: ^9.1.1
   package_info_plus: ^10.1.0
   chapters_db:
     # path: /home/thancoder/projects/plugins/chapters_db

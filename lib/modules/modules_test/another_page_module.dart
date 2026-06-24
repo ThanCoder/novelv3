@@ -12,12 +12,8 @@ class AnotherPageModule extends ModuleApp<void, String> {
   }
 
   @override
-  // TODO: implement showUIList
-  bool get showUIList => throw UnimplementedError();
-
-  @override
-  // TODO: implement title
-  String get title => throw UnimplementedError();
+  // TODO: implement moduleId
+  String get id => throw UnimplementedError();
 }
 
 class AnotherPage extends StatelessWidget {

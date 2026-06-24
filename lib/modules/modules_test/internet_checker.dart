@@ -14,8 +14,6 @@ class InternetCheckerModule extends ModuleApp<void, ConnectionResult> {
   }
 
   @override
-  bool get showUIList => true;
-
-  @override
-  String get title => 'Internet Checker Module';
+  // TODO: implement moduleId
+  String get id => throw UnimplementedError();
 }
