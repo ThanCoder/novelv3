@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:novel_v3/core/models/novel.dart';
 import 'package:novel_v3/core/state/novel_state_controller.dart';
 import 'package:novel_v3/core/state/novel_state_event.dart';
+import 'package:novel_v3/modules/module_manager.dart';
+import 'package:novel_v3/modules/modules_test/another_page_module.dart';
+import 'package:novel_v3/modules/modules_test/internet_checker.dart';
+import 'package:novel_v3/modules/modules_test/pdf_scanner_module.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,6 +44,26 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.refresh),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // final res = await ModuleManager.instance
+          //     .open<InternetCheckerModule, void, ConnectionResult>(
+          //       context,
+          //       null,
+          //     );
+          // print('res: $res');
+          // final res = await ModuleManager.instance
+          //     .open<AnotherPageModule, void, String>(context, null);
+          // print('close page res: $res');
+
+          final res = await ModuleManager.instance
+              .open<PdfScannerModule, List<String>, List<String>>(context, [
+                'path_one',
+                'path_two',
+              ]);
+          print('res: $res');
+        },
       ),
       body: StreamBuilder(
         initialData: stateController.state,
